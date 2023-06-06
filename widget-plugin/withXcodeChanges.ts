@@ -478,10 +478,10 @@ async function applyXcodeChanges(
   // TODO: Idempotent
   mainSourcesBuildPhase.props.files.push(...intentBuildFiles[1]);
 
-  const group = PBXGroup.create(project, {
+  const protectedGroup = ensureProtectedGroup(project).createGroup({
     // This is where it gets fancy
     // TODO: The user should be able to know that this is safe to modify and won't be overwritten.
-    name: "expo:" + path.basename(props.cwd),
+    name: path.basename(props.cwd),
     // Like `../alpha`
     path: props.cwd,
     sourceTree: "<group>",
@@ -521,15 +521,35 @@ async function applyXcodeChanges(
     // sourceTree = "<group>";
   });
 
-  let libIndex = project.rootObject.props.mainGroup.props.children.findIndex(
-    (group) => group.getDisplayName() === "Libraries"
-  );
-  if (libIndex === -1) {
-    libIndex = 0;
+  return project;
+}
+
+function ensureProtectedGroup(project: XcodeProject) {
+  const hasProtectedGroup = project.rootObject.props.mainGroup
+    .getChildGroups()
+    .find((group) => group.getDisplayName() === "expo:linked");
+  const protectedGroup =
+    hasProtectedGroup ??
+    PBXGroup.create(project, {
+      name: "expo:linked",
+      sourceTree: "<group>",
+    });
+
+  if (!hasProtectedGroup) {
+    let libIndex = project.rootObject.props.mainGroup
+      .getChildGroups()
+      .findIndex((group) => group.getDisplayName() === "Libraries");
+    if (libIndex === -1) {
+      libIndex = 0;
+    }
+
+    // add above the group named "Libraries"
+    project.rootObject.props.mainGroup.props.children.splice(
+      libIndex,
+      0,
+      protectedGroup
+    );
   }
 
-  // add above the group named "Libraries"
-  project.rootObject.props.mainGroup.props.children.splice(libIndex, 0, group);
-
-  return project;
+  return protectedGroup;
 }
