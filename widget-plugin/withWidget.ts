@@ -1,3 +1,4 @@
+import path from "path";
 import { ConfigPlugin } from "@expo/config-plugins";
 import {
   withIosAccentColor,
@@ -34,7 +35,7 @@ const withWidget: ConfigPlugin = (config) => {
   withIosIcon(config, {
     widgetName: widget,
     // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
-    iconFilePath: "https://icogen-baconbrix.vercel.app/api/icon",
+    iconFilePath: path.join(__dirname, "../assets/icon-bear.png"), // "https://icogen-baconbrix.vercel.app/api/icon",
   });
   withXcodeProjectBetaBaseMod(config);
   return config;
