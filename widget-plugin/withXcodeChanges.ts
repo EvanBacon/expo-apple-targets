@@ -288,6 +288,37 @@ async function applyXcodeChanges(
       props
     );
 
+    // const group = project.rootObject.props.mainGroup.props.children.find(group => group.props.name === 'expo:' + props.name);
+    // if (!PBXGroup.is(group)) {
+    //   throw new Error('Could not find expo:' + props.name + ' group');
+    // }
+    // group.props.path = props.cwd;
+
+    // group.props.children.forEach(child => {
+
+    //   if (child.props.name === 'Info.plist') {
+    //     child.props.path = props.cwd + '/Info.plist';
+    //   }
+    // })
+
+    // children: [
+    //   // @ts-expect-error
+    //   ...swiftFiles.map((buildFile) => buildFile.props.fileRef),
+
+    //   // @ts-expect-error
+    //   ...intentFiles,
+
+    //   // @ts-expect-error
+    //   assetsXcassetsBf.props.fileRef,
+
+    //   // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+    //   // @ts-expect-error
+    //   PBXFileReference.create(project, {
+    //     path: "Info.plist",
+    //     sourceTree: "<group>",
+    //   }),
+    // ],
+
     return project;
   }
 
@@ -335,36 +366,7 @@ async function applyXcodeChanges(
     })
   );
 
-  // 	CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706102A2EBE2E009C1192 /* alphaBundle.swift */; };
-  // const alphaBundleSwiftBf = PBXBuildFile.create(project, {
-  //   // CD0706102A2EBE2E009C1192 /* alphaBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaBundle.swift; sourceTree = "<group>"; };
-  //   // @ts-expect-error
-  //   fileRef: PBXFileReference.create(project, {
-  //     path: "alphaBundle.swift",
-  //     sourceTree: "<group>",
-  //   }),
-  // });
-  // 	CD0706132A2EBE2E009C1192 /* alphaLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */; };
-  // const alphaLiveActivitySwiftBf = PBXBuildFile.create(project, {
-  //   // CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaLiveActivity.swift; sourceTree = "<group>"; };
-  //   // @ts-expect-error
-  //   fileRef: PBXFileReference.create(project, {
-  //     path: "alphaLiveActivity.swift",
-  //     sourceTree: "<group>",
-  //   }),
-  // });
-  // 	CD0706152A2EBE2E009C1192 /* index.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706142A2EBE2E009C1192 /* index.swift */; };
-  // const entrySwiftBuildFile = PBXBuildFile.create(project, {
-  //   // CD0706142A2EBE2E009C1192 /* index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
-  //   // @ts-expect-error
-  //   fileRef: PBXFileReference.create(project, {
-  //     path: "index.swift",
-  //     sourceTree: "<group>",
-  //   }),
-  // });
-  // 	CD0706182A2EBE2F009C1192 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD0706172A2EBE2F009C1192 /* Assets.xcassets */; };
   const assetsXcassetsBf = PBXBuildFile.create(project, {
-    // CD0706172A2EBE2F009C1192 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
     // @ts-expect-error
     fileRef: PBXFileReference.create(project, {
       path: "Assets.xcassets",
@@ -372,31 +374,7 @@ async function applyXcodeChanges(
     }),
   });
 
-  // const alphaIntentdefinition = PBXFileReference.create(project, {
-  //   // @ts-expect-error
-  //   lastKnownFileType: "file.intentdefinition",
-  //   path: props.name + ".intentdefinition",
-  //   sourceTree: "<group>",
-  // });
-  // 	CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */; };
-  // const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
-  //   // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
-  //   // @ts-expect-error
-  //   fileRef: alphaIntentdefinition,
-  // });
-  // const alphaIntentdefinition2Bf = PBXBuildFile.create(project, {
-  //   // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
-  //   // @ts-expect-error
-  //   fileRef: alphaIntentdefinition,
-  // });
-
-  // // 	CD07061B2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */; };
-  // const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
-  //   fileRef: alphaIntentdefinition.uuid,
-  // })
-  // 	CD07061E2A2EBE2F009C1192 /* alphaExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD07060A2A2EBE2E009C1192 /* alphaExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
-    // CD07060A2A2EBE2E009C1192 /* alphaExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = alphaExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
     // @ts-expect-error
     fileRef: PBXFileReference.create(project, {
       explicitFileType: "wrapper.app-extension",
@@ -427,14 +405,7 @@ async function applyXcodeChanges(
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
-    files: [
-      ...swiftFiles,
-      // entrySwiftBuildFile,
-      // alphaIntentdefinitionBf,
-      ...intentBuildFiles[0],
-      // alphaBundleSwiftBf,
-      // alphaLiveActivitySwiftBf,
-    ],
+    files: [...swiftFiles, ...intentBuildFiles[0]],
     // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
     // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
     // CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */,
@@ -442,19 +413,11 @@ async function applyXcodeChanges(
   });
 
   widgetTarget.createBuildPhase(PBXFrameworksBuildPhase, {
-    files: [
-      //   CD07060E2A2EBE2E009C1192 /* SwiftUI.framework in Frameworks */,
-      swiftUiFrameworkBf,
-      //   CD07060C2A2EBE2E009C1192 /* WidgetKit.framework in Frameworks */,
-      widgetKitFrameworkBf,
-    ],
+    files: [swiftUiFrameworkBf, widgetKitFrameworkBf],
   });
 
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
-    files: [
-      // CD0706182A2EBE2F009C1192 /* Assets.xcassets in Resources */,
-      assetsXcassetsBf,
-    ],
+    files: [assetsXcassetsBf],
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     // @ts-expect-error
@@ -463,13 +426,6 @@ async function applyXcodeChanges(
     remoteGlobalIDString: widgetTarget.uuid,
     remoteInfo: productName,
   });
-  // CD07061C2A2EBE2F009C1192 /* PBXContainerItemProxy */ = {
-  //   isa = PBXContainerItemProxy;
-  //   containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-  //   proxyType = 1;
-  //   remoteGlobalIDString = CD0706092A2EBE2E009C1192;
-  //   remoteInfo = alphaExtension;
-  // };
 
   const targetDependency = PBXTargetDependency.create(project, {
     // @ts-expect-error
@@ -477,25 +433,9 @@ async function applyXcodeChanges(
     // @ts-expect-error
     targetProxy: containerItemProxy,
   });
-  // CD07061D2A2EBE2F009C1192 /* PBXTargetDependency */ = {
-  //   isa = PBXTargetDependency;
-  //   target = CD0706092A2EBE2E009C1192 /* alphaExtension */;
-  //   targetProxy = CD07061C2A2EBE2F009C1192 /* PBXContainerItemProxy */;
-  // };
 
   // Add the target dependency to the main app, should be only one.
   mainAppTarget.props.dependencies.push(targetDependency);
-  // CD07061F2A2EBE2F009C1192 /* Embed Foundation Extensions */ = {
-  //   isa = PBXCopyFilesBuildPhase;
-  //   buildActionMask = 2147483647;
-  //   dstPath = "";
-  //   dstSubfolderSpec = 13;
-  //   files = (
-  //     CD07061E2A2EBE2F009C1192 /* alphaExtension.appex in Embed Foundation Extensions */,
-  //   );
-  //   name = "Embed Foundation Extensions";
-  //   runOnlyForDeploymentPostprocessing = 0;
-  // };
 
   const WELL_KNOWN_COPY_EXTENSIONS_NAME = "Embed Foundation Extensions";
   // Could exist from a Share Extension
