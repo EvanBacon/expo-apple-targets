@@ -1,10 +1,4 @@
-//
-//  alphaLiveActivity.swift
-//  alpha
-//
-//  Created by Evan Bacon on 6/5/23.
-//
-
+// ME
 import ActivityKit
 import WidgetKit
 import SwiftUI

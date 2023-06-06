@@ -63,6 +63,12 @@ function isNativeTargetWidget(target: PBXNativeTarget) {
     );
   });
 
+  console.log(
+    frameworksBuildPhase.props.files.map(
+      (buildFile) => buildFile.props.fileRef.props
+    ),
+    { hasSwiftUI, hasWidgetKit }
+  );
   // Surely this is enough to tell.??..
   return hasSwiftUI && hasWidgetKit;
 }
@@ -239,6 +245,7 @@ async function applyXcodeChanges(
     }
     return PBXFileReference.create(project, {
       explicitFileType: "wrapper.framework",
+      sourceTree: "SDKROOT",
       path: "System/Library/Frameworks/" + frameworkName,
     });
   }
@@ -324,12 +331,8 @@ async function applyXcodeChanges(
 
   // Build Files
 
-  //  CD07060C2A2EBE2E009C1192 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */; };
-  const widgetKitFrameworkBf = getOrCreateBuildFile(widgetKitFramework);
-  // 	CD07060E2A2EBE2E009C1192 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */; };
-  const swiftUiFrameworkBf = getOrCreateBuildFile(swiftUiFramework);
-
   const magicCwd = path.join(config._internal.projectRoot!, "ios", props.cwd);
+
   // NOTE: Single-level only
   const swiftFiles = globSync("*.swift", {
     absolute: true,
@@ -366,12 +369,18 @@ async function applyXcodeChanges(
     })
   );
 
-  const assetsXcassetsBf = PBXBuildFile.create(project, {
-    // @ts-expect-error
-    fileRef: PBXFileReference.create(project, {
-      path: "Assets.xcassets",
-      sourceTree: "<group>",
-    }),
+  // NOTE: Single-level only
+  const assetFiles = globSync("*.xcassets", {
+    absolute: true,
+    cwd: magicCwd,
+  }).map((file) => {
+    return PBXBuildFile.create(project, {
+      // @ts-expect-error
+      fileRef: PBXFileReference.create(project, {
+        path: path.basename(file),
+        sourceTree: "<group>",
+      }),
+    });
   });
 
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
@@ -413,11 +422,14 @@ async function applyXcodeChanges(
   });
 
   widgetTarget.createBuildPhase(PBXFrameworksBuildPhase, {
-    files: [swiftUiFrameworkBf, widgetKitFrameworkBf],
+    files: [
+      getOrCreateBuildFile(swiftUiFramework),
+      getOrCreateBuildFile(widgetKitFramework),
+    ],
   });
 
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
-    files: [assetsXcassetsBf],
+    files: assetFiles,
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     // @ts-expect-error
@@ -481,7 +493,7 @@ async function applyXcodeChanges(
       ...intentFiles,
 
       // @ts-expect-error
-      assetsXcassetsBf.props.fileRef,
+      ...assetFiles.map((buildFile) => buildFile.props.fileRef),
 
       // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
       // @ts-expect-error

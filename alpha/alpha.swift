@@ -1,9 +1,4 @@
-//
-//  alpha.swift
-//  alpha
-//
-//  Created by Evan Bacon on 6/5/23.
-//
+// YOU
 
 import WidgetKit
 import SwiftUI
