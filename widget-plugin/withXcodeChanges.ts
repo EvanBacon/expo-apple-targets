@@ -212,7 +212,6 @@ async function applyXcodeChanges(
   }
 
   const targets = getExtensionTargets();
-  console.log("targets", targets);
 
   const productName = props.name + "Extension";
 
