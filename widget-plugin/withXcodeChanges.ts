@@ -86,7 +86,6 @@ function createConfigurationList(
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
-      // @ts-expect-error
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -113,6 +112,7 @@ function createConfigurationList(
       PRODUCT_BUNDLE_IDENTIFIER: bundleId,
       PRODUCT_NAME: "$(TARGET_NAME)",
       SKIP_INSTALL: "YES",
+      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
@@ -124,7 +124,6 @@ function createConfigurationList(
   const releaseBuildConfig = XCBuildConfiguration.create(project, {
     name: "Release",
     buildSettings: {
-      // @ts-expect-error
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -159,7 +158,6 @@ function createConfigurationList(
   });
 
   const configurationList = XCConfigurationList.create(project, {
-    // @ts-expect-error
     buildConfigurations: [debugBuildConfig, releaseBuildConfig],
     defaultConfigurationIsVisible: 0,
     defaultConfigurationName: "Release",
@@ -257,7 +255,6 @@ async function applyXcodeChanges(
       }
     }
     return PBXBuildFile.create(project, {
-      // @ts-expect-error
       fileRef: file,
     });
   }
@@ -339,7 +336,6 @@ async function applyXcodeChanges(
     cwd: magicCwd,
   }).map((file) => {
     return PBXBuildFile.create(project, {
-      // @ts-expect-error
       fileRef: PBXFileReference.create(project, {
         path: path.basename(file),
         sourceTree: "<group>",
@@ -353,7 +349,6 @@ async function applyXcodeChanges(
     cwd: magicCwd,
   }).map((file) => {
     return PBXFileReference.create(project, {
-      // @ts-expect-error
       lastKnownFileType: "file.intentdefinition",
       path: path.basename(file),
       sourceTree: "<group>",
@@ -363,7 +358,6 @@ async function applyXcodeChanges(
   const intentBuildFiles = [0, 1].map((_) =>
     intentFiles.map((file) => {
       return PBXBuildFile.create(project, {
-        // @ts-expect-error
         fileRef: file,
       });
     })
@@ -375,7 +369,6 @@ async function applyXcodeChanges(
     cwd: magicCwd,
   }).map((file) => {
     return PBXBuildFile.create(project, {
-      // @ts-expect-error
       fileRef: PBXFileReference.create(project, {
         path: path.basename(file),
         sourceTree: "<group>",
@@ -384,7 +377,6 @@ async function applyXcodeChanges(
   });
 
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
-    // @ts-expect-error
     fileRef: PBXFileReference.create(project, {
       explicitFileType: "wrapper.app-extension",
       includeInIndex: 0,
@@ -402,7 +394,6 @@ async function applyXcodeChanges(
   );
 
   const widgetTarget = project.rootObject.createNativeTarget({
-    // @ts-expect-error
     buildConfigurationList: createConfigurationList(project, props),
     name: productName,
     productName: productName,
@@ -432,7 +423,6 @@ async function applyXcodeChanges(
     files: assetFiles,
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
-    // @ts-expect-error
     containerPortal: project.rootObject,
     proxyType: 1,
     remoteGlobalIDString: widgetTarget.uuid,
@@ -440,9 +430,7 @@ async function applyXcodeChanges(
   });
 
   const targetDependency = PBXTargetDependency.create(project, {
-    // @ts-expect-error
     target: widgetTarget,
-    // @ts-expect-error
     targetProxy: containerItemProxy,
   });
 

@@ -1170,10 +1170,10 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@bacons/xcode@^1.0.0-alpha.1":
-  version "1.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@bacons/xcode/-/xcode-1.0.0-alpha.1.tgz#020f41e47fdc7bad2277f216ab46f2ab8774f8f7"
-  integrity sha512-J0Nhd/LPYBdCM2qky3Uiwpzvv22fm6Fq/vxE9bktTIu5D8F8aB5s+pRK96Qwz2tcF7u0HgDkuE4aeSVAP1GnUg==
+"@bacons/xcode@^1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@bacons/xcode/-/xcode-1.0.0-alpha.4.tgz#e7f2dc3c58a379705a74eb6cf0832c59a0f118ce"
+  integrity sha512-YgBJ0H3/qUVHY6cvjnpjquub1zNt2xfAP5t9INIU5ACLXp7iHKDHb5ybHFAwpTV7m6M0kzG0KlUFTpq+37HXzg==
   dependencies:
     "@expo/plist" "^0.0.18"
     debug "^4.3.4"

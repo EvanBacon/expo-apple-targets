@@ -35,7 +35,13 @@ export const withXcodeProjectBetaBaseMod: ConfigPlugin = (config) => {
           return IOSConfig.Paths.getPBXProjectPath(modRequest.projectRoot);
         },
         async read(filePath) {
-          return XcodeProject.open(filePath);
+          try {
+            return XcodeProject.open(filePath);
+          } catch (error) {
+            throw new Error(
+              `Failed to parse the Xcode project: "${filePath}". ${error.message}}`
+            );
+          }
         },
         async write(filePath, { modResults, modRequest: { introspect } }) {
           if (introspect) {

@@ -8,7 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@bacons/xcode": "^1.0.0-alpha.1",
+    "@bacons/xcode": "^1.0.0-alpha.4",
     "@types/glob": "^8.1.0",
     "@types/react": "~18.0.27",
     "expo": "~48.0.18",
