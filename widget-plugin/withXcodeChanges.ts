@@ -65,17 +65,6 @@ function isNativeTargetWidget(target: PBXNativeTarget) {
 
   // Surely this is enough to tell.??..
   return hasSwiftUI && hasWidgetKit;
-
-  //  // Unclear if this is enough to determine if it's a widget
-  //   const hasWidgetBackgroundColor = target.props.buildConfigurationList.props.buildConfigurations.some(config => {
-  //     return 'ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME' in config.props.buildSettings;
-  //   })
-
-  //   if (hasWidgetBackgroundColor) {
-  //     return true;
-  //   }
-
-  //   return target.props.productName?.includes("Widget") ?? false;
 }
 
 function createConfigurationList(
@@ -223,6 +212,7 @@ async function applyXcodeChanges(
   }
 
   const targets = getExtensionTargets();
+  console.log("targets", targets);
 
   const productName = props.name + "Extension";
 
@@ -249,6 +239,7 @@ async function applyXcodeChanges(
       }
     }
     return PBXFileReference.create(project, {
+      explicitFileType: "wrapper.framework",
       path: "System/Library/Frameworks/" + frameworkName,
     });
   }

@@ -234,7 +234,7 @@
 		};
 		CD0706092A2EBE2E009C1192 /* alphaExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD0706222A2EBE2F009C1192 /* Build configuration list for PBXNativeTarget "alphaExtension" */;
+			buildConfigurationList = 524ACD8E8B164C6C9AAA87F6 /* Build configuration list for PBXNativeTarget "alphaExtension" */;
 			buildPhases = (
 				CD0706062A2EBE2E009C1192 /* Sources */,
 				CD0706072A2EBE2E009C1192 /* Frameworks */,
@@ -610,8 +610,9 @@
 			};
 			name = Release;
 		};
-		CD0706202A2EBE2F009C1192 /* Debug */ = {
+		AB9DF44BF0FA4DDF896646A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			name = Debug;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -644,10 +645,10 @@
 				SWIFT_VERSION = 5;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug;
 		};
-		CD0706212A2EBE2F009C1192 /* Release */ = {
+		217640FF3BAC40B889CCE772 /* Release */ = {
 			isa = XCBuildConfiguration;
+			name = Release;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -679,7 +680,6 @@
 				SWIFT_VERSION = 5;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -702,13 +702,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD0706222A2EBE2F009C1192 /* Build configuration list for PBXNativeTarget "alphaExtension" */ = {
+		524ACD8E8B164C6C9AAA87F6 /* Build configuration list for PBXNativeTarget "alphaExtension" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = (
-				CD0706202A2EBE2F009C1192 /* Debug */,
-				CD0706212A2EBE2F009C1192 /* Release */,
-			);
 			defaultConfigurationIsVisible = 0;
+			buildConfigurations = (
+				AB9DF44BF0FA4DDF896646A3 /* Debug */,
+				217640FF3BAC40B889CCE772 /* Release */,
+			);
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
