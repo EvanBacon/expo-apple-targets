@@ -481,7 +481,7 @@ async function applyXcodeChanges(
   const group = PBXGroup.create(project, {
     // This is where it gets fancy
     // TODO: The user should be able to know that this is safe to modify and won't be overwritten.
-    name: "expo:" + props.name,
+    name: "expo:" + path.basename(props.cwd),
     // Like `../alpha`
     path: props.cwd,
     sourceTree: "<group>",

@@ -7,7 +7,7 @@ module.exports = ({ config }) => ({
     [
       plugin,
       {
-        directory: "alpha",
+        directory: "beta-boy",
         accentColor: "dodgerblue",
         icon: "./assets/icon.png",
       },

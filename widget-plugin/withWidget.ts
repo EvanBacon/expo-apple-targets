@@ -1,5 +1,5 @@
 import path from "path";
-import { ConfigPlugin } from "@expo/config-plugins";
+import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
 import {
   withIosAccentColor,
   withIosWidgetBackgroundColor,
@@ -7,6 +7,7 @@ import {
 import { withIosIcon } from "./icon/withIosIcon";
 import { withXcodeChanges } from "./withXcodeChanges";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
+import fs from "fs";
 
 type Props = {
   directory?: string;
@@ -18,12 +19,83 @@ type Props = {
   deploymentTarget?: string;
 };
 
+import {
+  ENTRY_FILE,
+  INFO_PLIST,
+  INTENT_DEFINITION,
+  WIDGET,
+} from "./fixtures/template";
+const fixtureEntry = `import WidgetKit
+import SwiftUI
+
+@main
+struct widgetBundle: WidgetBundle {
+    var body: some Widget {
+        // Export widgets here
+    }
+}
+`;
+
+const fixtureInfoPlist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.widgetkit-extension</string>
+	</dict>
+</dict>
+</plist>
+`;
+
+function kebabToCamelCase(str: string) {
+  return str.replace(/-([a-z])/g, function (g) {
+    return g[1].toUpperCase();
+  });
+}
+
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
-  const widget = (props.name ?? path.basename(props.directory))
+  const widgetDir = (props.name ?? path.basename(props.directory))
     .replace(/\/+$/, "")
     .replace(/^\/+/, "");
+
+  const widget = kebabToCamelCase(widgetDir);
+
+  const widgetFolderAbsolutePath = path.join(
+    config._internal.projectRoot,
+    widgetDir
+  );
+
+  // Ensure the entry file exists
+  withDangerousMod(config, [
+    "ios",
+    async (config) => {
+      fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
+
+      [
+        [
+          "index.swift",
+          ENTRY_FILE.replace(
+            "// Export widgets here",
+            "// Export widgets here\n" + `        ${widget}()`
+          ),
+        ],
+        ["Info.plist", INFO_PLIST],
+        [widget + ".swift", WIDGET.replace(/alpha/g, widget)],
+        [widget + ".intentdefinition", INTENT_DEFINITION],
+      ].forEach(([filename, content]) => {
+        const filePath = path.join(widgetFolderAbsolutePath, filename);
+        if (!fs.existsSync(filePath)) {
+          fs.writeFileSync(filePath, content);
+        }
+      });
+
+      return config;
+    },
+  ]);
 
   withXcodeChanges(config, {
     name: widget,
@@ -51,7 +123,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // https://useyourloaf.com/blog/widget-background-and-accent-color/
     // i.e. when you press and hold on a widget to configure it, the background color of the widget configuration interface changes to the background color we set here.
     withIosAccentColor(config, {
-      widgetName: widget,
+      widgetName: widgetDir,
       color: lightColor,
       darkColor: darkColor,
     });
@@ -67,7 +139,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         ? undefined
         : props.backgroundColor.darkColor;
     withIosWidgetBackgroundColor(config, {
-      widgetName: widget,
+      widgetName: widgetDir,
       color: lightColor,
       darkColor: darkColor,
     });
@@ -75,7 +147,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (props.icon) {
     withIosIcon(config, {
-      widgetName: widget,
+      widgetName: widgetDir,
       // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
       iconFilePath: props.icon,
     });
