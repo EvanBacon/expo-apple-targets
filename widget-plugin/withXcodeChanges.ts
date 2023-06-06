@@ -63,12 +63,12 @@ function isNativeTargetWidget(target: PBXNativeTarget) {
     );
   });
 
-  console.log(
-    frameworksBuildPhase.props.files.map(
-      (buildFile) => buildFile.props.fileRef.props
-    ),
-    { hasSwiftUI, hasWidgetKit }
-  );
+  // console.log(
+  //   frameworksBuildPhase.props.files.map(
+  //     (buildFile) => buildFile.props.fileRef.props
+  //   ),
+  //   { hasSwiftUI, hasWidgetKit }
+  // );
   // Surely this is enough to tell.??..
   return hasSwiftUI && hasWidgetKit;
 }
