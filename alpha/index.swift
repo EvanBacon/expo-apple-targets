@@ -1,10 +1,3 @@
-//
-//  alphaBundle.swift
-//  alpha
-//
-//  Created by Evan Bacon on 6/5/23.
-//
-
 import WidgetKit
 import SwiftUI
 
