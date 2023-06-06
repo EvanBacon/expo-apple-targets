@@ -5,6 +5,7 @@ import {
   PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFrameworksBuildPhase,
+  PBXGroup,
   PBXNativeTarget,
   PBXProject,
   PBXResourcesBuildPhase,
@@ -16,6 +17,8 @@ import {
 } from "@bacons/xcode";
 import { ExpoConfig } from "@expo/config";
 import { withXcodeProjectBeta } from "./withXcparse";
+import { sync as globSync } from "glob";
+import path from "path";
 
 export type XcodeSettings = {
   name: string;
@@ -257,7 +260,8 @@ async function applyXcodeChanges(
       }
     }
     return PBXBuildFile.create(project, {
-      fileRef: file.uuid,
+      // @ts-expect-error
+      fileRef: file,
     });
   }
 
@@ -303,48 +307,98 @@ async function applyXcodeChanges(
   const widgetKitFrameworkBf = getOrCreateBuildFile(widgetKitFramework);
   // 	CD07060E2A2EBE2E009C1192 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */; };
   const swiftUiFrameworkBf = getOrCreateBuildFile(swiftUiFramework);
+
+  const magicCwd = path.join(config._internal.projectRoot!, "ios", props.cwd);
+  // NOTE: Single-level only
+  const swiftFiles = globSync("*.swift", {
+    absolute: true,
+    cwd: magicCwd,
+  }).map((file) => {
+    return PBXBuildFile.create(project, {
+      // @ts-expect-error
+      fileRef: PBXFileReference.create(project, {
+        path: path.basename(file),
+        sourceTree: "<group>",
+      }),
+    });
+  });
+
+  // NOTE: Single-level only
+  const intentFiles = globSync("*.intentdefinition", {
+    absolute: true,
+    cwd: magicCwd,
+  }).map((file) => {
+    return PBXFileReference.create(project, {
+      // @ts-expect-error
+      lastKnownFileType: "file.intentdefinition",
+      path: path.basename(file),
+      sourceTree: "<group>",
+    });
+  });
+
+  const intentBuildFiles = [0, 1].map((_) =>
+    intentFiles.map((file) => {
+      return PBXBuildFile.create(project, {
+        // @ts-expect-error
+        fileRef: file,
+      });
+    })
+  );
+
   // 	CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706102A2EBE2E009C1192 /* alphaBundle.swift */; };
-  const alphaBundleSwiftBf = PBXBuildFile.create(project, {
-    // CD0706102A2EBE2E009C1192 /* alphaBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaBundle.swift; sourceTree = "<group>"; };
-    fileRef: PBXFileReference.create(project, {
-      path: "alphaBundle.swift",
-      sourceTree: "<group>",
-    }).uuid,
-  });
+  // const alphaBundleSwiftBf = PBXBuildFile.create(project, {
+  //   // CD0706102A2EBE2E009C1192 /* alphaBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaBundle.swift; sourceTree = "<group>"; };
+  //   // @ts-expect-error
+  //   fileRef: PBXFileReference.create(project, {
+  //     path: "alphaBundle.swift",
+  //     sourceTree: "<group>",
+  //   }),
+  // });
   // 	CD0706132A2EBE2E009C1192 /* alphaLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */; };
-  const alphaLiveActivitySwiftBf = PBXBuildFile.create(project, {
-    // CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaLiveActivity.swift; sourceTree = "<group>"; };
-    fileRef: PBXFileReference.create(project, {
-      path: "alphaLiveActivity.swift",
-      sourceTree: "<group>",
-    }).uuid,
-  });
+  // const alphaLiveActivitySwiftBf = PBXBuildFile.create(project, {
+  //   // CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alphaLiveActivity.swift; sourceTree = "<group>"; };
+  //   // @ts-expect-error
+  //   fileRef: PBXFileReference.create(project, {
+  //     path: "alphaLiveActivity.swift",
+  //     sourceTree: "<group>",
+  //   }),
+  // });
   // 	CD0706152A2EBE2E009C1192 /* index.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0706142A2EBE2E009C1192 /* index.swift */; };
-  const entrySwiftBuildFile = PBXBuildFile.create(project, {
-    // CD0706142A2EBE2E009C1192 /* index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
-    fileRef: PBXFileReference.create(project, {
-      path: "index.swift",
-      sourceTree: "<group>",
-    }).uuid,
-  });
+  // const entrySwiftBuildFile = PBXBuildFile.create(project, {
+  //   // CD0706142A2EBE2E009C1192 /* index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
+  //   // @ts-expect-error
+  //   fileRef: PBXFileReference.create(project, {
+  //     path: "index.swift",
+  //     sourceTree: "<group>",
+  //   }),
+  // });
   // 	CD0706182A2EBE2F009C1192 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD0706172A2EBE2F009C1192 /* Assets.xcassets */; };
   const assetsXcassetsBf = PBXBuildFile.create(project, {
     // CD0706172A2EBE2F009C1192 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+    // @ts-expect-error
     fileRef: PBXFileReference.create(project, {
       path: "Assets.xcassets",
       sourceTree: "<group>",
-    }).uuid,
+    }),
   });
+
+  // const alphaIntentdefinition = PBXFileReference.create(project, {
+  //   // @ts-expect-error
+  //   lastKnownFileType: "file.intentdefinition",
+  //   path: props.name + ".intentdefinition",
+  //   sourceTree: "<group>",
+  // });
   // 	CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */; };
-  const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
-    // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
-    fileRef: PBXFileReference.create(project, {
-      // @ts-expect-error
-      lastKnownFileType: "file.intentdefinition",
-      path: props.name + ".intentdefinition",
-      sourceTree: "<group>",
-    }).uuid,
-  });
+  // const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
+  //   // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
+  //   // @ts-expect-error
+  //   fileRef: alphaIntentdefinition,
+  // });
+  // const alphaIntentdefinition2Bf = PBXBuildFile.create(project, {
+  //   // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
+  //   // @ts-expect-error
+  //   fileRef: alphaIntentdefinition,
+  // });
 
   // // 	CD07061B2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */; };
   // const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
@@ -353,33 +407,43 @@ async function applyXcodeChanges(
   // 	CD07061E2A2EBE2F009C1192 /* alphaExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD07060A2A2EBE2E009C1192 /* alphaExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
     // CD07060A2A2EBE2E009C1192 /* alphaExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = alphaExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+    // @ts-expect-error
     fileRef: PBXFileReference.create(project, {
       explicitFileType: "wrapper.app-extension",
       includeInIndex: 0,
       path: productName + ".appex",
       sourceTree: "BUILT_PRODUCTS_DIR",
-    }).uuid,
+    }),
     settings: {
       ATTRIBUTES: ["RemoveHeadersOnCopy"],
     },
   });
 
+  project.rootObject.ensureProductGroup().props.children.push(
+    // @ts-expect-error
+    alphaExtensionAppexBf.props.fileRef
+  );
+
   const widgetTarget = project.rootObject.createNativeTarget({
-    buildConfigurationList: createConfigurationList(project, props).uuid,
+    // @ts-expect-error
+    buildConfigurationList: createConfigurationList(project, props),
     name: productName,
     productName: productName,
+    // @ts-expect-error
     productReference:
-      alphaExtensionAppexBf.props.fileRef.uuid /* alphaExtension.appex */,
+      alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
     productType: "com.apple.product-type.app-extension",
   });
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
     files: [
-      entrySwiftBuildFile,
-      alphaIntentdefinitionBf,
-      alphaBundleSwiftBf,
-      alphaLiveActivitySwiftBf,
+      ...swiftFiles,
+      // entrySwiftBuildFile,
+      // alphaIntentdefinitionBf,
+      ...intentBuildFiles[0],
+      // alphaBundleSwiftBf,
+      // alphaLiveActivitySwiftBf,
     ],
     // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
     // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
@@ -403,7 +467,8 @@ async function applyXcodeChanges(
     ],
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
-    containerPortal: project.rootObject.uuid,
+    // @ts-expect-error
+    containerPortal: project.rootObject,
     proxyType: 1,
     remoteGlobalIDString: widgetTarget.uuid,
     remoteInfo: productName,
@@ -417,8 +482,10 @@ async function applyXcodeChanges(
   // };
 
   const targetDependency = PBXTargetDependency.create(project, {
-    target: widgetTarget.uuid,
-    targetProxy: containerItemProxy.uuid,
+    // @ts-expect-error
+    target: widgetTarget,
+    // @ts-expect-error
+    targetProxy: containerItemProxy,
   });
   // CD07061D2A2EBE2F009C1192 /* PBXTargetDependency */ = {
   //   isa = PBXTargetDependency;
@@ -467,10 +534,9 @@ async function applyXcodeChanges(
   const mainSourcesBuildPhase =
     mainAppTarget.getBuildPhase(PBXSourcesBuildPhase);
   // TODO: Idempotent
-  mainSourcesBuildPhase.props.files.push(alphaIntentdefinitionBf);
+  mainSourcesBuildPhase.props.files.push(...intentBuildFiles[1]);
 
-  // CD07060F2A2EBE2E009C1192
-  project.rootObject.props.mainGroup.createGroup({
+  const group = PBXGroup.create(project, {
     // This is where it gets fancy
     // TODO: The user should be able to know that this is safe to modify and won't be overwritten.
     name: "expo:" + props.name,
@@ -478,16 +544,21 @@ async function applyXcodeChanges(
     path: props.cwd,
     sourceTree: "<group>",
     children: [
-      alphaBundleSwiftBf.props.fileRef.uuid,
-      alphaLiveActivitySwiftBf.props.fileRef.uuid,
-      entrySwiftBuildFile.props.fileRef.uuid,
-      alphaIntentdefinitionBf.props.fileRef.uuid,
-      assetsXcassetsBf.props.fileRef.uuid,
+      // @ts-expect-error
+      ...swiftFiles.map((buildFile) => buildFile.props.fileRef),
+
+      // @ts-expect-error
+      ...intentFiles,
+
+      // @ts-expect-error
+      assetsXcassetsBf.props.fileRef,
+
       // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+      // @ts-expect-error
       PBXFileReference.create(project, {
         path: "Info.plist",
         sourceTree: "<group>",
-      }).uuid,
+      }),
     ],
     // children = (
     //   CD0706102A2EBE2E009C1192 /* alphaBundle.swift */,
@@ -501,6 +572,16 @@ async function applyXcodeChanges(
     // path = "../alpha";
     // sourceTree = "<group>";
   });
+
+  let libIndex = project.rootObject.props.mainGroup.props.children.findIndex(
+    (group) => group.getDisplayName() === "Libraries"
+  );
+  if (libIndex === -1) {
+    libIndex = 0;
+  }
+
+  // add above the group named "Libraries"
+  project.rootObject.props.mainGroup.props.children.splice(libIndex, 0, group);
 
   return project;
 }
