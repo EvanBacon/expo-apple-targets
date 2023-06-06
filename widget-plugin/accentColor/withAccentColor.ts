@@ -4,6 +4,21 @@ import fs from "fs";
 import path, { join } from "path";
 import { customColorFromCSS } from "./customColorFromCSS";
 
+type Appearance = {
+  appearance: string;
+  value: string;
+};
+
+type Color = {
+  "color-space": "srgb";
+  components: {
+    alpha: number;
+    blue: number;
+    green: number;
+    red: number;
+  };
+};
+
 export const withIosAccentColor: ConfigPlugin<{
   widgetName: string;
   color: string;
@@ -44,20 +59,6 @@ export const withIosWidgetBackgroundColor: ConfigPlugin<{
       return config;
     },
   ]);
-};
-
-type Appearance = {
-  appearance: string;
-  value: string;
-};
-type Color = {
-  "color-space": "srgb";
-  components: {
-    alpha: number;
-    blue: number;
-    green: number;
-    red: number;
-  };
 };
 
 const DARK_APPEARANCE: Appearance = {

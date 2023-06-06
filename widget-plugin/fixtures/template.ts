@@ -66,7 +66,7 @@ export const ENTRY_FILE = `import WidgetKit
 import SwiftUI
 
 @main
-struct widgetBundle: WidgetBundle {
+struct widgets: WidgetBundle {
     var body: some Widget {
         // Export widgets here
     }
