@@ -39,26 +39,7 @@ function unique<T>(arr: T[]): T[] {
   return Array.from(new Set(arr));
 }
 
-async function applyXcodeChanges(
-  config: ExpoConfig,
-  project: XcodeProject,
-  { name, cwd }: XcodeSettings
-) {
-  //   console.log("applyXcodeChanges", project);
-
-  function getExtensionTargets() {
-    return project.rootObject.props.targets.filter((target) => {
-      return (
-        PBXNativeTarget.is(target) &&
-        target.props.productType === "com.apple.product-type.app-extension"
-      );
-    });
-  }
-
-  if (getExtensionTargets().length) {
-    return;
-  }
-
+function createConfigurationList(project: XcodeProject) {
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
@@ -139,6 +120,37 @@ async function applyXcodeChanges(
     defaultConfigurationIsVisible: 0,
     defaultConfigurationName: "Release",
   });
+
+  return configurationList;
+}
+
+async function applyXcodeChanges(
+  config: ExpoConfig,
+  project: XcodeProject,
+  { name, cwd }: XcodeSettings
+) {
+  //   console.log("applyXcodeChanges", project);
+
+  function getExtensionTargets() {
+    return project.rootObject.props.targets.filter((target) => {
+      return (
+        PBXNativeTarget.is(target) &&
+        target.props.productType === "com.apple.product-type.app-extension"
+      );
+    });
+  }
+
+  const targets = getExtensionTargets();
+
+  const productName = name + "Extension";
+
+  if (targets.find((target) => target.props.productName === productName)) {
+    console.log("Widget already exists, run clean to update settings");
+    return;
+  } else if (targets.length) {
+    // TODO: This can happen safely when there is a Share extension
+    console.warn("Widgets already exist, there may be a conflict");
+  }
 
   // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
   const widgetKitFramework = PBXFileReference.create(project, {
@@ -221,7 +233,7 @@ async function applyXcodeChanges(
   });
 
   const nativeTarget = project.rootObject.createNativeTarget({
-    buildConfigurationList: configurationList.uuid,
+    buildConfigurationList: createConfigurationList(project).uuid,
     name: "alphaExtension",
     productName: "alphaExtension",
     productReference:
