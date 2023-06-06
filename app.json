@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bacon.bacon-widget"
     },
     "android": {
       "adaptiveIcon": {
