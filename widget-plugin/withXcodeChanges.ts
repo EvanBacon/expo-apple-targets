@@ -62,6 +62,7 @@ async function applyXcodeChanges(
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
+      // @ts-expect-error
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -99,6 +100,7 @@ async function applyXcodeChanges(
   const releaseBuildConfig = XCBuildConfiguration.create(project, {
     name: "Release",
     buildSettings: {
+      // @ts-expect-error
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -194,6 +196,7 @@ async function applyXcodeChanges(
   const alphaIntentdefinitionBf = PBXBuildFile.create(project, {
     // CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = alpha.intentdefinition; sourceTree = "<group>"; };
     fileRef: PBXFileReference.create(project, {
+      // @ts-expect-error
       lastKnownFileType: "file.intentdefinition",
       path: "alpha.intentdefinition",
       sourceTree: "<group>",

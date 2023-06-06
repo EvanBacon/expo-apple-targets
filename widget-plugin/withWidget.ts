@@ -12,7 +12,10 @@ const withWidget: ConfigPlugin = (config) => {
 
   const widget = "alpha";
 
-  withXcodeChanges(config, {});
+  withXcodeChanges(config, {
+    name: widget,
+    cwd: widget,
+  });
 
   // You use the WidgetBackground and AccentColor to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
   // https://useyourloaf.com/blog/widget-background-and-accent-color/
