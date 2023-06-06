@@ -15,7 +15,7 @@ const withWidget: ConfigPlugin = (config) => {
 
   withXcodeChanges(config, {
     name: widget,
-    cwd: widget,
+    cwd: "../" + widget,
     deploymentTarget: "16.4",
     currentProjectVersion: 1,
     bundleId: config.ios.bundleIdentifier! + "." + widget,

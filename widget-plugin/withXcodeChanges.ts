@@ -40,12 +40,6 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   });
 };
 
-import * as xcode from "@bacons/xcode";
-
-function unique<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr));
-}
-
 function isNativeTargetWidget(target: PBXNativeTarget) {
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
@@ -124,7 +118,7 @@ function createConfigurationList(
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
-      SWIFT_VERSION: "5.0",
+      SWIFT_VERSION: "5",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -161,13 +155,14 @@ function createConfigurationList(
       SKIP_INSTALL: "YES",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
-      SWIFT_VERSION: "5.0",
+      SWIFT_VERSION: "5",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
 
   const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig.uuid, releaseBuildConfig.uuid],
+    // @ts-expect-error
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
     defaultConfigurationIsVisible: 0,
     defaultConfigurationName: "Release",
   });
@@ -234,7 +229,7 @@ async function applyXcodeChanges(
 
   if (targetToUpdate) {
     console.log(
-      `Widget already "${targetToUpdate.props.productName}" exists, updating instead of creating a new one`
+      `Widget "${targetToUpdate.props.productName}" already exists, updating instead of creating a new one`
     );
   }
 
