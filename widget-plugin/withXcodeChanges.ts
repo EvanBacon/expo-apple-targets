@@ -487,13 +487,19 @@ async function applyXcodeChanges(
     sourceTree: "<group>",
     children: [
       // @ts-expect-error
-      ...swiftFiles.map((buildFile) => buildFile.props.fileRef),
+      ...swiftFiles
+        .map((buildFile) => buildFile.props.fileRef)
+        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
       // @ts-expect-error
-      ...intentFiles,
+      ...intentFiles.sort((a, b) =>
+        a.getDisplayName().localeCompare(b.getDisplayName())
+      ),
 
       // @ts-expect-error
-      ...assetFiles.map((buildFile) => buildFile.props.fileRef),
+      ...assetFiles
+        .map((buildFile) => buildFile.props.fileRef)
+        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
       // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
       // @ts-expect-error
