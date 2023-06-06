@@ -18,7 +18,7 @@ export const withIosIcon: ConfigPlugin<{
       await setIconsAsync(
         iconFilePath,
         config.modRequest.projectRoot,
-        join(config.modRequest.projectRoot, "ios-widgets", widgetName),
+        join(config.modRequest.projectRoot, widgetName),
         widgetName
       );
       return config;

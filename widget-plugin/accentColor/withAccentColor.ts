@@ -16,7 +16,6 @@ export const withIosAccentColor: ConfigPlugin<{
         { color, darkColor },
         join(
           config.modRequest.projectRoot,
-          "ios-widgets",
           widgetName,
           "Assets.xcassets/AccentColor.colorset"
         )
@@ -38,7 +37,6 @@ export const withIosWidgetBackgroundColor: ConfigPlugin<{
         { color, darkColor },
         join(
           config.modRequest.projectRoot,
-          "ios-widgets",
           widgetName,
           "Assets.xcassets/WidgetBackground.colorset"
         )

@@ -10,9 +10,9 @@ import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 const withWidget: ConfigPlugin = (config) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
-  const widget = "widget";
+  const widget = "alpha";
 
-  withXcodeChanges(config);
+  withXcodeChanges(config, {});
 
   // You use the WidgetBackground and AccentColor to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
   // https://useyourloaf.com/blog/widget-background-and-accent-color/
