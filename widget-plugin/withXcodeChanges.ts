@@ -760,7 +760,7 @@ async function applyXcodeChanges(
 
   let assetFiles = [
     // All assets`
-    "assets/*",
+    // "assets/*",
     // NOTE: Single-level only
     "*.xcassets",
   ]
@@ -779,17 +779,39 @@ async function applyXcodeChanges(
     )
     .flat();
 
+  const resAssets: PBXBuildFile[] = [];
+
   // TODO: Maybe just limit this to Safari?
   // get top-level directories in `assets/` and append them to assetFiles as folder types
   fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
-    if (fs.statSync(path.join(magicCwd, "assets", file)).isDirectory()) {
-      assetFiles.push(
+    const stat = fs.statSync(path.join(magicCwd, "assets", file));
+    if (stat.isDirectory()) {
+      resAssets.push(
         PBXBuildFile.create(project, {
           fileRef: PBXFileReference.create(project, {
             path: file,
             sourceTree: "<group>",
             // @ts-expect-error
             explicitFileType: "folder",
+          }),
+        })
+      );
+    } else if (stat.isFile()) {
+      resAssets.push(
+        PBXBuildFile.create(project, {
+          fileRef: PBXFileReference.create(project, {
+            path: file,
+            // @ts-expect-error
+            explicitFileType: file.endsWith(".js")
+              ? "sourcecode.javascript"
+              : file.endsWith(".json")
+              ? "text.json"
+              : file.endsWith(".html")
+              ? "text.html"
+              : file.endsWith(".css")
+              ? "text.css"
+              : "text",
+            sourceTree: "<group>",
           }),
         })
       );
@@ -841,7 +863,7 @@ async function applyXcodeChanges(
   });
 
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
-    files: assetFiles,
+    files: [...assetFiles, ...resAssets],
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     containerPortal: project.rootObject,
@@ -933,6 +955,18 @@ async function applyXcodeChanges(
     // path = "../alpha";
     // sourceTree = "<group>";
   });
+
+  if (resAssets.length > 0) {
+    protectedGroup.createGroup({
+      name: "assets",
+      path: "assets",
+      sourceTree: "<group>",
+      // @ts-expect-error
+      children: resAssets
+        .map((buildFile) => buildFile.props.fileRef)
+        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
+    });
+  }
 
   return project;
 }
