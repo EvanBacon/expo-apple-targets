@@ -74,6 +74,22 @@ function isNativeTargetWidget(target: PBXNativeTarget) {
   return hasSwiftUI && hasWidgetKit;
 }
 
+function intentsInfoPlist() {
+  return {
+    NSExtension: {
+      NSExtensionPointIdentifier: "com.apple.intents-service",
+      NSExtensionAttributes: {
+        IntentsRestrictedWhileLocked: [
+          "INSendMessageIntent",
+          "INSearchForMessagesIntent",
+          "INSetMessageAttributeIntent",
+        ],
+      },
+      NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
+    },
+  };
+}
+
 function notificationServiceInfoPlist() {
   return {
     NSExtension: {
@@ -81,6 +97,73 @@ function notificationServiceInfoPlist() {
       NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
     },
   };
+}
+
+function createIntentsConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: 1,
+    DEBUG_INFORMATION_FORMAT: "dwarf",
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: "nando/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: "16.4",
+    LD_RUNPATH_SEARCH_PATHS:
+      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    MARKETING_VERSION: 1.0,
+    MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
 }
 
 function createNotificationServiceConfigurationList(
