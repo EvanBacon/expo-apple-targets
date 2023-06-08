@@ -16,10 +16,8 @@ module.exports = ({ config }) => ({
     [
       plugin,
       {
-        type: "notification-service",
-        directory: "second",
-        accentColor: "salmon",
-        icon: "./assets/icon.png",
+        type: require("./targets/nova/expo-target.config.json").type,
+        directory: "targets/nova",
       },
     ],
 

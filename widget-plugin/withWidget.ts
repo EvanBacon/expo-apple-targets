@@ -17,6 +17,8 @@ type Props = {
   backgroundColor?: { color: string; darkColor?: string } | string;
   /** 16.4 */
   deploymentTarget?: string;
+
+  type: "widget" | "notification-content";
 };
 
 import {
@@ -55,6 +57,55 @@ function kebabToCamelCase(str: string) {
   });
 }
 
+function getInfoPlistForType(type: "widget" | "notification-content") {
+  if (type === "widget") {
+    return INFO_PLIST;
+  } else {
+    // TODO: Update `NotificationViewController` dynamically
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>NSExtension</key>
+        <dict>
+            <key>NSExtensionAttributes</key>
+            <dict>
+                <key>UNNotificationExtensionCategory</key>
+                <string>myNotificationCategory</string>
+                <key>UNNotificationExtensionInitialContentSizeRatio</key>
+                <real>1</real>
+            </dict>
+            <key>NSExtensionPrincipalClass</key>
+            <string>NotificationViewController</string>
+            <key>NSExtensionPointIdentifier</key>
+            <string>com.apple.usernotifications.content-extension</string>
+        </dict>
+    </dict>
+</plist>`;
+  }
+  //     return `<?xml version="1.0" encoding="UTF-8"?>
+  // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  // <plist version="1.0">
+  //     <dict>
+  //         <key>NSExtension</key>
+  //         <dict>
+  //             <key>NSExtensionAttributes</key>
+  //             <dict>
+  //                 <key>UNNotificationExtensionCategory</key>
+  //                 <string>myNotificationCategory</string>
+  //                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
+  //                 <real>1</real>
+  //             </dict>
+  //             <key>NSExtensionMainStoryboard</key>
+  //             <string>MainInterface</string>
+  //             <key>NSExtensionPointIdentifier</key>
+  //             <string>com.apple.usernotifications.content-extension</string>
+  //         </dict>
+  //     </dict>
+  // </plist>`;
+  //   }
+}
+
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
@@ -75,18 +126,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     async (config) => {
       fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
 
-      [
-        [
-          "index.swift",
-          ENTRY_FILE.replace(
-            "// Export widgets here",
-            "// Export widgets here\n" + `        ${widget}()`
-          ),
-        ],
-        ["Info.plist", INFO_PLIST],
-        [widget + ".swift", WIDGET.replace(/alpha/g, widget)],
-        [widget + ".intentdefinition", INTENT_DEFINITION],
-      ].forEach(([filename, content]) => {
+      const files: [string, string][] = [
+        ["Info.plist", getInfoPlistForType(props.type)],
+      ];
+
+      if (props.type === "widget") {
+        files.push(
+          [
+            "index.swift",
+            ENTRY_FILE.replace(
+              "// Export widgets here",
+              "// Export widgets here\n" + `        ${widget}()`
+            ),
+          ],
+          [widget + ".swift", WIDGET.replace(/alpha/g, widget)],
+          [widget + ".intentdefinition", INTENT_DEFINITION]
+        );
+      }
+
+      files.forEach(([filename, content]) => {
         const filePath = path.join(widgetFolderAbsolutePath, filename);
         if (!fs.existsSync(filePath)) {
           fs.writeFileSync(filePath, content);
@@ -107,8 +165,20 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       ),
     deploymentTarget: props.deploymentTarget ?? "16.4",
     bundleId: config.ios.bundleIdentifier! + "." + widget,
+
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
+
+    frameworks:
+      props.type === "widget"
+        ? [
+            // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+            "WidgetKit",
+            // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+            "SwiftUI",
+          ]
+        : ["UserNotifications", "UserNotificationsUI"],
+    type: props.type,
   });
 
   if (props.accentColor) {

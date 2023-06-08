@@ -32,6 +32,10 @@ export type XcodeSettings = {
 
   // 1
   currentProjectVersion: number;
+
+  frameworks: string[];
+
+  type: "widget" | "notification-content";
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -39,36 +43,44 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   props
 ) => {
   return withXcodeProjectBeta(config, (config) => {
-    applyXcodeChanges(config, config.modResults, props, {
-      frameworks: [
-        // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-        "WidgetKit",
-        // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-        "SwiftUI",
-      ],
-    });
+    applyXcodeChanges(config, config.modResults, props);
     return config;
   });
 };
 
-function isNativeTargetWidget(target: PBXNativeTarget) {
+function frameworksForType(type: XcodeSettings["type"]) {
+  if (type === "widget") {
+    return [
+      // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+      "WidgetKit",
+      // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+      "SwiftUI",
+    ];
+  } else if (type === "notification-content") {
+    return ["UserNotifications", "UserNotificationsUI"];
+  }
+  return [];
+}
+
+function isNativeTargetOfType(
+  target: PBXNativeTarget,
+  type: XcodeSettings["type"]
+) {
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }
   // Could be a Today Extension, Share Extension, etc.
 
   const frameworksBuildPhase = target.getBuildPhase(PBXFrameworksBuildPhase);
-  const hasSwiftUI = frameworksBuildPhase.props.files.some((buildFile) => {
-    return (
-      buildFile.props.fileRef.props.name === "SwiftUI.framework" &&
-      buildFile.props.fileRef.props.sourceTree === "SDKROOT"
-    );
-  });
-  const hasWidgetKit = frameworksBuildPhase.props.files.some((buildFile) => {
-    return (
-      buildFile.props.fileRef.props.name === "WidgetKit.framework" &&
-      buildFile.props.fileRef.props.sourceTree === "SDKROOT"
-    );
+
+  // Surely this is enough to tell.??..
+  return frameworksForType(type).every((framework) => {
+    return frameworksBuildPhase.props.files.some((buildFile) => {
+      return (
+        buildFile.props.fileRef.props.name === framework + ".framework" &&
+        buildFile.props.fileRef.props.sourceTree === "SDKROOT"
+      );
+    });
   });
 
   // console.log(
@@ -77,8 +89,6 @@ function isNativeTargetWidget(target: PBXNativeTarget) {
   //   ),
   //   { hasSwiftUI, hasWidgetKit }
   // );
-  // Surely this is enough to tell.??..
-  return hasSwiftUI && hasWidgetKit;
 }
 
 function intentsInfoPlist() {
@@ -194,14 +204,15 @@ function createNotificationServiceConfigurationList(
     CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
     CODE_SIGN_STYLE: "Automatic",
     COPY_PHASE_STRIP: "NO",
-    CURRENT_PROJECT_VERSION: 1,
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
     DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_FILE: "echo/Info.plist",
+    INFOPLIST_FILE: cwd + "/Info.plist",
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
-    IPHONEOS_DEPLOYMENT_TARGET: "16.4",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
     MARKETING_VERSION: 1.0,
@@ -406,6 +417,18 @@ function createConfigurationList(
   return configurationList;
 }
 
+function createConfigurationListForType(
+  project: XcodeProject,
+  props: XcodeSettings
+) {
+  if (props.type === "widget") {
+    return createConfigurationList(project, props);
+  } else {
+    // TODO: More
+    return createNotificationServiceConfigurationList(project, props);
+  }
+}
+
 /** It's common for all frameworks to exist in the top-level "Frameworks" folder that shows in Xcode. */
 function addFrameworksToDisplayFolder(
   project: XcodeProject,
@@ -438,12 +461,7 @@ function addFrameworksToDisplayFolder(
 async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
-  props: XcodeSettings,
-  {
-    frameworks,
-  }: {
-    frameworks: string[];
-  }
+  props: XcodeSettings
 ) {
   const mainAppTarget = project.rootObject.getNativeTarget(
     "com.apple.product-type.application"
@@ -456,7 +474,9 @@ async function applyXcodeChanges(
 
   function getExtensionTargets(): PBXNativeTarget[] {
     return project.rootObject.props.targets.filter((target) => {
-      return PBXNativeTarget.is(target) && isNativeTargetWidget(target);
+      return (
+        PBXNativeTarget.is(target) && isNativeTargetOfType(target, props.type)
+      );
     }) as PBXNativeTarget[];
   }
 
@@ -507,7 +527,7 @@ async function applyXcodeChanges(
   // Add the widget target to the display folder (cosmetic)
   addFrameworksToDisplayFolder(
     project,
-    frameworks.map((framework) => getFramework(framework))
+    props.frameworks.map((framework) => getFramework(framework))
   );
 
   if (targetToUpdate) {
@@ -529,10 +549,8 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
     // Create new build phases
-    targetToUpdate.props.buildConfigurationList = createConfigurationList(
-      project,
-      props
-    );
+    targetToUpdate.props.buildConfigurationList =
+      createConfigurationListForType(project, props);
 
     // const group = project.rootObject.props.mainGroup.props.children.find(group => group.props.name === 'expo:' + props.name);
     // if (!PBXGroup.is(group)) {
@@ -636,7 +654,7 @@ async function applyXcodeChanges(
   );
 
   const widgetTarget = project.rootObject.createNativeTarget({
-    buildConfigurationList: createConfigurationList(project, props),
+    buildConfigurationList: createConfigurationListForType(project, props),
     name: productName,
     productName: productName,
     // @ts-expect-error
@@ -655,10 +673,9 @@ async function applyXcodeChanges(
   });
 
   widgetTarget.createBuildPhase(PBXFrameworksBuildPhase, {
-    files: [
-      getOrCreateBuildFile(swiftUiFramework),
-      getOrCreateBuildFile(widgetKitFramework),
-    ],
+    files: props.frameworks.map((framework) =>
+      getOrCreateBuildFile(getFramework(framework))
+    ),
   });
 
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
