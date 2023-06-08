@@ -570,7 +570,7 @@ async function applyXcodeChanges(
         (config) => {
           // @ts-expect-error
           config.props.buildSettings.CODE_SIGN_ENTITLEMENTS =
-            props.cwd + entitlements[0].props.fileRef.props.path;
+            props.cwd + "/" + entitlements[0].props.fileRef.props.path;
         }
       );
     } else {
@@ -801,6 +801,11 @@ async function applyXcodeChanges(
 
       // @ts-expect-error
       ...assetFiles
+        .map((buildFile) => buildFile.props.fileRef)
+        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
+
+      // @ts-expect-error
+      ...entitlementFiles
         .map((buildFile) => buildFile.props.fileRef)
         .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
