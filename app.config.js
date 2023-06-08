@@ -20,6 +20,7 @@ module.exports = ({ config }) => ({
         plugin,
         {
           type: require(configPath).type,
+          frameworks: require(configPath).frameworks ?? [],
           directory: path.relative(process.cwd(), path.dirname(configPath)),
         },
       ]

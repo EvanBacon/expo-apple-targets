@@ -19,6 +19,7 @@ type Props = {
   deploymentTarget?: string;
 
   type: ExtensionType;
+  frameworks?: string[];
 };
 
 import {
@@ -191,7 +192,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 
-    frameworks: xcodeFrameworksForType(props.type),
+    frameworks: xcodeFrameworksForType(props.type).concat(
+      props.frameworks || []
+    ),
     type: props.type,
   });
 

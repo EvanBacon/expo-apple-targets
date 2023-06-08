@@ -1,3 +1,9 @@
 {
-    "type": "share"
+    "type": "share",
+    "frameworks": [
+        "UIKit",
+        "Social",
+        "MobileCoreServices",
+        "UniformTypeIdentifiers"
+    ]
 }
