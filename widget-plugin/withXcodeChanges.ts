@@ -77,7 +77,8 @@ function isNativeTargetOfType(
         target.props.buildConfigurationList.props.defaultConfigurationName
     );
   const infoPlistPath = path.join(
-    path.dirname(target.project.getXcodeProject().filePath),
+    // TODO: Resolve root better
+    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
     defConfig.props.buildSettings.INFOPLIST_FILE
   );
 
