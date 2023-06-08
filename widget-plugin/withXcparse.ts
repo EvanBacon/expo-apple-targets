@@ -4,7 +4,6 @@ import {
   IOSConfig,
   Mod,
   withMod,
-  withRunOnce,
   createRunOncePlugin,
 } from "@expo/config-plugins";
 import * as fs from "fs";

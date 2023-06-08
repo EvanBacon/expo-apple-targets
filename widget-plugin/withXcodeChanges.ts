@@ -744,26 +744,29 @@ async function applyXcodeChanges(
   return project;
 }
 
+const PROTECTED_GROUP_NAME = "expo:modifiable";
+
 function ensureProtectedGroup(project: XcodeProject) {
   const hasProtectedGroup = project.rootObject.props.mainGroup
     .getChildGroups()
-    .find((group) => group.getDisplayName() === "expo:linked");
+    .find((group) => group.getDisplayName() === PROTECTED_GROUP_NAME);
+
   const protectedGroup =
     hasProtectedGroup ??
     PBXGroup.create(project, {
-      name: "expo:modifiable",
+      name: PROTECTED_GROUP_NAME,
       sourceTree: "<group>",
     });
 
   if (!hasProtectedGroup) {
-    let libIndex = project.rootObject.props.mainGroup
-      .getChildGroups()
-      .findIndex((group) => group.getDisplayName() === "Libraries");
-    if (libIndex === -1) {
-      libIndex = 0;
-    }
-
     project.rootObject.props.mainGroup.props.children.unshift(protectedGroup);
+
+    // let libIndex = project.rootObject.props.mainGroup
+    //   .getChildGroups()
+    //   .findIndex((group) => group.getDisplayName() === "Libraries");
+    // if (libIndex === -1) {
+    //   libIndex = 0;
+    // }
     // add above the group named "Libraries"
     // project.rootObject.props.mainGroup.props.children.splice(
     //   libIndex,

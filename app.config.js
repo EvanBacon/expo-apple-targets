@@ -7,6 +7,7 @@ module.exports = ({ config }) => ({
     [
       plugin,
       {
+        type: "widget",
         directory: "beta-boy",
         accentColor: "dodgerblue",
         icon: "./assets/icon.png",
@@ -15,8 +16,9 @@ module.exports = ({ config }) => ({
     [
       plugin,
       {
+        type: "notification-service",
         directory: "second",
-        accentColor: "darkteal",
+        accentColor: "salmon",
         icon: "./assets/icon.png",
       },
     ],
