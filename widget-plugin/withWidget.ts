@@ -5,7 +5,7 @@ import {
   withIosWidgetBackgroundColor,
 } from "./accentColor/withAccentColor";
 import { withIosIcon } from "./icon/withIosIcon";
-import { withXcodeChanges } from "./withXcodeChanges";
+import { withXcodeChanges, ExtensionType } from "./withXcodeChanges";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 import fs from "fs";
 
@@ -18,7 +18,7 @@ type Props = {
   /** 16.4 */
   deploymentTarget?: string;
 
-  type: "widget" | "notification-content";
+  type: ExtensionType;
 };
 
 import {
@@ -57,32 +57,36 @@ function kebabToCamelCase(str: string) {
   });
 }
 
-function getInfoPlistForType(type: "widget" | "notification-content") {
+import plist from "@expo/plist";
+
+function getInfoPlistForType(type: ExtensionType) {
   if (type === "widget") {
     return INFO_PLIST;
+  } else if (type === "share") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          NSExtensionActivationRule: "TRUEPREDICATE",
+        },
+        // TODO: Update `ShareViewController` dynamically
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
+        // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier: "com.apple.share-services",
+      },
+    });
   } else {
-    // TODO: Update `NotificationViewController` dynamically
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-    <dict>
-        <key>NSExtension</key>
-        <dict>
-            <key>NSExtensionAttributes</key>
-            <dict>
-                <key>UNNotificationExtensionCategory</key>
-                <string>myNotificationCategory</string>
-                <key>UNNotificationExtensionInitialContentSizeRatio</key>
-                <real>1</real>
-            </dict>
-            <key>NSExtensionPrincipalClass</key>
-            <string>NotificationViewController</string>
-            <key>NSExtensionPointIdentifier</key>
-            <string>com.apple.usernotifications.content-extension</string>
-        </dict>
-    </dict>
-</plist>`;
-  }
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          UNNotificationExtensionCategory: "myNotificationCategory",
+          UNNotificationExtensionInitialContentSizeRatio: 1,
+        },
+        // TODO: Update `NotificationViewController` dynamically
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationViewController",
+        // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier: "com.apple.usernotifications.content-extension",
+      },
+    });
   //     return `<?xml version="1.0" encoding="UTF-8"?>
   // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
   // <plist version="1.0">
@@ -104,6 +108,21 @@ function getInfoPlistForType(type: "widget" | "notification-content") {
   //     </dict>
   // </plist>`;
   //   }
+}
+
+function xcodeFrameworksForType(type: ExtensionType) {
+  if (type === "widget") {
+    return [
+      // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+      "WidgetKit",
+      // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+      "SwiftUI",
+    ];
+  } else if (type === "notification-content") {
+    return ["UserNotifications", "UserNotificationsUI"];
+  } else {
+    return [];
+  }
 }
 
 const withWidget: ConfigPlugin<Props> = (config, props) => {
@@ -169,15 +188,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 
-    frameworks:
-      props.type === "widget"
-        ? [
-            // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-            "WidgetKit",
-            // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-            "SwiftUI",
-          ]
-        : ["UserNotifications", "UserNotificationsUI"],
+    frameworks: xcodeFrameworksForType(props.type),
     type: props.type,
   });
 

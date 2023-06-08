@@ -21,6 +21,8 @@ import { sync as globSync } from "glob";
 import path from "path";
 import { BuildSettings } from "@bacons/xcode/json";
 
+export type ExtensionType = "widget" | "notification-content" | "share";
+
 export type XcodeSettings = {
   name: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
@@ -35,7 +37,7 @@ export type XcodeSettings = {
 
   frameworks: string[];
 
-  type: "widget" | "notification-content";
+  type: ExtensionType;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -48,47 +50,52 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   });
 };
 
-function frameworksForType(type: XcodeSettings["type"]) {
-  if (type === "widget") {
-    return [
-      // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-      "WidgetKit",
-      // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-      "SwiftUI",
-    ];
-  } else if (type === "notification-content") {
-    return ["UserNotifications", "UserNotificationsUI"];
-  }
-  return [];
-}
+import plist from "@expo/plist";
+
+import fs from "fs";
+
+const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
+  "com.apple.widgetkit-extension": "widget",
+  "com.apple.usernotifications.content-extension": "notification-content",
+  "com.apple.share-services": "share",
+  // "com.apple.intents-service": "intents",
+};
 
 function isNativeTargetOfType(
   target: PBXNativeTarget,
-  type: XcodeSettings["type"]
-) {
+  type: ExtensionType
+): boolean {
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }
   // Could be a Today Extension, Share Extension, etc.
 
-  const frameworksBuildPhase = target.getBuildPhase(PBXFrameworksBuildPhase);
+  const defConfig =
+    target.props.buildConfigurationList.props.buildConfigurations.find(
+      (config) =>
+        config.props.name ===
+        target.props.buildConfigurationList.props.defaultConfigurationName
+    );
+  const infoPlistPath = path.join(
+    path.dirname(target.project.getXcodeProject().filePath),
+    defConfig.props.buildSettings.INFOPLIST_FILE
+  );
 
-  // Surely this is enough to tell.??..
-  return frameworksForType(type).every((framework) => {
-    return frameworksBuildPhase.props.files.some((buildFile) => {
-      return (
-        buildFile.props.fileRef.props.name === framework + ".framework" &&
-        buildFile.props.fileRef.props.sourceTree === "SDKROOT"
-      );
-    });
-  });
+  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
 
-  // console.log(
-  //   frameworksBuildPhase.props.files.map(
-  //     (buildFile) => buildFile.props.fileRef.props
-  //   ),
-  //   { hasSwiftUI, hasWidgetKit }
-  // );
+  if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
+    console.error(
+      "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
+        target.getDisplayName()
+    );
+    return false;
+  }
+
+  return (
+    KNOWN_EXTENSION_POINT_IDENTIFIERS[
+      infoPlist.NSExtension?.NSExtensionPointIdentifier
+    ] === type
+  );
 }
 
 function intentsInfoPlist() {
@@ -470,6 +477,18 @@ async function applyXcodeChanges(
   // This should never happen.
   if (!mainAppTarget) {
     throw new Error("Couldn't find main application target in Xcode project.");
+  }
+
+  // Special setting for share extensions.
+  if (props.type === "share") {
+    // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
+    mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
+      (buildConfig) => {
+        // @ts-expect-error
+        buildConfig.props.buildSettings.ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES =
+          "YES";
+      }
+    );
   }
 
   function getExtensionTargets(): PBXNativeTarget[] {
