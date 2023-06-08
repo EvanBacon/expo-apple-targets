@@ -6,15 +6,15 @@ const plugin = require("./widget-plugin/withWidget").default;
 module.exports = ({ config }) => ({
   ...config,
   plugins: [
-    [
-      plugin,
-      {
-        type: "widget",
-        directory: "beta-boy",
-        accentColor: "dodgerblue",
-        icon: "./assets/icon.png",
-      },
-    ],
+    // [
+    //   plugin,
+    //   {
+    //     type: "widget",
+    //     directory: "beta-boy",
+    //     accentColor: "dodgerblue",
+    //     icon: "./assets/icon.png",
+    //   },
+    // ],
     ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
       (configPath) => [
         plugin,
@@ -36,7 +36,28 @@ module.exports = ({ config }) => ({
     // [
     //   plugin,
     //   {
-    //     type: require("./targets/nova/expo-target.config.json").type,
+    //     ...require("./targets/zulu/expo-target.config.json"),
+    //     directory: "targets/zulu",
+    //   },
+    // ],
+    // [
+    //   plugin,
+    //   {
+    //     ...require("./targets/xeno/expo-target.config.json"),
+    //     directory: "targets/xeno",
+    //   },
+    // ],
+    // [
+    //   plugin,
+    //   {
+    //     ...require("./targets/oscar/expo-target.config.json"),
+    //     directory: "targets/oscar",
+    //   },
+    // ],
+    // [
+    //   plugin,
+    //   {
+    //     type: require("./targets/echo/expo-target.config.json").type,
     //     directory: "targets/echo",
     //   },
     // ],
