@@ -22,7 +22,6 @@ struct Provider: IntentTimelineProvider {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
             let entry = SimpleEntry(date: entryDate, configuration: configuration)
             entries.append(entry)
-          
         }
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
@@ -35,7 +34,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationIntent
 }
 
-struct betaBoyEntryView : View {
+struct betaEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
@@ -43,21 +42,21 @@ struct betaBoyEntryView : View {
     }
 }
 
-struct betaBoy: Widget {
-    let kind: String = "betaBoy"
+struct beta: Widget {
+    let kind: String = "beta"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            betaBoyEntryView(entry: entry)
+            betaEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget!")
+        .configurationDisplayName("My Widget")
         .description("This is an example widget.")
     }
 }
 
-struct betaBoy_Previews: PreviewProvider {
+struct beta_Previews: PreviewProvider {
     static var previews: some View {
-        betaBoyEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
-        .previewContext(WidgetPreviewContext(family: .systemLarge))
+        betaEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 struct widgets: WidgetBundle {
     var body: some Widget {
         // Export widgets here
-        betaBoy()
+        beta()
         GradientWidget()
     }
 }
