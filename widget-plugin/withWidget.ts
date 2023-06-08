@@ -82,32 +82,35 @@ function getInfoPlistForType(type: ExtensionType) {
           UNNotificationExtensionInitialContentSizeRatio: 1,
         },
         // TODO: Update `NotificationViewController` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationViewController",
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).NotificationViewController",
         // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier: "com.apple.usernotifications.content-extension",
+        NSExtensionPointIdentifier:
+          "com.apple.usernotifications.content-extension",
       },
     });
-  //     return `<?xml version="1.0" encoding="UTF-8"?>
-  // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-  // <plist version="1.0">
-  //     <dict>
-  //         <key>NSExtension</key>
-  //         <dict>
-  //             <key>NSExtensionAttributes</key>
-  //             <dict>
-  //                 <key>UNNotificationExtensionCategory</key>
-  //                 <string>myNotificationCategory</string>
-  //                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
-  //                 <real>1</real>
-  //             </dict>
-  //             <key>NSExtensionMainStoryboard</key>
-  //             <string>MainInterface</string>
-  //             <key>NSExtensionPointIdentifier</key>
-  //             <string>com.apple.usernotifications.content-extension</string>
-  //         </dict>
-  //     </dict>
-  // </plist>`;
-  //   }
+    //     return `<?xml version="1.0" encoding="UTF-8"?>
+    // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    // <plist version="1.0">
+    //     <dict>
+    //         <key>NSExtension</key>
+    //         <dict>
+    //             <key>NSExtensionAttributes</key>
+    //             <dict>
+    //                 <key>UNNotificationExtensionCategory</key>
+    //                 <string>myNotificationCategory</string>
+    //                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
+    //                 <real>1</real>
+    //             </dict>
+    //             <key>NSExtensionMainStoryboard</key>
+    //             <string>MainInterface</string>
+    //             <key>NSExtensionPointIdentifier</key>
+    //             <string>com.apple.usernotifications.content-extension</string>
+    //         </dict>
+    //     </dict>
+    // </plist>`;
+    //   }
+  }
 }
 
 function xcodeFrameworksForType(type: ExtensionType) {
