@@ -40,6 +40,18 @@ import plist from "@expo/plist";
 function getInfoPlistForType(type: ExtensionType) {
   if (type === "widget") {
     return INFO_PLIST;
+  } else if (type === "notification-service") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          NSExtensionActivationRule: "TRUEPREDICATE",
+        },
+        // TODO: Update `NotificationService` dynamically
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
+        // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier: "com.apple.usernotifications.service",
+      },
+    });
   } else if (type === "share") {
     return plist.build({
       NSExtension: {

@@ -24,6 +24,7 @@ import { BuildSettings } from "@bacons/xcode/json";
 export type ExtensionType =
   | "widget"
   | "notification-content"
+  | "notification-service"
   | "share"
   | "safari";
 
@@ -62,6 +63,7 @@ const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
   "com.apple.widgetkit-extension": "widget",
   "com.apple.usernotifications.content-extension": "notification-content",
   "com.apple.share-services": "share",
+  "com.apple.usernotifications.service": "notification-service",
   "com.apple.Safari.web-extension": "safari",
   // "com.apple.intents-service": "intents",
 };
@@ -197,7 +199,7 @@ function createIntentsConfigurationList(
   return configurationList;
 }
 
-function createNotificationServiceConfigurationList(
+function createNotificationContentConfigurationList(
   project: XcodeProject,
   {
     name,
@@ -511,9 +513,12 @@ function createConfigurationListForType(
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
     return createSafariConfigurationList(project, props);
+  } else if (props.type === "notification-service") {
+    // TODO: These are probably different
+    return createNotificationContentConfigurationList(project, props);
   } else {
     // TODO: More
-    return createNotificationServiceConfigurationList(project, props);
+    return createNotificationContentConfigurationList(project, props);
   }
 }
 
