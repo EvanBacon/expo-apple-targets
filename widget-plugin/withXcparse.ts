@@ -4,6 +4,8 @@ import {
   IOSConfig,
   Mod,
   withMod,
+  withRunOnce,
+  createRunOncePlugin,
 } from "@expo/config-plugins";
 import * as fs from "fs";
 import * as xcodeParse from "@bacons/xcode/json";
@@ -22,7 +24,7 @@ export const withXcodeProjectBeta: ConfigPlugin<Mod<XcodeProject>> = (
   });
 };
 
-export const withXcodeProjectBetaBaseMod: ConfigPlugin = (config) => {
+const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
   return BaseMods.withGeneratedBaseMods(config, {
     platform: "ios",
     saveToInternal: true,
@@ -60,3 +62,8 @@ export const withXcodeProjectBetaBaseMod: ConfigPlugin = (config) => {
     },
   });
 };
+
+export const withXcodeProjectBetaBaseMod = createRunOncePlugin(
+  withXcodeProjectBetaBaseModInternal,
+  "withXcodeProjectBetaBaseMod"
+);

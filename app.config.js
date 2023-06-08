@@ -12,6 +12,17 @@ module.exports = ({ config }) => ({
         icon: "./assets/icon.png",
       },
     ],
+    [
+      plugin,
+      {
+        directory: "second",
+        accentColor: "darkteal",
+        icon: "./assets/icon.png",
+      },
+    ],
+
+    // Ensure this runs last
+    require("./widget-plugin/withWidget").withXcodeProjectBetaBaseMod,
   ],
 });
 

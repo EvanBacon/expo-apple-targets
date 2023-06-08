@@ -154,7 +154,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     });
   }
 
-  return withXcodeProjectBetaBaseMod(config);
+  return config;
 };
 
 export default withWidget;
+
+export { withXcodeProjectBetaBaseMod };
