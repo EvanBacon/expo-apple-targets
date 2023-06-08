@@ -134,6 +134,7 @@ function createIntentsConfigurationList(
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
     SKIP_INSTALL: "YES",
+    // @ts-expect-error
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_OPTIMIZATION_LEVEL: "-Onone",
@@ -212,6 +213,7 @@ function createNotificationServiceConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       DEBUG_INFORMATION_FORMAT: "dwarf",
@@ -280,6 +282,7 @@ function createShareConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     },
   });
