@@ -21,7 +21,11 @@ import { sync as globSync } from "glob";
 import path from "path";
 import { BuildSettings } from "@bacons/xcode/json";
 
-export type ExtensionType = "widget" | "notification-content" | "share";
+export type ExtensionType =
+  | "widget"
+  | "notification-content"
+  | "share"
+  | "safari";
 
 export type XcodeSettings = {
   name: string;
@@ -58,6 +62,7 @@ const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
   "com.apple.widgetkit-extension": "widget",
   "com.apple.usernotifications.content-extension": "notification-content",
   "com.apple.share-services": "share",
+  "com.apple.Safari.web-extension": "safari",
   // "com.apple.intents-service": "intents",
 };
 
@@ -212,10 +217,10 @@ function createNotificationServiceConfigurationList(
     CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
     CODE_SIGN_STYLE: "Automatic",
     COPY_PHASE_STRIP: "NO",
-    CURRENT_PROJECT_VERSION: currentProjectVersion,
     DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     GENERATE_INFOPLIST_FILE: "YES",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
@@ -282,19 +287,19 @@ function createShareConfigurationList(
     CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
     CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
     CODE_SIGN_STYLE: "Automatic",
-    CURRENT_PROJECT_VERSION: 1,
     DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_FILE: "delta/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name ?? "delta",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
-    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget ?? "16.4",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
     MARKETING_VERSION: 1.0,
     MTL_FAST_MATH: "YES",
-    PRODUCT_BUNDLE_IDENTIFIER: bundleId + ".delta",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
     SKIP_INSTALL: "YES",
     SWIFT_EMIT_LOC_STRINGS: "YES",
@@ -320,6 +325,77 @@ function createShareConfigurationList(
       ...common,
       // Diff
       COPY_PHASE_STRIP: "NO",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+function createSafariConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    GENERATE_INFOPLIST_FILE: "YES",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    LD_RUNPATH_SEARCH_PATHS:
+      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    MARKETING_VERSION: 1.0,
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+    OTHER_LDFLAGS: [`-framework`, "SafariServices"],
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      // @ts-expect-error
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     },
   });
 
@@ -431,6 +507,10 @@ function createConfigurationListForType(
 ) {
   if (props.type === "widget") {
     return createConfigurationList(project, props);
+  } else if (props.type === "share") {
+    return createShareConfigurationList(project, props);
+  } else if (props.type === "safari") {
+    return createSafariConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationServiceConfigurationList(project, props);
@@ -678,17 +758,42 @@ async function applyXcodeChanges(
     })
   );
 
-  // NOTE: Single-level only
-  const assetFiles = globSync("*.xcassets", {
-    absolute: true,
-    cwd: magicCwd,
-  }).map((file) => {
-    return PBXBuildFile.create(project, {
-      fileRef: PBXFileReference.create(project, {
-        path: path.basename(file),
-        sourceTree: "<group>",
-      }),
-    });
+  let assetFiles = [
+    // All assets`
+    "assets/*",
+    // NOTE: Single-level only
+    "*.xcassets",
+  ]
+    .map((glob) =>
+      globSync(glob, {
+        absolute: true,
+        cwd: magicCwd,
+      }).map((file) => {
+        return PBXBuildFile.create(project, {
+          fileRef: PBXFileReference.create(project, {
+            path: path.basename(file),
+            sourceTree: "<group>",
+          }),
+        });
+      })
+    )
+    .flat();
+
+  // TODO: Maybe just limit this to Safari?
+  // get top-level directories in `assets/` and append them to assetFiles as folder types
+  fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
+    if (fs.statSync(path.join(magicCwd, "assets", file)).isDirectory()) {
+      assetFiles.push(
+        PBXBuildFile.create(project, {
+          fileRef: PBXFileReference.create(project, {
+            path: file,
+            sourceTree: "<group>",
+            // @ts-expect-error
+            explicitFileType: "folder",
+          }),
+        })
+      );
+    }
   });
 
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {

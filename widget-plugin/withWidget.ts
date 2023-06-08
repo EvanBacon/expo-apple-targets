@@ -28,29 +28,6 @@ import {
   INTENT_DEFINITION,
   WIDGET,
 } from "./fixtures/template";
-const fixtureEntry = `import WidgetKit
-import SwiftUI
-
-@main
-struct widgetBundle: WidgetBundle {
-    var body: some Widget {
-        // Export widgets here
-    }
-}
-`;
-
-const fixtureInfoPlist = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>NSExtension</key>
-	<dict>
-		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.widgetkit-extension</string>
-	</dict>
-</dict>
-</plist>
-`;
 
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
@@ -73,6 +50,16 @@ function getInfoPlistForType(type: ExtensionType) {
         NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
         // NSExtensionMainStoryboard: 'MainInterface',
         NSExtensionPointIdentifier: "com.apple.share-services",
+      },
+    });
+  } else if (type === "safari") {
+    return plist.build({
+      NSExtension: {
+        // TODO: Update `SafariWebExtensionHandler` dynamically
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
+        // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier: "com.apple.Safari.web-extension",
       },
     });
   } else {
