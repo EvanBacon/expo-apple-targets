@@ -450,7 +450,6 @@ async function applyXcodeChanges(
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
   } else {
-    // TODO: Idempotent
     mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
       buildActionMask: 2147483647,
       dstPath: "",
@@ -519,7 +518,7 @@ function ensureProtectedGroup(project: XcodeProject) {
   const protectedGroup =
     hasProtectedGroup ??
     PBXGroup.create(project, {
-      name: "expo:linked",
+      name: "expo:modifiable",
       sourceTree: "<group>",
     });
 
@@ -531,12 +530,13 @@ function ensureProtectedGroup(project: XcodeProject) {
       libIndex = 0;
     }
 
+    project.rootObject.props.mainGroup.props.children.unshift(protectedGroup);
     // add above the group named "Libraries"
-    project.rootObject.props.mainGroup.props.children.splice(
-      libIndex,
-      0,
-      protectedGroup
-    );
+    // project.rootObject.props.mainGroup.props.children.splice(
+    //   libIndex,
+    //   0,
+    //   protectedGroup
+    // );
   }
 
   return protectedGroup;
