@@ -20,10 +20,10 @@ type Color = {
 };
 
 export const withIosAccentColor: ConfigPlugin<{
-  widgetName: string;
+  cwd: string;
   color: string;
   darkColor?: string;
-}> = (config, { widgetName, color, darkColor }) => {
+}> = (config, { cwd, color, darkColor }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -31,7 +31,7 @@ export const withIosAccentColor: ConfigPlugin<{
         { color, darkColor },
         join(
           config.modRequest.projectRoot,
-          widgetName,
+          cwd,
           "Assets.xcassets/AccentColor.colorset"
         )
       );
@@ -41,10 +41,10 @@ export const withIosAccentColor: ConfigPlugin<{
 };
 
 export const withIosWidgetBackgroundColor: ConfigPlugin<{
-  widgetName: string;
+  cwd: string;
   color: string;
   darkColor?: string;
-}> = (config, { widgetName, color, darkColor }) => {
+}> = (config, { cwd, color, darkColor }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -52,7 +52,7 @@ export const withIosWidgetBackgroundColor: ConfigPlugin<{
         { color, darkColor },
         join(
           config.modRequest.projectRoot,
-          widgetName,
+          cwd,
           "Assets.xcassets/WidgetBackground.colorset"
         )
       );

@@ -117,7 +117,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   const widgetFolderAbsolutePath = path.join(
     config._internal.projectRoot,
-    widgetDir
+    props.directory
   );
 
   // Ensure the entry file exists
@@ -194,7 +194,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // https://useyourloaf.com/blog/widget-background-and-accent-color/
     // i.e. when you press and hold on a widget to configure it, the background color of the widget configuration interface changes to the background color we set here.
     withIosAccentColor(config, {
-      widgetName: widgetDir,
+      cwd: props.directory,
       color: lightColor,
       darkColor: darkColor,
     });
@@ -210,7 +210,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         ? undefined
         : props.backgroundColor.darkColor;
     withIosWidgetBackgroundColor(config, {
-      widgetName: widgetDir,
+      cwd: props.directory,
       color: lightColor,
       darkColor: darkColor,
     });
@@ -218,7 +218,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (props.icon) {
     withIosIcon(config, {
-      widgetName: widgetDir,
+      cwd: props.directory,
       // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
       iconFilePath: props.icon,
     });

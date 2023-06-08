@@ -9,17 +9,17 @@ import * as fs from "fs-extra";
 import { join } from "path";
 
 export const withIosIcon: ConfigPlugin<{
-  widgetName: string;
+  cwd: string;
   iconFilePath: string;
-}> = (config, { widgetName, iconFilePath }) => {
+}> = (config, { cwd, iconFilePath }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
       await setIconsAsync(
         iconFilePath,
         config.modRequest.projectRoot,
-        join(config.modRequest.projectRoot, widgetName),
-        widgetName
+        join(config.modRequest.projectRoot, cwd),
+        cwd
       );
       return config;
     },
