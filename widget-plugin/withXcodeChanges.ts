@@ -532,6 +532,7 @@ async function applyXcodeChanges(
       path: "System/Library/Frameworks/" + frameworkName,
     });
   }
+  const magicCwd = path.join(config._internal.projectRoot!, "ios", props.cwd);
 
   function getOrCreateBuildFile(file: PBXFileReference): PBXBuildFile {
     for (const entry of file.getReferrers()) {
@@ -549,6 +550,41 @@ async function applyXcodeChanges(
     project,
     props.frameworks.map((framework) => getFramework(framework))
   );
+
+  function configureTargetWithEntitlements(target: PBXNativeTarget) {
+    const entitlements = globSync("*.entitlements", {
+      absolute: true,
+      cwd: magicCwd,
+    }).map((file) => {
+      return PBXBuildFile.create(project, {
+        fileRef: PBXFileReference.create(project, {
+          path: path.basename(file),
+          explicitFileType: "text.plist.entitlements",
+          sourceTree: "<group>",
+        }),
+      });
+    });
+
+    if (entitlements.length > 0) {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          config.props.buildSettings.CODE_SIGN_ENTITLEMENTS =
+            props.cwd + entitlements[0].props.fileRef.props.path;
+        }
+      );
+    } else {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          delete config.props.buildSettings.CODE_SIGN_ENTITLEMENTS;
+        }
+      );
+    }
+
+    return entitlements;
+    // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
+  }
 
   if (targetToUpdate) {
     // Remove existing build phases
@@ -572,6 +608,7 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
 
+    configureTargetWithEntitlements(targetToUpdate);
     // const group = project.rootObject.props.mainGroup.props.children.find(group => group.props.name === 'expo:' + props.name);
     // if (!PBXGroup.is(group)) {
     //   throw new Error('Could not find expo:' + props.name + ' group');
@@ -607,8 +644,6 @@ async function applyXcodeChanges(
   }
 
   // Build Files
-
-  const magicCwd = path.join(config._internal.projectRoot!, "ios", props.cwd);
 
   // NOTE: Single-level only
   const swiftFiles = globSync("*.swift", {
@@ -683,9 +718,11 @@ async function applyXcodeChanges(
     productType: "com.apple.product-type.app-extension",
   });
 
+  const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
+
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
-    files: [...swiftFiles, ...intentBuildFiles[0]],
+    files: [...swiftFiles, ...intentBuildFiles[0], ...entitlementFiles],
     // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
     // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
     // CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */,
