@@ -52,6 +52,19 @@ function getInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier: "com.apple.usernotifications.service",
       },
     });
+  } else if (type === "spotlight") {
+    return plist.build({
+      CSExtensionLabel: "myImporter",
+      NSExtension: {
+        NSExtensionAttributes: {
+          CSSupportedContentTypes: ["com.example.plain-text"],
+        },
+        // TODO: Update `ImportExtension` dynamically
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ImportExtension",
+        // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier: "com.apple.spotlight.import",
+      },
+    });
   } else if (type === "share") {
     return plist.build({
       NSExtension: {

@@ -26,6 +26,7 @@ export type ExtensionType =
   | "notification-content"
   | "notification-service"
   | "share"
+  | "spotlight"
   | "safari";
 
 export type XcodeSettings = {
@@ -64,6 +65,7 @@ const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
   "com.apple.usernotifications.content-extension": "notification-content",
   "com.apple.share-services": "share",
   "com.apple.usernotifications.service": "notification-service",
+  "com.apple.spotlight.import": "spotlight",
   "com.apple.Safari.web-extension": "safari",
   // "com.apple.intents-service": "intents",
 };
@@ -516,6 +518,9 @@ function createConfigurationListForType(
   } else if (props.type === "notification-service") {
     // TODO: These are probably different
     return createNotificationContentConfigurationList(project, props);
+  } else if (props.type === "spotlight") {
+    // TODO: These are probably different
+    return createNotificationContentConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -566,7 +571,7 @@ async function applyXcodeChanges(
   }
 
   // Special setting for share extensions.
-  if (props.type === "share") {
+  if (["spotlight", "share"].includes(props.type)) {
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
       (buildConfig) => {
