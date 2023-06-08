@@ -787,41 +787,43 @@ async function applyXcodeChanges(
   const resAssets: PBXBuildFile[] = [];
 
   // TODO: Maybe just limit this to Safari?
-  // get top-level directories in `assets/` and append them to assetFiles as folder types
-  fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
-    const stat = fs.statSync(path.join(magicCwd, "assets", file));
-    if (stat.isDirectory()) {
-      resAssets.push(
-        PBXBuildFile.create(project, {
-          fileRef: PBXFileReference.create(project, {
-            path: file,
-            sourceTree: "<group>",
-            // @ts-expect-error
-            lastKnownFileType: "folder",
-          }),
-        })
-      );
-    } else if (stat.isFile()) {
-      resAssets.push(
-        PBXBuildFile.create(project, {
-          fileRef: PBXFileReference.create(project, {
-            path: file,
-            // @ts-expect-error
-            explicitFileType: file.endsWith(".js")
-              ? "sourcecode.javascript"
-              : file.endsWith(".json")
-              ? "text.json"
-              : file.endsWith(".html")
-              ? "text.html"
-              : file.endsWith(".css")
-              ? "text.css"
-              : "text",
-            sourceTree: "<group>",
-          }),
-        })
-      );
-    }
-  });
+  if (fs.existsSync(path.join(magicCwd, "assets"))) {
+    // get top-level directories in `assets/` and append them to assetFiles as folder types
+    fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
+      const stat = fs.statSync(path.join(magicCwd, "assets", file));
+      if (stat.isDirectory()) {
+        resAssets.push(
+          PBXBuildFile.create(project, {
+            fileRef: PBXFileReference.create(project, {
+              path: file,
+              sourceTree: "<group>",
+              // @ts-expect-error
+              lastKnownFileType: "folder",
+            }),
+          })
+        );
+      } else if (stat.isFile()) {
+        resAssets.push(
+          PBXBuildFile.create(project, {
+            fileRef: PBXFileReference.create(project, {
+              path: file,
+              // @ts-expect-error
+              explicitFileType: file.endsWith(".js")
+                ? "sourcecode.javascript"
+                : file.endsWith(".json")
+                ? "text.json"
+                : file.endsWith(".html")
+                ? "text.html"
+                : file.endsWith(".css")
+                ? "text.css"
+                : "text",
+              sourceTree: "<group>",
+            }),
+          })
+        );
+      }
+    });
+  }
 
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
     fileRef: PBXFileReference.create(project, {
