@@ -39,7 +39,14 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   props
 ) => {
   return withXcodeProjectBeta(config, (config) => {
-    applyXcodeChanges(config, config.modResults, props);
+    applyXcodeChanges(config, config.modResults, props, {
+      frameworks: [
+        // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+        "WidgetKit",
+        // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+        "SwiftUI",
+      ],
+    });
     return config;
   });
 };
@@ -431,7 +438,12 @@ function addFrameworksToDisplayFolder(
 async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
+  {
+    frameworks,
+  }: {
+    frameworks: string[];
+  }
 ) {
   const mainAppTarget = project.rootObject.getNativeTarget(
     "com.apple.product-type.application"
@@ -492,14 +504,11 @@ async function applyXcodeChanges(
     });
   }
 
-  // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-  const widgetKitFramework = getFramework("WidgetKit");
-
-  // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-  const swiftUiFramework = getFramework("SwiftUI");
-
   // Add the widget target to the display folder (cosmetic)
-  addFrameworksToDisplayFolder(project, [widgetKitFramework, swiftUiFramework]);
+  addFrameworksToDisplayFolder(
+    project,
+    frameworks.map((framework) => getFramework(framework))
+  );
 
   if (targetToUpdate) {
     // Remove existing build phases
