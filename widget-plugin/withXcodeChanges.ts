@@ -792,7 +792,7 @@ async function applyXcodeChanges(
             path: file,
             sourceTree: "<group>",
             // @ts-expect-error
-            explicitFileType: "folder",
+            lastKnownFileType: "folder",
           }),
         })
       );
