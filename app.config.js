@@ -15,16 +15,16 @@ module.exports = ({ config }) => ({
     //     icon: "./assets/icon.png",
     //   },
     // ],
-    ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
-      (configPath) => [
-        plugin,
-        {
-          type: require(configPath).type,
-          frameworks: require(configPath).frameworks ?? [],
-          directory: path.relative(process.cwd(), path.dirname(configPath)),
-        },
-      ]
-    ),
+
+    // ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
+    //   (configPath) => [
+    //     plugin,
+    //     {
+    //       ...require(configPath),
+    //       directory: path.relative(process.cwd(), path.dirname(configPath)),
+    //     },
+    //   ]
+    // ),
 
     // [
     //   plugin,
@@ -33,13 +33,13 @@ module.exports = ({ config }) => ({
     //     directory: "targets/nova",
     //   },
     // ],
-    // [
-    //   plugin,
-    //   {
-    //     ...require("./targets/zulu/expo-target.config.json"),
-    //     directory: "targets/zulu",
-    //   },
-    // ],
+    [
+      plugin,
+      {
+        ...require("./targets/beta/expo-target.config.json"),
+        directory: "targets/beta",
+      },
+    ],
     // [
     //   plugin,
     //   {
