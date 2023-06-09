@@ -95,6 +95,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     deploymentTarget: props.deploymentTarget ?? "16.4",
     bundleId: config.ios.bundleIdentifier! + "." + widget,
 
+    hasAccentColor: !!props.accentColor,
+
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 

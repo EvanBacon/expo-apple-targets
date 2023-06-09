@@ -35,6 +35,8 @@ export type XcodeSettings = {
   frameworks: string[];
 
   type: ExtensionType;
+
+  hasAccentColor?: boolean;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -333,6 +335,112 @@ function createSafariConfigurationList(
 
   return configurationList;
 }
+function createAppClipConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    hasAccentColor,
+  }: XcodeSettings
+) {
+  // TODO: Unify AppIcon and AccentColor logic
+  const dynamic: Partial<BuildSettings> = {
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    MARKETING_VERSION: 1.0,
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+
+    // TODO: Add this later like entitlements
+
+    // DEVELOPMENT_ASSET_PATHS: `\"${cwd}/Preview Content\"`,
+  };
+
+  if (hasAccentColor) {
+    dynamic.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "AccentColor";
+  }
+
+  const superCommon: Partial<BuildSettings> = {
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+
+    COPY_PHASE_STRIP: "NO",
+
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+
+  const infoPlist: Partial<BuildSettings> = {
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_KEY_CFBundleDisplayName: "bacon-widget",
+    // @ts-expect-error
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
+    INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
+    INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+  };
+
+  const common: BuildSettings = {
+    ...dynamic,
+    ...infoPlist,
+    ...superCommon,
+
+    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
+
+    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    MTL_FAST_MATH: "YES",
+
+    // @ts-expect-error
+    ENABLE_PREVIEWS: "YES",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      // @ts-expect-error
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
 
 function createConfigurationList(
   project: XcodeProject,
@@ -439,6 +547,8 @@ function createConfigurationListForType(
     return createSafariConfigurationList(project, props);
   } else if (props.type === "imessage") {
     return createIMessageConfigurationList(project, props);
+  } else if (props.type === "clip") {
+    return createAppClipConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -510,7 +620,8 @@ async function applyXcodeChanges(
 
   const targets = getExtensionTargets();
 
-  const productName = props.name + "Extension";
+  const productName = props.name;
+  // const productName = props.name + "Extension";
 
   const targetToUpdate =
     targets.find((target) => target.props.productName === productName) ??
@@ -594,6 +705,33 @@ async function applyXcodeChanges(
     // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
   }
 
+  function configureTargetWithPreview(target: PBXNativeTarget) {
+    const assets = globSync("preview.xcassets", {
+      absolute: true,
+      cwd: magicCwd,
+    })[0];
+
+    if (assets) {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          config.props.buildSettings.DEVELOPMENT_ASSET_PATHS = `"${
+            props.cwd + "/preview"
+          }"`;
+        }
+      );
+    } else {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          delete config.props.buildSettings.DEVELOPMENT_ASSET_PATHS;
+        }
+      );
+    }
+
+    return assets;
+  }
+
   if (targetToUpdate) {
     // Remove existing build phases
     targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
@@ -617,36 +755,8 @@ async function applyXcodeChanges(
       createConfigurationListForType(project, props);
 
     configureTargetWithEntitlements(targetToUpdate);
-    // const group = project.rootObject.props.mainGroup.props.children.find(group => group.props.name === 'expo:' + props.name);
-    // if (!PBXGroup.is(group)) {
-    //   throw new Error('Could not find expo:' + props.name + ' group');
-    // }
-    // group.props.path = props.cwd;
 
-    // group.props.children.forEach(child => {
-
-    //   if (child.props.name === 'Info.plist') {
-    //     child.props.path = props.cwd + '/Info.plist';
-    //   }
-    // })
-
-    // children: [
-    //   // @ts-expect-error
-    //   ...swiftFiles.map((buildFile) => buildFile.props.fileRef),
-
-    //   // @ts-expect-error
-    //   ...intentFiles,
-
-    //   // @ts-expect-error
-    //   assetsXcassetsBf.props.fileRef,
-
-    //   // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-    //   // @ts-expect-error
-    //   PBXFileReference.create(project, {
-    //     path: "Info.plist",
-    //     sourceTree: "<group>",
-    //   }),
-    // ],
+    configureTargetWithPreview(targetToUpdate);
 
     return project;
   }
@@ -776,6 +886,8 @@ async function applyXcodeChanges(
   });
 
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
+
+  configureTargetWithPreview(targetToUpdate);
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {

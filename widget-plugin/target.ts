@@ -15,6 +15,7 @@ export type ExtensionType =
   | "matter"
   | "quicklook-thumbnail"
   | "imessage"
+  | "clip"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -36,6 +37,14 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
+  if (type === "clip") {
+    return plist.build({
+      NSAppClip: {
+        NSAppClipRequestEphemeralUserNotification: false,
+        NSAppClipRequestLocationConfirmation: false,
+      },
+    });
+  }
   const NSExtensionPointIdentifier = Object.keys(
     KNOWN_EXTENSION_POINT_IDENTIFIERS
   ).find((key) => KNOWN_EXTENSION_POINT_IDENTIFIERS[key] === type);
@@ -175,6 +184,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "bg-download",
     "quicklook-thumbnail",
     "matter",
+    "clip",
   ].includes(type);
 }
 
