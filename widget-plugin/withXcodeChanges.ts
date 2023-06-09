@@ -1015,6 +1015,7 @@ async function applyXcodeChanges(
     // idk, attempting to prevent EAS Build from failing when it codesigns
     project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
       CreatedOnToolsVersion: "12.4",
+      ProvisioningStyle: "Automatic",
     };
   }
 
