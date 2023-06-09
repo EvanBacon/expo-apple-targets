@@ -1,11 +1,13 @@
 import { ConfigPlugin } from "@expo/config-plugins";
 import {
+  PBXAggregateTarget,
   PBXBuildFile,
   PBXContainerItemProxy,
   PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFrameworksBuildPhase,
   PBXGroup,
+  PBXLegacyTarget,
   PBXNativeTarget,
   PBXResourcesBuildPhase,
   PBXSourcesBuildPhase,
@@ -37,6 +39,8 @@ export type XcodeSettings = {
   type: ExtensionType;
 
   hasAccentColor?: boolean;
+
+  teamId?: string;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -670,6 +674,69 @@ async function applyXcodeChanges(
     props.frameworks.map((framework) => getFramework(framework))
   );
 
+  const developmentTeamId =
+    props.teamId ??
+    mainAppTarget.props.buildConfigurationList.props.buildConfigurations.reduce(
+      (acc, config) => {
+        // @ts-expect-error
+        if (config.props.buildSettings.DEVELOPMENT_TEAM) {
+          // @ts-expect-error
+          return config.props.buildSettings.DEVELOPMENT_TEAM;
+        }
+        return acc;
+      },
+      undefined
+    );
+
+  if (!developmentTeamId) {
+    // if (process.env.CI) {
+    throw new Error(
+      "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
+    );
+    // } else {
+    //   console.warn(
+    //     "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
+    //   );
+    // }
+  }
+
+  function configureTargetWithDevelopmentTeamId(
+    target: PBXNativeTarget | PBXAggregateTarget | PBXLegacyTarget
+  ) {
+    if (developmentTeamId) {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          config.props.buildSettings.DEVELOPMENT_TEAM = developmentTeamId;
+        }
+      );
+    } else {
+      target.props.buildConfigurationList.props.buildConfigurations.forEach(
+        (config) => {
+          // @ts-expect-error
+          delete config.props.buildSettings.DEVELOPMENT_TEAM;
+        }
+      );
+    }
+  }
+
+  function applyDevelopmentTeamIdToTargets() {
+    project.rootObject.props.targets.forEach((target) => {
+      configureTargetWithDevelopmentTeamId(target);
+    });
+
+    for (const target of project.rootObject.props.targets) {
+      project.rootObject.props.attributes.TargetAttributes ??= {};
+      // idk, attempting to prevent EAS Build from failing when it codesigns
+      project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
+        CreatedOnToolsVersion: "12.4",
+        ProvisioningStyle: "Automatic",
+        // @ts-expect-error
+        DevelopmentTeam: developmentTeamId,
+      };
+    }
+  }
+
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
     const entitlements = globSync("*.entitlements", {
       absolute: true,
@@ -758,6 +825,7 @@ async function applyXcodeChanges(
 
     configureTargetWithPreview(targetToUpdate);
 
+    applyDevelopmentTeamIdToTargets();
     return project;
   }
 
@@ -1010,14 +1078,7 @@ async function applyXcodeChanges(
     });
   }
 
-  for (const target of project.rootObject.props.targets) {
-    project.rootObject.props.attributes.TargetAttributes ??= {};
-    // idk, attempting to prevent EAS Build from failing when it codesigns
-    project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
-      CreatedOnToolsVersion: "12.4",
-      ProvisioningStyle: "Automatic",
-    };
-  }
+  applyDevelopmentTeamIdToTargets();
 
   return project;
 }

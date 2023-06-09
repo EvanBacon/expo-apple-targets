@@ -28,6 +28,7 @@ type Props = {
 
   type: ExtensionType;
   frameworks?: string[];
+  teamId?: string;
 };
 
 function kebabToCamelCase(str: string) {
@@ -110,6 +111,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
+    teamId: props.teamId,
   });
 
   config = withEASTargets(config, { targetName, bundleIdentifier: bundleId });

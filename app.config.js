@@ -20,6 +20,7 @@ module.exports = ({ config }) => ({
       (configPath) => [
         plugin,
         {
+          teamId: "QQ57RJ5UTD",
           ...require(configPath),
           directory: path.relative(process.cwd(), path.dirname(configPath)),
         },
