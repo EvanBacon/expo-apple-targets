@@ -1,13 +1,20 @@
-import path from "path";
 import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import fs from "fs";
+import path from "path";
+
 import {
   withIosAccentColor,
   withIosWidgetBackgroundColor,
 } from "./accentColor/withAccentColor";
+import { ENTRY_FILE, INTENT_DEFINITION, WIDGET } from "./fixtures/template";
 import { withIosIcon } from "./icon/withIosIcon";
-import { withXcodeChanges, ExtensionType } from "./withXcodeChanges";
+import {
+  ExtensionType,
+  getFrameworksForType,
+  getTargetInfoPlistForType,
+} from "./target";
+import { withXcodeChanges } from "./withXcodeChanges";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
-import fs from "fs";
 
 type Props = {
   directory?: string;
@@ -22,134 +29,10 @@ type Props = {
   frameworks?: string[];
 };
 
-import {
-  ENTRY_FILE,
-  INFO_PLIST,
-  INTENT_DEFINITION,
-  WIDGET,
-} from "./fixtures/template";
-
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
     return g[1].toUpperCase();
   });
-}
-
-import plist from "@expo/plist";
-
-function getInfoPlistForType(type: ExtensionType) {
-  if (type === "widget") {
-    return INFO_PLIST;
-  } else if (type === "notification-service") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          NSExtensionActivationRule: "TRUEPREDICATE",
-        },
-        // TODO: Update `NotificationService` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier: "com.apple.usernotifications.service",
-      },
-    });
-  } else if (type === "spotlight") {
-    return plist.build({
-      CSExtensionLabel: "myImporter",
-      NSExtension: {
-        NSExtensionAttributes: {
-          CSSupportedContentTypes: ["com.example.plain-text"],
-        },
-        // TODO: Update `ImportExtension` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ImportExtension",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier: "com.apple.spotlight.import",
-      },
-    });
-  } else if (type === "share") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          NSExtensionActivationRule: "TRUEPREDICATE",
-        },
-        // TODO: Update `ShareViewController` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier: "com.apple.share-services",
-      },
-    });
-  } else if (type === "intent-ui") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          IntentsSupported: ["INSendMessageIntent"],
-        },
-        // TODO: Update `IntentViewController` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).IntentViewController",
-        NSExtensionPointIdentifier: "com.apple.intents-ui-service",
-      },
-    });
-  } else if (type === "intent") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          IntentsRestrictedWhileLocked: [],
-          IntentsSupported: [
-            "INSendMessageIntent",
-            "INSearchForMessagesIntent",
-            "INSetMessageAttributeIntent",
-          ],
-        },
-        // TODO: Update `IntentHandler` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
-        NSExtensionPointIdentifier: "com.apple.intents-service",
-      },
-    });
-  } else if (type === "safari") {
-    return plist.build({
-      NSExtension: {
-        // TODO: Update `SafariWebExtensionHandler` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier: "com.apple.Safari.web-extension",
-      },
-    });
-  } else {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          UNNotificationExtensionCategory: "myNotificationCategory",
-          UNNotificationExtensionInitialContentSizeRatio: 1,
-        },
-        // TODO: Update `NotificationViewController` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).NotificationViewController",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier:
-          "com.apple.usernotifications.content-extension",
-      },
-    });
-  }
-}
-
-function xcodeFrameworksForType(type: ExtensionType) {
-  if (type === "widget") {
-    return [
-      // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-      "WidgetKit",
-      // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-      "SwiftUI",
-    ];
-  } else if (type === "intent") {
-    return ["Intents"];
-  } else if (type === "intent-ui") {
-    return ["IntentsUI"];
-  } else if (type === "notification-content") {
-    return ["UserNotifications", "UserNotificationsUI"];
-  } else {
-    return [];
-  }
 }
 
 const withWidget: ConfigPlugin<Props> = (config, props) => {
@@ -173,7 +56,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
 
       const files: [string, string][] = [
-        ["Info.plist", getInfoPlistForType(props.type)],
+        ["Info.plist", getTargetInfoPlistForType(props.type)],
       ];
 
       if (props.type === "widget") {
@@ -215,9 +98,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 
-    frameworks: xcodeFrameworksForType(props.type).concat(
-      props.frameworks || []
-    ),
+    frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
   });
 

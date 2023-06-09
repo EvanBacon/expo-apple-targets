@@ -20,16 +20,6 @@ import { sync as globSync } from "glob";
 import path from "path";
 import { BuildSettings } from "@bacons/xcode/json";
 
-export type ExtensionType =
-  | "widget"
-  | "notification-content"
-  | "notification-service"
-  | "share"
-  | "intent"
-  | "intent-ui"
-  | "spotlight"
-  | "safari";
-
 export type XcodeSettings = {
   name: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
@@ -57,59 +47,13 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   });
 };
 
-import plist from "@expo/plist";
-
 import fs from "fs";
-
-const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
-  "com.apple.widgetkit-extension": "widget",
-  "com.apple.usernotifications.content-extension": "notification-content",
-  "com.apple.share-services": "share",
-  "com.apple.usernotifications.service": "notification-service",
-  "com.apple.spotlight.import": "spotlight",
-  "com.apple.intents-service": "intent",
-  "com.apple.intents-ui-service": "intent-ui",
-  "com.apple.Safari.web-extension": "safari",
-  // "com.apple.intents-service": "intents",
-};
-
-function isNativeTargetOfType(
-  target: PBXNativeTarget,
-  type: ExtensionType
-): boolean {
-  if (target.props.productType !== "com.apple.product-type.app-extension") {
-    return false;
-  }
-  // Could be a Today Extension, Share Extension, etc.
-
-  const defConfig =
-    target.props.buildConfigurationList.props.buildConfigurations.find(
-      (config) =>
-        config.props.name ===
-        target.props.buildConfigurationList.props.defaultConfigurationName
-    );
-  const infoPlistPath = path.join(
-    // TODO: Resolve root better
-    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    defConfig.props.buildSettings.INFOPLIST_FILE
-  );
-
-  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
-
-  if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
-    console.error(
-      "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
-        target.getDisplayName()
-    );
-    return false;
-  }
-
-  return (
-    KNOWN_EXTENSION_POINT_IDENTIFIERS[
-      infoPlist.NSExtension?.NSExtensionPointIdentifier
-    ] === type
-  );
-}
+import {
+  ExtensionType,
+  isNativeTargetOfType,
+  KNOWN_EXTENSION_POINT_IDENTIFIERS,
+  needsEmbeddedSwift,
+} from "./target";
 
 function createNotificationContentConfigurationList(
   project: XcodeProject,
@@ -425,18 +369,6 @@ function createConfigurationListForType(
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
     return createSafariConfigurationList(project, props);
-  } else if (props.type === "intent") {
-    // TODO: These are probably different
-    return createNotificationContentConfigurationList(project, props);
-  } else if (props.type === "intent-ui") {
-    // TODO: These are probably different
-    return createNotificationContentConfigurationList(project, props);
-  } else if (props.type === "notification-service") {
-    // TODO: These are probably different
-    return createNotificationContentConfigurationList(project, props);
-  } else if (props.type === "spotlight") {
-    // TODO: These are probably different
-    return createNotificationContentConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -487,7 +419,7 @@ async function applyXcodeChanges(
   }
 
   // Special setting for share extensions.
-  if (["spotlight", "share", "intent", "intent-ui"].includes(props.type)) {
+  if (needsEmbeddedSwift(props.type)) {
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
       (buildConfig) => {
