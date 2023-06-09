@@ -13,6 +13,7 @@ export type ExtensionType =
   | "intent-ui"
   | "spotlight"
   | "matter"
+  | "quicklook-thumbnail"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -27,6 +28,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.Safari.web-extension": "safari",
     "com.apple.background-asset-downloader-extension": "bg-download",
     "com.apple.matter.support.extension.device-setup": "matter",
+    "com.apple.quicklook.thumbnail": "quicklook-thumbnail",
     // "com.apple.intents-service": "intents",
   };
 
@@ -45,6 +47,17 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         // TODO: Update `NotificationService` dynamically
         NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
         // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "quicklook-thumbnail") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          QLSupportedContentTypes: [],
+          QLThumbnailMinimumDimension: 0,
+        },
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ThumbnailProvider",
         NSExtensionPointIdentifier,
       },
     });
@@ -149,6 +162,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "intent",
     "intent-ui",
     "bg-download",
+    "quicklook-thumbnail",
     "matter",
   ].includes(type);
 }
@@ -165,6 +179,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["Intents"];
   } else if (type === "intent-ui") {
     return ["IntentsUI"];
+  } else if (type === "quicklook-thumbnail") {
+    return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
   }
