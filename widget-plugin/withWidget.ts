@@ -39,6 +39,10 @@ function kebabToCamelCase(str: string) {
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
+  if (props.icon) {
+    props.icon = path.join(props.directory, props.icon);
+  }
+
   const widgetDir = (props.name ?? path.basename(props.directory))
     .replace(/\/+$/, "")
     .replace(/^\/+/, "");
