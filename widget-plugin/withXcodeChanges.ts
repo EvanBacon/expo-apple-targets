@@ -887,7 +887,7 @@ async function applyXcodeChanges(
 
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
 
-  configureTargetWithPreview(targetToUpdate);
+  configureTargetWithPreview(widgetTarget);
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
