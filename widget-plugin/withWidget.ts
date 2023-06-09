@@ -13,6 +13,7 @@ import {
   getFrameworksForType,
   getTargetInfoPlistForType,
 } from "./target";
+import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
@@ -84,8 +85,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     },
   ]);
 
+  const targetName = widget;
+  const bundleId = config.ios.bundleIdentifier! + "." + widget;
+
   withXcodeChanges(config, {
-    name: widget,
+    name: targetName,
     cwd:
       "../" +
       path.relative(
@@ -93,7 +97,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         path.resolve(props.directory)
       ),
     deploymentTarget: props.deploymentTarget ?? "16.4",
-    bundleId: config.ios.bundleIdentifier! + "." + widget,
+    bundleId,
 
     hasAccentColor: !!props.accentColor,
 
@@ -103,6 +107,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
   });
+
+  config = withEASTargets(config, { targetName, bundleIdentifier: bundleId });
 
   if (props.accentColor) {
     const lightColor =
