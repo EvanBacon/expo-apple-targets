@@ -993,7 +993,8 @@ async function applyXcodeChanges(
   // Add the target dependency to the main app, should be only one.
   mainAppTarget.props.dependencies.push(targetDependency);
 
-  const WELL_KNOWN_COPY_EXTENSIONS_NAME = "Embed Foundation Extensions";
+  const WELL_KNOWN_COPY_EXTENSIONS_NAME =
+    props.type === "clip" ? "Embed App Clips" : "Embed Foundation Extensions";
   // Could exist from a Share Extension
   const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
     if (PBXCopyFilesBuildPhase.is(phase)) {
