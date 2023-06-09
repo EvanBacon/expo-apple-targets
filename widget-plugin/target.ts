@@ -16,6 +16,9 @@ export type ExtensionType =
   | "quicklook-thumbnail"
   | "imessage"
   | "clip"
+  | "location-push"
+  | "credentials-provider"
+  | "account-auth"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -32,6 +35,11 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.background-asset-downloader-extension": "bg-download",
     "com.apple.matter.support.extension.device-setup": "matter",
     "com.apple.quicklook.thumbnail": "quicklook-thumbnail",
+    "com.apple.location.push.service": "location-push",
+    "com.apple.authentication-services-credential-provider-ui":
+      "credentials-provider",
+    "com.apple.authentication-services-account-authentication-modification-ui":
+      "account-auth",
     // "com.apple.intents-service": "intents",
   };
 
@@ -57,6 +65,31 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
         // This is hardcoded as there is no Swift code in the imessage extension.
         NSExtensionPrincipalClass: "StickerBrowserViewController",
+      },
+    });
+  }
+  if (type === "account-auth") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPointIdentifier,
+
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
+
+        NSExtensionAttributes: {
+          ASAccountAuthenticationModificationSupportsStrongPasswordChange: true,
+          ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple:
+            true,
+        },
+      },
+    });
+  }
+  if (type === "credentials-provider") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPointIdentifier,
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).CredentialProviderViewController",
       },
     });
   }
@@ -140,6 +173,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     return plist.build({
       NSExtension: {
         NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).RequestHandler",
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "location-push") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).LocationPushService",
         NSExtensionPointIdentifier,
       },
     });
