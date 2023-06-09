@@ -16,7 +16,7 @@ module.exports = ({ config }) => ({
     //   },
     // ],
 
-    ...globSync("./targets/*/expo-target.config.json", {
+    ...globSync("./targets/onyx/expo-target.config.json", {
       absolute: true,
     }).map((configPath) => [
       plugin,
