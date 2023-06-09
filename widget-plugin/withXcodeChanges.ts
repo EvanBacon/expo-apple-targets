@@ -729,7 +729,7 @@ async function applyXcodeChanges(
       project.rootObject.props.attributes.TargetAttributes ??= {};
       // idk, attempting to prevent EAS Build from failing when it codesigns
       project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
-        CreatedOnToolsVersion: "12.4",
+        CreatedOnToolsVersion: "14.3",
         ProvisioningStyle: "Automatic",
         // @ts-expect-error
         DevelopmentTeam: developmentTeamId,
@@ -773,11 +773,12 @@ async function applyXcodeChanges(
   }
 
   function configureTargetWithPreview(target: PBXNativeTarget) {
-    const assets = globSync("preview.xcassets", {
+    const assets = globSync("preview/*.xcassets", {
       absolute: true,
       cwd: magicCwd,
     })[0];
 
+    console.log("has:", assets);
     if (assets) {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
@@ -1007,14 +1008,25 @@ async function applyXcodeChanges(
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
   } else {
-    mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-      buildActionMask: 2147483647,
-      dstPath: "",
-      dstSubfolderSpec: 13,
-      files: [alphaExtensionAppexBf],
-      name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
-      runOnlyForDeploymentPostprocessing: 0,
-    });
+    if (props.type === "clip") {
+      mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+        dstPath: "$(CONTENTS_FOLDER_PATH)/AppClips",
+        dstSubfolderSpec: 16,
+        buildActionMask: 2147483647,
+        files: [alphaExtensionAppexBf],
+        name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
+        runOnlyForDeploymentPostprocessing: 0,
+      });
+    } else {
+      mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+        dstPath: "",
+        dstSubfolderSpec: 13,
+        buildActionMask: 2147483647,
+        files: [alphaExtensionAppexBf],
+        name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
+        runOnlyForDeploymentPostprocessing: 0,
+      });
+    }
   }
 
   const mainSourcesBuildPhase =
