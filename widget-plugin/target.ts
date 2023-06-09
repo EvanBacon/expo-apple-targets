@@ -14,10 +14,12 @@ export type ExtensionType =
   | "spotlight"
   | "matter"
   | "quicklook-thumbnail"
+  | "imessage"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
+    "com.apple.message-payload-provider": "imessage",
     "com.apple.widgetkit-extension": "widget",
     "com.apple.usernotifications.content-extension": "notification-content",
     "com.apple.share-services": "share",
@@ -38,6 +40,15 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     KNOWN_EXTENSION_POINT_IDENTIFIERS
   ).find((key) => KNOWN_EXTENSION_POINT_IDENTIFIERS[key] === type);
 
+  if (type === "imessage") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPointIdentifier,
+        // This is hardcoded as there is no Swift code in the imessage extension.
+        NSExtensionPrincipalClass: "StickerBrowserViewController",
+      },
+    });
+  }
   if (type === "notification-service") {
     return plist.build({
       NSExtension: {

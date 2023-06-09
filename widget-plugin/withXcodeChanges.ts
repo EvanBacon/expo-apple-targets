@@ -194,6 +194,74 @@ function createShareConfigurationList(
 
   return configurationList;
 }
+function createIMessageConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    ASSETCATALOG_COMPILER_APPICON_NAME: "iMessage App Icon",
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    GENERATE_INFOPLIST_FILE: "YES",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    LD_RUNPATH_SEARCH_PATHS:
+      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    MARKETING_VERSION: 1.0,
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      // @ts-expect-error
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      COPY_PHASE_STRIP: "NO",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
 function createSafariConfigurationList(
   project: XcodeProject,
   {
@@ -369,6 +437,8 @@ function createConfigurationListForType(
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
     return createSafariConfigurationList(project, props);
+  } else if (props.type === "imessage") {
+    return createIMessageConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
