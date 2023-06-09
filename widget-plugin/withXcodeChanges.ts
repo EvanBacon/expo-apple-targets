@@ -26,6 +26,7 @@ export type ExtensionType =
   | "notification-content"
   | "notification-service"
   | "share"
+  | "intent"
   | "spotlight"
   | "safari";
 
@@ -66,6 +67,7 @@ const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
   "com.apple.share-services": "share",
   "com.apple.usernotifications.service": "notification-service",
   "com.apple.spotlight.import": "spotlight",
+  "com.apple.intents-service": "intent",
   "com.apple.Safari.web-extension": "safari",
   // "com.apple.intents-service": "intents",
 };
@@ -131,74 +133,6 @@ function notificationServiceInfoPlist() {
       NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
     },
   };
-}
-
-function createIntentsConfigurationList(
-  project: XcodeProject,
-  {
-    name,
-    cwd,
-    bundleId,
-    deploymentTarget,
-    currentProjectVersion,
-  }: XcodeSettings
-) {
-  const common: BuildSettings = {
-    CLANG_ANALYZER_NONNULL: "YES",
-    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
-    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
-    CLANG_ENABLE_OBJC_WEAK: "YES",
-    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
-    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
-    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
-    CODE_SIGN_STYLE: "Automatic",
-    CURRENT_PROJECT_VERSION: 1,
-    DEBUG_INFORMATION_FORMAT: "dwarf",
-    GCC_C_LANGUAGE_STANDARD: "gnu11",
-    GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_FILE: "nando/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
-    INFOPLIST_KEY_NSHumanReadableCopyright: "",
-    IPHONEOS_DEPLOYMENT_TARGET: "16.4",
-    LD_RUNPATH_SEARCH_PATHS:
-      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-    MARKETING_VERSION: 1.0,
-    MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-    MTL_FAST_MATH: "YES",
-    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
-    PRODUCT_NAME: "$(TARGET_NAME)",
-    SKIP_INSTALL: "YES",
-    // @ts-expect-error
-    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
-    SWIFT_EMIT_LOC_STRINGS: "YES",
-    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
-    SWIFT_VERSION: "5.0",
-    TARGETED_DEVICE_FAMILY: "1,2",
-  };
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
-      ...common,
-    },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
-      ...common,
-      COPY_PHASE_STRIP: "NO",
-      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
-      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
 }
 
 function createNotificationContentConfigurationList(
@@ -515,6 +449,9 @@ function createConfigurationListForType(
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
     return createSafariConfigurationList(project, props);
+  } else if (props.type === "intent") {
+    // TODO: These are probably different
+    return createNotificationContentConfigurationList(project, props);
   } else if (props.type === "notification-service") {
     // TODO: These are probably different
     return createNotificationContentConfigurationList(project, props);
@@ -571,7 +508,7 @@ async function applyXcodeChanges(
   }
 
   // Special setting for share extensions.
-  if (["spotlight", "share"].includes(props.type)) {
+  if (["spotlight", "share", "intent"].includes(props.type)) {
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
       (buildConfig) => {

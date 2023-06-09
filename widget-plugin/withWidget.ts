@@ -77,6 +77,22 @@ function getInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier: "com.apple.share-services",
       },
     });
+  } else if (type === "intent") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          IntentsRestrictedWhileLocked: [],
+          IntentsSupported: [
+            "INSendMessageIntent",
+            "INSearchForMessagesIntent",
+            "INSetMessageAttributeIntent",
+          ],
+        },
+        // TODO: Update `IntentHandler` dynamically
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
+        NSExtensionPointIdentifier: "com.apple.intents-service",
+      },
+    });
   } else if (type === "safari") {
     return plist.build({
       NSExtension: {
@@ -133,6 +149,12 @@ function xcodeFrameworksForType(type: ExtensionType) {
       "WidgetKit",
       // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
       "SwiftUI",
+    ];
+  } else if (type === "intent") {
+    return [
+      "Intents",
+      // "IntentHandler",
+      // "IntentsUI"
     ];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
