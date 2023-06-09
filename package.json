@@ -8,18 +8,18 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@bacons/xcode": "^1.0.0-alpha.4",
-    "@types/glob": "^8.1.0",
-    "@types/react": "~18.0.27",
     "expo": "~48.0.18",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
-    "glob": "^10.2.6",
     "react": "18.2.0",
-    "react-native": "0.71.8",
-    "typescript": "^4.9.4"
+    "react-native": "0.71.8"
   },
   "devDependencies": {
+    "glob": "^10.2.6",
+    "typescript": "^4.9.4",
+    "@bacons/xcode": "^1.0.0-alpha.4",
+    "@types/glob": "^8.1.0",
+    "@types/react": "~18.0.27",
     "@babel/core": "^7.20.0",
     "ts-node": "^10.9.1"
   },
