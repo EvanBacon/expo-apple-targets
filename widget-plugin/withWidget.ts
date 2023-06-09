@@ -77,6 +77,18 @@ function getInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier: "com.apple.share-services",
       },
     });
+  } else if (type === "intent-ui") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          IntentsSupported: ["INSendMessageIntent"],
+        },
+        // TODO: Update `IntentViewController` dynamically
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).IntentViewController",
+        NSExtensionPointIdentifier: "com.apple.intents-ui-service",
+      },
+    });
   } else if (type === "intent") {
     return plist.build({
       NSExtension: {
@@ -118,27 +130,6 @@ function getInfoPlistForType(type: ExtensionType) {
           "com.apple.usernotifications.content-extension",
       },
     });
-    //     return `<?xml version="1.0" encoding="UTF-8"?>
-    // <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    // <plist version="1.0">
-    //     <dict>
-    //         <key>NSExtension</key>
-    //         <dict>
-    //             <key>NSExtensionAttributes</key>
-    //             <dict>
-    //                 <key>UNNotificationExtensionCategory</key>
-    //                 <string>myNotificationCategory</string>
-    //                 <key>UNNotificationExtensionInitialContentSizeRatio</key>
-    //                 <real>1</real>
-    //             </dict>
-    //             <key>NSExtensionMainStoryboard</key>
-    //             <string>MainInterface</string>
-    //             <key>NSExtensionPointIdentifier</key>
-    //             <string>com.apple.usernotifications.content-extension</string>
-    //         </dict>
-    //     </dict>
-    // </plist>`;
-    //   }
   }
 }
 
@@ -151,11 +142,9 @@ function xcodeFrameworksForType(type: ExtensionType) {
       "SwiftUI",
     ];
   } else if (type === "intent") {
-    return [
-      "Intents",
-      // "IntentHandler",
-      // "IntentsUI"
-    ];
+    return ["Intents"];
+  } else if (type === "intent-ui") {
+    return ["IntentsUI"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
   } else {

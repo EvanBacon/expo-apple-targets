@@ -7,7 +7,6 @@ import {
   PBXFrameworksBuildPhase,
   PBXGroup,
   PBXNativeTarget,
-  PBXProject,
   PBXResourcesBuildPhase,
   PBXSourcesBuildPhase,
   PBXTargetDependency,
@@ -27,6 +26,7 @@ export type ExtensionType =
   | "notification-service"
   | "share"
   | "intent"
+  | "intent-ui"
   | "spotlight"
   | "safari";
 
@@ -68,6 +68,7 @@ const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> = {
   "com.apple.usernotifications.service": "notification-service",
   "com.apple.spotlight.import": "spotlight",
   "com.apple.intents-service": "intent",
+  "com.apple.intents-ui-service": "intent-ui",
   "com.apple.Safari.web-extension": "safari",
   // "com.apple.intents-service": "intents",
 };
@@ -108,31 +109,6 @@ function isNativeTargetOfType(
       infoPlist.NSExtension?.NSExtensionPointIdentifier
     ] === type
   );
-}
-
-function intentsInfoPlist() {
-  return {
-    NSExtension: {
-      NSExtensionPointIdentifier: "com.apple.intents-service",
-      NSExtensionAttributes: {
-        IntentsRestrictedWhileLocked: [
-          "INSendMessageIntent",
-          "INSearchForMessagesIntent",
-          "INSetMessageAttributeIntent",
-        ],
-      },
-      NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
-    },
-  };
-}
-
-function notificationServiceInfoPlist() {
-  return {
-    NSExtension: {
-      NSExtensionPointIdentifier: "com.apple.usernotifications.service",
-      NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
-    },
-  };
 }
 
 function createNotificationContentConfigurationList(
@@ -452,6 +428,9 @@ function createConfigurationListForType(
   } else if (props.type === "intent") {
     // TODO: These are probably different
     return createNotificationContentConfigurationList(project, props);
+  } else if (props.type === "intent-ui") {
+    // TODO: These are probably different
+    return createNotificationContentConfigurationList(project, props);
   } else if (props.type === "notification-service") {
     // TODO: These are probably different
     return createNotificationContentConfigurationList(project, props);
@@ -508,7 +487,7 @@ async function applyXcodeChanges(
   }
 
   // Special setting for share extensions.
-  if (["spotlight", "share", "intent"].includes(props.type)) {
+  if (["spotlight", "share", "intent", "intent-ui"].includes(props.type)) {
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
       (buildConfig) => {
