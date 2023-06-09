@@ -52,10 +52,10 @@ const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
           if (introspect) {
             return;
           }
-          await fs.promises.writeFile(
-            filePath,
-            xcodeParse.build(modResults.toJSON())
-          );
+          const contents = xcodeParse.build(modResults.toJSON());
+          if (contents.trim().length) {
+            await fs.promises.writeFile(filePath, contents);
+          }
         },
       }),
     },

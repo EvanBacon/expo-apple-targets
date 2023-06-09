@@ -16,15 +16,15 @@ module.exports = ({ config }) => ({
     //   },
     // ],
 
-    // ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
-    //   (configPath) => [
-    //     plugin,
-    //     {
-    //       ...require(configPath),
-    //       directory: path.relative(process.cwd(), path.dirname(configPath)),
-    //     },
-    //   ]
-    // ),
+    ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
+      (configPath) => [
+        plugin,
+        {
+          ...require(configPath),
+          directory: path.relative(process.cwd(), path.dirname(configPath)),
+        },
+      ]
+    ),
 
     // [
     //   plugin,
@@ -33,13 +33,13 @@ module.exports = ({ config }) => ({
     //     directory: "targets/nova",
     //   },
     // ],
-    [
-      plugin,
-      {
-        ...require("./targets/beta/expo-target.config.json"),
-        directory: "targets/beta",
-      },
-    ],
+    // [
+    //   plugin,
+    //   {
+    //     ...require("./targets/beta/expo-target.config.json"),
+    //     directory: "targets/beta",
+    //   },
+    // ],
     // [
     //   plugin,
     //   {
