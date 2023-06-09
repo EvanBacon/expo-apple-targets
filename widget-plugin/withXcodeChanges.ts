@@ -1010,6 +1010,14 @@ async function applyXcodeChanges(
     });
   }
 
+  for (const target of project.rootObject.props.targets) {
+    project.rootObject.props.attributes.TargetAttributes ??= {};
+    // idk, attempting to prevent EAS Build from failing when it codesigns
+    project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
+      CreatedOnToolsVersion: "12.4",
+    };
+  }
+
   return project;
 }
 
