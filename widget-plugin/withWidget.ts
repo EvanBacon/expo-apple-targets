@@ -40,7 +40,7 @@ function kebabToCamelCase(str: string) {
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
-  if (props.icon) {
+  if (props.icon && !/https?:\/\//.test(props.icon)) {
     props.icon = path.join(props.directory, props.icon);
   }
 

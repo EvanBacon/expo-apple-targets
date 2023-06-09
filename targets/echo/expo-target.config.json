@@ -1,5 +1,6 @@
 {
     "type": "share",
+    "icon": "https://pbs.twimg.com/profile_images/1576625400205250561/wGfn72X__400x400.jpg",
     "frameworks": [
         "UIKit",
         "Social",

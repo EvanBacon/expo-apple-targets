@@ -16,16 +16,16 @@ module.exports = ({ config }) => ({
     //   },
     // ],
 
-    ...globSync("./targets/*/expo-target.config.json", { absolute: true }).map(
-      (configPath) => [
-        plugin,
-        {
-          teamId: "QQ57RJ5UTD",
-          ...require(configPath),
-          directory: path.relative(process.cwd(), path.dirname(configPath)),
-        },
-      ]
-    ),
+    ...globSync("./targets/*/expo-target.config.json", {
+      absolute: true,
+    }).map((configPath) => [
+      plugin,
+      {
+        teamId: "QQ57RJ5UTD",
+        ...require(configPath),
+        directory: path.relative(process.cwd(), path.dirname(configPath)),
+      },
+    ]),
 
     // [
     //   plugin,
