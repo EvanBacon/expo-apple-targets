@@ -39,6 +39,8 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
 export function getTargetInfoPlistForType(type: ExtensionType) {
   if (type === "clip") {
     return plist.build({
+      UIApplicationSupportsIndirectInputEvents: true,
+
       NSAppClip: {
         NSAppClipRequestEphemeralUserNotification: false,
         NSAppClipRequestLocationConfirmation: false,
@@ -213,6 +215,13 @@ export function isNativeTargetOfType(
   target: PBXNativeTarget,
   type: ExtensionType
 ): boolean {
+  if (
+    type === "clip" &&
+    target.props.productType ===
+      "com.apple.product-type.application.on-demand-install-capable"
+  ) {
+    return true;
+  }
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }

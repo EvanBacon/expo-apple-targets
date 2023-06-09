@@ -950,7 +950,10 @@ async function applyXcodeChanges(
     // @ts-expect-error
     productReference:
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
-    productType: "com.apple.product-type.app-extension",
+    productType:
+      props.type === "clip"
+        ? "com.apple.product-type.application.on-demand-install-capable"
+        : "com.apple.product-type.app-extension",
   });
 
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
