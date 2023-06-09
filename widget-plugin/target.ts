@@ -12,6 +12,7 @@ export type ExtensionType =
   | "bg-download"
   | "intent-ui"
   | "spotlight"
+  | "matter"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -25,47 +26,11 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.intents-ui-service": "intent-ui",
     "com.apple.Safari.web-extension": "safari",
     "com.apple.background-asset-downloader-extension": "bg-download",
+    "com.apple.matter.support.extension.device-setup": "matter",
     // "com.apple.intents-service": "intents",
   };
 
-export function isNativeTargetOfType(
-  target: PBXNativeTarget,
-  type: ExtensionType
-): boolean {
-  if (target.props.productType !== "com.apple.product-type.app-extension") {
-    return false;
-  }
-  // Could be a Today Extension, Share Extension, etc.
-
-  const defConfig =
-    target.props.buildConfigurationList.props.buildConfigurations.find(
-      (config) =>
-        config.props.name ===
-        target.props.buildConfigurationList.props.defaultConfigurationName
-    );
-  const infoPlistPath = path.join(
-    // TODO: Resolve root better
-    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    defConfig.props.buildSettings.INFOPLIST_FILE
-  );
-
-  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
-
-  if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
-    console.error(
-      "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
-        target.getDisplayName()
-    );
-    return false;
-  }
-
-  return (
-    KNOWN_EXTENSION_POINT_IDENTIFIERS[
-      infoPlist.NSExtension?.NSExtensionPointIdentifier
-    ] === type
-  );
-}
-
+// TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
   const NSExtensionPointIdentifier = Object.keys(
     KNOWN_EXTENSION_POINT_IDENTIFIERS
@@ -136,6 +101,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "matter") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).RequestHandler",
+        NSExtensionPointIdentifier,
+      },
+    });
   } else if (type === "safari") {
     return plist.build({
       NSExtension: {
@@ -171,9 +143,14 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
 }
 
 export function needsEmbeddedSwift(type: ExtensionType) {
-  return ["spotlight", "share", "intent", "intent-ui", "bg-download"].includes(
-    type
-  );
+  return [
+    "spotlight",
+    "share",
+    "intent",
+    "intent-ui",
+    "bg-download",
+    "matter",
+  ].includes(type);
 }
 
 export function getFrameworksForType(type: ExtensionType) {
@@ -190,9 +167,45 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["IntentsUI"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
-  } else if (type === "bg-download") {
-    return [];
-  } else {
-    return [];
   }
+
+  return [];
+}
+
+export function isNativeTargetOfType(
+  target: PBXNativeTarget,
+  type: ExtensionType
+): boolean {
+  if (target.props.productType !== "com.apple.product-type.app-extension") {
+    return false;
+  }
+  // Could be a Today Extension, Share Extension, etc.
+
+  const defConfig =
+    target.props.buildConfigurationList.props.buildConfigurations.find(
+      (config) =>
+        config.props.name ===
+        target.props.buildConfigurationList.props.defaultConfigurationName
+    );
+  const infoPlistPath = path.join(
+    // TODO: Resolve root better
+    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
+    defConfig.props.buildSettings.INFOPLIST_FILE
+  );
+
+  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
+
+  if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
+    console.error(
+      "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
+        target.getDisplayName()
+    );
+    return false;
+  }
+
+  return (
+    KNOWN_EXTENSION_POINT_IDENTIFIERS[
+      infoPlist.NSExtension?.NSExtensionPointIdentifier
+    ] === type
+  );
 }
