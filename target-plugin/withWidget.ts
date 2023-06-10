@@ -6,28 +6,14 @@ import {
   withIosAccentColor,
   withIosWidgetBackgroundColor,
 } from "./accentColor/withAccentColor";
-import { ENTRY_FILE, INTENT_DEFINITION, WIDGET } from "./fixtures/template";
+import { Config } from "./config";
 import { withIosIcon } from "./icon/withIosIcon";
-import {
-  ExtensionType,
-  getFrameworksForType,
-  getTargetInfoPlistForType,
-} from "./target";
+import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
 
-type Props = {
+type Props = Config & {
   directory?: string;
-  name?: string;
-  icon?: string;
-  accentColor?: { color: string; darkColor?: string } | string;
-  backgroundColor?: { color: string; darkColor?: string } | string;
-  /** 16.4 */
-  deploymentTarget?: string;
-
-  type: ExtensionType;
-  frameworks?: string[];
-  appleTeamId?: string;
 };
 
 function kebabToCamelCase(str: string) {
@@ -134,15 +120,15 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     });
   }
 
-  if (props.backgroundColor) {
+  if (props.widgetBackgroundColor) {
     const lightColor =
-      typeof props.backgroundColor === "string"
-        ? props.backgroundColor
-        : props.backgroundColor.color;
+      typeof props.widgetBackgroundColor === "string"
+        ? props.widgetBackgroundColor
+        : props.widgetBackgroundColor.color;
     const darkColor =
-      typeof props.backgroundColor === "string"
+      typeof props.widgetBackgroundColor === "string"
         ? undefined
-        : props.backgroundColor.darkColor;
+        : props.widgetBackgroundColor.darkColor;
     withIosWidgetBackgroundColor(config, {
       cwd: props.directory,
       color: lightColor,
