@@ -15,7 +15,6 @@ import {
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
-import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
 type Props = {
   directory?: string;
@@ -28,7 +27,7 @@ type Props = {
 
   type: ExtensionType;
   frameworks?: string[];
-  teamId?: string;
+  appleTeamId?: string;
 };
 
 function kebabToCamelCase(str: string) {
@@ -65,19 +64,19 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         ["Info.plist", getTargetInfoPlistForType(props.type)],
       ];
 
-      if (props.type === "widget") {
-        files.push(
-          [
-            "index.swift",
-            ENTRY_FILE.replace(
-              "// Export widgets here",
-              "// Export widgets here\n" + `        ${widget}()`
-            ),
-          ],
-          [widget + ".swift", WIDGET.replace(/alpha/g, widget)],
-          [widget + ".intentdefinition", INTENT_DEFINITION]
-        );
-      }
+      // if (props.type === "widget") {
+      //   files.push(
+      //     [
+      //       "index.swift",
+      //       ENTRY_FILE.replace(
+      //         "// Export widgets here",
+      //         "// Export widgets here\n" + `        ${widget}()`
+      //       ),
+      //     ],
+      //     [widget + ".swift", WIDGET.replace(/alpha/g, widget)],
+      //     [widget + ".intentdefinition", INTENT_DEFINITION]
+      //   );
+      // }
 
       files.forEach(([filename, content]) => {
         const filePath = path.join(widgetFolderAbsolutePath, filename);
@@ -111,7 +110,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
-    teamId: props.teamId,
+    teamId: props.appleTeamId,
   });
 
   config = withEASTargets(config, { targetName, bundleIdentifier: bundleId });
@@ -163,5 +162,3 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 };
 
 export default withWidget;
-
-export { withXcodeProjectBetaBaseMod };
