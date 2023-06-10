@@ -108,7 +108,6 @@ function createNotificationContentConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       DEBUG_INFORMATION_FORMAT: "dwarf",
@@ -177,7 +176,6 @@ function createShareConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     },
   });
@@ -246,7 +244,6 @@ function createIMessageConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     },
   });
@@ -314,7 +311,6 @@ function createSafariConfigurationList(
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     },
@@ -389,7 +385,6 @@ function createAppClipConfigurationList(
   const infoPlist: Partial<BuildSettings> = {
     GENERATE_INFOPLIST_FILE: "YES",
     INFOPLIST_KEY_CFBundleDisplayName: "bacon-widget",
-    // @ts-expect-error
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
@@ -408,8 +403,6 @@ function createAppClipConfigurationList(
 
     LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
     MTL_FAST_MATH: "YES",
-
-    // @ts-expect-error
     ENABLE_PREVIEWS: "YES",
   };
 
@@ -420,7 +413,6 @@ function createAppClipConfigurationList(
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     },
@@ -485,7 +477,6 @@ function createConfigurationList(
       PRODUCT_BUNDLE_IDENTIFIER: bundleId,
       PRODUCT_NAME: "$(TARGET_NAME)",
       SKIP_INSTALL: "YES",
-      // @ts-expect-error
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
@@ -607,7 +598,6 @@ async function applyXcodeChanges(
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
       (buildConfig) => {
-        // @ts-expect-error
         buildConfig.props.buildSettings.ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES =
           "YES";
       }
@@ -678,9 +668,7 @@ async function applyXcodeChanges(
     props.teamId ??
     mainAppTarget.props.buildConfigurationList.props.buildConfigurations.reduce(
       (acc, config) => {
-        // @ts-expect-error
         if (config.props.buildSettings.DEVELOPMENT_TEAM) {
-          // @ts-expect-error
           return config.props.buildSettings.DEVELOPMENT_TEAM;
         }
         return acc;
@@ -713,7 +701,6 @@ async function applyXcodeChanges(
     } else {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
-          // @ts-expect-error
           delete config.props.buildSettings.DEVELOPMENT_TEAM;
         }
       );
@@ -754,7 +741,6 @@ async function applyXcodeChanges(
     if (entitlements.length > 0) {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
-          // @ts-expect-error
           config.props.buildSettings.CODE_SIGN_ENTITLEMENTS =
             props.cwd + "/" + entitlements[0].props.fileRef.props.path;
         }
@@ -762,7 +748,6 @@ async function applyXcodeChanges(
     } else {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
-          // @ts-expect-error
           delete config.props.buildSettings.CODE_SIGN_ENTITLEMENTS;
         }
       );
@@ -781,7 +766,6 @@ async function applyXcodeChanges(
     if (assets) {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
-          // @ts-expect-error
           config.props.buildSettings.DEVELOPMENT_ASSET_PATHS = `"${
             props.cwd + "/preview"
           }"`;
@@ -790,7 +774,6 @@ async function applyXcodeChanges(
     } else {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
-          // @ts-expect-error
           delete config.props.buildSettings.DEVELOPMENT_ASSET_PATHS;
         }
       );
@@ -898,7 +881,6 @@ async function applyXcodeChanges(
             fileRef: PBXFileReference.create(project, {
               path: file,
               sourceTree: "<group>",
-              // @ts-expect-error
               lastKnownFileType: "folder",
             }),
           })
@@ -908,7 +890,6 @@ async function applyXcodeChanges(
           PBXBuildFile.create(project, {
             fileRef: PBXFileReference.create(project, {
               path: file,
-              // @ts-expect-error
               explicitFileType: file.endsWith(".js")
                 ? "sourcecode.javascript"
                 : file.endsWith(".json")
