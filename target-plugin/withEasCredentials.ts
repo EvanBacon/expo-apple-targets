@@ -18,28 +18,6 @@ function unique<T>(arr: T[]) {
   return [...new Set(arr)];
 }
 
-export const withAppClipsEntitlements: ConfigPlugin<{
-  bundleIdentifier: string;
-}> = (config, { bundleIdentifier }) => {
-  withEntitlementsPlist(config, (config) => {
-    const existingAppClipIds = config.modResults[
-      "com.apple.developer.associated-appclip-app-identifiers"
-    ] as string[];
-
-    // App Clip
-    config.modResults[
-      "com.apple.developer.associated-appclip-app-identifiers"
-    ] = unique([
-      ...existingAppClipIds,
-      `$(AppIdentifierPrefix)${bundleIdentifier}`,
-    ]);
-
-    return config;
-  });
-
-  return config;
-};
-
 export const withDefaultAppGroup: ConfigPlugin = (config) => {
   withEntitlementsPlist(config, (config) => {
     // Inject an App Group
