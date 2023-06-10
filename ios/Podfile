@@ -38,7 +38,7 @@ elsif podfile_properties.key?('ios.flipper') then
   end
 end
 
-target 'baconwidget' do
+target 'app2095' do
   use_expo_modules!
   config = use_native_modules!
 

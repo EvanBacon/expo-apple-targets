@@ -12,7 +12,10 @@ module.exports = ({ config }) => ({
     }).map((configPath) => [
       plugin,
       {
+        // Change this as needed
         teamId: "QQ57RJ5UTD",
+
+        // TODO: Move into the plugin
         ...require(configPath),
         directory: path.relative(process.cwd(), path.dirname(configPath)),
       },

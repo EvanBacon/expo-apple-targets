@@ -778,7 +778,6 @@ async function applyXcodeChanges(
       cwd: magicCwd,
     })[0];
 
-    console.log("has:", assets);
     if (assets) {
       target.props.buildConfigurationList.props.buildConfigurations.forEach(
         (config) => {
@@ -1099,7 +1098,7 @@ async function applyXcodeChanges(
   return project;
 }
 
-const PROTECTED_GROUP_NAME = "expo:modifiable";
+const PROTECTED_GROUP_NAME = "expo:targets";
 
 function ensureProtectedGroup(project: XcodeProject) {
   const hasProtectedGroup = project.rootObject.props.mainGroup

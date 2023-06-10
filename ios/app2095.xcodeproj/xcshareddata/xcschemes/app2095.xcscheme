@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "bacon-widget.app"
-               BlueprintName = "baconwidget"
-               ReferencedContainer = "container:baconwidget.xcodeproj">
+               BuildableName = "app2095.app"
+               BlueprintName = "app2095"
+               ReferencedContainer = "container:app2095.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "baconwidgetTests.xctest"
-               BlueprintName = "baconwidgetTests"
-               ReferencedContainer = "container:baconwidget.xcodeproj">
+               BuildableName = "app2095Tests.xctest"
+               BlueprintName = "app2095Tests"
+               ReferencedContainer = "container:app2095.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "bacon-widget.app"
-            BlueprintName = "baconwidget"
-            ReferencedContainer = "container:baconwidget.xcodeproj">
+            BuildableName = "app2095.app"
+            BlueprintName = "app2095"
+            ReferencedContainer = "container:app2095.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "bacon-widget.app"
-            BlueprintName = "baconwidget"
-            ReferencedContainer = "container:baconwidget.xcodeproj">
+            BuildableName = "app2095.app"
+            BlueprintName = "app2095"
+            ReferencedContainer = "container:app2095.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
