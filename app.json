@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "bacon-widget",
-    "slug": "bacon-widget",
+    "name": "app-2095",
+    "slug": "app-2095",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bacon.bacon-widget"
+      "bundleIdentifier": "com.bacon.2095"
     },
     "android": {
       "adaptiveIcon": {
