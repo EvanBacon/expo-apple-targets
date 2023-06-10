@@ -394,6 +394,7 @@ function createAppClipConfigurationList(
       "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
   };
 
+  // @ts-expect-error
   const common: BuildSettings = {
     ...dynamic,
     ...infoPlist,

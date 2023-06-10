@@ -43,13 +43,14 @@ struct GradientProgressWidget: View {
     var body: some View {
         ZStack {
             // Gradient Background
-          LinearGradient(gradient: Gradient(colors: [Color.red, Color("Color2")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+          LinearGradient(gradient: Gradient(colors: [Color("Color1"), Color("Color2")]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
             
-            // Progress Indicator
-            ProgressView(value: progressValue)
-                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                .scaleEffect(2)
+            // Inserted Text
+            Text("Hello Expo")
+                .font(.title)
+                .foregroundColor(.white)
+          
         }
     }
 }

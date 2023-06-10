@@ -34,7 +34,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationIntent
 }
 
-struct betaEntryView : View {
+struct widgetsEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
@@ -42,21 +42,21 @@ struct betaEntryView : View {
     }
 }
 
-struct beta: Widget {
-    let kind: String = "beta"
+struct widgets: Widget {
+    let kind: String = "widgets"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            betaEntryView(entry: entry)
+            widgetsEntryView(entry: entry)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
     }
 }
 
-struct beta_Previews: PreviewProvider {
+struct widgets_Previews: PreviewProvider {
     static var previews: some View {
-        betaEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+        widgetsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
