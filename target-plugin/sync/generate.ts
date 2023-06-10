@@ -50,13 +50,18 @@ export function getFrameworksForTargets(project: XcodeProject) {
       return;
     }
 
-    items.push([getNativeTargetId(target), frameworkNames]);
+    const targetId = getNativeTargetId(target);
+    if (targetId) {
+      items.push([targetId, frameworkNames]);
+    }
   });
 
   // Remove duplicates
-  const uniqueItems = items.filter(
-    (item, index, self) => index === self.findIndex((t) => t[0] === item[0])
-  );
+  const uniqueItems = items
+    .filter(
+      (item, index, self) => index === self.findIndex((t) => t[0] === item[0])
+    )
+    .sort((a, b) => a[0].localeCompare(b[0]));
 
   return uniqueItems
     .map(([target, frameworkNames], index) => {
@@ -106,9 +111,11 @@ export function getNativeTargetId(
 }
 
 (async () => {
-  const project = XcodeProject.open(
-    path.join(process.cwd(), "ios", "baconwidget.xcodeproj", "project.pbxproj")
-  );
+  const projPath = globSync("ios/*/project.pbxproj", {
+    cwd: process.cwd(),
+    absolute: true,
+  })[0];
+  const project = XcodeProject.open(projPath);
 
   console.log(getFrameworksForTargets(project));
 
