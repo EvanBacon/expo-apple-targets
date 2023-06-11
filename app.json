@@ -2,7 +2,7 @@
   "expo": {
     "name": "app-2095",
     "slug": "app-2095",
-    "version": "1.0.0",
+    "version": "1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

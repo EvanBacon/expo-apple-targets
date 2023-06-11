@@ -208,9 +208,11 @@ function getMainMarketingVersion(project: XcodeProject) {
   const mainTarget = getMainAppTarget(project);
   const info = getInfoPlistForTarget(mainTarget);
   const version = info.CFBundleShortVersionString;
+  // console.log('getMainMarketingVersion', mainTarget.getDisplayName(), version)
 
   if (!version || version === "$(MARKETING_VERSION)") {
     const config = getDefaultBuildConfigurationForTarget(mainTarget);
+    // console.log('getMainMarketingVersion.fallback', config.props.buildSettings.MARKETING_VERSION)
     return config.props.buildSettings.MARKETING_VERSION;
   }
 
@@ -725,7 +727,7 @@ async function applyXcodeChanges(
 
   if (targetToUpdate) {
     console.log(
-      `Widget "${targetToUpdate.props.productName}" already exists, updating instead of creating a new one`
+      `Target "${targetToUpdate.props.productName}" already exists, updating instead of creating a new one`
     );
   }
 
@@ -872,6 +874,7 @@ async function applyXcodeChanges(
 
   function syncMarketingVersions() {
     const mainVersion = getMainMarketingVersion(project);
+    // console.log('main marketing version:', mainVersion)
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
         configureTargetWithMarketingVersion(target, mainVersion);
@@ -1062,7 +1065,7 @@ async function applyXcodeChanges(
 
   configureTargetWithPreview(widgetTarget);
 
-  syncMarketingVersions();
+  
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
@@ -1203,7 +1206,7 @@ async function applyXcodeChanges(
   }
 
   applyDevelopmentTeamIdToTargets();
-
+  syncMarketingVersions();
   return project;
 }
 

@@ -277,6 +277,13 @@ export function isNativeTargetOfType(
   type: ExtensionType
 ): boolean {
   if (
+    type === "watch" &&
+    target.props.productType ===
+      "com.apple.product-type.application"
+  ) {
+    return ('WATCHOS_DEPLOYMENT_TARGET' in getDefaultBuildConfigurationForTarget(target).props.buildSettings)
+  }
+  if (
     type === "clip" &&
     target.props.productType ===
       "com.apple.product-type.application.on-demand-install-capable"
@@ -317,17 +324,19 @@ export function isNativeTargetOfType(
   );
 }
 
-export function getMainAppTarget(project: XcodeProject) {
-  const mainAppTarget = project.rootObject.getNativeTarget(
-    "com.apple.product-type.application"
-  );
+export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {
+  const mainAppTarget = project.rootObject.props.targets.filter(target => {
+    if (PBXNativeTarget.is(target) && target.props.productType === "com.apple.product-type.application") {
+      return !isNativeTargetOfType(target, "watch")
+    }
+    return false;
+  }) as PBXNativeTarget[]
 
-  // This should never happen.
-  if (!mainAppTarget) {
-    throw new Error("Couldn't find main application target in Xcode project.");
+  if (mainAppTarget.length > 1) {
+    console.warn(`Multiple main app targets found, using first one: ${mainAppTarget.map(t => t.getDisplayName()).join(', ')}}`)
   }
 
-  return mainAppTarget;
+  return mainAppTarget[0];
 }
 
 export function getDefaultBuildConfigurationForTarget(target: PBXNativeTarget) {
