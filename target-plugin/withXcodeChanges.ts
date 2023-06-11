@@ -56,9 +56,13 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
 import fs from "fs";
 import {
   ExtensionType,
+  getDefaultBuildConfigurationForTarget,
+  getInfoPlistForTarget,
+  getMainAppTarget,
   isNativeTargetOfType,
   KNOWN_EXTENSION_POINT_IDENTIFIERS,
   needsEmbeddedSwift,
+  productTypeForType,
 } from "./target";
 
 function createNotificationContentConfigurationList(
@@ -92,7 +96,7 @@ function createNotificationContentConfigurationList(
 
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-    MARKETING_VERSION: 1.0,
+    MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
@@ -160,7 +164,7 @@ function createShareConfigurationList(
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-    MARKETING_VERSION: 1.0,
+    MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
@@ -198,6 +202,20 @@ function createShareConfigurationList(
 
   return configurationList;
 }
+
+function getMainMarketingVersion(project: XcodeProject) {
+  const mainTarget = getMainAppTarget(project);
+  const info = getInfoPlistForTarget(mainTarget);
+  const version = info.CFBundleShortVersionString;
+
+  if (!version || version === "$(MARKETING_VERSION)") {
+    const config = getDefaultBuildConfigurationForTarget(mainTarget);
+    return config.props.buildSettings.MARKETING_VERSION;
+  }
+
+  return version;
+}
+
 function createIMessageConfigurationList(
   project: XcodeProject,
   {
@@ -228,7 +246,7 @@ function createIMessageConfigurationList(
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-    MARKETING_VERSION: 1.0,
+    MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
@@ -254,6 +272,94 @@ function createIMessageConfigurationList(
       ...common,
       // Diff
       COPY_PHASE_STRIP: "NO",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+function createWatchAppConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    hasAccentColor,
+  }: XcodeSettings
+) {
+  const mainAppTarget = getDefaultBuildConfigurationForTarget(
+    getMainAppTarget(project)
+  );
+  // NOTE: No base Info.plist needed.
+
+  const common: BuildSettings = {
+    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    ENABLE_PREVIEWS: "YES",
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    // @ts-expect-error
+    INFOPLIST_KEY_UISupportedInterfaceOrientations:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
+    INFOPLIST_KEY_WKCompanionAppBundleIdentifier:
+      mainAppTarget.props.buildSettings.PRODUCT_BUNDLE_IDENTIFIER,
+    // INFOPLIST_KEY_WKCompanionAppBundleIdentifier: "$(BUNDLE_IDENTIFIER)",
+    // INFOPLIST_KEY_WKCompanionAppBundleIdentifier: rootBundleId,
+    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "watchos",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "4",
+    WATCHOS_DEPLOYMENT_TARGET: deploymentTarget ?? "9.4",
+    // WATCHOS_DEPLOYMENT_TARGET: 9.4,
+  };
+
+  if (hasAccentColor) {
+    common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "AccentColor";
+  }
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     },
   });
 
@@ -293,7 +399,7 @@ function createSafariConfigurationList(
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS:
       "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-    MARKETING_VERSION: 1.0,
+    MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
@@ -352,7 +458,7 @@ function createAppClipConfigurationList(
     INFOPLIST_FILE: cwd + "/Info.plist",
     INFOPLIST_KEY_CFBundleDisplayName: name,
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-    MARKETING_VERSION: 1.0,
+    MARKETING_VERSION: "1.0",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
 
     // TODO: Add this later like entitlements
@@ -384,7 +490,6 @@ function createAppClipConfigurationList(
 
   const infoPlist: Partial<BuildSettings> = {
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_KEY_CFBundleDisplayName: "bacon-widget",
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
@@ -472,7 +577,7 @@ function createConfigurationList(
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS:
         "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-      MARKETING_VERSION: 1.0,
+      MARKETING_VERSION: "1.0",
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       MTL_FAST_MATH: "YES",
       PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -510,7 +615,7 @@ function createConfigurationList(
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS:
         "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-      MARKETING_VERSION: 1.0,
+      MARKETING_VERSION: "1.0",
       MTL_FAST_MATH: "YES",
       PRODUCT_BUNDLE_IDENTIFIER: bundleId,
       PRODUCT_NAME: "$(TARGET_NAME)",
@@ -545,6 +650,8 @@ function createConfigurationListForType(
     return createIMessageConfigurationList(project, props);
   } else if (props.type === "clip") {
     return createAppClipConfigurationList(project, props);
+  } else if (props.type === "watch") {
+    return createWatchAppConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -585,14 +692,7 @@ async function applyXcodeChanges(
   project: XcodeProject,
   props: XcodeSettings
 ) {
-  const mainAppTarget = project.rootObject.getNativeTarget(
-    "com.apple.product-type.application"
-  );
-
-  // This should never happen.
-  if (!mainAppTarget) {
-    throw new Error("Couldn't find main application target in Xcode project.");
-  }
+  const mainAppTarget = getMainAppTarget(project);
 
   // Special setting for share extensions.
   if (needsEmbeddedSwift(props.type)) {
@@ -758,6 +858,26 @@ async function applyXcodeChanges(
     // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
   }
 
+  function configureTargetWithMarketingVersion(
+    target: PBXNativeTarget,
+    mainVersion: string
+  ) {
+    target.props.buildConfigurationList.props.buildConfigurations.forEach(
+      (config) => {
+        config.props.buildSettings.MARKETING_VERSION = mainVersion;
+      }
+    );
+  }
+
+  function syncMarketingVersions() {
+    const mainVersion = getMainMarketingVersion(project);
+    project.rootObject.props.targets.forEach((target) => {
+      if (PBXNativeTarget.is(target)) {
+        configureTargetWithMarketingVersion(target, mainVersion);
+      }
+    });
+  }
+
   function configureTargetWithPreview(target: PBXNativeTarget) {
     const assets = globSync("preview/*.xcassets", {
       absolute: true,
@@ -810,6 +930,8 @@ async function applyXcodeChanges(
     configureTargetWithPreview(targetToUpdate);
 
     applyDevelopmentTeamIdToTargets();
+
+    syncMarketingVersions();
     return project;
   }
 
@@ -932,15 +1054,14 @@ async function applyXcodeChanges(
     // @ts-expect-error
     productReference:
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
-    productType:
-      props.type === "clip"
-        ? "com.apple.product-type.application.on-demand-install-capable"
-        : "com.apple.product-type.app-extension",
+    productType: productTypeForType(props.type),
   });
 
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
 
   configureTargetWithPreview(widgetTarget);
+
+  syncMarketingVersions();
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
@@ -976,7 +1097,11 @@ async function applyXcodeChanges(
   mainAppTarget.props.dependencies.push(targetDependency);
 
   const WELL_KNOWN_COPY_EXTENSIONS_NAME =
-    props.type === "clip" ? "Embed App Clips" : "Embed Foundation Extensions";
+    props.type === "clip"
+      ? "Embed App Clips"
+      : props.type === "watch"
+      ? "Embed Watch Content"
+      : "Embed Foundation Extensions";
   // Could exist from a Share Extension
   const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
     if (PBXCopyFilesBuildPhase.is(phase)) {
@@ -989,9 +1114,10 @@ async function applyXcodeChanges(
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
   } else {
-    if (props.type === "clip") {
+    const dstPath = { clip: "AppClips", watch: "Watch" }[props.type];
+    if (dstPath) {
       mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-        dstPath: "$(CONTENTS_FOLDER_PATH)/AppClips",
+        dstPath: "$(CONTENTS_FOLDER_PATH)/" + dstPath,
         dstSubfolderSpec: 16,
         buildActionMask: 2147483647,
         files: [alphaExtensionAppexBf],

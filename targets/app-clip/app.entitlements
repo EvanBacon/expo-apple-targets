@@ -4,9 +4,7 @@
     <dict>
         <key>com.apple.developer.parent-application-identifiers</key>
         <array>
-            <string>$(AppIdentifierPrefix)com.bacon.bacon-widget</string>
+            <string>$(AppIdentifierPrefix)com.bacon.2095</string>
         </array>
-        <key>com.apple.developer.on-demand-install-capable</key>
-        <true/>
     </dict>
 </plist>

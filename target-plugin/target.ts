@@ -1,4 +1,4 @@
-import { PBXNativeTarget } from "@bacons/xcode";
+import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
 import plist from "@expo/plist";
 import fs from "fs";
 import path from "path";
@@ -16,6 +16,7 @@ export type ExtensionType =
   | "quicklook-thumbnail"
   | "imessage"
   | "clip"
+  | "watch"
   | "location-push"
   | "credentials-provider"
   | "account-auth"
@@ -45,10 +46,18 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
+  if (type === "watch") {
+    return plist.build({});
+  }
   if (type === "clip") {
     return plist.build({
+      CFBundleName: "$(PRODUCT_NAME)",
+      CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
+      CFBundleVersion: "$(CURRENT_PROJECT_VERSION)",
+      CFBundleExecutable: "$(EXECUTABLE_NAME)",
+      CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
+      CFBundleShortVersionString: "$(MARKETING_VERSION)",
       UIApplicationSupportsIndirectInputEvents: true,
-
       NSAppClip: {
         NSAppClipRequestEphemeralUserNotification: false,
         NSAppClipRequestLocationConfirmation: false,
@@ -217,8 +226,20 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
   });
 }
 
+export function productTypeForType(type: ExtensionType) {
+  switch (type) {
+    case "clip":
+      return "com.apple.product-type.application.on-demand-install-capable";
+    case "watch":
+      return "com.apple.product-type.application";
+    default:
+      return "com.apple.product-type.app-extension";
+  }
+}
+
 export function needsEmbeddedSwift(type: ExtensionType) {
   return [
+    "watch",
     "spotlight",
     "share",
     "intent",
@@ -294,4 +315,42 @@ export function isNativeTargetOfType(
       infoPlist.NSExtension?.NSExtensionPointIdentifier
     ] === type
   );
+}
+
+export function getMainAppTarget(project: XcodeProject) {
+  const mainAppTarget = project.rootObject.getNativeTarget(
+    "com.apple.product-type.application"
+  );
+
+  // This should never happen.
+  if (!mainAppTarget) {
+    throw new Error("Couldn't find main application target in Xcode project.");
+  }
+
+  return mainAppTarget;
+}
+
+export function getDefaultBuildConfigurationForTarget(target: PBXNativeTarget) {
+  return target.props.buildConfigurationList.props.buildConfigurations.find(
+    (config) =>
+      config.props.name ===
+      target.props.buildConfigurationList.props.defaultConfigurationName
+  );
+}
+
+export function getInfoPlistForTarget(target: PBXNativeTarget) {
+  return plist.parse(
+    fs.readFileSync(getInfoPlistPathForTarget(target), "utf8")
+  );
+}
+
+export function getInfoPlistPathForTarget(target: PBXNativeTarget) {
+  const infoPlistPath = path.join(
+    // TODO: Resolve root better
+    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
+    getDefaultBuildConfigurationForTarget(target).props.buildSettings
+      .INFOPLIST_FILE
+  );
+
+  return infoPlistPath;
 }

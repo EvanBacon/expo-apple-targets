@@ -7,20 +7,39 @@ import {
 } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
 import * as fs from "fs-extra";
 import { join } from "path";
+import { ExtensionType } from "../target";
 
 export const withIosIcon: ConfigPlugin<{
   cwd: string;
+  type: ExtensionType;
   iconFilePath: string;
-}> = (config, { cwd, iconFilePath }) => {
+}> = (config, { cwd, type, iconFilePath }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
-      await setIconsAsync(
-        iconFilePath,
-        config.modRequest.projectRoot,
-        join(config.modRequest.projectRoot, cwd),
-        cwd
-      );
+      const projectRoot = config.modRequest.projectRoot;
+      const namedProjectRoot = join(projectRoot, cwd);
+      if (type === "watch") {
+        // Ensure the Images.xcassets/AppIcon.appiconset path exists
+        await fs.ensureDir(join(namedProjectRoot, IMAGESET_PATH));
+
+        // Finally, write the Config.json
+        await writeContentsJsonAsync(join(namedProjectRoot, IMAGESET_PATH), {
+          images: await generateWatchIconsInternalAsync(
+            iconFilePath,
+            projectRoot,
+            namedProjectRoot,
+            cwd
+          ),
+        });
+      } else {
+        await setIconsAsync(
+          iconFilePath,
+          projectRoot,
+          join(projectRoot, cwd),
+          cwd
+        );
+      }
       return config;
     },
   ]);
@@ -105,6 +124,23 @@ export async function setIconsAsync(
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
   await fs.ensureDir(join(iosNamedProjectRoot, IMAGESET_PATH));
 
+  // Finally, write the Config.json
+  await writeContentsJsonAsync(join(iosNamedProjectRoot, IMAGESET_PATH), {
+    images: await generateIconsInternalAsync(
+      icon,
+      projectRoot,
+      iosNamedProjectRoot,
+      cacheComponent
+    ),
+  });
+}
+
+export async function generateIconsInternalAsync(
+  icon: string,
+  projectRoot: string,
+  iosNamedProjectRoot: string,
+  cacheComponent: string
+) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
 
@@ -146,6 +182,7 @@ export async function setIconsAsync(
           // Save a reference to the generated image so we don't create a duplicate.
           generatedIcons[filename] = true;
         }
+
         imagesJson.push({
           idiom: platform.idiom,
           size: `${size}x${size}`,
@@ -157,10 +194,53 @@ export async function setIconsAsync(
     }
   }
 
-  // Finally, write the Config.json
-  await writeContentsJsonAsync(join(iosNamedProjectRoot, IMAGESET_PATH), {
-    images: imagesJson,
+  return imagesJson;
+}
+
+export async function generateWatchIconsInternalAsync(
+  icon: string,
+  projectRoot: string,
+  iosNamedProjectRoot: string,
+  cacheComponent: string
+) {
+  // Store the image JSON data for assigning via the Contents.json
+  const imagesJson: ContentsJson["images"] = [];
+
+  // keep track of icons that have been generated so we can reuse them in the Contents.json
+  const generatedIcons: Record<string, boolean> = {};
+
+  const size = 1024;
+  const filename = getAppleIconName(size, 1);
+  // Using this method will cache the images in `.expo` based on the properties used to generate them.
+  // this method also supports remote URLs and using the global sharp instance.
+  const { source } = await generateImageAsync(
+    { projectRoot, cacheType: IMAGE_CACHE_NAME + cacheComponent },
+    {
+      src: icon,
+      name: filename,
+      width: size,
+      height: size,
+      removeTransparency: true,
+      // The icon should be square, but if it's not then it will be cropped.
+      resizeMode: "cover",
+      // Force the background color to solid white to prevent any transparency.
+      // TODO: Maybe use a more adaptive option based on the icon color?
+      backgroundColor: "#ffffff",
+    }
+  );
+  // Write image buffer to the file system.
+  const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
+  await fs.writeFile(assetPath, source);
+
+  imagesJson.push({
+    filename: getAppleIconName(size, 1),
+    idiom: "universal",
+    // @ts-expect-error
+    platform: "watchos",
+    size: `${size}x${size}`,
   });
+
+  return imagesJson;
 }
 
 function getAppleIconName(size: number, scale: number): string {

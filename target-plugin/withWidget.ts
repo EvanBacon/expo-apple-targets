@@ -138,6 +138,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (props.icon) {
     withIosIcon(config, {
+      type: props.type,
       cwd: props.directory,
       // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
       iconFilePath: props.icon,

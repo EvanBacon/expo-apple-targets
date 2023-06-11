@@ -75,7 +75,7 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   },
   "bg-download": {
     "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
-    "com.apple.developer.team-identifier": "$(TeamIdentifierPrefix)",
+    // "com.apple.developer.team-identifier": "$(TeamIdentifierPrefix)",
   },
   "credentials-provider": {
     "com.apple.developer.authentication-services.autofill-credential-provider":
