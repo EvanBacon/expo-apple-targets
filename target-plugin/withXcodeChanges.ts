@@ -1001,6 +1001,7 @@ async function applyXcodeChanges(
   if (fs.existsSync(path.join(magicCwd, "assets"))) {
     // get top-level directories in `assets/` and append them to assetFiles as folder types
     fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
+      if (file === ".DS_Store") return;
       const stat = fs.statSync(path.join(magicCwd, "assets", file));
       if (stat.isDirectory()) {
         resAssets.push(
