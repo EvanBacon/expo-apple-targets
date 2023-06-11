@@ -249,112 +249,112 @@
 
 /* Begin PBXFileReference section */
 		032E7574775F4B999810BF94 /* IntentsUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
-		0554F2E5FEC04636945753A7 /* backgroundDownloads.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = backgroundDownloads.appex; path = backgroundDownloads.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		06860FFAEBA7418BB870CEC3 /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; name = app.entitlements; path = app.entitlements; sourceTree = "<group>"; };
-		076F41D2EE4C4427BD9A7AF6 /* content.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = content.swift; path = content.swift; sourceTree = "<group>"; };
-		08CB4818FBE54E1BB78ED4C7 /* spotlightSearch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = spotlightSearch.appex; path = spotlightSearch.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D6275DAA90E48D69419B494 /* locationPushService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = locationPushService.appex; path = locationPushService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0DA66260E1EB4D9DA175C9AC /* siriIntentUi.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = siriIntentUi.appex; path = siriIntentUi.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0FCB6D85E5C941FD8D74B228 /* images */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder; name = images; path = images; sourceTree = "<group>"; };
-		126669808ACF41689E8FAF97 /* content.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; name = content.js; path = content.js; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* app2095.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; name = app2095.app; path = app2095.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0554F2E5FEC04636945753A7 /* backgroundDownloads.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = backgroundDownloads.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		06860FFAEBA7418BB870CEC3 /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; path = app.entitlements; sourceTree = "<group>"; };
+		076F41D2EE4C4427BD9A7AF6 /* content.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = content.swift; sourceTree = "<group>"; };
+		08CB4818FBE54E1BB78ED4C7 /* spotlightSearch.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = spotlightSearch.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0D6275DAA90E48D69419B494 /* locationPushService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = locationPushService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DA66260E1EB4D9DA175C9AC /* siriIntentUi.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = siriIntentUi.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FCB6D85E5C941FD8D74B228 /* images */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
+		126669808ACF41689E8FAF97 /* content.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; path = content.js; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* app2095.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = app2095.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = app2095/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = app2095/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = app2095/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = app2095/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = main.m; path = app2095/main.m; sourceTree = "<group>"; };
-		141A186D94E941A39777261A /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		15F550ED3AC94A4D906C239A /* notification-service.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "notification-service.swift"; path = "notification-service.swift"; sourceTree = "<group>"; };
-		16AAA827822C421483B60727 /* appClip.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = appClip.appex; path = appClip.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		141A186D94E941A39777261A /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		15F550ED3AC94A4D906C239A /* notification-service.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "notification-service.swift"; sourceTree = "<group>"; };
+		16AAA827822C421483B60727 /* appClip.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = appClip.appex; path = appClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		173635C7C0354789AB5B18AE /* UserNotifications.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		19474BB0666E4CB6BDC8DB01 /* MobileCoreServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		253FCDC4DA08404D9B5528CF /* widgets.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = widgets.swift; path = widgets.swift; sourceTree = "<group>"; };
-		272E649BC77E4BF9BCCF28EE /* content.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = content.swift; path = content.swift; sourceTree = "<group>"; };
+		253FCDC4DA08404D9B5528CF /* widgets.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = widgets.swift; sourceTree = "<group>"; };
+		272E649BC77E4BF9BCCF28EE /* content.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = content.swift; sourceTree = "<group>"; };
 		29A3381037CE4DEF9A9EC560 /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2A82368C321F4080B8B5FCAC /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
-		2B2974AD15604FE985B6732B /* _locales */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder; name = _locales; path = _locales; sourceTree = "<group>"; };
-		2B8B220246A44C72A9A75367 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
-		2BF19D1328CF44C9BBD32077 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		2B2974AD15604FE985B6732B /* _locales */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder; path = _locales; sourceTree = "<group>"; };
+		2B8B220246A44C72A9A75367 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2BF19D1328CF44C9BBD32077 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2D5735BA4F884911995ACDCA /* UserNotificationsUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
-		2E9CA28F641B46928224F080 /* safariExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = safariExtension.appex; path = safariExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		3553A8DA87AE4C4499C1EFBD /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = widgets.appex; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		3926E3176CEB4D96BB42BCFC /* popup.html */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; includeInIndex = 0; name = popup.html; path = popup.html; sourceTree = "<group>"; };
-		39916D99355940C99219D04D /* .DS_Store */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; includeInIndex = 0; name = .DS_Store; path = .DS_Store; sourceTree = "<group>"; };
-		3BCB3A016BED43C48B4DAD8B /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
-		3CFE5CFC9DCB4DA99FA41EEF /* watchApp.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = watchApp.appex; path = watchApp.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E9CA28F641B46928224F080 /* safariExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = safariExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3553A8DA87AE4C4499C1EFBD /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3926E3176CEB4D96BB42BCFC /* popup.html */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; includeInIndex = 0; path = popup.html; sourceTree = "<group>"; };
+		39916D99355940C99219D04D /* .DS_Store */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; includeInIndex = 0; path = .DS_Store; sourceTree = "<group>"; };
+		3BCB3A016BED43C48B4DAD8B /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3CFE5CFC9DCB4DA99FA41EEF /* watchApp.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = watchApp.appex; path = watchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F6DC69A3A23457581A4A2DC /* app2095-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "app2095-Bridging-Header.h"; path = "app2095/app2095-Bridging-Header.h"; sourceTree = "<group>"; };
-		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-app2095.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; name = "libPods-app2095.a"; path = "libPods-app2095.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5F88380C1DE74F5082AAD685 /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = index.swift; path = index.swift; sourceTree = "<group>"; };
+		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-app2095.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-app2095.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F88380C1DE74F5082AAD685 /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
 		6C2E3173556A471DD304B334 /* Pods-app2095.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2095.debug.xcconfig"; path = "Target Support Files/Pods-app2095/Pods-app2095.debug.xcconfig"; sourceTree = "<group>"; };
 		6D1B79190C0740B29F6A17F1 /* MobileCoreServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		700B3A5C0B744B4CAC65A08F /* manifest.json */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; includeInIndex = 0; name = manifest.json; path = manifest.json; sourceTree = "<group>"; };
-		70F0666150AD4CB0B9D626F2 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		700B3A5C0B744B4CAC65A08F /* manifest.json */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; includeInIndex = 0; path = manifest.json; sourceTree = "<group>"; };
+		70F0666150AD4CB0B9D626F2 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7167C1ED019142C0BCCB91E3 /* SwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		724A25BA2B1E491D8CE98646 /* shareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = shareExtension.appex; path = shareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		741038CEE34943AD8216877A /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
-		76043464E97941F294A53167 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
+		724A25BA2B1E491D8CE98646 /* shareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = shareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		741038CEE34943AD8216877A /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		76043464E97941F294A53167 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		78D98F3205DE4E4D8691E3C3 /* Social.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		7984787607464C45AD469833 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		7984787607464C45AD469833 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-app2095.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2095.release.xcconfig"; path = "Target Support Files/Pods-app2095/Pods-app2095.release.xcconfig"; sourceTree = "<group>"; };
 		7B68DDCE38464E94B8D72B8D /* Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
-		7BB4408094724A9991FDB9A2 /* popup.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; name = popup.js; path = popup.js; sourceTree = "<group>"; };
-		7BF5144A8A6B479E90FFBE62 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		804B751C4C184462BF255BC2 /* popup.css */ = {isa = PBXFileReference; explicitFileType = text.css; fileEncoding = 4; includeInIndex = 0; name = popup.css; path = popup.css; sourceTree = "<group>"; };
-		83EEB578C79E4CA280AA936A /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		8A0B10D8FAE34F949F146144 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		8C61BA7ACB23434A9B458ED6 /* ThumbnailProvider.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = ThumbnailProvider.swift; path = ThumbnailProvider.swift; sourceTree = "<group>"; };
-		8DC8F45EAE3F4474AE7ED5C1 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		7BB4408094724A9991FDB9A2 /* popup.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; path = popup.js; sourceTree = "<group>"; };
+		7BF5144A8A6B479E90FFBE62 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		804B751C4C184462BF255BC2 /* popup.css */ = {isa = PBXFileReference; explicitFileType = text.css; fileEncoding = 4; includeInIndex = 0; path = popup.css; sourceTree = "<group>"; };
+		83EEB578C79E4CA280AA936A /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A0B10D8FAE34F949F146144 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C61BA7ACB23434A9B458ED6 /* ThumbnailProvider.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = ThumbnailProvider.swift; sourceTree = "<group>"; };
+		8DC8F45EAE3F4474AE7ED5C1 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F3F5F92264045CFA48325F5 /* Social.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		904141E8D14A4B83A04C053C /* UserNotificationsUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
-		95DFCE51E845466389C009EB /* matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = matter.appex; path = matter.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		95DFCE51E845466389C009EB /* matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = matter.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B43D61CB8044BD906EB76E /* UserNotifications.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		99ADDEF9DCDA418E951D4505 /* QuickLookThumbnailing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = QuickLookThumbnailing.framework; path = System/Library/Frameworks/QuickLookThumbnailing.framework; sourceTree = SDKROOT; };
 		9CE6E4B8E1144EA9A07293AE /* QuickLookThumbnailing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = QuickLookThumbnailing.framework; path = System/Library/Frameworks/QuickLookThumbnailing.framework; sourceTree = SDKROOT; };
-		9F2D67829952451EB5354DAA /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		9F2D67829952451EB5354DAA /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = app2095/SplashScreen.storyboard; sourceTree = "<group>"; };
 		AADC56E4DA1F42C1ADA681B7 /* WidgetKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		AC5022E8934D4180B75D71F3 /* siriIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = siriIntent.appex; path = siriIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD852B0EE09949E1BE9EDD4D /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		AE84406B6861432E9E944547 /* location-push.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "location-push.swift"; path = "location-push.swift"; sourceTree = "<group>"; };
-		AFF55B4264FC43DDBE6330F8 /* other-widget.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "other-widget.swift"; path = "other-widget.swift"; sourceTree = "<group>"; };
-		B13A2FB4D6774737BD5519FD /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		B2723529647147D883CE87C7 /* intent-view-controller.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "intent-view-controller.swift"; path = "intent-view-controller.swift"; sourceTree = "<group>"; };
+		AC5022E8934D4180B75D71F3 /* siriIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = siriIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD852B0EE09949E1BE9EDD4D /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE84406B6861432E9E944547 /* location-push.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "location-push.swift"; sourceTree = "<group>"; };
+		AFF55B4264FC43DDBE6330F8 /* other-widget.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "other-widget.swift"; sourceTree = "<group>"; };
+		B13A2FB4D6774737BD5519FD /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2723529647147D883CE87C7 /* intent-view-controller.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "intent-view-controller.swift"; sourceTree = "<group>"; };
 		B4CACCE1784B4DDAA065FA33 /* IntentsUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
 		B6CA5449AF9F457EB35DC6FA /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		B9EA1769CB19429E9DA7175A /* ShareViewController.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = ShareViewController.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Expo.plist; path = Expo.plist; sourceTree = "<group>"; };
-		BB723B6C086845A1BF520811 /* quicklookThumbnail.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = quicklookThumbnail.appex; path = quicklookThumbnail.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB77123B997045AB9B3BAAF1 /* notificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = notificationService.appex; path = notificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		BD07AD1D1C29450787979CCC /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		BD2EA20F6DC048B9AB0F0FDD /* account-auth.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "account-auth.swift"; path = "account-auth.swift"; sourceTree = "<group>"; };
-		C491D8DF7B2F4E9D89375F11 /* accountAuth.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = accountAuth.appex; path = accountAuth.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9EA1769CB19429E9DA7175A /* ShareViewController.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		BB723B6C086845A1BF520811 /* quicklookThumbnail.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = quicklookThumbnail.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB77123B997045AB9B3BAAF1 /* notificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = notificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD07AD1D1C29450787979CCC /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BD2EA20F6DC048B9AB0F0FDD /* account-auth.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "account-auth.swift"; sourceTree = "<group>"; };
+		C491D8DF7B2F4E9D89375F11 /* accountAuth.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = accountAuth.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4FA454BC3324BC29F593DFA /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "app2095/noop-file.swift"; sourceTree = "<group>"; };
 		C59B049891F84808A726664E /* Intents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
-		C9305D2E3BD9438A961882E9 /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = index.swift; path = index.swift; sourceTree = "<group>"; };
-		C9DBCF5986EB40B0A2EC9AAA /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = index.swift; path = index.swift; sourceTree = "<group>"; };
-		CB7F92D634834263ACA4E4BF /* safari-web-extension-handler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "safari-web-extension-handler.swift"; path = "safari-web-extension-handler.swift"; sourceTree = "<group>"; };
-		CD4E7D6C17AF47F8B63B2F94 /* intent-handler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "intent-handler.swift"; path = "intent-handler.swift"; sourceTree = "<group>"; };
-		CDC62256088148409473B04B /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		D78217B90EB54C0886BF486A /* widgets.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.intentdefinition; name = widgets.intentdefinition; path = widgets.intentdefinition; sourceTree = "<group>"; };
-		D85454AC83544F798D897A50 /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; name = app.entitlements; path = app.entitlements; sourceTree = "<group>"; };
-		DAD362B8095744F794A6DCE9 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		E1A5DA7BFB1D453F9D29E86A /* RequestHandler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = RequestHandler.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
-		E2D3DEFE1D854467BC588217 /* share.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; name = share.entitlements; path = share.entitlements; sourceTree = "<group>"; };
+		C9305D2E3BD9438A961882E9 /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
+		C9DBCF5986EB40B0A2EC9AAA /* index.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = index.swift; sourceTree = "<group>"; };
+		CB7F92D634834263ACA4E4BF /* safari-web-extension-handler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "safari-web-extension-handler.swift"; sourceTree = "<group>"; };
+		CD4E7D6C17AF47F8B63B2F94 /* intent-handler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "intent-handler.swift"; sourceTree = "<group>"; };
+		CDC62256088148409473B04B /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D78217B90EB54C0886BF486A /* widgets.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.intentdefinition; path = widgets.intentdefinition; sourceTree = "<group>"; };
+		D85454AC83544F798D897A50 /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; path = app.entitlements; sourceTree = "<group>"; };
+		DAD362B8095744F794A6DCE9 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1A5DA7BFB1D453F9D29E86A /* RequestHandler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
+		E2D3DEFE1D854467BC588217 /* share.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; path = share.entitlements; sourceTree = "<group>"; };
 		E2EAE624F54B4028BBFE9D59 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
-		E5036B2D586345259A002F9C /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = BackgroundDownloadHandler.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
-		E752C84D2136455E99CE5646 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		E7638288396348C4828B45DE /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; name = app.entitlements; path = app.entitlements; sourceTree = "<group>"; };
+		E5036B2D586345259A002F9C /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
+		E752C84D2136455E99CE5646 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7638288396348C4828B45DE /* app.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; path = app.entitlements; sourceTree = "<group>"; };
 		EB9EE5ECDB474826858D3B1A /* SwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EEB76A2A840D4E2AB3AAE791 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
-		EF86DD437BA044DF9EE02CFA /* import-extension.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "import-extension.swift"; path = "import-extension.swift"; sourceTree = "<group>"; };
+		EEB76A2A840D4E2AB3AAE791 /* Assets.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EF86DD437BA044DF9EE02CFA /* import-extension.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "import-extension.swift"; sourceTree = "<group>"; };
 		F0AF3FA32ECF4602A1E4CA86 /* WidgetKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; fileEncoding = 4; includeInIndex = 0; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		F1628C94F4F747339B97F274 /* credentialsProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = credentialsProvider.appex; path = credentialsProvider.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4B382763C944E5DB1552C3F /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
-		F7A33307A97C4B57AD53EC9C /* notificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; name = notificationContent.appex; path = notificationContent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F7AA2654344548EF8FCB5522 /* background.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; name = background.js; path = background.js; sourceTree = "<group>"; };
-		FF013FA9A04B48098869C979 /* credentials-provider.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "credentials-provider.swift"; path = "credentials-provider.swift"; sourceTree = "<group>"; };
-		FFC0705F99364084983B7F9C /* notification-view-controller.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; name = "notification-view-controller.swift"; path = "notification-view-controller.swift"; sourceTree = "<group>"; };
+		F1628C94F4F747339B97F274 /* credentialsProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = credentialsProvider.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B382763C944E5DB1552C3F /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F7A33307A97C4B57AD53EC9C /* notificationContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = notificationContent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7AA2654344548EF8FCB5522 /* background.js */ = {isa = PBXFileReference; explicitFileType = sourcecode.javascript; fileEncoding = 4; includeInIndex = 0; path = background.js; sourceTree = "<group>"; };
+		FF013FA9A04B48098869C979 /* credentials-provider.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "credentials-provider.swift"; sourceTree = "<group>"; };
+		FFC0705F99364084983B7F9C /* notification-view-controller.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = "notification-view-controller.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -633,6 +633,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
+				CDD99CE12A367FA100EF0DD5 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -771,6 +772,24 @@
 			path = "../targets/safari-extension";
 			sourceTree = "<group>";
 		};
+		CDD99CE12A367FA100EF0DD5 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				173635C7C0354789AB5B18AE /* UserNotifications.framework */,
+				2D5735BA4F884911995ACDCA /* UserNotificationsUI.framework */,
+				99ADDEF9DCDA418E951D4505 /* QuickLookThumbnailing.framework */,
+				B6CA5449AF9F457EB35DC6FA /* UIKit.framework */,
+				8F3F5F92264045CFA48325F5 /* Social.framework */,
+				19474BB0666E4CB6BDC8DB01 /* MobileCoreServices.framework */,
+				E2EAE624F54B4028BBFE9D59 /* UniformTypeIdentifiers.framework */,
+				C59B049891F84808A726664E /* Intents.framework */,
+				B4CACCE1784B4DDAA065FA33 /* IntentsUI.framework */,
+				F0AF3FA32ECF4602A1E4CA86 /* WidgetKit.framework */,
+				7167C1ED019142C0BCCB91E3 /* SwiftUI.framework */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		D4077508ADF3475B82B3E837 /* quicklook-thumbnail */ = {
 			isa = PBXGroup;
 			children = (
@@ -803,7 +822,6 @@
 				3926E3176CEB4D96BB42BCFC /* popup.html */,
 				7BB4408094724A9991FDB9A2 /* popup.js */,
 			);
-			name = assets;
 			path = assets;
 			sourceTree = "<group>";
 		};
