@@ -206,9 +206,6 @@ export async function generateWatchIconsInternalAsync(
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
 
-  // keep track of icons that have been generated so we can reuse them in the Contents.json
-  const generatedIcons: Record<string, boolean> = {};
-
   const size = 1024;
   const filename = getAppleIconName(size, 1);
   // Using this method will cache the images in `.expo` based on the properties used to generate them.
