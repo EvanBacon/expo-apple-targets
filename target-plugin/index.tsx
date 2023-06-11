@@ -5,13 +5,13 @@ import withWidget from "./withWidget";
 
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
-export const withTargetsDir: ConfigPlugin<{ appleTeamId: string }> = (
-  config,
-  { appleTeamId }
-) => {
+export const withTargetsDir: ConfigPlugin<{
+  appleTeamId: string;
+  match?: string;
+}> = (config, { appleTeamId, match = "*" }) => {
   const projectRoot = config._internal.projectRoot;
 
-  const targets = globSync("./targets/*/expo-target.config.@(json|js)", {
+  const targets = globSync(`./targets/${match}/expo-target.config.@(json|js)`, {
     cwd: projectRoot,
     absolute: true,
   });
