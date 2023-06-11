@@ -7,7 +7,7 @@ module.exports = ({ config }) => ({
       require("./target-plugin").withTargetsDir,
       {
         appleTeamId: "QQ57RJ5UTD",
-        match: "watch-app",
+        // match: "watch-app",
       },
     ],
   ],

@@ -9,6 +9,6 @@
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
     <key>EXUpdatesSDKVersion</key>
-    <string>48.0.0</string>
+    <string>49.0.0</string>
   </dict>
 </plist>

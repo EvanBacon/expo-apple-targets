@@ -48,6 +48,7 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   props
 ) => {
   return withXcodeProjectBeta(config, (config) => {
+    // @ts-ignore
     applyXcodeChanges(config, config.modResults, props);
     return config;
   });
