@@ -38,27 +38,39 @@ This file can have the following properties:
 }
 ```
 
+You can also use `.js` with the typedoc for autocomplete:
+
+```js
+/** @type {import('../../target-plugin/config').Config} */
+module.exports = {
+  type: "watch",
+  accentColor: "steelblue",
+  deploymentTarget: "9.4",
+};
+```
+
 ### Supported types
 
 Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store.
 
-| Type                 | Description                      |
-| -------------------- | -------------------------------- |
-| widget               | Widget                           |
-| clip                 | App Clip                         |
-| safari               | Safari Extension                 |
-| share                | Share Extension                  |
-| notification-content | Notification Content Extension   |
-| notification-service | Notification Service Extension   |
-| intent               | Siri Intent Extension            |
-| intent-ui            | Siri Intent UI Extension         |
-| spotlight            | Spotlight Index Extension        |
-| matter               | Matter Intent Extension          |
-| bg-download          | Background Download Extension    |
-| quicklook-thumbnail  | Quick Look Thumbnail Extension   |
-| location-push        | Location Push Service Extension  |
-| credentials-provider | Credentials Provider Extension   |
-| account-auth         | Account Authentication Extension |
+| Type                 | Description                        |
+| -------------------- | ---------------------------------- |
+| widget               | Widget / Live Activity             |
+| watch                | Watch App (with companion iOS App) |
+| clip                 | App Clip                           |
+| safari               | Safari Extension                   |
+| share                | Share Extension                    |
+| notification-content | Notification Content Extension     |
+| notification-service | Notification Service Extension     |
+| intent               | Siri Intent Extension              |
+| intent-ui            | Siri Intent UI Extension           |
+| spotlight            | Spotlight Index Extension          |
+| matter               | Matter Intent Extension            |
+| bg-download          | Background Download Extension      |
+| quicklook-thumbnail  | Quick Look Thumbnail Extension     |
+| location-push        | Location Push Service Extension    |
+| credentials-provider | Credentials Provider Extension     |
+| account-auth         | Account Authentication Extension   |
 
 <!-- | imessage             | iMessage Extension               | -->
 
