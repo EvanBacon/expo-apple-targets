@@ -20,6 +20,7 @@ export type ExtensionType =
   | "location-push"
   | "credentials-provider"
   | "account-auth"
+  | "device-activity-monitor"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
