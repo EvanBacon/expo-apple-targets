@@ -9,6 +9,10 @@
     "nprebuild": "expo prebuild --template ./prebuild-template-no-rn.tgz -p ios",
     "prepublish": "tsc --project target-plugin/tsconfig.json"
   },
+  "files": [
+    "target-plugin",
+    "app.plugin.js"
+  ],
   "dependencies": {
     "expo": "~49.0.0-alpha.1",
     "expo-splash-screen": "~0.19.0",
