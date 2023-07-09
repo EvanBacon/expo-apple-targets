@@ -6,7 +6,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "nprebuild": "expo prebuild --template ./prebuild-template-no-rn.tgz -p ios"
+    "nprebuild": "expo prebuild --template ./prebuild-template-no-rn.tgz -p ios",
+    "prepublish": "tsc --project target-plugin/tsconfig.json"
   },
   "dependencies": {
     "expo": "~49.0.0-alpha.1",
@@ -16,13 +17,13 @@
     "react-native": "0.72.0-rc.5"
   },
   "devDependencies": {
-    "glob": "^10.2.6",
-    "typescript": "^4.9.4",
+    "@babel/core": "^7.20.0",
     "@bacons/xcode": "^1.0.0-alpha.5",
     "@types/glob": "^8.1.0",
     "@types/react": "~18.0.27",
-    "@babel/core": "^7.20.0",
-    "ts-node": "^10.9.1"
+    "glob": "^10.2.6",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
   },
   "private": true
 }
