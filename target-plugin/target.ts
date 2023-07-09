@@ -268,6 +268,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
+  } else if (type === "device-activity-monitor") {
+    return ["DeviceActivity"];
   }
 
   return [];

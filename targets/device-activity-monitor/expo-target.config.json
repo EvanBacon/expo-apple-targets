@@ -1,6 +1,4 @@
 
 {
-  "type": "device-activity-monitor",
-  "deploymentTarget": "15.0",
-  "frameworks": ["DeviceActivity"]
+  "type": "device-activity-monitor"
 }
