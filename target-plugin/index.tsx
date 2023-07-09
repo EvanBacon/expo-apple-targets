@@ -26,3 +26,5 @@ export const withTargetsDir: ConfigPlugin<{
 
   return withXcodeProjectBetaBaseMod(config);
 };
+
+export default withTargetsDir;
