@@ -1,0 +1,12 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./build",
+    "noEmit": false,
+    "declaration": true,
+    "target": "ES2015",
+    "module": "CommonJS"
+  },
+  "exclude": ["./build"]
+}
