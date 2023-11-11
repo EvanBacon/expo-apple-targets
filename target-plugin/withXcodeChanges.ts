@@ -136,6 +136,73 @@ function createNotificationContentConfigurationList(
   return configurationList;
 }
 
+function createAppIntentConfigurationList(
+  project: XcodeProject,
+  { name, cwd, bundleId }: XcodeSettings
+) {
+  const commonBuildSettings: BuildSettings = {
+    // @ts-expect-error
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: "1",
+    DEBUG_INFORMATION_FORMAT: "dwarf",
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES",
+    GCC_C_LANGUAGE_STANDARD: "gnu17",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0",
+    LD_RUNPATH_SEARCH_PATHS:
+      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    LOCALIZATION_PREFERS_STRING_CATALOGS: "YES",
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...commonBuildSettings,
+      GCC_PREPROCESSOR_DEFINITIONS: ["DEBUG=1", "$(inherited)"],
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...commonBuildSettings,
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+      ...({ SWIFT_COMPILATION_MODE: "wholemodule" } as any),
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createShareConfigurationList(
   project: XcodeProject,
   {
@@ -655,6 +722,8 @@ function createConfigurationListForType(
     return createAppClipConfigurationList(project, props);
   } else if (props.type === "watch") {
     return createWatchAppConfigurationList(project, props);
+  } else if (props.type === "appintent") {
+    return createAppIntentConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -1037,7 +1106,11 @@ async function applyXcodeChanges(
 
   const alphaExtensionAppexBf = PBXBuildFile.create(project, {
     fileRef: PBXFileReference.create(project, {
-      explicitFileType: "wrapper.app-extension",
+      // @ts-expect-error
+      explicitFileType:
+        props.type === "appintent"
+          ? "wrapper.extensionkit-extension"
+          : "wrapper.app-extension",
       includeInIndex: 0,
       path: productName + ".appex",
       sourceTree: "BUILT_PRODUCTS_DIR",
@@ -1059,6 +1132,7 @@ async function applyXcodeChanges(
     // @ts-expect-error
     productReference:
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
+    // @ts-expect-error
     productType: productTypeForType(props.type),
   });
 
@@ -1066,11 +1140,13 @@ async function applyXcodeChanges(
 
   configureTargetWithPreview(widgetTarget);
 
-  
-
   // CD0706062A2EBE2E009C1192
+  const buildFiles: PBXBuildFile[] = [];
+  if (props.type !== "appintent") {
+    buildFiles.push(...swiftFiles);
+  }
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
-    files: [...swiftFiles, ...intentBuildFiles[0], ...entitlementFiles],
+    files: [...buildFiles, ...intentBuildFiles[0], ...entitlementFiles],
     // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
     // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
     // CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */,
@@ -1106,6 +1182,8 @@ async function applyXcodeChanges(
       ? "Embed App Clips"
       : props.type === "watch"
       ? "Embed Watch Content"
+      : props.type === "appintent"
+      ? "Embed ExtensionKit Extensions"
       : "Embed Foundation Extensions";
   // Could exist from a Share Extension
   const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
@@ -1119,10 +1197,17 @@ async function applyXcodeChanges(
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
   } else {
-    const dstPath = { clip: "AppClips", watch: "Watch" }[props.type];
+    const dstPath = {
+      clip: "AppClips",
+      watch: "Watch",
+      appintent: "$(EXTENSIONS_FOLDER_PATH)",
+    }[props.type];
     if (dstPath) {
       mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-        dstPath: "$(CONTENTS_FOLDER_PATH)/" + dstPath,
+        dstPath:
+          props.type === "appintent"
+            ? dstPath
+            : "$(CONTENTS_FOLDER_PATH)/" + dstPath,
         dstSubfolderSpec: 16,
         buildActionMask: 2147483647,
         files: [alphaExtensionAppexBf],
@@ -1145,6 +1230,9 @@ async function applyXcodeChanges(
     mainAppTarget.getBuildPhase(PBXSourcesBuildPhase);
   // TODO: Idempotent
   mainSourcesBuildPhase.props.files.push(...intentBuildFiles[1]);
+  if (props.type === "appintent" && mainSourcesBuildPhase) {
+    mainSourcesBuildPhase.props.files.push(...swiftFiles);
+  }
 
   const protectedGroup = ensureProtectedGroup(project).createGroup({
     // This is where it gets fancy
