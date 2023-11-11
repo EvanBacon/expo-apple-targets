@@ -20,7 +20,8 @@ export type ExtensionType =
   | "location-push"
   | "credentials-provider"
   | "account-auth"
-  | "safari";
+  | "safari"
+  | "appintent";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -41,6 +42,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
       "credentials-provider",
     "com.apple.authentication-services-account-authentication-modification-ui":
       "account-auth",
+    "com.apple.appintents-extension": "appintent",
     // "com.apple.intents-service": "intents",
   };
 
@@ -216,6 +218,12 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "appintent") {
+    return plist.build({
+      EXAppExtensionAttributes: {
+        EXExtensionPointIdentifier: NSExtensionPointIdentifier,
+      },
+    });
   }
 
   // Default: used for widget and bg-download
@@ -232,6 +240,8 @@ export function productTypeForType(type: ExtensionType) {
       return "com.apple.product-type.application.on-demand-install-capable";
     case "watch":
       return "com.apple.product-type.application";
+    case "appintent":
+      return "com.apple.product-type.extensionkit-extension";
     default:
       return "com.apple.product-type.app-extension";
   }
@@ -267,6 +277,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
+  } else if (type === "appintent") {
+    return ["AppIntents"];
   }
 
   return [];
