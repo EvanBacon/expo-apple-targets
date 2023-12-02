@@ -14,7 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bacon.2095"
+      "bundleIdentifier": "com.bacon.2096"
     },
     "android": {
       "adaptiveIcon": {

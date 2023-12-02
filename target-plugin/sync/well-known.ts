@@ -36,6 +36,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS = [
   "com.apple.usernotifications.content-extension",
   "com.apple.usernotifications.service",
   "com.apple.widgetkit-extension",
+  "com.apple.product-type.app-extension",
 ];
 
 // @ts-expect-error

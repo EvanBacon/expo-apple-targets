@@ -1,0 +1,759 @@
+{
+  "com.apple.authentication-services-account-authentication-modification-ui": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/account-auth/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "accountAuth",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.accountAuth",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.authentication-services-account-authentication-modification-ui",
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
+        "NSExtensionAttributes": {
+          "ASAccountAuthenticationModificationSupportsStrongPasswordChange": true,
+          "ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple": true
+        }
+      }
+    }
+  },
+  "com.apple.background-asset-downloader-extension": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_ENTITLEMENTS": "../targets/background-downloads/app.entitlements",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/background-downloads/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "backgroundDownloads",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.backgroundDownloads",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.background-asset-downloader-extension"
+      }
+    }
+  },
+  "com.apple.authentication-services-credential-provider-ui": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_ENTITLEMENTS": "../targets/credentials-provider/app.entitlements",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/credentials-provider/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "credentialsProvider",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.credentialsProvider",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.authentication-services-credential-provider-ui",
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).CredentialProviderViewController"
+      }
+    }
+  },
+  "com.apple.location.push.service": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/location-push-service/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "locationPushService",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.locationPushService",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).LocationPushService",
+        "NSExtensionPointIdentifier": "com.apple.location.push.service"
+      }
+    }
+  },
+  "com.apple.matter.support.extension.device-setup": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/matter/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "matter",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.matter",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).RequestHandler",
+        "NSExtensionPointIdentifier": "com.apple.matter.support.extension.device-setup"
+      }
+    }
+  },
+  "com.apple.usernotifications.content-extension": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/notification-content/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "notificationContent",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.notificationContent",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "UNNotificationExtensionCategory": "myNotificationCategory",
+          "UNNotificationExtensionInitialContentSizeRatio": 1
+        },
+        "NSExtensionPrincipalClass": "NotificationViewController",
+        "NSExtensionPointIdentifier": "com.apple.usernotifications.content-extension"
+      }
+    }
+  },
+  "com.apple.usernotifications.service": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/notification-service/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "notificationService",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.notificationService",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "NSExtensionActivationRule": "TRUEPREDICATE"
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService",
+        "NSExtensionPointIdentifier": "com.apple.usernotifications.service"
+      }
+    }
+  },
+  "com.apple.quicklook.thumbnail": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/quicklook-thumbnail/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "quicklookThumbnail",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.quicklookThumbnail",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "QLSupportedContentTypes": [],
+          "QLThumbnailMinimumDimension": 0
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ThumbnailProvider",
+        "NSExtensionPointIdentifier": "com.apple.quicklook.thumbnail"
+      }
+    }
+  },
+  "com.apple.Safari.web-extension": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/safari-extension/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "safariExtension",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.safariExtension",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "COPY_PHASE_STRIP": "NO",
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "OTHER_LDFLAGS": [
+        "-framework",
+        "SafariServices"
+      ],
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "OTHER_LDFLAGS": [
+        "-framework",
+        "SafariServices"
+      ],
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
+        "NSExtensionPointIdentifier": "com.apple.Safari.web-extension"
+      }
+    }
+  },
+  "com.apple.share-services": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_ENTITLEMENTS": "../targets/share-extension/share.entitlements",
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/share-extension/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "shareExtension",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.shareExtension",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "COPY_PHASE_STRIP": "NO"
+    },
+    "debug": {
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "NSExtensionActivationRule": "TRUEPREDICATE",
+          "NSExtensionActivationSupportsText": true,
+          "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
+          "NSExtensionActivationSupportsWebURLWithMaxCount": 1
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShareViewController",
+        "NSExtensionPointIdentifier": "com.apple.share-services"
+      }
+    }
+  },
+  "com.apple.intents-service": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/siri-intent/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "siriIntent",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.siriIntent",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "IntentsRestrictedWhileLocked": [],
+          "IntentsSupported": [
+            "INSendMessageIntent",
+            "INSearchForMessagesIntent",
+            "INSetMessageAttributeIntent"
+          ]
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).IntentHandler",
+        "NSExtensionPointIdentifier": "com.apple.intents-service"
+      }
+    }
+  },
+  "com.apple.intents-ui-service": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/siri-intent-ui/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "siriIntentUi",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.siriIntentUi",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "IntentsSupported": [
+            "INSendMessageIntent"
+          ]
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).IntentViewController",
+        "NSExtensionPointIdentifier": "com.apple.intents-ui-service"
+      }
+    }
+  },
+  "com.apple.spotlight.import": {
+    "default": {
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "COPY_PHASE_STRIP": "NO",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/spotlight-search/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "spotlightSearch",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.spotlightSearch",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "CSExtensionLabel": "myImporter",
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "CSSupportedContentTypes": [
+            "com.example.plain-text"
+          ]
+        },
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ImportExtension",
+        "NSExtensionPointIdentifier": "com.apple.spotlight.import"
+      }
+    }
+  },
+  "com.apple.widgetkit-extension": {
+    "default": {
+      "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
+      "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME": "WidgetBackground",
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GCC_C_LANGUAGE_STANDARD": "gnu11",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/widgets/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "widgets",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.4,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.widgets",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "COPY_PHASE_STRIP": "NO",
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Owholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.widgetkit-extension"
+      }
+    }
+  },
+  "com.apple.services": {
+    "default": {
+      "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
+      "CLANG_ANALYZER_NONNULL": "YES",
+      "CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION": "YES_AGGRESSIVE",
+      "CLANG_CXX_LANGUAGE_STANDARD": "gnu++20",
+      "CLANG_ENABLE_OBJC_WEAK": "YES",
+      "CLANG_WARN_DOCUMENTATION_COMMENTS": "YES",
+      "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "YES",
+      "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+      "GCC_C_LANGUAGE_STANDARD": "gnu17",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "axun/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "axun",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 17,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "LOCALIZATION_PREFERS_STRING_CATALOGS": "YES",
+      "MARKETING_VERSION": 1,
+      "MTL_FAST_MATH": "YES",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.axun",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_VERSION": 5,
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "COPY_PHASE_STRIP": "NO",
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+      "SWIFT_COMPILATION_MODE": "wholemodule"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "MTL_ENABLE_DEBUG_INFO": "INCLUDE_SOURCE",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "DEBUG $(inherited)",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionAttributes": {
+          "NSExtensionActivationRule": {
+            "NSExtensionActivationSupportsFileWithMaxCount": 0,
+            "NSExtensionActivationSupportsImageWithMaxCount": 0,
+            "NSExtensionActivationSupportsMovieWithMaxCount": 0,
+            "NSExtensionActivationSupportsText": false,
+            "NSExtensionActivationSupportsWebURLWithMaxCount": 1
+          },
+          "NSExtensionJavaScriptPreprocessingFile": "Action",
+          "NSExtensionServiceAllowsFinderPreviewItem": true,
+          "NSExtensionServiceAllowsTouchBarItem": true,
+          "NSExtensionServiceFinderPreviewIconName": "NSActionTemplate",
+          "NSExtensionServiceTouchBarBezelColorName": "TouchBarBezel",
+          "NSExtensionServiceTouchBarIconName": "NSActionTemplate"
+        },
+        "NSExtensionPointIdentifier": "com.apple.services",
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ActionRequestHandler"
+      }
+    }
+  }
+}

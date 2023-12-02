@@ -1,19 +1,19 @@
 import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import plist from "@expo/plist";
 import fs from "fs";
+import { sync as globSync } from "glob";
 import path from "path";
 
-import {
-  withIosAccentColor,
-  withIosWidgetBackgroundColor,
-} from "./accentColor/withAccentColor";
-import { Config } from "./config";
+import { withIosColorset } from "./accentColor/withIosColorset";
+import { Config, Entitlements } from "./config";
 import { withIosIcon } from "./icon/withIosIcon";
 import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
+import { withImageAsset } from "./icon/withImageAsset";
 
 type Props = Config & {
-  directory?: string;
+  directory: string;
 };
 
 function kebabToCamelCase(str: string) {
@@ -21,7 +21,6 @@ function kebabToCamelCase(str: string) {
     return g[1].toUpperCase();
   });
 }
-
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
@@ -29,16 +28,61 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     props.icon = path.join(props.directory, props.icon);
   }
 
-  const widgetDir = (props.name ?? path.basename(props.directory))
+  const widgetDir = path
+    .basename(props.directory)
     .replace(/\/+$/, "")
     .replace(/^\/+/, "");
 
   const widget = kebabToCamelCase(widgetDir);
 
   const widgetFolderAbsolutePath = path.join(
-    config._internal.projectRoot,
+    config._internal?.projectRoot ?? "",
     props.directory
   );
+
+  const entitlementsFiles = globSync("*.entitlements", {
+    absolute: true,
+    cwd: widgetFolderAbsolutePath,
+  });
+
+  if (entitlementsFiles.length > 1) {
+    throw new Error(
+      `Found multiple entitlements files in ${widgetFolderAbsolutePath}`
+    );
+  }
+
+  let entitlementsJson: undefined | Entitlements = props.entitlements;
+
+  // If the user defined entitlements, then overwrite any existing entitlements file
+  if (props.entitlements) {
+    withDangerousMod(config, [
+      "ios",
+      async (config) => {
+        const entitlementsFilePath =
+          entitlementsFiles[0] ??
+          // Use the name `generated` to help indicate that this file should be in sync with the config
+          path.join(widgetFolderAbsolutePath, `generated.entitlements`);
+
+        if (entitlementsFiles[0]) {
+          console.log(
+            `[${widget}] Replacing ${path.relative(
+              widgetFolderAbsolutePath,
+              entitlementsFiles[0]
+            )} with entitlements JSON from config`
+          );
+        }
+        fs.writeFileSync(
+          entitlementsFilePath,
+          plist.build(props.entitlements as any)
+        );
+        return config;
+      },
+    ]);
+  } else {
+    entitlementsJson = entitlementsFiles[0]
+      ? plist.parse(fs.readFileSync(entitlementsFiles[0], "utf8"))
+      : undefined;
+  }
 
   // Ensure the entry file exists
   withDangerousMod(config, [
@@ -75,19 +119,20 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     },
   ]);
 
-  const targetName = widget;
-  const bundleId = config.ios.bundleIdentifier! + "." + widget;
+  const targetName = props.name ?? widget;
+  const bundleId = config.ios!.bundleIdentifier! + "." + widget;
 
   withXcodeChanges(config, {
     name: targetName,
     cwd:
       "../" +
       path.relative(
-        config._internal.projectRoot,
+        config._internal!.projectRoot,
         path.resolve(props.directory)
       ),
     deploymentTarget: props.deploymentTarget ?? "16.4",
     bundleId,
+    icon: props.icon,
 
     hasAccentColor: !!props.accentColor,
 
@@ -99,42 +144,23 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     teamId: props.appleTeamId,
   });
 
-  config = withEASTargets(config, { targetName, bundleIdentifier: bundleId });
+  config = withEASTargets(config, {
+    targetName,
+    bundleIdentifier: bundleId,
+    entitlements: entitlementsJson,
+  });
 
-  if (props.accentColor) {
-    const lightColor =
-      typeof props.accentColor === "string"
-        ? props.accentColor
-        : props.accentColor.color;
-    const darkColor =
-      typeof props.accentColor === "string"
-        ? undefined
-        : props.accentColor.darkColor;
-    // You use the WidgetBackground and AccentColor to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
-    // https://useyourloaf.com/blog/widget-background-and-accent-color/
-    // i.e. when you press and hold on a widget to configure it, the background color of the widget configuration interface changes to the background color we set here.
-    withIosAccentColor(config, {
-      cwd: props.directory,
-      color: lightColor,
-      darkColor: darkColor,
+  if (props.images) {
+    Object.entries(props.images).forEach(([name, image]) => {
+      withImageAsset(config, {
+        image,
+        name,
+        cwd: props.directory,
+      });
     });
   }
 
-  if (props.widgetBackgroundColor) {
-    const lightColor =
-      typeof props.widgetBackgroundColor === "string"
-        ? props.widgetBackgroundColor
-        : props.widgetBackgroundColor.color;
-    const darkColor =
-      typeof props.widgetBackgroundColor === "string"
-        ? undefined
-        : props.widgetBackgroundColor.darkColor;
-    withIosWidgetBackgroundColor(config, {
-      cwd: props.directory,
-      color: lightColor,
-      darkColor: darkColor,
-    });
-  }
+  withConfigColors(config, props);
 
   if (props.icon) {
     withIosIcon(config, {
@@ -142,6 +168,34 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       cwd: props.directory,
       // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
       iconFilePath: props.icon,
+      isTransparent: ["action"].includes(props.type),
+    });
+  }
+
+  return config;
+};
+
+const withConfigColors: ConfigPlugin<
+  Pick<Props, "widgetBackgroundColor" | "accentColor" | "colors" | "directory">
+> = (config, props) => {
+  props.colors = props.colors ?? {};
+  const colors: NonNullable<Props["colors"]> = props.colors ?? {};
+
+  // You use the WidgetBackground and AccentColor to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
+  // https://useyourloaf.com/blog/widget-background-and-accent-color/
+  // i.e. when you press and hold on a widget to configure it, the background color of the widget configuration interface changes to the background color we set here.
+  if (props.widgetBackgroundColor)
+    colors["WidgetBackground"] = props.widgetBackgroundColor;
+  if (props.accentColor) colors["AccentColor"] = props.accentColor;
+
+  if (props.colors) {
+    Object.entries(props.colors).forEach(([name, color]) => {
+      withIosColorset(config, {
+        cwd: props.directory,
+        name,
+        color: typeof color === "string" ? color : color.light,
+        darkColor: typeof color === "string" ? undefined : color.dark,
+      });
     });
   }
 

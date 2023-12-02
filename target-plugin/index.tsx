@@ -11,7 +11,8 @@ export const withTargetsDir: ConfigPlugin<{
 }> = (config, { appleTeamId, match = "*" }) => {
   const projectRoot = config._internal.projectRoot;
 
-  const targets = globSync(`./targets/${match}/expo-target.config.@(json|js)`, {
+  // const targets = globSync(`./targets/${match}/expo-target.config.@(json|js)`, {
+  const targets = globSync(`./targets/action/expo-target.config.@(json|js)`, {
     cwd: projectRoot,
     absolute: true,
   });

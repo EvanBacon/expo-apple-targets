@@ -9,105 +9,123 @@ import {
   PBXFrameworksBuildPhase,
   PBXLegacyTarget,
   PBXNativeTarget,
+  XCBuildConfiguration,
   XcodeProject,
 } from "@bacons/xcode";
 
 import { sync as globSync } from "glob";
 
-export function printPlistsAsJson() {
-  const cwd = process.cwd();
-  const files = globSync("targets/*/Info.plist", { cwd });
-  const json = files.map((file) => {
-    const content = fs.readFileSync(path.join(cwd, file), "utf8");
-    return [file, plist.parse(content)];
-  });
-  console.log(JSON.stringify(json, null, 2));
+function assertBasicConfigs(
+  target: PBXNativeTarget | PBXAggregateTarget | PBXLegacyTarget
+) {
+  // assertPBXNativeTarget(target);
+  const configs = target.props.buildConfigurationList.props.buildConfigurations;
+
+  // Extract the one named "Release" and the one named "Debug" then assert that any others are unexpected and return Release and Debug.
+  const releaseConfig = configs.find(
+    (config) => config.props.name === "Release"
+  );
+  const debugConfig = configs.find((config) => config.props.name === "Debug");
+  if (!releaseConfig || !debugConfig) {
+    throw new Error(
+      `Expected to find Release and Debug configurations for target ${target.getDisplayName()}`
+    );
+  }
+  const otherConfigs = configs.filter(
+    (config) => config.props.name !== "Release" && config.props.name !== "Debug"
+  );
+  if (otherConfigs.length > 0) {
+    throw new Error(
+      `Unexpected configurations found for target ${target.getDisplayName()}: ${otherConfigs
+        .map((config) => config.props.name)
+        .join(", ")}`
+    );
+  }
+  return { releaseConfig, debugConfig };
 }
 
-export function getPossibleExtensionIds(project: XcodeProject) {
-  return project.rootObject.props.targets
-    .map((target) => {
-      return getNativeTargetId(target);
-    })
-    .filter(Boolean);
-}
+function getConfigurationsForTargets(project: XcodeProject) {
+  const templateBuildSettings: Record<
+    string,
+    {
+      default: Record<string, string>;
+      release: Record<string, string>;
+      debug: Record<string, string>;
+      info: Record<string, any>;
+    }
+  > = {};
 
-export function getFrameworksForTargets(project: XcodeProject) {
-  const items: [string, string][] = [];
   project.rootObject.props.targets.forEach((target) => {
-    // Print frameworks for each target
-    // console.log(target.props.name);
-    const frameworks = target.props.buildPhases.find(
-      (phase) => phase.isa === "PBXFrameworksBuildPhase"
-    ) as PBXFrameworksBuildPhase;
-    const frameworkNames = frameworks.props.files
-      .map(
-        (file) => `"${file.props.fileRef.props.name.replace(".framework", "")}"`
-      )
-      .join(", ");
-
-    if (frameworkNames.length === 0) {
+    if (!PBXNativeTarget.is(target)) {
       return;
     }
 
-    const targetId = getNativeTargetId(target);
-    if (targetId) {
-      items.push([targetId, frameworkNames]);
+    // console.log("settings for target:", target.props.productType);
+    const configs = assertBasicConfigs(target);
+
+    const plist = configs.releaseConfig.getInfoPlist();
+    const extensionType = plist.NSExtension?.NSExtensionPointIdentifier;
+
+    // Only collect templates for extensions.
+    if (!extensionType) {
+      return;
     }
+
+    // Get the build settings from both and create three objects:
+    // 1. Shared settings
+    // 2. Release-specific settings
+    // 3. Debug-specific settings
+
+    const allSettings = {
+      ...configs.releaseConfig.props.buildSettings,
+      ...configs.debugConfig.props.buildSettings,
+    };
+
+    const sharedSettings = {};
+    const releaseSettings = {};
+    const debugSettings = {};
+
+    const d = configs.debugConfig.props.buildSettings;
+    const r = configs.releaseConfig.props.buildSettings;
+
+    Object.entries(allSettings).forEach(([key, value]) => {
+      if (d[key] !== r[key]) {
+        if (key in r) {
+          releaseSettings[key] = r[key];
+        }
+        if (key in d) {
+          debugSettings[key] = d[key];
+        }
+      } else {
+        if (key in r && key in d) {
+          sharedSettings[key] = value;
+        }
+      }
+    });
+
+    templateBuildSettings[extensionType] = {
+      default: sharedSettings,
+      release: releaseSettings,
+      debug: debugSettings,
+      info: plist,
+    };
   });
 
-  // Remove duplicates
-  const uniqueItems = items
-    .filter(
-      (item, index, self) => index === self.findIndex((t) => t[0] === item[0])
-    )
-    .sort((a, b) => a[0].localeCompare(b[0]));
+  console.log(JSON.stringify(templateBuildSettings, null, 2));
 
-  return uniqueItems
-    .map(([target, frameworkNames], index) => {
-      return `${index === 0 ? "" : "else "}if (type === "${target}") {
-            return [${frameworkNames}];
-            }`;
-    })
-    .join("\n");
+  return templateBuildSettings;
 }
 
-// printPlistsAsJson();
-
-export function getNativeTargetId(
-  target: PBXNativeTarget | PBXAggregateTarget | PBXLegacyTarget
-): string | null {
-  if (
-    PBXNativeTarget.is(target) &&
-    target.props.productType !== "com.apple.product-type.app-extension"
-  ) {
+function findUpProjectRoot(cwd: string) {
+  const pkgJsonPath = path.join(cwd, "package.json");
+  if (fs.existsSync(pkgJsonPath)) {
+    return cwd;
+  }
+  const parentDir = path.dirname(cwd);
+  if (parentDir === cwd) {
     return null;
   }
-  // Could be a Today Extension, Share Extension, etc.
-
-  const defConfig =
-    target.props.buildConfigurationList.props.buildConfigurations.find(
-      (config) =>
-        config.props.name ===
-        target.props.buildConfigurationList.props.defaultConfigurationName
-    );
-  const infoPlistPath = path.join(
-    // TODO: Resolve root better
-    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    defConfig.props.buildSettings.INFOPLIST_FILE
-  );
-
-  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
-
-  if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
-    console.error(
-      "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
-        target.getDisplayName()
-    );
-    return null;
-  }
-
-  return infoPlist.NSExtension?.NSExtensionPointIdentifier;
+  return findUpProjectRoot(parentDir);
 }
 
 (async () => {
@@ -117,9 +135,18 @@ export function getNativeTargetId(
   })[0];
   const project = XcodeProject.open(projPath);
 
-  console.log(getFrameworksForTargets(project));
-
-  console.log("--- NSExtensionPointIdentifier ---");
-  console.log(getPossibleExtensionIds(project));
+  ensureWrite(
+    path.join(
+      findUpProjectRoot(__dirname),
+      "target-plugin/template",
+      "XCBuildConfiguration.json"
+    ),
+    JSON.stringify(getConfigurationsForTargets(project), null, 2)
+  );
   process.exit(0);
 })();
+
+function ensureWrite(p: string, src: string) {
+  fs.mkdirSync(path.dirname(p), { recursive: true });
+  fs.writeFileSync(p, src);
+}
