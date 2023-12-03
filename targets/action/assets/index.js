@@ -1,42 +1,32 @@
-var Action = function () {};
-
-Action.prototype = {
+class Action {
   /**
-   *
-   * // extensionName: "com.bacon.2095.axun"
+   * `extensionName: "com.bacon.2095.axun"`
    * @param {*} arguments: {completionFunction: () => unknown; extensionName: string; }
    */
-  // run: function (arguments) {
-  //   // Here, you can run code that modifies the document and/or prepares
-  //   // things to pass to your action's native code.
+  run({ extensionName, completionFunction }) {
+    // Here, you can run code that modifies the document and/or prepares
+    // things to pass to your action's native code.
 
-  //   // We will not modify anything, but will pass the body's background
-  //   // style to the native code.
+    // We will not modify anything, but will pass the body's background
+    // style to the native code.
+    completionFunction({
+      /* */
+    });
+  }
 
-  //   arguments.completionFunction({
-  //     currentBackgroundColor: document.body.style.backgroundColor,
-  //   });
-  // },
-
-  finalize: function (arguments) {
+  finalize() {
     // This method is run after the native code completes.
 
+    const usesExpo = usesExpo();
     const usesNextJs = usesNext();
 
-    const usesExpoRouter = usesExpo();
-    // We'll see if the native code has passed us a new background style,
-    // and set it on the body.
+    const name =
+      getGenerator() ||
+      (usesExpo ? "Expo" : usesNextJs ? "Next.js" : "Unknown");
 
-    alert(
-      "Uses: " +
-        (usesNextJs
-          ? "Next.js"
-          : usesExpoRouter
-          ? "Expo"
-          : getGenerator() || "Unknown")
-    );
-  },
-};
+    alert(`Uses: ${name}`);
+  }
+}
 
 function getGenerator() {
   let generatorTag = document.querySelector('meta[name="generator"]');
@@ -56,11 +46,12 @@ function usesNext() {
 
 function usesExpo() {
   return (
+    typeof Expo !== "undefined" ||
     !!document.querySelector("#expo-generated-fonts") ||
     typeof $$require_external !== "undefined" ||
-    typeof Expo !== "undefined" ||
     typeof __BUNDLE_START_TIME__ !== "undefined"
   );
 }
 
+// Must use var to ensure it's hoisted.
 var ExtensionPreprocessingJS = new Action();
