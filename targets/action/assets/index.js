@@ -15,47 +15,29 @@ class Action {
   }
 
   finalize() {
-    // debugger;
     try {
-      // This method is run after the native code completes.
+      var script1 = document.createElement("script");
+      script1.src = "//cdn.jsdelivr.net/npm/eruda";
+      document.head.appendChild(script1);
 
-      const usesNextJs = usesNext();
+      // Once the first script is loaded, initialize eruda
+      script1.onload = function () {
+        var script2 = document.createElement("script");
+        script2.textContent =
+          "eruda.init({ theme: 'dracula' });eruda.show('elements');";
+        document.head.appendChild(script2);
+      };
 
-      const name =
-        getGenerator() ||
-        (usesExpo() ? "Expo" : usesNextJs ? "Next.js" : "Unknown");
-
-      alert(`Uses: ${name}`);
+      // Handle any potential errors while loading the script
+      script1.onerror = function (ev) {
+        console.error("Error loading the eruda script.");
+        alert(ev);
+      };
     } catch (error) {
       console.error(error);
       alert(error);
     }
   }
-}
-
-function getGenerator() {
-  let generatorTag = document.querySelector('meta[name="generator"]');
-  if (generatorTag) return generatorTag.getAttribute("content");
-
-  return null;
-}
-
-function usesNext() {
-  return (
-    typeof next !== "undefined" ||
-    typeof __NEXT_DATA__ !== "undefined" ||
-    typeof __next_f !== "undefined" ||
-    typeof __next_require__ !== "undefined"
-  );
-}
-
-function usesExpo() {
-  return (
-    typeof Expo !== "undefined" ||
-    !!document.querySelector("#expo-generated-fonts") ||
-    typeof $$require_external !== "undefined" ||
-    typeof __BUNDLE_START_TIME__ !== "undefined"
-  );
 }
 
 // Must use var to ensure it's hoisted.
