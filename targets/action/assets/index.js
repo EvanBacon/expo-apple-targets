@@ -15,16 +15,21 @@ class Action {
   }
 
   finalize() {
-    // This method is run after the native code completes.
+    // debugger;
+    try {
+      // This method is run after the native code completes.
 
-    const usesExpo = usesExpo();
-    const usesNextJs = usesNext();
+      const usesNextJs = usesNext();
 
-    const name =
-      getGenerator() ||
-      (usesExpo ? "Expo" : usesNextJs ? "Next.js" : "Unknown");
+      const name =
+        getGenerator() ||
+        (usesExpo() ? "Expo" : usesNextJs ? "Next.js" : "Unknown");
 
-    alert(`Uses: ${name}`);
+      alert(`Uses: ${name}`);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
   }
 }
 
@@ -54,4 +59,4 @@ function usesExpo() {
 }
 
 // Must use var to ensure it's hoisted.
-var ExtensionPreprocessingJS = new Action();
+window.ExtensionPreprocessingJS = new Action();
