@@ -22,6 +22,8 @@ import { sync as globSync } from "glob";
 import path from "path";
 import { BuildSettings } from "@bacons/xcode/json";
 
+import TemplateBuildSettings from "./template/XCBuildConfiguration.json";
+
 export type XcodeSettings = {
   name: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
@@ -41,6 +43,8 @@ export type XcodeSettings = {
   hasAccentColor?: boolean;
 
   teamId?: string;
+
+  icon?: string;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -124,6 +128,71 @@ function createNotificationContentConfigurationList(
     buildSettings: {
       CLANG_ANALYZER_NONNULL: "YES",
       ...common,
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
+function createExtensionConfigurationListFromTemplate(
+  project: XcodeProject,
+  // NSExtensionPointIdentifier
+  extensionType: string,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    icon,
+  }: XcodeSettings
+) {
+  if (!TemplateBuildSettings[extensionType]) {
+    throw new Error(
+      `No template for extension type ${extensionType}. Add it to the xcode project and re-run the generation script.`
+    );
+  }
+
+  const template = TemplateBuildSettings[extensionType] as {
+    default: BuildSettings;
+    release: BuildSettings;
+    debug: BuildSettings;
+  };
+
+  const dynamic: Partial<BuildSettings> = {
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+  };
+
+  if (icon) {
+    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;` build settings
+    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+  }
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...template.default,
+      ...template.debug,
+      ...dynamic,
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...template.default,
+      ...template.release,
+      ...dynamic,
     },
   });
 
@@ -307,6 +376,7 @@ function createWatchAppConfigurationList(
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+
     CLANG_ENABLE_OBJC_WEAK: "YES",
     CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
     CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
@@ -318,7 +388,6 @@ function createWatchAppConfigurationList(
     INFOPLIST_FILE: cwd + "/Info.plist",
     GENERATE_INFOPLIST_FILE: "YES",
     INFOPLIST_KEY_CFBundleDisplayName: name,
-    // @ts-expect-error
     INFOPLIST_KEY_UISupportedInterfaceOrientations:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     INFOPLIST_KEY_WKCompanionAppBundleIdentifier:
@@ -645,6 +714,12 @@ function createConfigurationListForType(
 ) {
   if (props.type === "widget") {
     return createConfigurationList(project, props);
+  } else if (props.type === "action") {
+    return createExtensionConfigurationListFromTemplate(
+      project,
+      "com.apple.services",
+      props
+    );
   } else if (props.type === "share") {
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
@@ -1065,8 +1140,6 @@ async function applyXcodeChanges(
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
 
   configureTargetWithPreview(widgetTarget);
-
-  
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {

@@ -1,7 +1,14 @@
-import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
+import {
+  PBXNativeTarget,
+  XCBuildConfiguration,
+  XcodeProject,
+} from "@bacons/xcode";
 import plist from "@expo/plist";
 import fs from "fs";
 import path from "path";
+
+import TemplateBuildSettings from "./template/XCBuildConfiguration.json";
+import { Entitlements } from "./config";
 
 export type ExtensionType =
   | "widget"
@@ -20,6 +27,7 @@ export type ExtensionType =
   | "location-push"
   | "credentials-provider"
   | "account-auth"
+  | "action"
   | "safari";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -41,6 +49,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
       "credentials-provider",
     "com.apple.authentication-services-account-authentication-modification-ui":
       "account-auth",
+    "com.apple.services": "action",
     // "com.apple.intents-service": "intents",
   };
 
@@ -48,6 +57,30 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
 export function getTargetInfoPlistForType(type: ExtensionType) {
   if (type === "watch") {
     return plist.build({});
+  }
+  if (type === "action") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          NSExtensionActivationRule: {
+            NSExtensionActivationSupportsFileWithMaxCount: 0,
+            NSExtensionActivationSupportsImageWithMaxCount: 0,
+            NSExtensionActivationSupportsMovieWithMaxCount: 0,
+            NSExtensionActivationSupportsText: false,
+            NSExtensionActivationSupportsWebURLWithMaxCount: 1,
+          },
+          NSExtensionJavaScriptPreprocessingFile: "assets/index",
+          NSExtensionServiceAllowsFinderPreviewItem: true,
+          NSExtensionServiceAllowsTouchBarItem: true,
+          NSExtensionServiceFinderPreviewIconName: "NSActionTemplate",
+          NSExtensionServiceTouchBarBezelColorName: "TouchBarBezel",
+          NSExtensionServiceTouchBarIconName: "NSActionTemplate",
+        },
+        NSExtensionPointIdentifier: "com.apple.services",
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
+      },
+    });
   }
   if (type === "clip") {
     return plist.build({
@@ -267,6 +300,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
+  } else if (type === "action") {
+    return ["UniformTypeIdentifiers"];
   }
 
   return [];
@@ -278,10 +313,12 @@ export function isNativeTargetOfType(
 ): boolean {
   if (
     type === "watch" &&
-    target.props.productType ===
-      "com.apple.product-type.application"
+    target.props.productType === "com.apple.product-type.application"
   ) {
-    return ('WATCHOS_DEPLOYMENT_TARGET' in getDefaultBuildConfigurationForTarget(target).props.buildSettings)
+    return (
+      "WATCHOS_DEPLOYMENT_TARGET" in
+      getDefaultBuildConfigurationForTarget(target).props.buildSettings
+    );
   }
   if (
     type === "clip" &&
@@ -325,15 +362,22 @@ export function isNativeTargetOfType(
 }
 
 export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {
-  const mainAppTarget = project.rootObject.props.targets.filter(target => {
-    if (PBXNativeTarget.is(target) && target.props.productType === "com.apple.product-type.application") {
-      return !isNativeTargetOfType(target, "watch")
+  const mainAppTarget = project.rootObject.props.targets.filter((target) => {
+    if (
+      PBXNativeTarget.is(target) &&
+      target.props.productType === "com.apple.product-type.application"
+    ) {
+      return !isNativeTargetOfType(target, "watch");
     }
     return false;
-  }) as PBXNativeTarget[]
+  }) as PBXNativeTarget[];
 
   if (mainAppTarget.length > 1) {
-    console.warn(`Multiple main app targets found, using first one: ${mainAppTarget.map(t => t.getDisplayName()).join(', ')}}`)
+    console.warn(
+      `Multiple main app targets found, using first one: ${mainAppTarget
+        .map((t) => t.getDisplayName())
+        .join(", ")}}`
+    );
   }
 
   return mainAppTarget[0];
@@ -362,4 +406,31 @@ export function getInfoPlistPathForTarget(target: PBXNativeTarget) {
   );
 
   return infoPlistPath;
+}
+
+export function getAuxiliaryTargets(project: XcodeProject): PBXNativeTarget[] {
+  const mainTarget = getMainAppTarget(project);
+  return project.rootObject.props.targets.filter((target) => {
+    return target.uuid !== mainTarget.uuid;
+  }) as PBXNativeTarget[];
+}
+
+export function getEntitlementsForBuildConfiguration(
+  project: XcodeProject,
+  config: XCBuildConfiguration
+): Entitlements | undefined {
+  const entitlementsPathFragment =
+    config.props.buildSettings?.CODE_SIGN_ENTITLEMENTS;
+
+  return entitlementsPathFragment
+    ? plist.parse(
+        fs.readFileSync(
+          path.join(
+            path.dirname(path.dirname(project.filePath)),
+            entitlementsPathFragment
+          ),
+          "utf8"
+        )
+      )
+    : undefined;
 }

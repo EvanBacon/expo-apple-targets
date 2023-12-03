@@ -13,7 +13,8 @@ export const withIosIcon: ConfigPlugin<{
   cwd: string;
   type: ExtensionType;
   iconFilePath: string;
-}> = (config, { cwd, type, iconFilePath }) => {
+  isTransparent?: boolean;
+}> = (config, { cwd, type, iconFilePath, isTransparent }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -29,7 +30,8 @@ export const withIosIcon: ConfigPlugin<{
             iconFilePath,
             projectRoot,
             namedProjectRoot,
-            cwd
+            cwd,
+            isTransparent
           ),
         });
       } else {
@@ -37,7 +39,8 @@ export const withIosIcon: ConfigPlugin<{
           iconFilePath,
           projectRoot,
           join(projectRoot, cwd),
-          cwd
+          cwd,
+          isTransparent
         );
       }
       return config;
@@ -119,7 +122,8 @@ export async function setIconsAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
+  isTransparent: boolean
 ) {
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
   await fs.ensureDir(join(iosNamedProjectRoot, IMAGESET_PATH));
@@ -130,7 +134,8 @@ export async function setIconsAsync(
       icon,
       projectRoot,
       iosNamedProjectRoot,
-      cacheComponent
+      cacheComponent,
+      isTransparent
     ),
   });
 }
@@ -139,7 +144,8 @@ export async function generateIconsInternalAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
+  isTransparent: boolean
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -168,12 +174,12 @@ export async function generateIconsInternalAsync(
               name: filename,
               width: iconSizePx,
               height: iconSizePx,
-              removeTransparency: true,
+              removeTransparency: !isTransparent,
               // The icon should be square, but if it's not then it will be cropped.
               resizeMode: "cover",
               // Force the background color to solid white to prevent any transparency.
               // TODO: Maybe use a more adaptive option based on the icon color?
-              backgroundColor: "#ffffff",
+              backgroundColor: isTransparent ? undefined : "#ffffff",
             }
           );
           // Write image buffer to the file system.
@@ -201,7 +207,8 @@ export async function generateWatchIconsInternalAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
+  isTransparent: boolean
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -217,12 +224,12 @@ export async function generateWatchIconsInternalAsync(
       name: filename,
       width: size,
       height: size,
-      removeTransparency: true,
+      removeTransparency: !isTransparent,
       // The icon should be square, but if it's not then it will be cropped.
       resizeMode: "cover",
       // Force the background color to solid white to prevent any transparency.
       // TODO: Maybe use a more adaptive option based on the icon color?
-      backgroundColor: "#ffffff",
+      backgroundColor: isTransparent ? undefined : "#ffffff",
     }
   );
   // Write image buffer to the file system.
