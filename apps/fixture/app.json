@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "ios-fixture",
+    "slug": "ios-fixture",
+    "version": "1.0.0",
+    "sdkVersion": "49.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.bacon.ios-fixture"
+    }
+  }
+}
