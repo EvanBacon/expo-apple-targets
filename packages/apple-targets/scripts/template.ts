@@ -1,20 +1,15 @@
 // Generate aspects of the plugin from an Xcode project.
-
-import plist from "@expo/plist";
-import fs from "fs-extra";
-import path from "path";
-
 import {
   PBXAggregateTarget,
   PBXFrameworksBuildPhase,
   PBXLegacyTarget,
   PBXNativeTarget,
-  XCBuildConfiguration,
   XcodeProject,
 } from "@bacons/xcode";
-
+import plist from "@expo/plist";
+import fs from "fs-extra";
 import { sync as globSync } from "glob";
-import { BuildSettings } from "@bacons/xcode/json";
+import path from "path";
 
 export function printPlistsAsJson() {
   const cwd = process.cwd();
@@ -274,11 +269,17 @@ export function getConfigurationsForTargets(project: XcodeProject) {
     const r = configs.releaseConfig.props.buildSettings;
 
     Object.entries(allSettings).forEach(([key, value]) => {
+      // @ts-ignore
       if (key in r && key in d && r[key] === d[key]) {
+        // @ts-ignore
         sharedSettings[key] = value;
+        // @ts-ignore
       } else if (key in r && !(key in d)) {
+        // @ts-ignore
         releaseSettings[key] = value;
+        // @ts-ignore
       } else if (key in d && !(key in r)) {
+        // @ts-ignore
         debugSettings[key] = value;
       }
     });
@@ -295,7 +296,7 @@ export function getConfigurationsForTargets(project: XcodeProject) {
   return templateBuildSettings;
 }
 
-function findUpProjectRoot(cwd: string) {
+function findUpProjectRoot(cwd: string): string | null {
   const pkgJsonPath = path.join(cwd, "package.json");
   if (fs.existsSync(pkgJsonPath)) {
     return cwd;
