@@ -134,7 +134,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     bundleId,
     icon: props.icon,
 
-    hasAccentColor: !!props.colors?.AccentColor,
+    hasAccentColor: !!props.colors?.$accent,
 
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
@@ -182,11 +182,11 @@ const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
   props.colors = props.colors ?? {};
   // const colors: NonNullable<Props["colors"]> = props.colors ?? {};
 
-  // You use the WidgetBackground and AccentColor to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
+  // You use the WidgetBackground and `$accent` to style the widget configuration interface of a configurable widget. Apple could have chosen names to make that more obvious.
   // https://useyourloaf.com/blog/widget-background-and-accent-color/
   // i.e. when you press and hold on a widget to configure it, the background color of the widget configuration interface changes to the background color we set here.
   // if (props.widgetBackgroundColor)
-  //   colors["WidgetBackground"] = props.widgetBackgroundColor;
+  //   colors["$widgetBackground"] = props.widgetBackgroundColor;
   // if (props.accentColor) colors["AccentColor"] = props.accentColor;
 
   if (props.colors) {

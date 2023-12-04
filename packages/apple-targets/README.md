@@ -28,8 +28,8 @@ This file can have the following properties:
 {
   "type": "widget",
   "colors": {
-    // or "AccentColor": "red",
-    "AccentColor": { "color": "red", "darkColor": "blue" }
+    // or "$accent": "red",
+    "$accent": { "color": "red", "darkColor": "blue" }
   },
   "icon": "../assets/icon.png",
   // Can also be a URL
@@ -47,11 +47,20 @@ You can also use `.js` with the typedoc for autocomplete:
 module.exports = {
   type: "watch",
   colors: {
-    AccentColor: "steelblue",
+    $accent: "steelblue",
   },
   deploymentTarget: "9.4",
 };
 ```
+
+## Colors
+
+There are certain values that are shared across targets. We use a predefined convention to map these values across targets.
+
+| Name                | Build Setting                                        | Purpose                                                                                                      |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `$accent`           | `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`     | Sets the global accent color, in widgets this is used for the tint color of buttons when editing the widget. |
+| `$widgetBackground` | `ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME` | Sets the background color of the widget.                                                                     |
 
 ## Examples
 
@@ -66,9 +75,9 @@ module.exports = {
   icon: "../../icons/widget.png",
   colors: {
     // This color is referenced in the Info.plist
-    WidgetBackground: "#DB739C",
+    $widgetBackground: "#DB739C",
 
-    AccentColor: "#F09458",
+    $accent: "#F09458",
 
     // Optional: Add colors that can be used in SwiftUI.
     gradient1: {
@@ -100,6 +109,17 @@ module.exports = {
   colors: {
     TouchBarBezel: "#DB739C",
   },
+};
+```
+
+### `spotlight`
+
+Populate the Spotlight search results with your app's content.
+
+```js
+/** @type {import('@bacons/apple-targets').Config} */
+module.exports = {
+  type: "spotlight",
 };
 ```
 

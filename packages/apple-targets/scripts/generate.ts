@@ -86,6 +86,10 @@ function getConfigurationsForTargets(project: XcodeProject) {
       ...configs.debugConfig.props.buildSettings,
     };
 
+    // These are known values and will be applied based on config.
+    delete allSettings.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME;
+    delete allSettings.ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME;
+
     const sharedSettings: any = {};
     const releaseSettings: any = {};
     const debugSettings: any = {};

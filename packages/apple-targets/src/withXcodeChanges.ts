@@ -57,6 +57,8 @@ export type XcodeSettings = {
 
   hasAccentColor?: boolean;
 
+  colors?: Record<string, string>;
+
   teamId?: string;
 
   icon?: string;
@@ -412,7 +414,7 @@ function createWatchAppConfigurationList(
   };
 
   if (hasAccentColor) {
-    common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "AccentColor";
+    common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
   }
 
   const debugBuildConfig = XCBuildConfiguration.create(project, {
@@ -541,7 +543,7 @@ function createAppClipConfigurationList(
   };
 
   if (hasAccentColor) {
-    dynamic.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "AccentColor";
+    dynamic.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
   }
 
   const superCommon: Partial<BuildSettings> = {
@@ -631,8 +633,8 @@ function createConfigurationList(
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
-      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
-      ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
+      ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
       CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
       CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -668,8 +670,8 @@ function createConfigurationList(
   const releaseBuildConfig = XCBuildConfiguration.create(project, {
     name: "Release",
     buildSettings: {
-      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor",
-      ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "WidgetBackground",
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
+      ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
       CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
       CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -869,6 +871,28 @@ async function applyXcodeChanges(
     }
   }
 
+  function configureTargetWithKnownSettings(target: PBXNativeTarget) {
+    if (props.colors?.$accent) {
+      target.setBuildSetting(
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME",
+        "$accent"
+      );
+    } else {
+      target.removeBuildSetting(
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"
+      );
+    }
+    if (props.colors?.$widgetBackground) {
+      target.setBuildSetting(
+        "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME",
+        "$widgetBackground"
+      );
+    } else {
+      target.removeBuildSetting(
+        "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME"
+      );
+    }
+  }
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
     const entitlements = globSync("*.entitlements", {
       absolute: true,
@@ -949,6 +973,8 @@ async function applyXcodeChanges(
     configureTargetWithEntitlements(targetToUpdate);
 
     configureTargetWithPreview(targetToUpdate);
+
+    configureTargetWithKnownSettings(targetToUpdate);
 
     applyDevelopmentTeamIdToTargets();
 
@@ -1078,6 +1104,8 @@ async function applyXcodeChanges(
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
     productType: productTypeForType(props.type),
   });
+
+  configureTargetWithKnownSettings(widgetTarget);
 
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
 

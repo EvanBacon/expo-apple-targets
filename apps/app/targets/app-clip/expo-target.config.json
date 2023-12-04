@@ -2,6 +2,6 @@
     "type": "clip",
     "icon": "../../assets/icon.png",
     "colors": {   
-        "AccentColor": "darkcyan"
+        "$accent": "darkcyan"
     }
 }
