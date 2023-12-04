@@ -11,6 +11,9 @@ export const withTargetsDir: ConfigPlugin<{
   match?: string;
   root?: string;
 }> = (config, { appleTeamId, root = "./targets", match = "*" }) => {
+  console.warn(
+    "You're using an experimental Config Plugin that is subject to breaking changes and has no E2E tests."
+  );
   const projectRoot = config._internal!.projectRoot;
 
   const targets = globSync(`${root}/${match}/expo-target.config.@(json|js)`, {
