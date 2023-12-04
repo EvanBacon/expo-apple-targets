@@ -1,7 +1,0 @@
-{
-    "type": "clip",
-    "icon": "../../assets/icon.png",
-    "colors": {   
-        "$accent": "darkcyan"
-    }
-}
