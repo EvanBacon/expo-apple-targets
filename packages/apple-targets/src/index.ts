@@ -1,25 +1,26 @@
 import { ConfigPlugin } from "@expo/config-plugins";
 import { sync as globSync } from "glob";
 import path from "path";
-import withWidget from "./withWidget";
 
+import type { Config } from "./config";
+import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
 export const withTargetsDir: ConfigPlugin<{
   appleTeamId: string;
   match?: string;
 }> = (config, { appleTeamId, match = "*" }) => {
-  const projectRoot = config._internal.projectRoot;
+  const projectRoot = config._internal!.projectRoot;
 
-  // const targets = globSync(`./targets/${match}/expo-target.config.@(json|js)`, {
-  const targets = globSync(`./targets/action/expo-target.config.@(json|js)`, {
+  const targets = globSync(`./targets/${match}/expo-target.config.@(json|js)`, {
+    // const targets = globSync(`./targets/action/expo-target.config.@(json|js)`, {
     cwd: projectRoot,
     absolute: true,
   });
 
   targets.forEach((configPath) => {
     config = withWidget(config, {
-      appleTeamId: appleTeamId,
+      appleTeamId,
       ...require(configPath),
       directory: path.relative(projectRoot, path.dirname(configPath)),
     });
@@ -27,3 +28,7 @@ export const withTargetsDir: ConfigPlugin<{
 
   return withXcodeProjectBetaBaseMod(config);
 };
+
+export { Config };
+
+module.exports = withTargetsDir;

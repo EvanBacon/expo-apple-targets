@@ -380,7 +380,12 @@ export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {
     );
   }
 
-  return mainAppTarget[0];
+  const target = mainAppTarget[0];
+
+  if (!target) {
+    throw new Error("No main app target found");
+  }
+  return target;
 }
 
 export function getDefaultBuildConfigurationForTarget(target: PBXNativeTarget) {
@@ -401,7 +406,7 @@ export function getInfoPlistPathForTarget(target: PBXNativeTarget) {
   const infoPlistPath = path.join(
     // TODO: Resolve root better
     path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    getDefaultBuildConfigurationForTarget(target).props.buildSettings
+    getDefaultBuildConfigurationForTarget(target)!.props.buildSettings
       .INFOPLIST_FILE
   );
 

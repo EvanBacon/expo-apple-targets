@@ -1,29 +1,29 @@
 {
-  "name": "app-2095",
+  "name": "@bacons/apple-targets-repo",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "start": "expo start --dev-client",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "nprebuild": "expo prebuild --template ./prebuild-template-no-rn.tgz -p ios",
-    "generate": "ts-node ./target-plugin/sync/generate.ts"
+    "postinstall": "expo-yarn-workspaces check-workspace-dependencies",
+    "start": "lerna run build --parallel -- --watch",
+    "prepare": "lerna run prepare --parallel"
   },
-  "dependencies": {
-    "expo": "~49.0.0-alpha.1",
-    "expo-splash-screen": "~0.19.0",
-    "expo-status-bar": "~1.4.4",
-    "react": "18.2.0",
-    "react-native": "0.72.0-rc.5"
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "resolutions": {
+    "expo": "^49.0.8",
+    "fs-extra": "^9.1.0"
   },
   "devDependencies": {
-    "glob": "^10.2.6",
-    "typescript": "^4.9.4",
-    "@bacons/xcode": "^1.0.0-alpha.5",
-    "@types/glob": "^8.1.0",
-    "@types/react": "~18.0.27",
-    "@babel/core": "^7.20.0",
-    "ts-node": "^10.9.1"
-  },
-  "private": true
+    "eslint": "^8.10.0",
+    "expo-yarn-workspaces": "^2.0.2",
+    "lerna": "3.4.1",
+    "prettier": "^2.2.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.2.4",
+    "expo-module-scripts": "^2.0.0",
+    "@types/jest": "^26",
+    "jest": "^26.6.3"
+  }
 }

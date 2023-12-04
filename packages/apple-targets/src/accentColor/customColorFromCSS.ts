@@ -1,3 +1,4 @@
+// @ts-expect-error
 import normalizeColor from "@react-native/normalize-color";
 
 export function customColorFromCSS(color: string): {

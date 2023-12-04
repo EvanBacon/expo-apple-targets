@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app-2095",
-    "slug": "app-2095",
+    "name": "baconfig-plugin",
+    "slug": "bacon-targets-demo",
     "version": "1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +22,14 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "plugins": [
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "QQ57RJ5UTD"
+        }
+      ]
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },
