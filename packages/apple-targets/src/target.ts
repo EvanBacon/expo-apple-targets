@@ -292,7 +292,9 @@ export function getFrameworksForType(type: ExtensionType) {
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
   } else if (type === "action") {
-    return ["UniformTypeIdentifiers"];
+    return [
+      // "UniformTypeIdentifiers"
+    ];
   }
 
   return [];
