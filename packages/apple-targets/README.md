@@ -112,6 +112,33 @@ module.exports = {
 };
 ```
 
+Add a JavaScript file to `assets/index.js`:
+
+```js
+class Action {
+  /**
+   * `extensionName: "com.bacon.2095.axun"`
+   * @param {*} arguments: {completionFunction: () => unknown; extensionName: string; }
+   */
+  run({ extensionName, completionFunction }) {
+    // Here, you can run code that modifies the document and/or prepares
+    // things to pass to your action's native code.
+
+    // We will not modify anything, but will pass the body's background
+    // style to the native code.
+    completionFunction({
+      /* */
+    });
+  }
+
+  finalize() {
+    // Runs after the native action code has completed.
+  }
+}
+
+window.ExtensionPreprocessingJS = new Action();
+```
+
 ### `spotlight`
 
 Populate the Spotlight search results with your app's content.
