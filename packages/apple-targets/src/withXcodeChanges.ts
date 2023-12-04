@@ -29,7 +29,16 @@ import {
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
-import TemplateBuildSettings from "./template/XCBuildConfiguration.json";
+const TemplateBuildSettings =
+  require("./template/XCBuildConfiguration.json") as Record<
+    string,
+    {
+      default: BuildSettings;
+      release: BuildSettings;
+      debug: BuildSettings;
+      info: any;
+    }
+  >;
 import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {
@@ -1127,7 +1136,9 @@ async function applyXcodeChanges(
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
   } else {
-    const dstPath = { clip: "AppClips", watch: "Watch" }[props.type];
+    const dstPath = (
+      { clip: "AppClips", watch: "Watch" } as Record<string, string>
+    )[props.type];
     if (dstPath) {
       mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
         dstPath: "$(CONTENTS_FOLDER_PATH)/" + dstPath,
@@ -1151,7 +1162,7 @@ async function applyXcodeChanges(
   const mainSourcesBuildPhase =
     mainAppTarget.getBuildPhase(PBXSourcesBuildPhase);
   // TODO: Idempotent
-  mainSourcesBuildPhase.props.files.push(...intentBuildFiles[1]);
+  mainSourcesBuildPhase?.props.files.push(...intentBuildFiles[1]);
 
   const protectedGroup = ensureProtectedGroup(project).createGroup({
     // This is where it gets fancy

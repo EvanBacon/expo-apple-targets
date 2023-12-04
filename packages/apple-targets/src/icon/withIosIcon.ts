@@ -7,6 +7,7 @@ import {
 } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
 import * as fs from "fs-extra";
 import { join } from "path";
+
 import { ExtensionType } from "../target";
 
 export const withIosIcon: ConfigPlugin<{
@@ -14,7 +15,7 @@ export const withIosIcon: ConfigPlugin<{
   type: ExtensionType;
   iconFilePath: string;
   isTransparent?: boolean;
-}> = (config, { cwd, type, iconFilePath, isTransparent }) => {
+}> = (config, { cwd, type, iconFilePath, isTransparent = false }) => {
   return withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -179,7 +180,7 @@ export async function generateIconsInternalAsync(
               resizeMode: "cover",
               // Force the background color to solid white to prevent any transparency.
               // TODO: Maybe use a more adaptive option based on the icon color?
-              backgroundColor: isTransparent ? undefined : "#ffffff",
+              backgroundColor: isTransparent ? "#ffffff00" : "#ffffff",
             }
           );
           // Write image buffer to the file system.
@@ -229,7 +230,7 @@ export async function generateWatchIconsInternalAsync(
       resizeMode: "cover",
       // Force the background color to solid white to prevent any transparency.
       // TODO: Maybe use a more adaptive option based on the icon color?
-      backgroundColor: isTransparent ? undefined : "#ffffff",
+      backgroundColor: isTransparent ? "#ffffff00" : "#ffffff",
     }
   );
   // Write image buffer to the file system.

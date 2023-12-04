@@ -44,7 +44,8 @@ export function getFrameworksForTargets(project: XcodeProject) {
     ) as PBXFrameworksBuildPhase;
     const frameworkNames = frameworks.props.files
       .map(
-        (file) => `"${file.props.fileRef.props.name.replace(".framework", "")}"`
+        (file) =>
+          `"${file.props.fileRef.props.name?.replace(".framework", "")}"`
       )
       .join(", ");
 
@@ -87,12 +88,7 @@ export function getNativeTargetId(
   }
   // Could be a Today Extension, Share Extension, etc.
 
-  const defConfig =
-    target.props.buildConfigurationList.props.buildConfigurations.find(
-      (config) =>
-        config.props.name ===
-        target.props.buildConfigurationList.props.defaultConfigurationName
-    );
+  const defConfig = target.getDefaultConfiguration();
   const infoPlistPath = path.join(
     // TODO: Resolve root better
     path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
@@ -313,14 +309,17 @@ function findUpProjectRoot(cwd: string) {
 
 (async () => {
   const projPath = globSync("ios/*/project.pbxproj", {
-    cwd: process.cwd(),
+    cwd: path.join(
+      findUpProjectRoot(path.dirname(path.dirname(__dirname)))!,
+      "apps/fixture"
+    ),
     absolute: true,
   })[0];
   const project = XcodeProject.open(projPath);
 
   ensureWrite(
     path.join(
-      findUpProjectRoot(__dirname),
+      findUpProjectRoot(__dirname)!,
       "target-plugin/template",
       "XCBuildConfiguration.json"
     ),

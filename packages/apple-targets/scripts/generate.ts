@@ -137,7 +137,7 @@ function findUpProjectRoot(cwd: string) {
 
   ensureWrite(
     path.join(
-      findUpProjectRoot(__dirname),
+      findUpProjectRoot(__dirname)!,
       "target-plugin/template",
       "XCBuildConfiguration.json"
     ),
