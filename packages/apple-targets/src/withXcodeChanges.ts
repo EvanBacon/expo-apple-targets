@@ -736,27 +736,41 @@ function addFrameworksToDisplayFolder(
   project: XcodeProject,
   frameworks: PBXFileReference[]
 ) {
-  // TODO: Ensure existence
-  let mainFrameworksGroup = project.rootObject.props.mainGroup
-    .getChildGroups()
-    .find((group) => group.getDisplayName() === "Frameworks");
-
-  // If this happens, there's a big problem. But just in case...
-  if (!mainFrameworksGroup) {
-    mainFrameworksGroup = project.rootObject.props.mainGroup.createGroup({
+  const mainFrameworksGroup =
+    project.rootObject.props.mainGroup
+      .getChildGroups()
+      .find((group) => group.getDisplayName() === "Frameworks") ??
+    // If this happens, there's a big problem. But just in case...
+    project.rootObject.props.mainGroup.createGroup({
       name: "Frameworks",
       sourceTree: "<group>",
     });
-  }
 
   frameworks.forEach((file) => {
     if (
       !mainFrameworksGroup.props.children.find(
-        (child) => child.getDisplayName() === file.getDisplayName()
+        (child) => child.uuid === file.uuid
       )
     ) {
       mainFrameworksGroup.props.children.push(file);
     }
+  });
+}
+
+function getFramework(project: XcodeProject, name: string): PBXFileReference {
+  const frameworkName = name + ".framework";
+  for (const [, entry] of project.entries()) {
+    if (
+      PBXFileReference.is(entry) &&
+      entry.props.lastKnownFileType === "wrapper.framework" &&
+      entry.props.sourceTree === "SDKROOT" &&
+      entry.props.name === frameworkName
+    ) {
+      return entry;
+    }
+  }
+  return PBXFileReference.create(project, {
+    path: "System/Library/Frameworks/" + frameworkName,
   });
 }
 
@@ -770,11 +784,9 @@ async function applyXcodeChanges(
   // Special setting for share extensions.
   if (needsEmbeddedSwift(props.type)) {
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
-    mainAppTarget.props.buildConfigurationList.props.buildConfigurations.forEach(
-      (buildConfig) => {
-        buildConfig.props.buildSettings.ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES =
-          "YES";
-      }
+    mainAppTarget.setBuildSetting(
+      "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES",
+      "YES"
     );
   }
 
@@ -801,25 +813,7 @@ async function applyXcodeChanges(
     );
   }
 
-  function getFramework(name: string): PBXFileReference {
-    const frameworkName = name + ".framework";
-    for (const [, entry] of project.entries()) {
-      if (
-        PBXFileReference.is(entry) &&
-        entry.props.lastKnownFileType === "wrapper.framework" &&
-        entry.props.sourceTree === "SDKROOT" &&
-        entry.props.name === frameworkName
-      ) {
-        return entry;
-      }
-    }
-    return PBXFileReference.create(project, {
-      explicitFileType: "wrapper.framework",
-      sourceTree: "SDKROOT",
-      path: "System/Library/Frameworks/" + frameworkName,
-    });
-  }
-  const magicCwd = path.join(config._internal.projectRoot!, "ios", props.cwd);
+  const magicCwd = path.join(config._internal!.projectRoot, "ios", props.cwd);
 
   function getOrCreateBuildFile(file: PBXFileReference): PBXBuildFile {
     for (const entry of file.getReferrers()) {
@@ -835,64 +829,34 @@ async function applyXcodeChanges(
   // Add the widget target to the display folder (cosmetic)
   addFrameworksToDisplayFolder(
     project,
-    props.frameworks.map((framework) => getFramework(framework))
+    props.frameworks.map((framework) => getFramework(project, framework))
   );
 
   const developmentTeamId =
-    props.teamId ??
-    mainAppTarget.props.buildConfigurationList.props.buildConfigurations.reduce(
-      (acc, config) => {
-        if (config.props.buildSettings.DEVELOPMENT_TEAM) {
-          return config.props.buildSettings.DEVELOPMENT_TEAM;
-        }
-        return acc;
-      },
-      undefined
-    );
+    props.teamId ?? mainAppTarget.getDefaultBuildSetting("DEVELOPMENT_TEAM");
 
   if (!developmentTeamId) {
-    // if (process.env.CI) {
     throw new Error(
       "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
     );
-    // } else {
-    //   console.warn(
-    //     "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
-    //   );
-    // }
-  }
-
-  function configureTargetWithDevelopmentTeamId(
-    target: PBXNativeTarget | PBXAggregateTarget | PBXLegacyTarget
-  ) {
-    if (developmentTeamId) {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          // @ts-expect-error
-          config.props.buildSettings.DEVELOPMENT_TEAM = developmentTeamId;
-        }
-      );
-    } else {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          delete config.props.buildSettings.DEVELOPMENT_TEAM;
-        }
-      );
-    }
   }
 
   function applyDevelopmentTeamIdToTargets() {
     project.rootObject.props.targets.forEach((target) => {
-      configureTargetWithDevelopmentTeamId(target);
+      if (developmentTeamId) {
+        target.setBuildSetting("DEVELOPMENT_TEAM", developmentTeamId);
+      } else {
+        target.removeBuildSetting("DEVELOPMENT_TEAM");
+      }
     });
 
     for (const target of project.rootObject.props.targets) {
       project.rootObject.props.attributes.TargetAttributes ??= {};
+
       // idk, attempting to prevent EAS Build from failing when it codesigns
       project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
         CreatedOnToolsVersion: "14.3",
         ProvisioningStyle: "Automatic",
-        // @ts-expect-error
         DevelopmentTeam: developmentTeamId,
       };
     }
@@ -913,33 +877,16 @@ async function applyXcodeChanges(
     });
 
     if (entitlements.length > 0) {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          config.props.buildSettings.CODE_SIGN_ENTITLEMENTS =
-            props.cwd + "/" + entitlements[0].props.fileRef.props.path;
-        }
+      target.setBuildSetting(
+        "CODE_SIGN_ENTITLEMENTS",
+        props.cwd + "/" + entitlements[0].props.fileRef.props.path
       );
     } else {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          delete config.props.buildSettings.CODE_SIGN_ENTITLEMENTS;
-        }
-      );
+      target.removeBuildSetting("CODE_SIGN_ENTITLEMENTS");
     }
 
     return entitlements;
     // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
-  }
-
-  function configureTargetWithMarketingVersion(
-    target: PBXNativeTarget,
-    mainVersion: string
-  ) {
-    target.props.buildConfigurationList.props.buildConfigurations.forEach(
-      (config) => {
-        config.props.buildSettings.MARKETING_VERSION = mainVersion;
-      }
-    );
   }
 
   function syncMarketingVersions() {
@@ -947,7 +894,7 @@ async function applyXcodeChanges(
     // console.log('main marketing version:', mainVersion)
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
-        configureTargetWithMarketingVersion(target, mainVersion);
+        target.setBuildSetting("MARKETING_VERSION", mainVersion);
       }
     });
   }
@@ -1125,7 +1072,7 @@ async function applyXcodeChanges(
   const widgetTarget = project.rootObject.createNativeTarget({
     buildConfigurationList: createConfigurationListForType(project, props),
     name: productName,
-    productName: productName,
+    productName,
     // @ts-expect-error
     productReference:
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
@@ -1147,7 +1094,7 @@ async function applyXcodeChanges(
 
   widgetTarget.createBuildPhase(PBXFrameworksBuildPhase, {
     files: props.frameworks.map((framework) =>
-      getOrCreateBuildFile(getFramework(framework))
+      getOrCreateBuildFile(getFramework(project, framework))
     ),
   });
 
@@ -1199,7 +1146,6 @@ async function applyXcodeChanges(
       });
     } else {
       mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-        dstPath: "",
         dstSubfolderSpec: 13,
         buildActionMask: 2147483647,
         files: [alphaExtensionAppexBf],
