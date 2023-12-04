@@ -18,6 +18,11 @@
 		CD1916932B1D79400006215A /* AccountAuthenticationModificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916922B1D79400006215A /* AccountAuthenticationModificationViewController.swift */; };
 		CD1916962B1D79400006215A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD1916942B1D79400006215A /* MainInterface.storyboard */; };
 		CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD19168E2B1D79400006215A /* fx-account-authentication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1916BB2B1D799B0006215A /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD1916BA2B1D799B0006215A /* UniformTypeIdentifiers.framework */; };
+		CD1916BE2B1D799B0006215A /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD1916BD2B1D799B0006215A /* Media.xcassets */; };
+		CD1916C02B1D799B0006215A /* ActionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916BF2B1D799B0006215A /* ActionRequestHandler.swift */; };
+		CD1916C22B1D799B0006215A /* Action.js in Resources */ = {isa = PBXBuildFile; fileRef = CD1916C12B1D799B0006215A /* Action.js */; };
+		CD1916C62B1D799B0006215A /* fx-action.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1916B92B1D799B0006215A /* fx-action.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +33,13 @@
 			remoteGlobalIDString = CD19168D2B1D79400006215A;
 			remoteInfo = "fx-account-authentication";
 		};
+		CD1916C42B1D799B0006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD1916B82B1D799B0006215A;
+			remoteInfo = "fx-action";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +49,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				CD1916C62B1D799B0006215A /* fx-action.appex in Embed Foundation Extensions */,
 				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -63,6 +76,12 @@
 		CD1916922B1D79400006215A /* AccountAuthenticationModificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountAuthenticationModificationViewController.swift; sourceTree = "<group>"; };
 		CD1916952B1D79400006215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		CD1916972B1D79400006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD1916B92B1D799B0006215A /* fx-action.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-action.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1916BA2B1D799B0006215A /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		CD1916BD2B1D799B0006215A /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		CD1916BF2B1D799B0006215A /* ActionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionRequestHandler.swift; sourceTree = "<group>"; };
+		CD1916C12B1D799B0006215A /* Action.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Action.js; sourceTree = "<group>"; };
+		CD1916C32B1D799B0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -80,6 +99,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD1916902B1D79400006215A /* AuthenticationServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1916B62B1D799B0006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916BB2B1D799B0006215A /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +135,7 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-iosfixture.a */,
 				CD19168F2B1D79400006215A /* AuthenticationServices.framework */,
+				CD1916BA2B1D799B0006215A /* UniformTypeIdentifiers.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -125,6 +153,7 @@
 				13B07FAE1A68108700A75B9A /* iosfixture */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				CD1916912B1D79400006215A /* fx-account-authentication */,
+				CD1916BC2B1D799B0006215A /* fx-action */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -139,6 +168,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* iosfixture.app */,
 				CD19168E2B1D79400006215A /* fx-account-authentication.appex */,
+				CD1916B92B1D799B0006215A /* fx-action.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -160,6 +190,17 @@
 				CD1916972B1D79400006215A /* Info.plist */,
 			);
 			path = "fx-account-authentication";
+			sourceTree = "<group>";
+		};
+		CD1916BC2B1D799B0006215A /* fx-action */ = {
+			isa = PBXGroup;
+			children = (
+				CD1916BD2B1D799B0006215A /* Media.xcassets */,
+				CD1916BF2B1D799B0006215A /* ActionRequestHandler.swift */,
+				CD1916C12B1D799B0006215A /* Action.js */,
+				CD1916C32B1D799B0006215A /* Info.plist */,
+			);
+			path = "fx-action";
 			sourceTree = "<group>";
 		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
@@ -188,6 +229,7 @@
 			);
 			dependencies = (
 				CD1916992B1D79400006215A /* PBXTargetDependency */,
+				CD1916C52B1D799B0006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -211,6 +253,23 @@
 			productReference = CD19168E2B1D79400006215A /* fx-account-authentication.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CD1916B82B1D799B0006215A /* fx-action */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD1916C92B1D799B0006215A /* Build configuration list for PBXNativeTarget "fx-action" */;
+			buildPhases = (
+				CD1916B52B1D799B0006215A /* Sources */,
+				CD1916B62B1D799B0006215A /* Frameworks */,
+				CD1916B72B1D799B0006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-action";
+			productName = "fx-action";
+			productReference = CD1916B92B1D799B0006215A /* fx-action.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -224,6 +283,10 @@
 						LastSwiftMigration = 1250;
 					};
 					CD19168D2B1D79400006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
+					CD1916B82B1D799B0006215A = {
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
@@ -244,6 +307,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* iosfixture */,
 				CD19168D2B1D79400006215A /* fx-account-authentication */,
+				CD1916B82B1D799B0006215A /* fx-action */,
 			);
 		};
 /* End PBXProject section */
@@ -264,6 +328,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD1916962B1D79400006215A /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1916B72B1D799B0006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916C22B1D799B0006215A /* Action.js in Resources */,
+				CD1916BE2B1D799B0006215A /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +386,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1916B52B1D799B0006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916C02B1D799B0006215A /* ActionRequestHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -320,6 +401,11 @@
 			isa = PBXTargetDependency;
 			target = CD19168D2B1D79400006215A /* fx-account-authentication */;
 			targetProxy = CD1916982B1D79400006215A /* PBXContainerItemProxy */;
+		};
+		CD1916C52B1D799B0006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD1916B82B1D799B0006215A /* fx-action */;
+			targetProxy = CD1916C42B1D799B0006215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -573,6 +659,79 @@
 			};
 			name = Release;
 		};
+		CD1916C72B1D799B0006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-action/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-action";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-action";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD1916C82B1D799B0006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-action/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-action";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-action";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -599,6 +758,15 @@
 			buildConfigurations = (
 				CD19169C2B1D79400006215A /* Debug */,
 				CD19169D2B1D79400006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD1916C92B1D799B0006215A /* Build configuration list for PBXNativeTarget "fx-action" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD1916C72B1D799B0006215A /* Debug */,
+				CD1916C82B1D799B0006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
