@@ -26,6 +26,9 @@
 		CD1916D12B1D79CF0006215A /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916D02B1D79CF0006215A /* ShareViewController.swift */; };
 		CD1916D42B1D79CF0006215A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD1916D22B1D79CF0006215A /* MainInterface.storyboard */; };
 		CD1916D82B1D79CF0006215A /* fx-share.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1916CE2B1D79CF0006215A /* fx-share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1916E32B1D7A9D0006215A /* fx_app_intentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916E22B1D7A9D0006215A /* fx_app_intentExtension.swift */; };
+		CD1916E52B1D7A9D0006215A /* fx_app_intent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916E42B1D7A9D0006215A /* fx_app_intent.swift */; };
+		CD1916E92B1D7A9D0006215A /* fx-app-intent.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +53,13 @@
 			remoteGlobalIDString = CD1916CD2B1D79CF0006215A;
 			remoteInfo = "fx-share";
 		};
+		CD1916E72B1D7A9D0006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD1916DF2B1D7A9D0006215A;
+			remoteInfo = "fx-app-intent";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,6 +74,17 @@
 				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1916ED2B1D7A9D0006215A /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				CD1916E92B1D7A9D0006215A /* fx-app-intent.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -97,6 +118,10 @@
 		CD1916D02B1D79CF0006215A /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		CD1916D32B1D79CF0006215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		CD1916D52B1D79CF0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "fx-app-intent.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1916E22B1D7A9D0006215A /* fx_app_intentExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fx_app_intentExtension.swift; sourceTree = "<group>"; };
+		CD1916E42B1D7A9D0006215A /* fx_app_intent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fx_app_intent.swift; sourceTree = "<group>"; };
+		CD1916E62B1D7A9D0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -126,6 +151,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CD1916CB2B1D79CF0006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1916DD2B1D7A9D0006215A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -177,6 +209,7 @@
 				CD1916912B1D79400006215A /* fx-account-authentication */,
 				CD1916BC2B1D799B0006215A /* fx-action */,
 				CD1916CF2B1D79CF0006215A /* fx-share */,
+				CD1916E12B1D7A9D0006215A /* fx-app-intent */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -193,6 +226,7 @@
 				CD19168E2B1D79400006215A /* fx-account-authentication.appex */,
 				CD1916B92B1D799B0006215A /* fx-action.appex */,
 				CD1916CE2B1D79CF0006215A /* fx-share.appex */,
+				CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -237,6 +271,16 @@
 			path = "fx-share";
 			sourceTree = "<group>";
 		};
+		CD1916E12B1D7A9D0006215A /* fx-app-intent */ = {
+			isa = PBXGroup;
+			children = (
+				CD1916E22B1D7A9D0006215A /* fx_app_intentExtension.swift */,
+				CD1916E42B1D7A9D0006215A /* fx_app_intent.swift */,
+				CD1916E62B1D7A9D0006215A /* Info.plist */,
+			);
+			path = "fx-app-intent";
+			sourceTree = "<group>";
+		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +302,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				CD19169B2B1D79400006215A /* Embed Foundation Extensions */,
+				CD1916ED2B1D7A9D0006215A /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
@@ -265,6 +310,7 @@
 				CD1916992B1D79400006215A /* PBXTargetDependency */,
 				CD1916C52B1D799B0006215A /* PBXTargetDependency */,
 				CD1916D72B1D79CF0006215A /* PBXTargetDependency */,
+				CD1916E82B1D7A9D0006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -322,6 +368,23 @@
 			productReference = CD1916CE2B1D79CF0006215A /* fx-share.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CD1916DF2B1D7A9D0006215A /* fx-app-intent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD1916EA2B1D7A9D0006215A /* Build configuration list for PBXNativeTarget "fx-app-intent" */;
+			buildPhases = (
+				CD1916DC2B1D7A9D0006215A /* Sources */,
+				CD1916DD2B1D7A9D0006215A /* Frameworks */,
+				CD1916DE2B1D7A9D0006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-app-intent";
+			productName = "fx-app-intent";
+			productReference = CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -346,6 +409,10 @@
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
+					CD1916DF2B1D7A9D0006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "iosfixture" */;
@@ -365,6 +432,7 @@
 				CD19168D2B1D79400006215A /* fx-account-authentication */,
 				CD1916B82B1D799B0006215A /* fx-action */,
 				CD1916CD2B1D79CF0006215A /* fx-share */,
+				CD1916DF2B1D7A9D0006215A /* fx-app-intent */,
 			);
 		};
 /* End PBXProject section */
@@ -402,6 +470,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD1916D42B1D79CF0006215A /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1916DE2B1D7A9D0006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,6 +542,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1916DC2B1D7A9D0006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916E32B1D7A9D0006215A /* fx_app_intentExtension.swift in Sources */,
+				CD1916E52B1D7A9D0006215A /* fx_app_intent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -484,6 +568,11 @@
 			isa = PBXTargetDependency;
 			target = CD1916CD2B1D79CF0006215A /* fx-share */;
 			targetProxy = CD1916D62B1D79CF0006215A /* PBXContainerItemProxy */;
+		};
+		CD1916E82B1D7A9D0006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD1916DF2B1D7A9D0006215A /* fx-app-intent */;
+			targetProxy = CD1916E72B1D7A9D0006215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -891,6 +980,79 @@
 			};
 			name = Release;
 		};
+		CD1916EB2B1D7A9D0006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-app-intent/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-app-intent";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-app-intent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD1916EC2B1D7A9D0006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-app-intent/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-app-intent";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-app-intent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -935,6 +1097,15 @@
 			buildConfigurations = (
 				CD1916DA2B1D79CF0006215A /* Debug */,
 				CD1916DB2B1D79CF0006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD1916EA2B1D7A9D0006215A /* Build configuration list for PBXNativeTarget "fx-app-intent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD1916EB2B1D7A9D0006215A /* Debug */,
+				CD1916EC2B1D7A9D0006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
