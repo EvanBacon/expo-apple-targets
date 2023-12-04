@@ -52,6 +52,8 @@ function getConfigurationsForTargets(project: XcodeProject) {
       release: Record<string, string>;
       debug: Record<string, string>;
       info: Record<string, any>;
+      frameworks: string[];
+      appexType?: string;
     }
   > = {};
 
@@ -64,7 +66,9 @@ function getConfigurationsForTargets(project: XcodeProject) {
     const configs = assertBasicConfigs(target);
 
     const plist = configs.releaseConfig.getInfoPlist();
-    const extensionType = plist.NSExtension?.NSExtensionPointIdentifier;
+    const extensionType =
+      plist.NSExtension?.NSExtensionPointIdentifier ??
+      plist.EXAppExtensionAttributes?.EXExtensionPointIdentifier;
 
     // Only collect templates for extensions.
     if (!extensionType) {
@@ -108,6 +112,13 @@ function getConfigurationsForTargets(project: XcodeProject) {
       release: releaseSettings,
       debug: debugSettings,
       info: plist,
+      frameworks: target
+        .getBuildPhase(PBXFrameworksBuildPhase)
+        ?.props.files.map((file) => file.props.fileRef.props.name)
+        .filter(Boolean) as string[],
+      appexType:
+        target.props.productReference?.props.lastKnownFileType ??
+        target.props.productReference?.props.explicitFileType,
     };
   });
 
