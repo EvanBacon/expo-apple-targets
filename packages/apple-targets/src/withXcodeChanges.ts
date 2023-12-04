@@ -1113,7 +1113,11 @@ async function applyXcodeChanges(
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
-    files: [...swiftFiles, ...intentBuildFiles[0], ...entitlementFiles],
+    files: [
+      ...swiftFiles,
+      ...intentBuildFiles[0],
+      // ...entitlementFiles
+    ],
     // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
     // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
     // CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */,
