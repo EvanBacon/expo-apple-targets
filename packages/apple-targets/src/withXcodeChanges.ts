@@ -1,12 +1,10 @@
 import {
-  PBXAggregateTarget,
   PBXBuildFile,
   PBXContainerItemProxy,
   PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFrameworksBuildPhase,
   PBXGroup,
-  PBXLegacyTarget,
   PBXNativeTarget,
   PBXResourcesBuildPhase,
   PBXSourcesBuildPhase,

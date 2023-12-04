@@ -4,13 +4,13 @@ import fs from "fs";
 import { sync as globSync } from "glob";
 import path from "path";
 
-import { withIosColorset } from "./accentColor/withIosColorset";
+import { withIosColorset } from "./colorset/withIosColorset";
 import { Config, Entitlements } from "./config";
+import { withImageAsset } from "./icon/withImageAsset";
 import { withIosIcon } from "./icon/withIosIcon";
 import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
-import { withImageAsset } from "./icon/withImageAsset";
 
 type Props = Config & {
   directory: string;
