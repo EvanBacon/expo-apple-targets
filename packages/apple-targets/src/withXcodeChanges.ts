@@ -906,19 +906,12 @@ async function applyXcodeChanges(
     })[0];
 
     if (assets) {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          config.props.buildSettings.DEVELOPMENT_ASSET_PATHS = `"${
-            props.cwd + "/preview"
-          }"`;
-        }
+      target.setBuildSetting(
+        "DEVELOPMENT_ASSET_PATHS",
+        `"${props.cwd + "/preview"}"`
       );
     } else {
-      target.props.buildConfigurationList.props.buildConfigurations.forEach(
-        (config) => {
-          delete config.props.buildSettings.DEVELOPMENT_ASSET_PATHS;
-        }
-      );
+      target.removeBuildSetting("DEVELOPMENT_ASSET_PATHS");
     }
 
     return assets;

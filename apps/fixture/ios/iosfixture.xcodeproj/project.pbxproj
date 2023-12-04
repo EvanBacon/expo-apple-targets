@@ -33,6 +33,8 @@
 		CD1916F62B1D7C7D0006215A /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916F52B1D7C7D0006215A /* AuthenticationViewController.swift */; };
 		CD1916F92B1D7C7D0006215A /* AuthenticationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD1916F72B1D7C7D0006215A /* AuthenticationViewController.xib */; };
 		CD1916FD2B1D7C7D0006215A /* fx-authentication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1916F22B1D7C7D0006215A /* fx-authentication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1917082B1D7CD50006215A /* BackgroundDownloadHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1917072B1D7CD50006215A /* BackgroundDownloadHandler.swift */; };
+		CD19170D2B1D7CD50006215A /* fx-background-download.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = CD1917052B1D7CD50006215A /* fx-background-download.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +73,13 @@
 			remoteGlobalIDString = CD1916F12B1D7C7D0006215A;
 			remoteInfo = "fx-authentication";
 		};
+		CD19170B2B1D7CD50006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD1917042B1D7CD50006215A;
+			remoteInfo = "fx-background-download";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -94,6 +103,7 @@
 			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
 			dstSubfolderSpec = 16;
 			files = (
+				CD19170D2B1D7CD50006215A /* fx-background-download.appex in Embed ExtensionKit Extensions */,
 				CD1916E92B1D7A9D0006215A /* fx-app-intent.appex in Embed ExtensionKit Extensions */,
 			);
 			name = "Embed ExtensionKit Extensions";
@@ -138,6 +148,10 @@
 		CD1916F52B1D7C7D0006215A /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		CD1916F82B1D7C7D0006215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AuthenticationViewController.xib; sourceTree = "<group>"; };
 		CD1916FA2B1D7C7D0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD1917052B1D7CD50006215A /* fx-background-download.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = "fx-background-download.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1917072B1D7CD50006215A /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
+		CD1917092B1D7CD50006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD19170A2B1D7CD50006215A /* fx_background_download.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = fx_background_download.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -188,6 +202,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1917022B1D7CD50006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -235,6 +256,7 @@
 				CD1916CF2B1D79CF0006215A /* fx-share */,
 				CD1916E12B1D7A9D0006215A /* fx-app-intent */,
 				CD1916F42B1D7C7D0006215A /* fx-authentication */,
+				CD1917062B1D7CD50006215A /* fx-background-download */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -253,6 +275,7 @@
 				CD1916CE2B1D79CF0006215A /* fx-share.appex */,
 				CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */,
 				CD1916F22B1D7C7D0006215A /* fx-authentication.appex */,
+				CD1917052B1D7CD50006215A /* fx-background-download.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -317,6 +340,16 @@
 			path = "fx-authentication";
 			sourceTree = "<group>";
 		};
+		CD1917062B1D7CD50006215A /* fx-background-download */ = {
+			isa = PBXGroup;
+			children = (
+				CD1917072B1D7CD50006215A /* BackgroundDownloadHandler.swift */,
+				CD1917092B1D7CD50006215A /* Info.plist */,
+				CD19170A2B1D7CD50006215A /* fx_background_download.entitlements */,
+			);
+			path = "fx-background-download";
+			sourceTree = "<group>";
+		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,6 +381,7 @@
 				CD1916D72B1D79CF0006215A /* PBXTargetDependency */,
 				CD1916E82B1D7A9D0006215A /* PBXTargetDependency */,
 				CD1916FC2B1D7C7D0006215A /* PBXTargetDependency */,
+				CD19170C2B1D7CD50006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -439,6 +473,23 @@
 			productReference = CD1916F22B1D7C7D0006215A /* fx-authentication.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CD1917042B1D7CD50006215A /* fx-background-download */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD19170E2B1D7CD50006215A /* Build configuration list for PBXNativeTarget "fx-background-download" */;
+			buildPhases = (
+				CD1917012B1D7CD50006215A /* Sources */,
+				CD1917022B1D7CD50006215A /* Frameworks */,
+				CD1917032B1D7CD50006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-background-download";
+			productName = "fx-background-download";
+			productReference = CD1917052B1D7CD50006215A /* fx-background-download.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -471,6 +522,10 @@
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
+					CD1917042B1D7CD50006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "iosfixture" */;
@@ -492,6 +547,7 @@
 				CD1916CD2B1D79CF0006215A /* fx-share */,
 				CD1916DF2B1D7A9D0006215A /* fx-app-intent */,
 				CD1916F12B1D7C7D0006215A /* fx-authentication */,
+				CD1917042B1D7CD50006215A /* fx-background-download */,
 			);
 		};
 /* End PBXProject section */
@@ -544,6 +600,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD1916F92B1D7C7D0006215A /* AuthenticationViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1917032B1D7CD50006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +689,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1917012B1D7CD50006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1917082B1D7CD50006215A /* BackgroundDownloadHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -653,6 +724,11 @@
 			isa = PBXTargetDependency;
 			target = CD1916F12B1D7C7D0006215A /* fx-authentication */;
 			targetProxy = CD1916FB2B1D7C7D0006215A /* PBXContainerItemProxy */;
+		};
+		CD19170C2B1D7CD50006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD1917042B1D7CD50006215A /* fx-background-download */;
+			targetProxy = CD19170B2B1D7CD50006215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1214,6 +1290,81 @@
 			};
 			name = Release;
 		};
+		CD19170F2B1D7CD50006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "fx-background-download/fx_background_download.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-background-download/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-background-download";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-background-download";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD1917102B1D7CD50006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "fx-background-download/fx_background_download.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-background-download/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-background-download";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-background-download";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1276,6 +1427,15 @@
 			buildConfigurations = (
 				CD1916FF2B1D7C7D0006215A /* Debug */,
 				CD1917002B1D7C7D0006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD19170E2B1D7CD50006215A /* Build configuration list for PBXNativeTarget "fx-background-download" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD19170F2B1D7CD50006215A /* Debug */,
+				CD1917102B1D7CD50006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
