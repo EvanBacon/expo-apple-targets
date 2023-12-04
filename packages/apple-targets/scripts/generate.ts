@@ -52,6 +52,7 @@ function getConfigurationsForTargets(project: XcodeProject) {
       release: Record<string, string>;
       debug: Record<string, string>;
       info: Record<string, any>;
+      entitlements: Record<string, any> | null;
       frameworks: string[];
       appexType?: string;
     }
@@ -112,6 +113,7 @@ function getConfigurationsForTargets(project: XcodeProject) {
       release: releaseSettings,
       debug: debugSettings,
       info: plist,
+      entitlements: target.getDefaultConfiguration().getEntitlements(),
       frameworks: target
         .getBuildPhase(PBXFrameworksBuildPhase)
         ?.props.files.map((file) => file.props.fileRef.props.name)
