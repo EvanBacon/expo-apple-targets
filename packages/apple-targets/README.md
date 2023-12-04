@@ -16,6 +16,21 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 - All top-level `*.xcassets` will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
 - Code-signing requires the teamId be provided to the plugin in `app.config.js`.
 
+```json
+{
+  "plugins": [
+    [
+      "@bacons/apple-targets",
+      {
+        "teamId": "XXXXXXXXXX"
+      }
+    ]
+  ]
+}
+```
+
+You can change the root directory from `./targets` to something else with `root: "./src/targets"`. Avoid doing this.
+
 ## Using React Native in Targets
 
 I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want.
@@ -27,6 +42,11 @@ This file can have the following properties:
 ```json
 {
   "type": "widget",
+
+  // Name of the target/product. Defaults to the directory name.
+  "name": "My Widget",
+
+  // Generates colorset files for the target.
   "colors": {
     // or "$accent": "red",
     "$accent": { "color": "red", "darkColor": "blue" }
@@ -36,7 +56,17 @@ This file can have the following properties:
   "frameworks": [
     // Frameworks without the extension, these will be added to the target.
     "SwiftUI"
-  ]
+  ],
+  "entitlements": {
+    // Serialized entitlements. Useful for configuring with environment variables.
+  },
+  // Generates xcassets for the target.
+  "images": {
+    "thing": "../assets/thing.png"
+  },
+
+  // The iOS version fot the target.
+  "deploymentTarget": "13.4"
 }
 ```
 
@@ -138,6 +168,8 @@ class Action {
 
 window.ExtensionPreprocessingJS = new Action();
 ```
+
+Ensure `NSExtensionJavaScriptPreprocessingFile: "index"` in the Info.plist.
 
 ### `spotlight`
 
