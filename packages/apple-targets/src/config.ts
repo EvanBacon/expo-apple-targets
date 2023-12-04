@@ -95,21 +95,7 @@ export type Config = {
    * @example "https://example.com/icon.png"
    */
   icon?: string;
-  /**
-   * Optional color to generate an accent color xcasset for the target.
-   *
-   * @example "#FF0000"
-   * @example { color: "#FF0000", darkColor: "#00FF00" }
-   */
-  accentColor?: string | DynamicColor;
 
-  /**
-   * Optional color to generate a widget background color xcasset for the target.
-   *
-   * @example "#FF0000"
-   * @example { color: "#FF0000", darkColor: "#00FF00" }
-   */
-  widgetBackgroundColor?: string | DynamicColor;
   /**
    * A list of additional frameworks to add to the target.
    * @example ["UserNotifications", "Intents"]

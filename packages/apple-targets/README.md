@@ -27,8 +27,10 @@ This file can have the following properties:
 ```json
 {
   "type": "widget",
-  "accentColor": { "color": "red", "darkColor": "blue" },
-  // or "accentColor": "red",
+  "colors": {
+    // or "AccentColor": "red",
+    "AccentColor": { "color": "red", "darkColor": "blue" }
+  },
   "icon": "../assets/icon.png",
   // Can also be a URL
   "frameworks": [
@@ -44,14 +46,66 @@ You can also use `.js` with the typedoc for autocomplete:
 /** @type {import('@bacons/apple-targets').Config} */
 module.exports = {
   type: "watch",
-  accentColor: "steelblue",
+  colors: {
+    AccentColor: "steelblue",
+  },
   deploymentTarget: "9.4",
+};
+```
+
+## Examples
+
+### `widget`
+
+> I wrote a blog about this one and used it in production. Learn more: [Expo x Apple Widgets](https://evanbacon.dev/blog/apple-home-screen-widgets).
+
+```js
+/** @type {import('@bacons/apple-targets').Config} */
+module.exports = {
+  type: "widget",
+  icon: "../../icons/widget.png",
+  colors: {
+    // This color is referenced in the Info.plist
+    WidgetBackground: "#DB739C",
+
+    AccentColor: "#F09458",
+
+    // Optional: Add colors that can be used in SwiftUI.
+    gradient1: {
+      light: "#E4975D",
+      dark: "#3E72A0",
+    },
+  },
+  // Optional: Add images that can be used in SwiftUI.
+  images: {
+    valleys: "../../valleys.png",
+  },
+  // Optional: Add entitlements to the target, this one can be used to share data between the widget and the app.
+  entitlements: {
+    "com.apple.security.application-groups": ["group.bacon.data"],
+  },
+};
+```
+
+### `action`
+
+These show up in the share sheet. The icon should be transparent as it will be masked by the system.
+
+```js
+/** @type {import('@bacons/apple-targets').Config} */
+module.exports = {
+  type: "action",
+  name: "Inspect Element",
+  icon: "./assets/icon.png",
+  colors: {
+    TouchBarBezel: "#DB739C",
+  },
 };
 ```
 
 ### Supported types
 
-Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store.
+Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store. I haven't tested all of these and they may not work.
 
 | Type                 | Description                        |
 | -------------------- | ---------------------------------- |
