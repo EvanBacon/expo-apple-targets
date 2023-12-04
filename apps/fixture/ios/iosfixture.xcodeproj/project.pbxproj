@@ -14,7 +14,35 @@
 		96905EF65AED1B983A6B3ABC /* libPods-iosfixture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-iosfixture.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		C49F03EC659D4E46B16C00CE /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F7DF67582A421EB317841A /* noop-file.swift */; };
+		CD1916902B1D79400006215A /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD19168F2B1D79400006215A /* AuthenticationServices.framework */; };
+		CD1916932B1D79400006215A /* AccountAuthenticationModificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1916922B1D79400006215A /* AccountAuthenticationModificationViewController.swift */; };
+		CD1916962B1D79400006215A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD1916942B1D79400006215A /* MainInterface.storyboard */; };
+		CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD19168E2B1D79400006215A /* fx-account-authentication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CD1916982B1D79400006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD19168D2B1D79400006215A;
+			remoteInfo = "fx-account-authentication";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CD19169B2B1D79400006215A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		11F7DF67582A421EB317841A /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "iosfixture/noop-file.swift"; sourceTree = "<group>"; };
@@ -30,6 +58,11 @@
 		835F7B496FA84EC6A8FD1EB3 /* iosfixture-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "iosfixture-Bridging-Header.h"; path = "iosfixture/iosfixture-Bridging-Header.h"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = iosfixture/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		CD19168E2B1D79400006215A /* fx-account-authentication.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-account-authentication.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD19168F2B1D79400006215A /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
+		CD1916922B1D79400006215A /* AccountAuthenticationModificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountAuthenticationModificationViewController.swift; sourceTree = "<group>"; };
+		CD1916952B1D79400006215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		CD1916972B1D79400006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -39,6 +72,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				96905EF65AED1B983A6B3ABC /* libPods-iosfixture.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD19168B2B1D79400006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916902B1D79400006215A /* AuthenticationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +107,7 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-iosfixture.a */,
+				CD19168F2B1D79400006215A /* AuthenticationServices.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,6 +124,7 @@
 			children = (
 				13B07FAE1A68108700A75B9A /* iosfixture */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				CD1916912B1D79400006215A /* fx-account-authentication */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -95,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* iosfixture.app */,
+				CD19168E2B1D79400006215A /* fx-account-authentication.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,6 +150,16 @@
 			);
 			name = Supporting;
 			path = iosfixture/Supporting;
+			sourceTree = "<group>";
+		};
+		CD1916912B1D79400006215A /* fx-account-authentication */ = {
+			isa = PBXGroup;
+			children = (
+				CD1916922B1D79400006215A /* AccountAuthenticationModificationViewController.swift */,
+				CD1916942B1D79400006215A /* MainInterface.storyboard */,
+				CD1916972B1D79400006215A /* Info.plist */,
+			);
+			path = "fx-account-authentication";
 			sourceTree = "<group>";
 		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
@@ -128,15 +182,34 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				CD19169B2B1D79400006215A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CD1916992B1D79400006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
 			productReference = 13B07F961A680F5B00A75B9A /* iosfixture.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CD19168D2B1D79400006215A /* fx-account-authentication */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD19169E2B1D79400006215A /* Build configuration list for PBXNativeTarget "fx-account-authentication" */;
+			buildPhases = (
+				CD19168A2B1D79400006215A /* Sources */,
+				CD19168B2B1D79400006215A /* Frameworks */,
+				CD19168C2B1D79400006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-account-authentication";
+			productName = "fx-account-authentication";
+			productReference = CD19168E2B1D79400006215A /* fx-account-authentication.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -144,10 +217,15 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
+					};
+					CD19168D2B1D79400006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -165,6 +243,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* iosfixture */,
+				CD19168D2B1D79400006215A /* fx-account-authentication */,
 			);
 		};
 /* End PBXProject section */
@@ -177,6 +256,14 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD19168C2B1D79400006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916962B1D79400006215A /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,13 +305,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD19168A2B1D79400006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1916932B1D79400006215A /* AccountAuthenticationModificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CD1916992B1D79400006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD19168D2B1D79400006215A /* fx-account-authentication */;
+			targetProxy = CD1916982B1D79400006215A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CD1916942B1D79400006215A /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD1916952B1D79400006215A /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-iosfixture.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iosfixture/iosfixture.entitlements;
@@ -257,6 +372,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-iosfixture.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iosfixture/iosfixture.entitlements;
@@ -384,6 +500,79 @@
 			};
 			name = Release;
 		};
+		CD19169C2B1D79400006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-account-authentication/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-account-authentication";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-account-authentication";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD19169D2B1D79400006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-account-authentication/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-account-authentication";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-account-authentication";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -401,6 +590,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD19169E2B1D79400006215A /* Build configuration list for PBXNativeTarget "fx-account-authentication" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD19169C2B1D79400006215A /* Debug */,
+				CD19169D2B1D79400006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
