@@ -2,12 +2,7 @@ import { XcodeProject } from "@bacons/xcode";
 import { ConfigPlugin } from "expo/config-plugins";
 
 import { Entitlements } from "./config";
-import {
-  getAuxiliaryTargets,
-  getDefaultBuildConfigurationForTarget,
-  getEntitlementsForBuildConfiguration,
-  getMainAppTarget,
-} from "./target";
+import { getAuxiliaryTargets, getMainAppTarget } from "./target";
 import { withXcodeProjectBeta } from "./withXcparse";
 
 function safeSet(obj: any, key: string, value: any) {
@@ -114,16 +109,16 @@ export const withAutoEasExtensionCredentials: ConfigPlugin = (config) => {
 export function getEASCredentialsForXcodeProject(
   project: XcodeProject
 ): EASCredentials[] {
-  const parentBundleIdentifier = getDefaultBuildConfigurationForTarget(
-    getMainAppTarget(project)
-  ).props.buildSettings.PRODUCT_BUNDLE_IDENTIFIER;
+  const parentBundleIdentifier =
+    getMainAppTarget(project).getDefaultConfiguration().props.buildSettings
+      .PRODUCT_BUNDLE_IDENTIFIER;
 
   const targets = getAuxiliaryTargets(project);
 
   return targets.map((target) => {
-    const config = getDefaultBuildConfigurationForTarget(target);
+    const config = target.getDefaultConfiguration();
 
-    const entitlements = getEntitlementsForBuildConfiguration(project, config);
+    const entitlements = config.getEntitlements();
 
     const targetName = target.props.productName;
 

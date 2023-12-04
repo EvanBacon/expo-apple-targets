@@ -1,14 +1,5 @@
-import {
-  PBXNativeTarget,
-  XCBuildConfiguration,
-  XcodeProject,
-} from "@bacons/xcode";
+import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
 import plist from "@expo/plist";
-import fs from "fs";
-import path from "path";
-
-import TemplateBuildSettings from "./template/XCBuildConfiguration.json";
-import { Entitlements } from "./config";
 
 export type ExtensionType =
   | "widget"
@@ -317,7 +308,7 @@ export function isNativeTargetOfType(
   ) {
     return (
       "WATCHOS_DEPLOYMENT_TARGET" in
-      getDefaultBuildConfigurationForTarget(target).props.buildSettings
+      target.getDefaultConfiguration().props.buildSettings
     );
   }
   if (
@@ -332,19 +323,7 @@ export function isNativeTargetOfType(
   }
   // Could be a Today Extension, Share Extension, etc.
 
-  const defConfig =
-    target.props.buildConfigurationList.props.buildConfigurations.find(
-      (config) =>
-        config.props.name ===
-        target.props.buildConfigurationList.props.defaultConfigurationName
-    );
-  const infoPlistPath = path.join(
-    // TODO: Resolve root better
-    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    defConfig.props.buildSettings.INFOPLIST_FILE
-  );
-
-  const infoPlist = plist.parse(fs.readFileSync(infoPlistPath, "utf8"));
+  const infoPlist = target.getDefaultConfiguration().getInfoPlist();
 
   if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
     console.error(
@@ -362,80 +341,16 @@ export function isNativeTargetOfType(
 }
 
 export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {
-  const mainAppTarget = project.rootObject.props.targets.filter((target) => {
-    if (
-      PBXNativeTarget.is(target) &&
-      target.props.productType === "com.apple.product-type.application"
-    ) {
-      return !isNativeTargetOfType(target, "watch");
-    }
-    return false;
-  }) as PBXNativeTarget[];
-
-  if (mainAppTarget.length > 1) {
-    console.warn(
-      `Multiple main app targets found, using first one: ${mainAppTarget
-        .map((t) => t.getDisplayName())
-        .join(", ")}}`
-    );
-  }
-
-  const target = mainAppTarget[0];
-
+  const target = project.rootObject.getMainAppTarget("ios");
   if (!target) {
     throw new Error("No main app target found");
   }
   return target;
 }
 
-export function getDefaultBuildConfigurationForTarget(target: PBXNativeTarget) {
-  return target.props.buildConfigurationList.props.buildConfigurations.find(
-    (config) =>
-      config.props.name ===
-      target.props.buildConfigurationList.props.defaultConfigurationName
-  );
-}
-
-export function getInfoPlistForTarget(target: PBXNativeTarget) {
-  return plist.parse(
-    fs.readFileSync(getInfoPlistPathForTarget(target), "utf8")
-  );
-}
-
-export function getInfoPlistPathForTarget(target: PBXNativeTarget) {
-  const infoPlistPath = path.join(
-    // TODO: Resolve root better
-    path.dirname(path.dirname(target.project.getXcodeProject().filePath)),
-    getDefaultBuildConfigurationForTarget(target)!.props.buildSettings
-      .INFOPLIST_FILE
-  );
-
-  return infoPlistPath;
-}
-
 export function getAuxiliaryTargets(project: XcodeProject): PBXNativeTarget[] {
-  const mainTarget = getMainAppTarget(project);
+  const mainTarget = project.rootObject.getMainAppTarget("ios");
   return project.rootObject.props.targets.filter((target) => {
-    return target.uuid !== mainTarget.uuid;
+    return target.uuid !== mainTarget?.uuid;
   }) as PBXNativeTarget[];
-}
-
-export function getEntitlementsForBuildConfiguration(
-  project: XcodeProject,
-  config: XCBuildConfiguration
-): Entitlements | undefined {
-  const entitlementsPathFragment =
-    config.props.buildSettings?.CODE_SIGN_ENTITLEMENTS;
-
-  return entitlementsPathFragment
-    ? plist.parse(
-        fs.readFileSync(
-          path.join(
-            path.dirname(path.dirname(project.filePath)),
-            entitlementsPathFragment
-          ),
-          "utf8"
-        )
-      )
-    : undefined;
 }

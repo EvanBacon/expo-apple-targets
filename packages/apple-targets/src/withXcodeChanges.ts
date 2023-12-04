@@ -1,4 +1,3 @@
-import { ConfigPlugin } from "@expo/config-plugins";
 import {
   PBXAggregateTarget,
   PBXBuildFile,
@@ -16,13 +15,22 @@ import {
   XCConfigurationList,
   XcodeProject,
 } from "@bacons/xcode";
+import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
-import { withXcodeProjectBeta } from "./withXcparse";
+import { ConfigPlugin } from "@expo/config-plugins";
+import fs from "fs";
 import { sync as globSync } from "glob";
 import path from "path";
-import { BuildSettings } from "@bacons/xcode/json";
 
+import {
+  ExtensionType,
+  getMainAppTarget,
+  isNativeTargetOfType,
+  needsEmbeddedSwift,
+  productTypeForType,
+} from "./target";
 import TemplateBuildSettings from "./template/XCBuildConfiguration.json";
+import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {
   name: string;
@@ -57,18 +65,6 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
     return config;
   });
 };
-
-import fs from "fs";
-import {
-  ExtensionType,
-  getDefaultBuildConfigurationForTarget,
-  getInfoPlistForTarget,
-  getMainAppTarget,
-  isNativeTargetOfType,
-  KNOWN_EXTENSION_POINT_IDENTIFIERS,
-  needsEmbeddedSwift,
-  productTypeForType,
-} from "./target";
 
 function createNotificationContentConfigurationList(
   project: XcodeProject,
@@ -275,12 +271,13 @@ function createShareConfigurationList(
 
 function getMainMarketingVersion(project: XcodeProject) {
   const mainTarget = getMainAppTarget(project);
-  const info = getInfoPlistForTarget(mainTarget);
+  const config = mainTarget.getDefaultConfiguration();
+  const info = config.getInfoPlist();
+
   const version = info.CFBundleShortVersionString;
   // console.log('getMainMarketingVersion', mainTarget.getDisplayName(), version)
 
   if (!version || version === "$(MARKETING_VERSION)") {
-    const config = getDefaultBuildConfigurationForTarget(mainTarget);
     // console.log('getMainMarketingVersion.fallback', config.props.buildSettings.MARKETING_VERSION)
     return config.props.buildSettings.MARKETING_VERSION;
   }
@@ -366,9 +363,7 @@ function createWatchAppConfigurationList(
     hasAccentColor,
   }: XcodeSettings
 ) {
-  const mainAppTarget = getDefaultBuildConfigurationForTarget(
-    getMainAppTarget(project)
-  );
+  const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
 
   const common: BuildSettings = {
