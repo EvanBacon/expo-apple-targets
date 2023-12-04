@@ -27,16 +27,16 @@ import {
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
-const TemplateBuildSettings =
-  require("./template/XCBuildConfiguration.json") as Record<
-    string,
-    {
-      default: BuildSettings;
-      release: BuildSettings;
-      debug: BuildSettings;
-      info: any;
-    }
-  >;
+import fixture from "./template/XCBuildConfiguration.json";
+const TemplateBuildSettings = fixture as unknown as Record<
+  string,
+  {
+    default: BuildSettings;
+    release: BuildSettings;
+    debug: BuildSettings;
+    info: any;
+  }
+>;
 import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {

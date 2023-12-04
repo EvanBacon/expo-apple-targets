@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "baconfig-plugin",
-    "slug": "bacon-targets-demo",
+    "name": "app2095",
+    "slug": "app2095",
     "version": "1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bacon.2096"
+      "bundleIdentifier": "com.bacon.2095"
     },
     "android": {
       "adaptiveIcon": {

@@ -199,7 +199,6 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | intent               | Siri Intent Extension              |
 | intent-ui            | Siri Intent UI Extension           |
 | spotlight            | Spotlight Index Extension          |
-| matter               | Matter Intent Extension            |
 | bg-download          | Background Download Extension      |
 | quicklook-thumbnail  | Quick Look Thumbnail Extension     |
 | location-push        | Location Push Service Extension    |

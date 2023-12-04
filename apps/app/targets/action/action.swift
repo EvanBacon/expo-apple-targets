@@ -1,10 +1,3 @@
-//
-//  ActionRequestHandler.swift
-//  axun
-//
-//  Created by Evan Bacon on 12/2/23.
-//
-
 import UIKit
 import MobileCoreServices
 import UniformTypeIdentifiers
