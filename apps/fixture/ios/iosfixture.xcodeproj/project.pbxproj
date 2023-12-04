@@ -56,6 +56,10 @@
 		CD1917602B1D85AC0006215A /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = CD19175F2B1D85AC0006215A /* popup.css */; };
 		CD1917622B1D85AC0006215A /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = CD1917612B1D85AC0006215A /* popup.js */; };
 		CD1917662B1D85AC0006215A /* fx-safari.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD19174E2B1D85AC0006215A /* fx-safari.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1917702B1D86190006215A /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD19176F2B1D86190006215A /* ReplayKit.framework */; };
+		CD1917722B1D86190006215A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD1917712B1D86190006215A /* UIKit.framework */; };
+		CD1917752B1D86190006215A /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1917742B1D86190006215A /* BroadcastSetupViewController.swift */; };
+		CD1917792B1D86190006215A /* fx-broadcast-setup-ui.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD19176E2B1D86190006215A /* fx-broadcast-setup-ui.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +133,13 @@
 			remoteGlobalIDString = CD19174D2B1D85AC0006215A;
 			remoteInfo = "fx-safari";
 		};
+		CD1917772B1D86190006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD19176D2B1D86190006215A;
+			remoteInfo = "fx-broadcast-setup-ui";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -143,6 +154,7 @@
 				CD1917462B1D85470006215A /* fx-autofill-credential.appex in Embed Foundation Extensions */,
 				CD1916D82B1D79CF0006215A /* fx-share.appex in Embed Foundation Extensions */,
 				CD1917662B1D85AC0006215A /* fx-safari.appex in Embed Foundation Extensions */,
+				CD1917792B1D86190006215A /* fx-broadcast-setup-ui.appex in Embed Foundation Extensions */,
 				CD1917322B1D851B0006215A /* fx-notification-service.appex in Embed Foundation Extensions */,
 				CD1916FD2B1D7C7D0006215A /* fx-authentication.appex in Embed Foundation Extensions */,
 				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
@@ -230,6 +242,11 @@
 		CD19175F2B1D85AC0006215A /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = popup.css; sourceTree = "<group>"; };
 		CD1917612B1D85AC0006215A /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = popup.js; sourceTree = "<group>"; };
 		CD1917632B1D85AC0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD19176E2B1D86190006215A /* fx-broadcast-setup-ui.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-broadcast-setup-ui.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD19176F2B1D86190006215A /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		CD1917712B1D86190006215A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		CD1917742B1D86190006215A /* BroadcastSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastSetupViewController.swift; sourceTree = "<group>"; };
+		CD1917762B1D86190006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -318,6 +335,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD19176B2B1D86190006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1917702B1D86190006215A /* ReplayKit.framework in Frameworks */,
+				CD1917722B1D86190006215A /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -346,6 +372,8 @@
 				CD1916BA2B1D799B0006215A /* UniformTypeIdentifiers.framework */,
 				CD1917162B1D84EA0006215A /* UserNotifications.framework */,
 				CD1917182B1D84EA0006215A /* UserNotificationsUI.framework */,
+				CD19176F2B1D86190006215A /* ReplayKit.framework */,
+				CD1917712B1D86190006215A /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -372,6 +400,7 @@
 				CD19172C2B1D851B0006215A /* fx-notification-service */,
 				CD19173C2B1D85470006215A /* fx-autofill-credential */,
 				CD19174F2B1D85AC0006215A /* fx-safari */,
+				CD1917732B1D86190006215A /* fx-broadcast-setup-ui */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -395,6 +424,7 @@
 				CD19172B2B1D851B0006215A /* fx-notification-service.appex */,
 				CD19173A2B1D85470006215A /* fx-autofill-credential.appex */,
 				CD19174E2B1D85AC0006215A /* fx-safari.appex */,
+				CD19176E2B1D86190006215A /* fx-broadcast-setup-ui.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -524,6 +554,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		CD1917732B1D86190006215A /* fx-broadcast-setup-ui */ = {
+			isa = PBXGroup;
+			children = (
+				CD1917742B1D86190006215A /* BroadcastSetupViewController.swift */,
+				CD1917762B1D86190006215A /* Info.plist */,
+			);
+			path = "fx-broadcast-setup-ui";
+			sourceTree = "<group>";
+		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -560,6 +599,7 @@
 				CD1917312B1D851B0006215A /* PBXTargetDependency */,
 				CD1917452B1D85470006215A /* PBXTargetDependency */,
 				CD1917652B1D85AC0006215A /* PBXTargetDependency */,
+				CD1917782B1D86190006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -736,6 +776,23 @@
 			productReference = CD19174E2B1D85AC0006215A /* fx-safari.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CD19176D2B1D86190006215A /* fx-broadcast-setup-ui */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD19177A2B1D86190006215A /* Build configuration list for PBXNativeTarget "fx-broadcast-setup-ui" */;
+			buildPhases = (
+				CD19176A2B1D86190006215A /* Sources */,
+				CD19176B2B1D86190006215A /* Frameworks */,
+				CD19176C2B1D86190006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-broadcast-setup-ui";
+			productName = "fx-broadcast-setup-ui";
+			productReference = CD19176E2B1D86190006215A /* fx-broadcast-setup-ui.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -788,6 +845,10 @@
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
+					CD19176D2B1D86190006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "iosfixture" */;
@@ -814,6 +875,7 @@
 				CD19172A2B1D851B0006215A /* fx-notification-service */,
 				CD1917392B1D85470006215A /* fx-autofill-credential */,
 				CD19174D2B1D85AC0006215A /* fx-safari */,
+				CD19176D2B1D86190006215A /* fx-broadcast-setup-ui */,
 			);
 		};
 /* End PBXProject section */
@@ -911,6 +973,13 @@
 				CD1917542B1D85AC0006215A /* _locales in Resources */,
 				CD19175C2B1D85AC0006215A /* content.js in Resources */,
 				CD1917622B1D85AC0006215A /* popup.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD19176C2B1D86190006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1033,6 +1102,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD19176A2B1D86190006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1917752B1D86190006215A /* BroadcastSetupViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1085,6 +1162,11 @@
 			isa = PBXTargetDependency;
 			target = CD19174D2B1D85AC0006215A /* fx-safari */;
 			targetProxy = CD1917642B1D85AC0006215A /* PBXContainerItemProxy */;
+		};
+		CD1917782B1D86190006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD19176D2B1D86190006215A /* fx-broadcast-setup-ui */;
+			targetProxy = CD1917772B1D86190006215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2039,6 +2121,79 @@
 			};
 			name = Release;
 		};
+		CD19177B2B1D86190006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-broadcast-setup-ui/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-broadcast-setup-ui";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-broadcast-setup-ui";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD19177C2B1D86190006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-broadcast-setup-ui/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-broadcast-setup-ui";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-broadcast-setup-ui";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2146,6 +2301,15 @@
 			buildConfigurations = (
 				CD1917682B1D85AC0006215A /* Debug */,
 				CD1917692B1D85AC0006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD19177A2B1D86190006215A /* Build configuration list for PBXNativeTarget "fx-broadcast-setup-ui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD19177B2B1D86190006215A /* Debug */,
+				CD19177C2B1D86190006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
