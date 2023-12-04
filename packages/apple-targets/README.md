@@ -208,6 +208,12 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 
 <!-- | imessage             | iMessage Extension               | -->
 
+## Code Signing
+
+The codesigning is theoretically handled entirely by [EAS Build](https://docs.expo.dev/build/introduction/). This plugin will add the requisite entitlements for target signing to work. I've only tested this end-to-end with my Pillar Valley Widget.
+
+You can also manually sign all sub-targets if you want, I'll light a candle for you.
+
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
