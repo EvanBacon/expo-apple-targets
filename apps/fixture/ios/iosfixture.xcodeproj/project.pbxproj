@@ -63,6 +63,8 @@
 		CD1917822B1D86430006215A /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD19176F2B1D86190006215A /* ReplayKit.framework */; };
 		CD1917852B1D86430006215A /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1917842B1D86430006215A /* SampleHandler.swift */; };
 		CD1917892B1D86430006215A /* fx-broadcast-upload.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1917812B1D86430006215A /* fx-broadcast-upload.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1917942B1D865E0006215A /* CallDirectoryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1917932B1D865E0006215A /* CallDirectoryHandler.swift */; };
+		CD1917982B1D865E0006215A /* fx-call-directory.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1917912B1D865E0006215A /* fx-call-directory.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +152,13 @@
 			remoteGlobalIDString = CD1917802B1D86430006215A;
 			remoteInfo = "fx-broadcast-upload";
 		};
+		CD1917962B1D865E0006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD1917902B1D865E0006215A;
+			remoteInfo = "fx-call-directory";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -166,6 +175,7 @@
 				CD1917662B1D85AC0006215A /* fx-safari.appex in Embed Foundation Extensions */,
 				CD1917792B1D86190006215A /* fx-broadcast-setup-ui.appex in Embed Foundation Extensions */,
 				CD1917322B1D851B0006215A /* fx-notification-service.appex in Embed Foundation Extensions */,
+				CD1917982B1D865E0006215A /* fx-call-directory.appex in Embed Foundation Extensions */,
 				CD1916FD2B1D7C7D0006215A /* fx-authentication.appex in Embed Foundation Extensions */,
 				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
 				CD1917892B1D86430006215A /* fx-broadcast-upload.appex in Embed Foundation Extensions */,
@@ -261,6 +271,9 @@
 		CD1917812B1D86430006215A /* fx-broadcast-upload.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-broadcast-upload.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD1917842B1D86430006215A /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
 		CD1917862B1D86430006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD1917912B1D865E0006215A /* fx-call-directory.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-call-directory.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1917932B1D865E0006215A /* CallDirectoryHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDirectoryHandler.swift; sourceTree = "<group>"; };
+		CD1917952B1D865E0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -366,6 +379,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD19178E2B1D865E0006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -424,6 +444,7 @@
 				CD19174F2B1D85AC0006215A /* fx-safari */,
 				CD1917732B1D86190006215A /* fx-broadcast-setup-ui */,
 				CD1917832B1D86430006215A /* fx-broadcast-upload */,
+				CD1917922B1D865E0006215A /* fx-call-directory */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -449,6 +470,7 @@
 				CD19174E2B1D85AC0006215A /* fx-safari.appex */,
 				CD19176E2B1D86190006215A /* fx-broadcast-setup-ui.appex */,
 				CD1917812B1D86430006215A /* fx-broadcast-upload.appex */,
+				CD1917912B1D865E0006215A /* fx-call-directory.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -596,6 +618,15 @@
 			path = "fx-broadcast-upload";
 			sourceTree = "<group>";
 		};
+		CD1917922B1D865E0006215A /* fx-call-directory */ = {
+			isa = PBXGroup;
+			children = (
+				CD1917932B1D865E0006215A /* CallDirectoryHandler.swift */,
+				CD1917952B1D865E0006215A /* Info.plist */,
+			);
+			path = "fx-call-directory";
+			sourceTree = "<group>";
+		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -634,6 +665,7 @@
 				CD1917652B1D85AC0006215A /* PBXTargetDependency */,
 				CD1917782B1D86190006215A /* PBXTargetDependency */,
 				CD1917882B1D86430006215A /* PBXTargetDependency */,
+				CD1917972B1D865E0006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -844,6 +876,23 @@
 			productReference = CD1917812B1D86430006215A /* fx-broadcast-upload.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CD1917902B1D865E0006215A /* fx-call-directory */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD1917992B1D865E0006215A /* Build configuration list for PBXNativeTarget "fx-call-directory" */;
+			buildPhases = (
+				CD19178D2B1D865E0006215A /* Sources */,
+				CD19178E2B1D865E0006215A /* Frameworks */,
+				CD19178F2B1D865E0006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-call-directory";
+			productName = "fx-call-directory";
+			productReference = CD1917912B1D865E0006215A /* fx-call-directory.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -904,6 +953,10 @@
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
+					CD1917902B1D865E0006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "iosfixture" */;
@@ -932,6 +985,7 @@
 				CD19174D2B1D85AC0006215A /* fx-safari */,
 				CD19176D2B1D86190006215A /* fx-broadcast-setup-ui */,
 				CD1917802B1D86430006215A /* fx-broadcast-upload */,
+				CD1917902B1D865E0006215A /* fx-call-directory */,
 			);
 		};
 /* End PBXProject section */
@@ -1040,6 +1094,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CD19177F2B1D86430006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD19178F2B1D865E0006215A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1181,6 +1242,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD19178D2B1D865E0006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1917942B1D865E0006215A /* CallDirectoryHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1243,6 +1312,11 @@
 			isa = PBXTargetDependency;
 			target = CD1917802B1D86430006215A /* fx-broadcast-upload */;
 			targetProxy = CD1917872B1D86430006215A /* PBXContainerItemProxy */;
+		};
+		CD1917972B1D865E0006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD1917902B1D865E0006215A /* fx-call-directory */;
+			targetProxy = CD1917962B1D865E0006215A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2343,6 +2417,81 @@
 			};
 			name = Release;
 		};
+		CD19179A2B1D865E0006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-call-directory/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-call-directory";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-call-directory";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD19179B2B1D865E0006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-call-directory/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-call-directory";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-call-directory";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2468,6 +2617,15 @@
 			buildConfigurations = (
 				CD19178B2B1D86430006215A /* Debug */,
 				CD19178C2B1D86430006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD1917992B1D865E0006215A /* Build configuration list for PBXNativeTarget "fx-call-directory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD19179A2B1D865E0006215A /* Debug */,
+				CD19179B2B1D865E0006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
