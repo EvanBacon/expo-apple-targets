@@ -35,6 +35,13 @@
 		CD1916FD2B1D7C7D0006215A /* fx-authentication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1916F22B1D7C7D0006215A /* fx-authentication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CD1917082B1D7CD50006215A /* BackgroundDownloadHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1917072B1D7CD50006215A /* BackgroundDownloadHandler.swift */; };
 		CD19170D2B1D7CD50006215A /* fx-background-download.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = CD1917052B1D7CD50006215A /* fx-background-download.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD1917172B1D84EA0006215A /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD1917162B1D84EA0006215A /* UserNotifications.framework */; };
+		CD1917192B1D84EA0006215A /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD1917182B1D84EA0006215A /* UserNotificationsUI.framework */; };
+		CD19171C2B1D84EA0006215A /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD19171B2B1D84EA0006215A /* NotificationViewController.swift */; };
+		CD19171F2B1D84EA0006215A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD19171D2B1D84EA0006215A /* MainInterface.storyboard */; };
+		CD1917232B1D84EA0006215A /* fx-notification-content.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD1917152B1D84EA0006215A /* fx-notification-content.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CD19172E2B1D851B0006215A /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD19172D2B1D851B0006215A /* NotificationService.swift */; };
+		CD1917322B1D851B0006215A /* fx-notification-service.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CD19172B2B1D851B0006215A /* fx-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +87,20 @@
 			remoteGlobalIDString = CD1917042B1D7CD50006215A;
 			remoteInfo = "fx-background-download";
 		};
+		CD1917212B1D84EA0006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD1917142B1D84EA0006215A;
+			remoteInfo = "fx-notification-content";
+		};
+		CD1917302B1D851B0006215A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CD19172A2B1D851B0006215A;
+			remoteInfo = "fx-notification-service";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,8 +110,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				CD1917232B1D84EA0006215A /* fx-notification-content.appex in Embed Foundation Extensions */,
 				CD1916C62B1D799B0006215A /* fx-action.appex in Embed Foundation Extensions */,
 				CD1916D82B1D79CF0006215A /* fx-share.appex in Embed Foundation Extensions */,
+				CD1917322B1D851B0006215A /* fx-notification-service.appex in Embed Foundation Extensions */,
 				CD1916FD2B1D7C7D0006215A /* fx-authentication.appex in Embed Foundation Extensions */,
 				CD19169A2B1D79400006215A /* fx-account-authentication.appex in Embed Foundation Extensions */,
 			);
@@ -152,6 +175,15 @@
 		CD1917072B1D7CD50006215A /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
 		CD1917092B1D7CD50006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD19170A2B1D7CD50006215A /* fx_background_download.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = fx_background_download.entitlements; sourceTree = "<group>"; };
+		CD1917152B1D84EA0006215A /* fx-notification-content.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-notification-content.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD1917162B1D84EA0006215A /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		CD1917182B1D84EA0006215A /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		CD19171B2B1D84EA0006215A /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		CD19171E2B1D84EA0006215A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		CD1917202B1D84EA0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD19172B2B1D851B0006215A /* fx-notification-service.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "fx-notification-service.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD19172D2B1D851B0006215A /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		CD19172F2B1D851B0006215A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -209,6 +241,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1917122B1D84EA0006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD1917192B1D84EA0006215A /* UserNotificationsUI.framework in Frameworks */,
+				CD1917172B1D84EA0006215A /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1917282B1D851B0006215A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -235,6 +283,8 @@
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-iosfixture.a */,
 				CD19168F2B1D79400006215A /* AuthenticationServices.framework */,
 				CD1916BA2B1D799B0006215A /* UniformTypeIdentifiers.framework */,
+				CD1917162B1D84EA0006215A /* UserNotifications.framework */,
+				CD1917182B1D84EA0006215A /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -257,6 +307,8 @@
 				CD1916E12B1D7A9D0006215A /* fx-app-intent */,
 				CD1916F42B1D7C7D0006215A /* fx-authentication */,
 				CD1917062B1D7CD50006215A /* fx-background-download */,
+				CD19171A2B1D84EA0006215A /* fx-notification-content */,
+				CD19172C2B1D851B0006215A /* fx-notification-service */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
@@ -276,6 +328,8 @@
 				CD1916E02B1D7A9D0006215A /* fx-app-intent.appex */,
 				CD1916F22B1D7C7D0006215A /* fx-authentication.appex */,
 				CD1917052B1D7CD50006215A /* fx-background-download.appex */,
+				CD1917152B1D84EA0006215A /* fx-notification-content.appex */,
+				CD19172B2B1D851B0006215A /* fx-notification-service.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -350,6 +404,25 @@
 			path = "fx-background-download";
 			sourceTree = "<group>";
 		};
+		CD19171A2B1D84EA0006215A /* fx-notification-content */ = {
+			isa = PBXGroup;
+			children = (
+				CD19171B2B1D84EA0006215A /* NotificationViewController.swift */,
+				CD19171D2B1D84EA0006215A /* MainInterface.storyboard */,
+				CD1917202B1D84EA0006215A /* Info.plist */,
+			);
+			path = "fx-notification-content";
+			sourceTree = "<group>";
+		};
+		CD19172C2B1D851B0006215A /* fx-notification-service */ = {
+			isa = PBXGroup;
+			children = (
+				CD19172D2B1D851B0006215A /* NotificationService.swift */,
+				CD19172F2B1D851B0006215A /* Info.plist */,
+			);
+			path = "fx-notification-service";
+			sourceTree = "<group>";
+		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,6 +455,8 @@
 				CD1916E82B1D7A9D0006215A /* PBXTargetDependency */,
 				CD1916FC2B1D7C7D0006215A /* PBXTargetDependency */,
 				CD19170C2B1D7CD50006215A /* PBXTargetDependency */,
+				CD1917222B1D84EA0006215A /* PBXTargetDependency */,
+				CD1917312B1D851B0006215A /* PBXTargetDependency */,
 			);
 			name = iosfixture;
 			productName = iosfixture;
@@ -490,6 +565,40 @@
 			productReference = CD1917052B1D7CD50006215A /* fx-background-download.appex */;
 			productType = "com.apple.product-type.extensionkit-extension";
 		};
+		CD1917142B1D84EA0006215A /* fx-notification-content */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD1917262B1D84EA0006215A /* Build configuration list for PBXNativeTarget "fx-notification-content" */;
+			buildPhases = (
+				CD1917112B1D84EA0006215A /* Sources */,
+				CD1917122B1D84EA0006215A /* Frameworks */,
+				CD1917132B1D84EA0006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-notification-content";
+			productName = "fx-notification-content";
+			productReference = CD1917152B1D84EA0006215A /* fx-notification-content.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CD19172A2B1D851B0006215A /* fx-notification-service */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CD1917332B1D851B0006215A /* Build configuration list for PBXNativeTarget "fx-notification-service" */;
+			buildPhases = (
+				CD1917272B1D851B0006215A /* Sources */,
+				CD1917282B1D851B0006215A /* Frameworks */,
+				CD1917292B1D851B0006215A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fx-notification-service";
+			productName = "fx-notification-service";
+			productReference = CD19172B2B1D851B0006215A /* fx-notification-service.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -526,6 +635,14 @@
 						CreatedOnToolsVersion = 15.0.1;
 						ProvisioningStyle = Automatic;
 					};
+					CD1917142B1D84EA0006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
+					CD19172A2B1D851B0006215A = {
+						CreatedOnToolsVersion = 15.0.1;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "iosfixture" */;
@@ -548,6 +665,8 @@
 				CD1916DF2B1D7A9D0006215A /* fx-app-intent */,
 				CD1916F12B1D7C7D0006215A /* fx-authentication */,
 				CD1917042B1D7CD50006215A /* fx-background-download */,
+				CD1917142B1D84EA0006215A /* fx-notification-content */,
+				CD19172A2B1D851B0006215A /* fx-notification-service */,
 			);
 		};
 /* End PBXProject section */
@@ -604,6 +723,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CD1917032B1D7CD50006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1917132B1D84EA0006215A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD19171F2B1D84EA0006215A /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1917292B1D851B0006215A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -697,6 +831,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD1917112B1D84EA0006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD19171C2B1D84EA0006215A /* NotificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1917272B1D851B0006215A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD19172E2B1D851B0006215A /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -730,6 +880,16 @@
 			target = CD1917042B1D7CD50006215A /* fx-background-download */;
 			targetProxy = CD19170B2B1D7CD50006215A /* PBXContainerItemProxy */;
 		};
+		CD1917222B1D84EA0006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD1917142B1D84EA0006215A /* fx-notification-content */;
+			targetProxy = CD1917212B1D84EA0006215A /* PBXContainerItemProxy */;
+		};
+		CD1917312B1D851B0006215A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CD19172A2B1D851B0006215A /* fx-notification-service */;
+			targetProxy = CD1917302B1D851B0006215A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -755,6 +915,14 @@
 				CD1916F82B1D7C7D0006215A /* Base */,
 			);
 			name = AuthenticationViewController.xib;
+			sourceTree = "<group>";
+		};
+		CD19171D2B1D84EA0006215A /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD19171E2B1D84EA0006215A /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1365,6 +1533,152 @@
 			};
 			name = Release;
 		};
+		CD1917242B1D84EA0006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-notification-content/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-notification-content";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-notification-content";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD1917252B1D84EA0006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-notification-content/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-notification-content";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-notification-content";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CD1917342B1D851B0006215A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-notification-service/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-notification-service";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-notification-service";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CD1917352B1D851B0006215A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "fx-notification-service/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "fx-notification-service";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bacon.ios-fixture.fx-notification-service";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1436,6 +1750,24 @@
 			buildConfigurations = (
 				CD19170F2B1D7CD50006215A /* Debug */,
 				CD1917102B1D7CD50006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD1917262B1D84EA0006215A /* Build configuration list for PBXNativeTarget "fx-notification-content" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD1917242B1D84EA0006215A /* Debug */,
+				CD1917252B1D84EA0006215A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CD1917332B1D851B0006215A /* Build configuration list for PBXNativeTarget "fx-notification-service" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CD1917342B1D851B0006215A /* Debug */,
+				CD1917352B1D851B0006215A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
