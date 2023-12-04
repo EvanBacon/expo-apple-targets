@@ -81,12 +81,12 @@ function getConfigurationsForTargets(project: XcodeProject) {
       ...configs.debugConfig.props.buildSettings,
     };
 
-    const sharedSettings = {};
-    const releaseSettings = {};
-    const debugSettings = {};
+    const sharedSettings: any = {};
+    const releaseSettings: any = {};
+    const debugSettings: any = {};
 
-    const d = configs.debugConfig.props.buildSettings;
-    const r = configs.releaseConfig.props.buildSettings;
+    const d: any = configs.debugConfig.props.buildSettings;
+    const r: any = configs.releaseConfig.props.buildSettings;
 
     Object.entries(allSettings).forEach(([key, value]) => {
       if (d[key] !== r[key]) {
@@ -116,7 +116,7 @@ function getConfigurationsForTargets(project: XcodeProject) {
   return templateBuildSettings;
 }
 
-function findUpProjectRoot(cwd: string) {
+function findUpProjectRoot(cwd: string): string | null {
   const pkgJsonPath = path.join(cwd, "package.json");
   if (fs.existsSync(pkgJsonPath)) {
     return cwd;
@@ -130,7 +130,10 @@ function findUpProjectRoot(cwd: string) {
 
 (async () => {
   const projPath = globSync("ios/*/project.pbxproj", {
-    cwd: process.cwd(),
+    cwd: path.join(
+      findUpProjectRoot(path.dirname(findUpProjectRoot(__dirname)!))!,
+      "apps/fixture"
+    ),
     absolute: true,
   })[0];
   const project = XcodeProject.open(projPath);
