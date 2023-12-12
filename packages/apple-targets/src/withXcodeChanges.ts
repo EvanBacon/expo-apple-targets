@@ -1017,6 +1017,24 @@ async function applyXcodeChanges(
     })
   );
 
+  // NOTE: Single-level only
+  const storyboardFiles = globSync("*.storyboard", {
+    absolute: true,
+    cwd: magicCwd,
+  }).map((file) => {
+    return PBXFileReference.create(project, {
+      lastKnownFileType: "file.storyboard",
+      path: path.basename(file),
+      sourceTree: "<group>",
+    });
+  });
+
+  const storyBoardBuildFiles = storyboardFiles.map((file) => {
+    return PBXBuildFile.create(project, {
+      fileRef: file,
+    });
+  });
+
   let assetFiles = [
     // All assets`
     // "assets/*",
@@ -1131,7 +1149,7 @@ async function applyXcodeChanges(
   });
 
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
-    files: [...assetFiles, ...resAssets],
+    files: [...storyBoardBuildFiles, ...assetFiles, ...resAssets],
   });
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     containerPortal: project.rootObject,
@@ -1211,6 +1229,11 @@ async function applyXcodeChanges(
       ...intentFiles.sort((a, b) =>
         a.getDisplayName().localeCompare(b.getDisplayName())
       ),
+
+      // @ts-expect-error
+      ...storyBoardBuildFiles
+        .map((buildFile) => buildFile.props.fileRef)
+        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
       // @ts-expect-error
       ...assetFiles
