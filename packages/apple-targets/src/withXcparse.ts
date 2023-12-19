@@ -10,7 +10,7 @@ import {
 } from "@expo/config-plugins";
 import * as fs from "fs";
 
-const customModName = "xcodeProjectBeta";
+const customModName = "xcodeProjectBeta2";
 
 export const withXcodeProjectBeta: ConfigPlugin<Mod<XcodeProject>> = (
   config,
