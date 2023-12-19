@@ -64,5 +64,5 @@ const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
 
 export const withXcodeProjectBetaBaseMod = createRunOncePlugin(
   withXcodeProjectBetaBaseModInternal,
-  "withXcodeProjectBetaBaseMod"
+  "withXcodeProjectBeta2BaseMod"
 );
