@@ -28,6 +28,7 @@ import {
   productTypeForType,
 } from "./target";
 import fixture from "./template/XCBuildConfiguration.json";
+import { withXcodeProjectBeta } from "./withXcparse";
 const TemplateBuildSettings = fixture as unknown as Record<
   string,
   {
@@ -37,7 +38,6 @@ const TemplateBuildSettings = fixture as unknown as Record<
     info: any;
   }
 >;
-import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {
   name: string;
@@ -447,6 +447,87 @@ function createWatchAppConfigurationList(
 
   return configurationList;
 }
+function createWatchWidgetConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    hasAccentColor,
+  }: XcodeSettings
+) {
+  const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
+  // NOTE: No base Info.plist needed.
+
+  const common: BuildSettings = {
+    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    // @ts-expect-error Not part of xcode project types yet
+    INTENTS_CODEGEN_LANGUAGE: "Swift",
+    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "watchos",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "4",
+    WATCHOS_DEPLOYMENT_TARGET: deploymentTarget ?? "9.4",
+  };
+
+  if (hasAccentColor) {
+    common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
+  }
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
+      // SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
 function createSafariConfigurationList(
   project: XcodeProject,
   {
@@ -734,6 +815,8 @@ function createConfigurationListForType(
     return createAppClipConfigurationList(project, props);
   } else if (props.type === "watch") {
     return createWatchAppConfigurationList(project, props);
+  } else if (props.type === "watch-widget") {
+    return createWatchWidgetConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -1017,7 +1100,7 @@ async function applyXcodeChanges(
     })
   );
 
-  let assetFiles = [
+  const assetFiles = [
     // All assets`
     // "assets/*",
     // NOTE: Single-level only
