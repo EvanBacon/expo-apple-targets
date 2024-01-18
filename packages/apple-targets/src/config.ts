@@ -111,6 +111,9 @@ export type Config = {
   /** Optional entitlements to add to the target. */
   entitlements?: Entitlements;
 
+  /** Default true. When true it will embed the target in the main app. */
+  embedInApp?: boolean;
+
   /**
    * Additional colors to generate in the `Assets.xcassets`. These will be available as `UIColor`s in the native source.
    * @example In Expo config: `colors: { gradient1: { color: "#FF0000", darkColor: "#0000FF" }`
