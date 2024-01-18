@@ -3,11 +3,9 @@
 > [!WARNING]
 > This is highly experimental and not part of any official Expo workflow.
 
-
 <img width="1061" alt="Screenshot 2023-06-10 at 1 59 26 PM" src="https://github.com/EvanBacon/expo-apple-targets/assets/9664363/4cd8399d-53aa-401a-9caa-3a1432a0640c">
 
 An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of Continuous Native Generation.
-
 
 ## 🚀 How to use
 
@@ -17,7 +15,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 - A single top-level `*.entitlements` file will be linked as the entitlements of the target. This is not currently used in EAS Capability signing, but may be in the future.
 - All top-level swift files will be linked as build sources of the target. There is currently no support for storyboard or `.xib` files because I can't be bothered.
 - All top-level `*.xcassets` will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
-- Code-signing requires the teamId be provided to the plugin in `app.config.js`.
+- Code-signing requires the appleTeamId be provided to the plugin in `app.config.js`.
 
 ```json
 {
@@ -25,7 +23,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
     [
       "@bacons/apple-targets",
       {
-        "teamId": "XXXXXXXXXX"
+        "appleTeamId": "XXXXXXXXXX"
       }
     ]
   ]
