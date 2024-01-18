@@ -28,6 +28,7 @@ import {
   productTypeForType,
 } from "./target";
 import fixture from "./template/XCBuildConfiguration.json";
+import { withXcodeProjectBeta } from "./withXcparse";
 const TemplateBuildSettings = fixture as unknown as Record<
   string,
   {
@@ -37,7 +38,6 @@ const TemplateBuildSettings = fixture as unknown as Record<
     info: any;
   }
 >;
-import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {
   name: string;
@@ -52,6 +52,8 @@ export type XcodeSettings = {
   currentProjectVersion: number;
 
   frameworks: string[];
+
+  dependencyTargets: string[];
 
   type: ExtensionType;
 
@@ -68,9 +70,9 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
   props
 ) => {
-  return withXcodeProjectBeta(config, (config) => {
-    // @ts-ignore
-    applyXcodeChanges(config, config.modResults, props);
+  return withXcodeProjectBeta(config, async (config) => {
+    // NOTE: important to await here, so that withMods "wait" for another one to finish first
+    await applyXcodeChanges(config, config.modResults, props);
     return config;
   });
 };
@@ -1017,7 +1019,7 @@ async function applyXcodeChanges(
     })
   );
 
-  let assetFiles = [
+  const assetFiles = [
     // All assets`
     // "assets/*",
     // NOTE: Single-level only
@@ -1147,6 +1149,60 @@ async function applyXcodeChanges(
 
   // Add the target dependency to the main app, should be only one.
   mainAppTarget.props.dependencies.push(targetDependency);
+
+  // Check if we need to add target dependencies to the widgetTarget
+  props.dependencyTargets?.forEach((dependencyTarget) => {
+    const target = project.rootObject.props.targets.find(
+      (target) => target.props.productName === dependencyTarget
+    );
+
+    if (target) {
+      // On a target the productReference is a PBXFileReference, however, its not in the types currently, so we check for it:
+      let productReference: PBXFileReference;
+      if (
+        "productReference" in target.props &&
+        PBXFileReference.is(target.props.productReference)
+      ) {
+        productReference = target.props.productReference;
+      } else {
+        throw new Error(
+          `You declared ${widgetTarget.props.productName} to depend on ${dependencyTarget}, but ${dependencyTarget} is invalid (missing appex reference) and can't be used!`
+        );
+      }
+
+      const containerItemProxy = PBXContainerItemProxy.create(project, {
+        containerPortal: project.rootObject,
+        proxyType: 1,
+        remoteGlobalIDString: target.uuid,
+        remoteInfo: dependencyTarget,
+      });
+      const targetDependency = PBXTargetDependency.create(project, {
+        target,
+        targetProxy: containerItemProxy,
+      });
+      widgetTarget.props.dependencies.push(targetDependency);
+
+      // We also need to add a build phase "Embed Foundation Extension" to the widget target
+      widgetTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+        dstSubfolderSpec: 13,
+        buildActionMask: 2147483647,
+        files: [
+          PBXBuildFile.create(project, {
+            fileRef: productReference,
+            settings: {
+              ATTRIBUTES: ["RemoveHeadersOnCopy"],
+            },
+          }),
+        ],
+        name: "Embed Foundation Extensions",
+        runOnlyForDeploymentPostprocessing: 0,
+      });
+    } else {
+      console.warn(
+        `You declared ${widgetTarget.props.productName} to depend on ${dependencyTarget}, but ${dependencyTarget} couldn't be found in the project yet!`
+      );
+    }
+  });
 
   const WELL_KNOWN_COPY_EXTENSIONS_NAME =
     props.type === "clip"

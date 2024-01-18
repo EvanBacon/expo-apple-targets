@@ -12,7 +12,7 @@ import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
 
-type Props = Config & {
+export type Props = Config & {
   directory: string;
 };
 let hasWarned = false;
@@ -148,6 +148,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     currentProjectVersion: config.ios?.buildNumber || 1,
 
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
+    dependencyTargets: props.dependencyTargets || [],
     type: props.type,
     teamId: props.appleTeamId,
   });

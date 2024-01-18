@@ -102,6 +102,13 @@ export type Config = {
    */
   frameworks?: string[];
 
+  /**
+   * A list of additional extensions to add to the target (possibly from other targets, so match the name of the target),
+   * without the .appex extension.
+   * @example ["myWidgetExtension"]
+   */
+  dependencyTargets?: string[];
+
   /** Deployment iOS version for the target. Defaults to `16.4` */
   deploymentTarget?: string;
 
