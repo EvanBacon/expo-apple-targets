@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "glob": "^10.2.6",
-    "@bacons/xcode": "^1.0.0-alpha.11",
+    "@bacons/xcode": "^1.0.0-alpha.12",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
