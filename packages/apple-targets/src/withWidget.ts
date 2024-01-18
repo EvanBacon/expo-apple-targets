@@ -15,6 +15,7 @@ import { withXcodeChanges } from "./withXcodeChanges";
 type Props = Config & {
   directory: string;
 };
+let hasWarned = false;
 
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
@@ -88,6 +89,13 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   withDangerousMod(config, [
     "ios",
     async (config) => {
+      if (!hasWarned) {
+        hasWarned = true;
+        console.warn(
+          "You're using an experimental Config Plugin that is subject to breaking changes and has no E2E tests."
+        );
+      }
+
       fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
 
       const files: [string, string][] = [
