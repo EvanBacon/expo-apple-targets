@@ -25,7 +25,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
     [
       "@bacons/apple-targets",
       {
-        "teamId": "XXXXXXXXXX"
+        "appleTeamId": "XXXXXXXXXX"
       }
     ]
   ]
