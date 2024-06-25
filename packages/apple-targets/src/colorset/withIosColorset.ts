@@ -11,8 +11,17 @@ type Appearance = {
 };
 
 type Color = {
-  "color-space": "srgb";
+  "color-space": // Default for Apple devices.
+  | "display-p3"
+    // Standard RGB like the web uses.
+    | "srgb"
+    | "extended-linear-srgb"
+    | "extended-srgb"
+    // Gray-scale
+    | "gray-gamma-22"
+    | "extended-gray";
   components: {
+    // Can be a float between 0 and 1, or an integer between 0 and 255, or hex strings `"0xFF"`
     alpha: number;
     blue: number;
     green: number;
@@ -49,7 +58,7 @@ const DARK_APPEARANCE: Appearance = {
 
 function createColor(color: string): Color {
   return {
-    "color-space": "srgb",
+    "color-space": "display-p3",
     components: customColorFromCSS(color),
   };
 }
@@ -66,6 +75,9 @@ export async function setColorAsync(
     appearances?: Appearance[];
     color: Color;
     idiom: ContentsJsonImageIdiom;
+
+    // Used as a hint for when a colorset supports multiple color spaces
+    "display-gamut"?: "sRGB" | "display-P3";
   }[] = [];
 
   if (color) {
