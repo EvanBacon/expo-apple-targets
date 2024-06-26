@@ -87,8 +87,16 @@ export type Config = {
    * @example "widget"
    */
   type: ExtensionType;
+
   /** Name of the target. Will default to a sanitized version of the directory name. */
   name?: string;
+
+  /**
+   * Bundle identifier for the target. Will default to a sanitized version of the root project + name.
+   * If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
+   **/
+  bundleIdentifier?: string;
+
   /**
    * A local file path or URL to an image asset.
    * @example "./assets/icon.png"
