@@ -1,5 +1,4 @@
-// @ts-expect-error
-import normalizeColor from "@react-native/normalize-color";
+import normalizeColor from "@react-native/normalize-colors";
 
 export function customColorFromCSS(color: string): {
   /** @example `0.86584504117670746` */
@@ -11,7 +10,7 @@ export function customColorFromCSS(color: string): {
   /** @example `1` */
   alpha: number;
 } {
-  let colorInt = normalizeColor(color);
+  let colorInt = normalizeColor(color)!;
   colorInt = ((colorInt << 24) | (colorInt >>> 8)) >>> 0;
 
   const red = ((colorInt >> 16) & 255) / 255;

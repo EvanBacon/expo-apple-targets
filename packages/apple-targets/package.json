@@ -28,15 +28,15 @@
   "author": "Evan Bacon",
   "license": "MIT",
   "dependencies": {
-    "@react-native/normalize-color": "^2.1.0",
-    "glob": "^10.2.6",
     "@bacons/xcode": "^1.0.0-alpha.13",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "glob": "^10.2.6"
   },
   "devDependencies": {
+    "@expo/babel-preset-cli": "^0.3.1",
+    "@react-native/normalize-colors": "^0.74.87",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^8.1.0",
-    "@expo/babel-preset-cli": "^0.3.1",
     "jest-environment-node": "^26"
   }
 }
