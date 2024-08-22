@@ -14,7 +14,9 @@ function safeSet(obj: any, key: string, value: any) {
     }
     obj = obj[segment];
   });
-  obj[last!] = value;
+  if (!obj[last!]) {
+    obj[last!] = value;
+  }
 
   return obj;
 }
