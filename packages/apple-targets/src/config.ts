@@ -7,6 +7,13 @@ export type DynamicColor = {
   dark?: string;
 };
 
+export type SwiftDependency = {
+  name: string;
+  repository: string;
+  branch?: string;
+  version?: string;
+};
+
 export type Entitlements = Partial<{
   "com.apple.developer.healthkit": boolean;
   "com.apple.developer.healthkit.access": string[];
@@ -101,6 +108,9 @@ export type Config = {
    * @example ["UserNotifications", "Intents"]
    */
   frameworks?: string[];
+
+  /** Swift dependencies to add to the project */
+  swiftDependencies?: SwiftDependency[];
 
   /** Deployment iOS version for the target. Defaults to `16.4` */
   deploymentTarget?: string;

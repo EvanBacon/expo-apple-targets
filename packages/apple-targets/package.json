@@ -1,6 +1,6 @@
 {
-  "name": "@bacons/apple-targets",
-  "version": "0.0.5",
+  "name": "@duell10111/apple-targets",
+  "version": "0.0.6-alpha.0",
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/index.js",
   "files": [
@@ -28,15 +28,15 @@
   "author": "Evan Bacon",
   "license": "MIT",
   "dependencies": {
-    "@react-native/normalize-color": "^2.1.0",
-    "glob": "^10.2.6",
     "@bacons/xcode": "^1.0.0-alpha.13",
-    "fs-extra": "^11.2.0"
+    "@react-native/normalize-color": "^2.1.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.2.6"
   },
   "devDependencies": {
+    "@expo/babel-preset-cli": "^0.3.1",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^8.1.0",
-    "@expo/babel-preset-cli": "^0.3.1",
     "jest-environment-node": "^26"
   }
 }
