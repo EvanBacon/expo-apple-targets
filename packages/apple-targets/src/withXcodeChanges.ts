@@ -1026,10 +1026,21 @@ async function applyXcodeChanges(
   }
 
   function configureTargetWithSwiftDependencies(target: PBXNativeTarget) {
-    console.log("Configure Swift Deps");
     // Add Swift Package Dependency
     props.swiftDependencies?.forEach((dependency) => {
-      console.log(`Adding dependency: ${dependency.repository}`);
+      const requirementOptions: { [key: string]: string } = {};
+
+      if (dependency.version) {
+        requirementOptions["kind"] = "exactVersion";
+        requirementOptions["version"] = dependency.version;
+      } else if (dependency.branch) {
+        requirementOptions["kind"] = "branch";
+        requirementOptions["version"] = dependency.branch;
+      } else {
+        console.warn(
+          `Error adding dependency: ${dependency.name}. No versioning options specified!`
+        );
+      }
 
       // Check for project dependency
       const remoteProps = {
@@ -1065,14 +1076,12 @@ async function applyXcodeChanges(
       }
 
       // Add dependency to target
-      console.log("Product Dependencies: ", target.props.packageProductDependencies);
       const existingProductDependency =
         target.props.packageProductDependencies?.find((dep) => {
           return dep.props.productName === dependency.name;
         });
 
       if (existingProductDependency) {
-        console.log("Existing Product Dependency");
         // existingProductDependency.removeFromProject();
         existingProductDependency.props.productName = dependency.name;
         existingProductDependency.props.package =
@@ -1088,10 +1097,6 @@ async function applyXcodeChanges(
           target.props.packageProductDependencies = [packageProduct];
         }
       }
-
-      console.log(
-        `Target Dependencies: ${target.props.packageProductDependencies}`
-      );
     });
   }
 

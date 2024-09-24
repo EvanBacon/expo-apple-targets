@@ -10,7 +10,8 @@ export type DynamicColor = {
 export type SwiftDependency = {
   name: string;
   repository: string;
-  branch: string;
+  branch?: string;
+  version?: string;
 };
 
 export type Entitlements = Partial<{
