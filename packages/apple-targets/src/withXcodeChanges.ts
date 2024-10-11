@@ -13,7 +13,7 @@ import {
   XCConfigurationList,
   XcodeProject,
 } from "@bacons/xcode";
-import { BuildSettings } from "@bacons/xcode/json";
+import { BuildSettings, ISA } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
 import fs from "fs";
@@ -922,10 +922,65 @@ async function applyXcodeChanges(
 
   function syncMarketingVersions() {
     const mainVersion = getMainMarketingVersion(project);
-    // console.log('main marketing version:', mainVersion)
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
         target.setBuildSetting("MARKETING_VERSION", mainVersion);
+      }
+    });
+  }
+
+  function buildFileGroupHierarchy(files: string[]): (PBXBuildFile | PBXGroup)[] {
+    const root: (PBXBuildFile | PBXGroup)[] = [];
+
+    function getOrCreateGroup(name: string, segment: string, group: (PBXBuildFile | PBXGroup)[]): PBXGroup {
+      const fullPath = path.join(magicCwd, name);
+      let newGroup = group.find(
+        (child): child is PBXGroup => child.props.isa === ISA.PBXGroup && child.props.path === fullPath
+      );
+
+      if (!newGroup) {
+        newGroup = PBXGroup.create(project, {
+          name: segment,
+          path: fullPath,
+          children: [],
+        });
+
+        group.push(newGroup);
+      }
+
+      return newGroup;
+    }
+
+    files.forEach((filePath) => {
+      const pathSegments = filePath.split(path.sep);
+      let currentLevel: any[] = root;
+
+      pathSegments.forEach((part, index) => {
+        const isRoot = part === ".";
+        const currentPath = pathSegments.slice(0, index + 1).join(path.sep);
+        currentLevel = isRoot ? currentLevel : getOrCreateGroup(currentPath, part, currentLevel).props.children;
+
+        const isFinalPart = index === pathSegments.length - 1;
+        if (swiftBuildFiles[filePath] && isFinalPart) {
+          const filex = swiftBuildFiles[filePath];
+          currentLevel.push(...filex);
+        }
+      });
+    });
+
+    return root;
+  }
+
+  function generateProjectGroups(project: any, structure: (PBXBuildFile | PBXGroup)[], magicCwd: string): any[] {
+    return structure.map((item) => {
+      if (item.props.isa === ISA.PBXGroup) {
+        // @ts-ignore
+        const childGroups = generateProjectGroups(project, item.props.children, path.join(magicCwd, item.props.name));
+        item.props.children = childGroups;
+
+        return item;
+      } else if (item.props.isa === ISA.PBXBuildFile) {
+        return item.props.fileRef;
       }
     });
   }
@@ -967,8 +1022,7 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
     // Create new build phases
-    targetToUpdate.props.buildConfigurationList =
-      createConfigurationListForType(project, props);
+    targetToUpdate.props.buildConfigurationList = createConfigurationListForType(project, props);
 
     configureTargetWithEntitlements(targetToUpdate);
 
@@ -984,18 +1038,30 @@ async function applyXcodeChanges(
 
   // Build Files
 
-  // NOTE: Single-level only
-  const swiftFiles = globSync("*.swift", {
+  const swiftBuildFiles: Record<string, any[]> = {};
+  globSync("**/*.swift", {
     absolute: true,
     cwd: magicCwd,
-  }).map((file) => {
-    return PBXBuildFile.create(project, {
+  }).forEach((file) => {
+    const fileDir: string = path.dirname(path.relative(magicCwd, file));
+
+    const pbxFile = PBXBuildFile.create(project, {
       fileRef: PBXFileReference.create(project, {
-        path: path.basename(file),
+        path: file,
         sourceTree: "<group>",
       }),
     });
+
+    if (!swiftBuildFiles[fileDir]) {
+      swiftBuildFiles[fileDir] = [];
+    }
+
+    swiftBuildFiles[fileDir].push(pbxFile);
+    return undefined;
   });
+
+  const swiftStructure = buildFileGroupHierarchy(Object.keys(swiftBuildFiles));
+  const swiftGroups = generateProjectGroups(project, swiftStructure, magicCwd);
 
   // NOTE: Single-level only
   const intentFiles = globSync("*.intentdefinition", {
@@ -1111,10 +1177,9 @@ async function applyXcodeChanges(
 
   configureTargetWithPreview(widgetTarget);
 
-  // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
     files: [
-      ...swiftFiles,
+      ...Object.values(swiftBuildFiles).flat(),
       ...intentBuildFiles[0],
       // ...entitlementFiles
     ],
@@ -1202,28 +1267,19 @@ async function applyXcodeChanges(
     path: props.cwd,
     sourceTree: "<group>",
     children: [
-      // @ts-expect-error
-      ...swiftFiles
-        .map((buildFile) => buildFile.props.fileRef)
-        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
+      ...swiftGroups,
 
-      // @ts-expect-error
-      ...intentFiles.sort((a, b) =>
-        a.getDisplayName().localeCompare(b.getDisplayName())
-      ),
+      ...intentFiles.sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
-      // @ts-expect-error
       ...assetFiles
         .map((buildFile) => buildFile.props.fileRef)
         .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
-      // @ts-expect-error
       ...entitlementFiles
         .map((buildFile) => buildFile.props.fileRef)
         .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
 
       // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-      // @ts-expect-error
       PBXFileReference.create(project, {
         path: "Info.plist",
         sourceTree: "<group>",
