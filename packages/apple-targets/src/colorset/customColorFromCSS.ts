@@ -1,5 +1,5 @@
 // @ts-expect-error
-import normalizeColor from "@react-native/normalize-color";
+import normalizeColor from "@react-native/normalize-colors";
 
 export function customColorFromCSS(color: string): {
   /** @example `0.86584504117670746` */
