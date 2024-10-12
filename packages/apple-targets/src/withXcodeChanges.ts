@@ -7,8 +7,10 @@ import {
   PBXGroup,
   PBXNativeTarget,
   PBXResourcesBuildPhase,
+  PBXShellScriptBuildPhase,
   PBXSourcesBuildPhase,
   PBXTargetDependency,
+  PBXVariantGroup,
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
@@ -62,6 +64,8 @@ export type XcodeSettings = {
   teamId?: string;
 
   icon?: string;
+
+  exportJs?: boolean;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -948,6 +952,48 @@ async function applyXcodeChanges(
     return assets;
   }
 
+  function configureJsExport(target: PBXNativeTarget) {
+    if (props.exportJs) {
+      const shellScript = mainAppTarget.props.buildPhases.find(
+        (phase) =>
+          PBXShellScriptBuildPhase.is(phase) &&
+          phase.props.name === "Bundle React Native code and images"
+      ) as PBXShellScriptBuildPhase | undefined;
+
+      if (!shellScript) {
+        throw new Error(
+          'Failed to find the "Bundle React Native code and images" build phase in the main app target.'
+        );
+      }
+
+      const currentShellScript = target.props.buildPhases.find(
+        (phase) =>
+          PBXShellScriptBuildPhase.is(phase) &&
+          phase.props.name === "Bundle React Native code and images"
+      ) as PBXShellScriptBuildPhase | undefined;
+      if (!currentShellScript) {
+        target.createBuildPhase(PBXShellScriptBuildPhase, {
+          ...shellScript.props,
+        });
+      } else {
+        for (const key in shellScript.props) {
+          // @ts-expect-error
+          currentShellScript.props[key] = shellScript.props[key];
+        }
+      }
+    } else {
+      // Remove the shell script build phase if it exists from a subsequent build.
+      const shellScript = target.props.buildPhases.findIndex(
+        (phase) =>
+          PBXShellScriptBuildPhase.is(phase) &&
+          phase.props.name === "Bundle React Native code and images"
+      );
+      if (shellScript !== -1) {
+        target.props.buildPhases.splice(shellScript, 1);
+      }
+    }
+  }
+
   if (targetToUpdate) {
     // Remove existing build phases
     targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
@@ -975,6 +1021,8 @@ async function applyXcodeChanges(
     configureTargetWithPreview(targetToUpdate);
 
     configureTargetWithKnownSettings(targetToUpdate);
+
+    configureJsExport(targetToUpdate);
 
     applyDevelopmentTeamIdToTargets();
 
@@ -1039,6 +1087,37 @@ async function applyXcodeChanges(
     .flat();
 
   const resAssets: PBXBuildFile[] = [];
+
+  // Support for LaunchScreen files
+  const baseProj = path.join(magicCwd, "Base.lproj");
+  if (fs.existsSync(baseProj)) {
+    // Link LaunchScreen.storyboard
+    fs.readdirSync(baseProj).forEach((file) => {
+      if (file === ".DS_Store") return;
+
+      const stat = fs.statSync(path.join(baseProj, file));
+      if (stat.isFile()) {
+        if (file.endsWith(".storyboard")) {
+          assetFiles.push(
+            PBXBuildFile.create(project, {
+              fileRef: PBXVariantGroup.create(project, {
+                name: file,
+                sourceTree: "<group>",
+                children: [
+                  PBXFileReference.create(project, {
+                    lastKnownFileType: "file.storyboard",
+                    name: "Base",
+                    path: path.join("Base.lproj", file),
+                    sourceTree: "<group>",
+                  }),
+                ],
+              }),
+            })
+          );
+        }
+      }
+    });
+  }
 
   // TODO: Maybe just limit this to Safari?
   if (fs.existsSync(path.join(magicCwd, "assets"))) {
@@ -1133,6 +1212,9 @@ async function applyXcodeChanges(
   widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
     files: [...assetFiles, ...resAssets],
   });
+
+  configureJsExport(widgetTarget);
+
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     containerPortal: project.rootObject,
     proxyType: 1,

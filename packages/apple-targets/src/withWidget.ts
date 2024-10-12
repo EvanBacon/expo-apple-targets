@@ -54,8 +54,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   let entitlementsJson: undefined | Entitlements = props.entitlements;
 
+  // Apply default entitlements that must be present for a target to work.
+  function applyDefaultEntitlements(entitlements: Entitlements): Entitlements {
+    if (props.type === "clip") {
+      entitlements["com.apple.developer.parent-application-identifiers"] = [
+        `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
+      ];
+      // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
+      // entitlements["com.apple.developer.on-demand-install-capable"] = true;
+    }
+
+    return entitlements;
+  }
+
+  if (entitlementsJson) {
+    entitlementsJson = applyDefaultEntitlements(entitlementsJson);
+  }
+
   // If the user defined entitlements, then overwrite any existing entitlements file
-  if (props.entitlements) {
+  if (entitlementsJson) {
     withDangerousMod(config, [
       "ios",
       async (config) => {
@@ -72,10 +89,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
             )} with entitlements JSON from config`
           );
         }
-        fs.writeFileSync(
-          entitlementsFilePath,
-          plist.build(props.entitlements as any)
-        );
+        fs.writeFileSync(entitlementsFilePath, plist.build(entitlementsJson));
         return config;
       },
     ]);
@@ -150,6 +164,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
     teamId: props.appleTeamId,
+
+    exportJs:
+      props.exportJs ??
+      // Assume App Clips are used for React Native.
+      props.type === "clip",
   });
 
   config = withEASTargets(config, {
