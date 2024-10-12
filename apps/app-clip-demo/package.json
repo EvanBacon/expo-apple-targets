@@ -1,12 +1,11 @@
 {
-  "name": "ios-fixture",
+  "name": "app-clip-demo",
   "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "nprebuild": "expo prebuild --template ./prebuild-template-no-rn.tgz -p ios"
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@bacons/apple-targets": "*",
@@ -15,6 +14,10 @@
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-native": "0.74.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@types/react": "~18.2.79"
   },
   "private": true
 }

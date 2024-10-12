@@ -70,6 +70,7 @@ export type Entitlements = Partial<{
   "com.apple.developer.driverkit.allow-third-party-userclients": boolean;
   "com.apple.developer.weatherkit": boolean;
   "com.apple.developer.on-demand-install-capable": boolean;
+  "com.apple.developer.parent-application-identifiers": string[];
   "com.apple.developer.driverkit.family.scsicontroller": boolean;
   "com.apple.developer.driverkit.family.serial": boolean;
   "com.apple.developer.driverkit.family.networking": boolean;
@@ -127,4 +128,7 @@ export type Config = {
     string,
     string | { "1x"?: string; "2x"?: string; "3x"?: string }
   >;
+
+  /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
+  exportJs?: boolean;
 };
