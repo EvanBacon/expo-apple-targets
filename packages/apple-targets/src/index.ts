@@ -3,6 +3,7 @@ import { sync as globSync } from "glob";
 import path from "path";
 
 import type { Config } from "./config";
+import { withPodTargetExtension } from "./withPodTargetExtension";
 import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
@@ -26,6 +27,8 @@ export const withTargetsDir: ConfigPlugin<{
       directory: path.relative(projectRoot, path.dirname(configPath)),
     });
   });
+
+  withPodTargetExtension(config);
 
   return withXcodeProjectBetaBaseMod(config);
 };

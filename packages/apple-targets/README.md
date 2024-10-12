@@ -3,11 +3,9 @@
 > [!WARNING]
 > This is highly experimental and not part of any official Expo workflow.
 
-
 <img width="1061" alt="Screenshot 2023-06-10 at 1 59 26 PM" src="https://github.com/EvanBacon/expo-apple-targets/assets/9664363/4cd8399d-53aa-401a-9caa-3a1432a0640c">
 
 An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of Continuous Native Generation.
-
 
 ## 🚀 How to use
 
@@ -94,6 +92,41 @@ There are certain values that are shared across targets. We use a predefined con
 | ------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `$accent`           | `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`     | Sets the global accent color, in widgets this is used for the tint color of buttons when editing the widget. |
 | `$widgetBackground` | `ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME` | Sets the background color of the widget.                                                                     |
+
+## CocoaPods
+
+Adding a file `pods.rb` in the root of the repo will enable you to modify the target settings for the project.
+
+The ruby module evaluates with global access to the property `podfile_properties` and the method `use_native_modules`.
+
+For example, the following is useful for enabling React Native in an App Clip target:
+
+```rb
+exclude = []
+use_expo_modules!(exclude: exclude)
+config = use_native_modules!
+
+use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
+use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
+
+use_react_native!(
+  :path => config[:reactNativePath],
+  :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
+  # An absolute path to your application root.
+  :app_path => "#{Pod::Config.instance.installation_root}/..",
+  :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+)
+```
+
+This block executes at the end of the Podfile in a block like:
+
+```rb
+target "target_dir_name" do
+   target_file
+end
+```
+
+The name of the target must match the name of the target directory.
 
 ## Examples
 

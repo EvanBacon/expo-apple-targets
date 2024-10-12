@@ -10,15 +10,15 @@
   },
   "dependencies": {
     "@bacons/apple-targets": "*",
-    "expo": "~49.0.0-alpha.1",
-    "expo-splash-screen": "~0.20.5",
-    "expo-status-bar": "~1.6.0",
+    "expo": "^51.0.37",
+    "expo-splash-screen": "~0.27.6",
+    "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
-    "react-native": "0.72.10"
+    "react-native": "0.74.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@types/react": "~18.2.14"
+    "@babel/core": "^7.24.0",
+    "@types/react": "~18.2.79"
   },
   "private": true
 }

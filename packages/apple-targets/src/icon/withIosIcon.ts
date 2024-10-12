@@ -240,8 +240,9 @@ export async function generateWatchIconsInternalAsync(
   imagesJson.push({
     filename: getAppleIconName(size, 1),
     idiom: "universal",
-    platform: "watchos",
     size: `${size}x${size}`,
+    // @ts-expect-error
+    platform: "watchos",
   });
 
   return imagesJson;
