@@ -1,6 +1,4 @@
-exclude = [
-  # Add any Expo modules that you want to exclude from the build.
-]
+exclude = []
 use_expo_modules!(exclude: exclude)
 config = use_native_modules!
 

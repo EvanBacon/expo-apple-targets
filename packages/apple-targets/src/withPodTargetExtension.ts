@@ -26,7 +26,7 @@ export const withPodTargetExtension: ConfigPlugin = (config) =>
       newSrc: extension,
       // Add at the end of the file.
       anchor: /Pod::UI\.warn e/,
-      offset: 3,
+      offset: 4,
       comment: "#",
     }).contents;
 
