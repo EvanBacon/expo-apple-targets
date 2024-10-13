@@ -15,6 +15,7 @@ export type ExtensionType =
   | "imessage"
   | "clip"
   | "watch"
+  | "watch-widget"
   | "location-push"
   | "credentials-provider"
   | "account-auth"
@@ -264,6 +265,7 @@ export function productTypeForType(type: ExtensionType) {
 export function needsEmbeddedSwift(type: ExtensionType) {
   return [
     "watch",
+    "watch-widget",
     "spotlight",
     "share",
     "intent",
@@ -276,7 +278,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
 }
 
 export function getFrameworksForType(type: ExtensionType) {
-  if (type === "widget") {
+  if (type === "widget" || type === "watch-widget") {
     return [
       // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
       "WidgetKit",
