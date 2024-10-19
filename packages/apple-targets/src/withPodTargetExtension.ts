@@ -1,4 +1,3 @@
-import { mergeContents } from "@expo/config-plugins/build/utils/generateCode";
 import { ConfigPlugin, withPodfile } from "expo/config-plugins";
 
 // TODO: This won't always match the correct target name. Need to pull the same algo in.
@@ -20,15 +19,11 @@ end
 /** Inject a helper which matches `pods.rb` files in the target root directory and invokes it as a way to extend the Podfile. */
 export const withPodTargetExtension: ConfigPlugin = (config) =>
   withPodfile(config, (config) => {
-    config.modResults.contents = mergeContents({
-      tag: "apple-targets-extension-loader",
-      src: config.modResults.contents,
-      newSrc: extension,
-      // Add at the end of the file.
-      anchor: /Pod::UI\.warn e/,
-      offset: 4,
-      comment: "#",
-    }).contents;
+    if (config.modResults.contents.includes("apple-targets-extension-loader")) {
+      return config;
+    }
+
+    config.modResults.contents += "\n\n" + extension;
 
     return config;
   });
