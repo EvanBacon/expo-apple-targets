@@ -1,7 +1,7 @@
 import { ConfigPlugin, withPodfile } from "expo/config-plugins";
 
 // TODO: This won't always match the correct target name. Need to pull the same algo in.
-const extension = `# Dynamic loading of target configurations
+const extension = `# apple-targets-extension-loader -- Dynamic loading of target configurations
 Dir.glob(File.join(__dir__, '..', 'targets', '**', 'pods.rb')).each do |target_file|
   target_name = File.basename(File.dirname(target_file))
   target target_name do
