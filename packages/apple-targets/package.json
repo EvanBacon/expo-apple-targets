@@ -1,6 +1,6 @@
 {
   "name": "@bacons/apple-targets",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/index.js",
   "files": [
