@@ -1,6 +1,6 @@
 {
   "name": "@bacons/apple-targets",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/index.js",
   "files": [
@@ -28,8 +28,9 @@
   "author": "Evan Bacon",
   "license": "MIT",
   "dependencies": {
+    "@react-native/normalize-colors": "^0.75.4",
     "glob": "^10.2.6",
-    "@bacons/xcode": "^1.0.0-alpha.12",
+    "@bacons/xcode": "^1.0.0-alpha.13",
     "fs-extra": "^11.2.0"
   },
   "devDependencies": {
