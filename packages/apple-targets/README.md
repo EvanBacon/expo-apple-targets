@@ -15,7 +15,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 - A single top-level `*.entitlements` file will be linked as the entitlements of the target. This is not currently used in EAS Capability signing, but may be in the future.
 - All top-level swift files will be linked as build sources of the target. There is currently no support for storyboard or `.xib` files because I can't be bothered.
 - All top-level `*.xcassets` will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
-- Code-signing requires the teamId be provided to the plugin in `app.config.js`.
+- In Expo SDK +52, set the `ios.appleTeamId`, for SDK 51 and below, set the `appleTeamId` prop in the Config Plugin in `app.config.js`:
 
 ```json
 {

@@ -14,6 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
+      "appleTeamId": "QQ57RJ5UTD",
       "bundleIdentifier": "com.bacon.2095"
     },
     "android": {
@@ -22,14 +23,7 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "plugins": [
-      [
-        "@bacons/apple-targets",
-        {
-          "appleTeamId": "QQ57RJ5UTD"
-        }
-      ]
-    ],
+    "plugins": ["@bacons/apple-targets"],
     "web": {
       "favicon": "./assets/favicon.png"
     },

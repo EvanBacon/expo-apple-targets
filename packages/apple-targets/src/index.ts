@@ -8,10 +8,18 @@ import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
 export const withTargetsDir: ConfigPlugin<{
-  appleTeamId: string;
+  appleTeamId?: string;
   match?: string;
   root?: string;
-}> = (config, { appleTeamId, root = "./targets", match = "*" }) => {
+}> = (
+  config,
+  {
+    // @ts-expect-error: not on type yet
+    appleTeamId = config.ios?.appleTeamId,
+    root = "./targets",
+    match = "*",
+  }
+) => {
   const projectRoot = config._internal!.projectRoot;
 
   const targets = globSync(`${root}/${match}/expo-target.config.@(json|js)`, {
