@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@bacons/apple-targets": "*",
-    "expo": "^51.0.37",
-    "expo-splash-screen": "~0.27.6",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "0.74.5"
+    "expo": "^52",
+    "expo-splash-screen": "~0.29.7",
+    "expo-status-bar": "~2.0.0",
+    "react": "18.3.1",
+    "react-native": "0.76.1"
   },
   "private": true
 }

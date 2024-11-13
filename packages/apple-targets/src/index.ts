@@ -13,13 +13,13 @@ export const withTargetsDir: ConfigPlugin<{
   root?: string;
 }> = (
   config,
-  {
-    // @ts-expect-error: not on type yet
-    appleTeamId = config.ios?.appleTeamId,
-    root = "./targets",
-    match = "*",
-  }
+  { appleTeamId = config?.ios?.appleTeamId, root = "./targets", match = "*" }
 ) => {
+  if (!appleTeamId) {
+    throw new Error(
+      `You must specify an \`appleTeamId\` in your app config to use the \`withTargetsDir\` plugin.`
+    );
+  }
   const projectRoot = config._internal!.projectRoot;
 
   const targets = globSync(`${root}/${match}/expo-target.config.@(json|js)`, {

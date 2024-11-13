@@ -2,7 +2,6 @@
   "extends": "expo-module-scripts/tsconfig.plugin",
   "compilerOptions": {
     "target": "es2019",
-    "module": "commonjs",
     "outDir": "./build",
     "resolveJsonModule": true
   },
