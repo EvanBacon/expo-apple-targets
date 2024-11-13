@@ -1,7 +1,7 @@
 declare global {
   namespace Native {
     interface ExpoWidget {
-      set(key: string, value: string | number, suite?: string): void;
+      set(key: string, value: string, suite?: string): void;
     }
   }
 
@@ -11,6 +11,8 @@ declare global {
 }
 
 // TODO: Can we drop this?
-export default (expo?.modules?.ExpoWidget ?? {
+const m = (expo?.modules?.ExpoWidget ?? {
   set() {},
-}) satisfies Native.ExpoWidget;
+}) as Native.ExpoWidget;
+
+export default m;

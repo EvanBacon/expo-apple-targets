@@ -1,4 +1,3 @@
-
 import WidgetKit
 import SwiftUI
 import Intents
@@ -38,7 +37,9 @@ struct widgetsEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        Text(entry.date, style: .time)
+        let defaults = UserDefaults(suiteName: "group.bacon.data")
+        let index = defaults?.integer(forKey: "index")
+      Text("\(index ?? 0)")
     }
 }
 
