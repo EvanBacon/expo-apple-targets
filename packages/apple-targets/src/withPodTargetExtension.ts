@@ -8,7 +8,6 @@ Dir.glob(File.join(__dir__, '..', 'targets', '**', 'pods.rb')).each do |target_f
     # Create a new binding with access to necessary methods and variables
     target_binding = binding
     target_binding.local_variable_set(:podfile_properties, podfile_properties)
-    target_binding.local_variable_set(:config, use_native_modules!)
 
     # Evaluate the target file content in the new binding
     eval(File.read(target_file), target_binding, target_file)
