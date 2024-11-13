@@ -6,4 +6,7 @@ module.exports = {
     $accent: "steelblue",
     $widgetBackground: "dodgerblue",
   },
+  entitlements: {
+    "com.apple.security.application-groups": ["group.bacon.data"],
+  },
 };
