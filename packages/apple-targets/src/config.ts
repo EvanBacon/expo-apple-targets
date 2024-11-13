@@ -103,6 +103,12 @@ export type Config = {
    */
   frameworks?: string[];
 
+  /**
+   * A list of files to link to the main target.
+   * @example ["attributes.swift"]
+   */
+  includeInMainTarget?: string[];
+
   /** Deployment iOS version for the target. Defaults to `16.4` */
   deploymentTarget?: string;
 

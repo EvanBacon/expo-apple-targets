@@ -161,6 +161,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 
+    includeInMainTarget: props.includeInMainTarget,
+
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
     teamId: props.appleTeamId,

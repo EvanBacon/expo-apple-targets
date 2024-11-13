@@ -6,7 +6,12 @@ module.exports = {
     $accent: "steelblue",
     $widgetBackground: "dodgerblue",
   },
+  // Add entitlements for shared data with the main app.
   entitlements: {
     "com.apple.security.application-groups": ["group.bacon.data"],
   },
+  // Add frameworks for live activities.
+  frameworks: ["SwiftUI", "ActivityKit", "AppIntents"],
+
+  includeInMainTarget: ["attributes.swift"],
 };

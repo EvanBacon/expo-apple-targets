@@ -66,6 +66,8 @@ export type XcodeSettings = {
   icon?: string;
 
   exportJs?: boolean;
+
+  includeInMainTarget: string[];
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -1027,6 +1029,7 @@ async function applyXcodeChanges(
     applyDevelopmentTeamIdToTargets();
 
     syncMarketingVersions();
+
     return project;
   }
 
@@ -1189,6 +1192,28 @@ async function applyXcodeChanges(
   const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
 
   configureTargetWithPreview(widgetTarget);
+
+  if (props.includeInMainTarget) {
+    // create new PBXBuildFile reference for each intent, it will be auto-added to PbxBuildFileSection
+    const pbxBuildIntents = swiftFiles
+      // TODO: Maybe match a comment in the files.
+      .filter((file) =>
+        props.includeInMainTarget.some((filePath) =>
+          file.props.fileRef.props.path?.endsWith(filePath)
+        )
+      );
+
+    const mainSourcesBuildPhase =
+      mainAppTarget.getBuildPhase(PBXSourcesBuildPhase);
+    if (mainSourcesBuildPhase) {
+      const files = uniqueBy(
+        [...pbxBuildIntents, ...mainSourcesBuildPhase.props.files],
+        (file) => file.uuid
+      );
+
+      mainSourcesBuildPhase.props.files = files;
+    }
+  }
 
   // CD0706062A2EBE2E009C1192
   widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
@@ -1373,4 +1398,16 @@ function ensureProtectedGroup(project: XcodeProject) {
   }
 
   return protectedGroup;
+}
+
+function uniqueBy<T>(arr: T[], key: (item: T) => string) {
+  const seen = new Set();
+  return arr.filter((item) => {
+    const k = key(item);
+    if (seen.has(k)) {
+      return false;
+    }
+    seen.add(k);
+    return true;
+  });
 }
