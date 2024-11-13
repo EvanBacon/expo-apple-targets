@@ -7,14 +7,18 @@ import { withPodTargetExtension } from "./withPodTargetExtension";
 import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
-export const withTargetsDir: ConfigPlugin<{
-  appleTeamId?: string;
-  match?: string;
-  root?: string;
-}> = (
-  config,
-  { appleTeamId = config?.ios?.appleTeamId, root = "./targets", match = "*" }
-) => {
+export const withTargetsDir: ConfigPlugin<
+  {
+    appleTeamId?: string;
+    match?: string;
+    root?: string;
+  } | void
+> = (config, _props) => {
+  const {
+    appleTeamId = config?.ios?.appleTeamId,
+    root = "./targets",
+    match = "*",
+  } = _props || {};
   if (!appleTeamId) {
     throw new Error(
       `You must specify an \`appleTeamId\` in your app config to use the \`withTargetsDir\` plugin.`
