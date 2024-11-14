@@ -49,6 +49,8 @@ export type XcodeSettings = {
   bundleId: string;
   // 16.4
   deploymentTarget: string;
+  /** The display name of the widget. */
+  displayName: string;
 
   // 1
   currentProjectVersion: number;
@@ -628,6 +630,7 @@ function createConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -652,7 +655,7 @@ function createConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: name,
+      INFOPLIST_KEY_CFBundleDisplayName: displayName,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS:
@@ -690,7 +693,7 @@ function createConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: name,
+      INFOPLIST_KEY_CFBundleDisplayName: displayName,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS:
