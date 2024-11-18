@@ -1214,7 +1214,7 @@ async function applyXcodeChanges(
                 ? "text.html"
                 : file.endsWith(".css")
                 ? "text.css"
-                : "text",
+                : undefined,
               sourceTree: "<group>",
             }),
           })
