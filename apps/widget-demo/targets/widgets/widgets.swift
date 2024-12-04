@@ -1,63 +1,153 @@
-import WidgetKit
 import SwiftUI
-import Intents
+import WidgetKit
+import ActivityKit
 
-struct Provider: IntentTimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent())
-    }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration)
-        completion(entry)
-    }
-
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
+extension View {
+  func widgetBackground() -> some View {
+    if #available(iOSApplicationExtension 17.0, *) {
+      return containerBackground(for: .widget) {
+        VStack {
+          Spacer()
+          ZStack {
+            // Progress
+            Arc(startAngle: .degrees(180), endAngle: .degrees(0))
+              .stroke(
+                LinearGradient(
+                  colors: [.white, Color.gray],
+                  startPoint: .leading,
+                  endPoint: .trailing
+                )
+                .opacity(0.6),
+                lineWidth: 4
+              )
+          }
+          .frame(maxWidth: .infinity, alignment: .center)
         }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+      }
+    } else {
+      return background {
+        LinearGradient(
+          gradient:
+            Gradient(
+              colors: [
+                Color("gradient1"),
+                Color("gradient2")
+              ]
+            ),
+          startPoint: .top,
+          endPoint: .bottom
+        )
+        .ignoresSafeArea()
+      }
     }
+  }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let configuration: ConfigurationIntent
+struct RocketLaunchAttributes: ActivityAttributes {
+  public struct ContentState: Codable, Hashable {
+    var timeRemaining: Int
+    var launchPhase: String
+  }
+  var launchName: String
 }
 
-struct widgetsEntryView : View {
-    var entry: Provider.Entry
-
-    var body: some View {
-        let defaults = UserDefaults(suiteName: "group.bacon.data")
-        let index = defaults?.integer(forKey: "index")
-      Text("\(index ?? 0)")
-    }
-}
-
-struct widgets: Widget {
-    let kind: String = "widgets"
-
-    var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            widgetsEntryView(entry: entry)
+struct RocketLaunchWidget: Widget {
+  var body: some WidgetConfiguration {
+    ActivityConfiguration(for: RocketLaunchAttributes.self) { context in
+      LockScreenLiveActivityView(context: context)
+        .activityBackgroundTint(Color.black)
+        .activitySystemActionForegroundColor(Color.white)
+    } dynamicIsland: { context in
+      DynamicIsland {
+        DynamicIslandExpandedRegion(.center) {
+          LockScreenLiveActivityView(context: context)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+      } compactLeading: {
+        Label {
+          Text(context.state.timeRemaining.formatted())
+        } icon: {
+          Image(systemName: "rocket.fill")
+        }
+      } compactTrailing: {
+        Text("T-\(context.state.timeRemaining)m")
+      } minimal: {
+        Image(systemName: "rocket.fill")
+      }
     }
+  }
 }
 
-struct widgets_Previews: PreviewProvider {
-    static var previews: some View {
-        widgetsEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+struct LockScreenLiveActivityView: View {
+  let context: ActivityViewContext<RocketLaunchAttributes>?
+  
+  init(context: ActivityViewContext<RocketLaunchAttributes>? = nil) {
+    self.context = context
+  }
+  
+  var body: some View {
+    ZStack {
+      
+      
+      VStack {
+        HStack {
+          Image(systemName: "rocket.fill")
+          Text(context?.attributes.launchName ?? "Rocket Launch")
+          Spacer()
+          Text("STARSHIP")
+            .font(.caption.bold())
+        }
+        
+        Spacer()
+        
+        Text(context?.state.launchPhase ?? "BOOSTER CATCH")
+          .font(.caption)
+          .foregroundStyle(.secondary)
+        
+        Text(context?.state.launchPhase ?? "T+00:00:00")
+          .font(.title2)
+          .foregroundStyle(.primary)
+      }
+      
+      
+      
+      
+      
     }
+    .widgetBackground()
+  }
+  
+  private var progress: Double {
+    let total = 15.0
+    let remaining = Double(context?.state.timeRemaining ?? 0)
+    return 1 - (remaining / total)
+  }
+}
+
+struct Arc: Shape {
+  let startAngle: Angle
+  let endAngle: Angle
+  
+  func path(in rect: CGRect) -> Path {
+    var path = Path()
+    let center = CGPoint(x: rect.midX, y: rect.midY * 2.5)
+    let radius = min(rect.width, rect.height)
+    
+    path.addArc(
+      center: center,
+      radius: radius,
+      startAngle: startAngle,
+      endAngle: endAngle,
+      clockwise: false
+    )
+    
+    return path
+  }
+}
+
+// Preview Provider for development
+struct RocketLaunchLiveActivityView_Previews: PreviewProvider {
+  static var previews: some View {
+    LockScreenLiveActivityView().previewContext(WidgetPreviewContext(family: .systemMedium))
+  }
 }
