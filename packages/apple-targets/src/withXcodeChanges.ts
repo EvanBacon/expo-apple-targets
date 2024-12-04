@@ -3,19 +3,17 @@ import {
   PBXContainerItemProxy,
   PBXCopyFilesBuildPhase,
   PBXFileReference,
-  PBXFrameworksBuildPhase,
+  PBXFileSystemSynchronizedBuildFileExceptionSet,
+  PBXFileSystemSynchronizedRootGroup,
   PBXGroup,
   PBXNativeTarget,
-  PBXResourcesBuildPhase,
   PBXShellScriptBuildPhase,
-  PBXSourcesBuildPhase,
   PBXTargetDependency,
-  PBXVariantGroup,
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
 } from "@bacons/xcode";
-import { BuildSettings, ISA } from "@bacons/xcode/json";
+import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
 import fs from "fs";
@@ -66,6 +64,9 @@ export type XcodeSettings = {
   icon?: string;
 
   exportJs?: boolean;
+
+  /** File path to the extension config file. */
+  configPath: string;
 };
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
@@ -767,41 +768,6 @@ function createConfigurationListForType(
   }
 }
 
-/** It's common for all frameworks to exist in the top-level "Frameworks" folder that shows in Xcode. */
-function addFrameworksToDisplayFolder(
-  project: XcodeProject,
-  frameworks: PBXFileReference[]
-) {
-  const mainFrameworksGroup = project.rootObject.getFrameworksGroup();
-
-  frameworks.forEach((file) => {
-    if (
-      !mainFrameworksGroup.props.children.find(
-        (child) => child.uuid === file.uuid
-      )
-    ) {
-      mainFrameworksGroup.props.children.push(file);
-    }
-  });
-}
-
-function getFramework(project: XcodeProject, name: string): PBXFileReference {
-  const frameworkName = name + ".framework";
-  for (const [, entry] of project.entries()) {
-    if (
-      PBXFileReference.is(entry) &&
-      entry.props.lastKnownFileType === "wrapper.framework" &&
-      entry.props.sourceTree === "SDKROOT" &&
-      entry.props.name === frameworkName
-    ) {
-      return entry;
-    }
-  }
-  return PBXFileReference.create(project, {
-    path: "System/Library/Frameworks/" + frameworkName,
-  });
-}
-
 async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
@@ -842,23 +808,6 @@ async function applyXcodeChanges(
   }
 
   const magicCwd = path.join(config._internal!.projectRoot, "ios", props.cwd);
-
-  function getOrCreateBuildFile(file: PBXFileReference): PBXBuildFile {
-    for (const entry of file.getReferrers()) {
-      if (PBXBuildFile.is(entry) && entry.props.fileRef.uuid === file.uuid) {
-        return entry;
-      }
-    }
-    return PBXBuildFile.create(project, {
-      fileRef: file,
-    });
-  }
-
-  // Add the widget target to the display folder (cosmetic)
-  addFrameworksToDisplayFolder(
-    project,
-    props.frameworks.map((framework) => getFramework(project, framework))
-  );
 
   const developmentTeamId =
     props.teamId ?? mainAppTarget.getDefaultBuildSetting("DEVELOPMENT_TEAM");
@@ -912,24 +861,17 @@ async function applyXcodeChanges(
       );
     }
   }
+
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
     const entitlements = globSync("*.entitlements", {
-      absolute: true,
+      absolute: false,
       cwd: magicCwd,
-    }).map((file) => {
-      return PBXBuildFile.create(project, {
-        fileRef: PBXFileReference.create(project, {
-          path: path.basename(file),
-          explicitFileType: "text.plist.entitlements",
-          sourceTree: "<group>",
-        }),
-      });
     });
 
     if (entitlements.length > 0) {
       target.setBuildSetting(
         "CODE_SIGN_ENTITLEMENTS",
-        props.cwd + "/" + entitlements[0].props.fileRef.props.path
+        props.cwd + "/" + entitlements[0]
       );
     } else {
       target.removeBuildSetting("CODE_SIGN_ENTITLEMENTS");
@@ -944,80 +886,6 @@ async function applyXcodeChanges(
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
         target.setBuildSetting("MARKETING_VERSION", mainVersion);
-      }
-    });
-  }
-
-  function buildFileGroupHierarchy(
-    files: string[]
-  ): (PBXBuildFile | PBXGroup)[] {
-    const root: (PBXBuildFile | PBXGroup)[] = [];
-
-    function getOrCreateGroup(
-      name: string,
-      segment: string,
-      group: (PBXBuildFile | PBXGroup)[]
-    ): PBXGroup {
-      const fullPath = path.join(magicCwd, name);
-      let newGroup = group.find(
-        (child): child is PBXGroup =>
-          child.props.isa === ISA.PBXGroup && child.props.path === fullPath
-      );
-
-      if (!newGroup) {
-        newGroup = PBXGroup.create(project, {
-          name: segment,
-          path: fullPath,
-          children: [],
-        });
-
-        group.push(newGroup);
-      }
-
-      return newGroup;
-    }
-
-    files.forEach((filePath) => {
-      const pathSegments = filePath.split(path.sep);
-      let currentLevel: any[] = root;
-
-      pathSegments.forEach((part, index) => {
-        const isRoot = part === ".";
-        const currentPath = pathSegments.slice(0, index + 1).join(path.sep);
-        currentLevel = isRoot
-          ? currentLevel
-          : getOrCreateGroup(currentPath, part, currentLevel).props.children;
-
-        const isFinalPart = index === pathSegments.length - 1;
-        if (swiftBuildFiles[filePath] && isFinalPart) {
-          const filex = swiftBuildFiles[filePath];
-          currentLevel.push(...filex);
-        }
-      });
-    });
-
-    return root;
-  }
-
-  function generateProjectGroups(
-    project: any,
-    structure: (PBXBuildFile | PBXGroup)[],
-    magicCwd: string
-  ): any[] {
-    return structure.map((item) => {
-      if (item.props.isa === ISA.PBXGroup) {
-        const childGroups = generateProjectGroups(
-          project,
-          // @ts-ignore
-          item.props.children,
-          // @ts-ignore
-          path.join(magicCwd, item.props.name)
-        );
-        item.props.children = childGroups;
-
-        return item;
-      } else if (item.props.isa === ISA.PBXBuildFile) {
-        return item.props.fileRef;
       }
     });
   }
@@ -1120,137 +988,7 @@ async function applyXcodeChanges(
     return project;
   }
 
-  // Build Files
-
-  const swiftBuildFiles: Record<string, any[]> = {};
-  globSync("**/*.swift", {
-    absolute: true,
-    cwd: magicCwd,
-  }).forEach((file) => {
-    const fileDir: string = path.dirname(path.relative(magicCwd, file));
-
-    const pbxFile = PBXBuildFile.create(project, {
-      fileRef: PBXFileReference.create(project, {
-        path: file,
-        sourceTree: "<group>",
-      }),
-    });
-
-    if (!swiftBuildFiles[fileDir]) {
-      swiftBuildFiles[fileDir] = [];
-    }
-
-    swiftBuildFiles[fileDir].push(pbxFile);
-    return undefined;
-  });
-
-  const swiftStructure = buildFileGroupHierarchy(Object.keys(swiftBuildFiles));
-  const swiftGroups = generateProjectGroups(project, swiftStructure, magicCwd);
-
-  // NOTE: Single-level only
-  const intentFiles = globSync("*.intentdefinition", {
-    absolute: true,
-    cwd: magicCwd,
-  }).map((file) => {
-    return PBXFileReference.create(project, {
-      lastKnownFileType: "file.intentdefinition",
-      path: path.basename(file),
-      sourceTree: "<group>",
-    });
-  });
-
-  const intentBuildFiles = [0, 1].map((_) =>
-    intentFiles.map((file) => {
-      return PBXBuildFile.create(project, {
-        fileRef: file,
-      });
-    })
-  );
-
-  let assetFiles = [
-    // All assets`
-    // "assets/*",
-    // NOTE: Single-level only
-    "*.xcassets",
-  ]
-    .map((glob) =>
-      globSync(glob, {
-        absolute: true,
-        cwd: magicCwd,
-      }).map((file) => {
-        return PBXBuildFile.create(project, {
-          fileRef: PBXFileReference.create(project, {
-            path: path.basename(file),
-            sourceTree: "<group>",
-          }),
-        });
-      })
-    )
-    .flat();
-
-  const resAssets: PBXBuildFile[] = [];
-
-  // Support for LaunchScreen files
-  const baseProj = path.join(magicCwd, "Base.lproj");
-  if (fs.existsSync(baseProj)) {
-    // Link LaunchScreen.storyboard
-    fs.readdirSync(baseProj).forEach((file) => {
-      if (file === ".DS_Store") return;
-
-      const stat = fs.statSync(path.join(baseProj, file));
-      if (stat.isFile()) {
-        if (file.endsWith(".storyboard")) {
-          assetFiles.push(
-            PBXBuildFile.create(project, {
-              fileRef: PBXVariantGroup.create(project, {
-                name: file,
-                sourceTree: "<group>",
-                children: [
-                  PBXFileReference.create(project, {
-                    lastKnownFileType: "file.storyboard",
-                    name: "Base",
-                    path: path.join("Base.lproj", file),
-                    sourceTree: "<group>",
-                  }),
-                ],
-              }),
-            })
-          );
-        }
-      }
-    });
-  }
-
-  // TODO: Maybe just limit this to Safari?
-  if (fs.existsSync(path.join(magicCwd, "assets"))) {
-    // get top-level directories in `assets/` and append them to assetFiles as folder types
-    fs.readdirSync(path.join(magicCwd, "assets")).forEach((file) => {
-      if (file === ".DS_Store") return;
-      const stat = fs.statSync(path.join(magicCwd, "assets", file));
-      if (stat.isDirectory()) {
-        resAssets.push(
-          PBXBuildFile.create(project, {
-            fileRef: PBXFileReference.create(project, {
-              path: file,
-              sourceTree: "<group>",
-              lastKnownFileType: "folder",
-            }),
-          })
-        );
-      } else if (stat.isFile()) {
-        resAssets.push(
-          PBXBuildFile.create(project, {
-            fileRef: PBXFileReference.create(project, {
-              path: file,
-              sourceTree: "<group>",
-            }),
-          })
-        );
-      }
-    });
-  }
-
-  const alphaExtensionAppexBf = PBXBuildFile.create(project, {
+  const appExtensionBuildFile = PBXBuildFile.create(project, {
     fileRef: PBXFileReference.create(project, {
       explicitFileType: "wrapper.app-extension",
       includeInIndex: 0,
@@ -1264,58 +1002,40 @@ async function applyXcodeChanges(
 
   project.rootObject.ensureProductGroup().props.children.push(
     // @ts-expect-error
-    alphaExtensionAppexBf.props.fileRef
+    appExtensionBuildFile.props.fileRef
   );
 
-  const widgetTarget = project.rootObject.createNativeTarget({
+  const extensionTarget = project.rootObject.createNativeTarget({
     buildConfigurationList: createConfigurationListForType(project, props),
     name: productName,
     productName,
     // @ts-expect-error
     productReference:
-      alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
+      appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
     productType: productTypeForType(props.type),
   });
 
-  configureTargetWithKnownSettings(widgetTarget);
+  configureTargetWithKnownSettings(extensionTarget);
 
-  const entitlementFiles = configureTargetWithEntitlements(widgetTarget);
+  configureTargetWithEntitlements(extensionTarget);
 
-  configureTargetWithPreview(widgetTarget);
+  configureTargetWithPreview(extensionTarget);
 
-  widgetTarget.createBuildPhase(PBXSourcesBuildPhase, {
-    files: [
-      ...Object.values(swiftBuildFiles).flat(),
-      ...intentBuildFiles[0],
-      // ...entitlementFiles
-    ],
-    // CD0706152A2EBE2E009C1192 /* index.swift in Sources */,
-    // CD07061A2A2EBE2F009C1192 /* alpha.intentdefinition in Sources */,
-    // CD0706112A2EBE2E009C1192 /* alphaBundle.swift in Sources */,
-    // CD0706132A2EBE2E009C1192 /* alphaLiveActivity.swift in Sources */,
-  });
+  extensionTarget.ensureFrameworks(props.frameworks);
+  extensionTarget.getSourcesBuildPhase();
+  extensionTarget.getResourcesBuildPhase();
 
-  widgetTarget.createBuildPhase(PBXFrameworksBuildPhase, {
-    files: props.frameworks.map((framework) =>
-      getOrCreateBuildFile(getFramework(project, framework))
-    ),
-  });
-
-  widgetTarget.createBuildPhase(PBXResourcesBuildPhase, {
-    files: [...assetFiles, ...resAssets],
-  });
-
-  configureJsExport(widgetTarget);
+  configureJsExport(extensionTarget);
 
   const containerItemProxy = PBXContainerItemProxy.create(project, {
     containerPortal: project.rootObject,
     proxyType: 1,
-    remoteGlobalIDString: widgetTarget.uuid,
+    remoteGlobalIDString: extensionTarget.uuid,
     remoteInfo: productName,
   });
 
   const targetDependency = PBXTargetDependency.create(project, {
-    target: widgetTarget,
+    target: extensionTarget,
     targetProxy: containerItemProxy,
   });
 
@@ -1338,89 +1058,61 @@ async function applyXcodeChanges(
 
   if (copyFilesBuildPhase) {
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
-    copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
+    copyFilesBuildPhase.props.files.push(appExtensionBuildFile);
   } else {
-    const dstPath = (
-      { clip: "AppClips", watch: "Watch" } as Record<string, string>
-    )[props.type];
-    if (dstPath) {
-      mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-        dstPath: "$(CONTENTS_FOLDER_PATH)/" + dstPath,
-        dstSubfolderSpec: 16,
-        buildActionMask: 2147483647,
-        files: [alphaExtensionAppexBf],
-        name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
-        runOnlyForDeploymentPostprocessing: 0,
-      });
-    } else {
-      mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-        dstSubfolderSpec: 13,
-        buildActionMask: 2147483647,
-        files: [alphaExtensionAppexBf],
-        name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
-        runOnlyForDeploymentPostprocessing: 0,
-      });
-    }
-  }
-
-  const mainSourcesBuildPhase = mainAppTarget.getSourcesBuildPhase();
-
-  intentBuildFiles[1].forEach((file) => {
-    mainSourcesBuildPhase.ensureFile(file.props);
-  });
-
-  const protectedGroup = ensureProtectedGroup(project).createGroup({
-    // This is where it gets fancy
-    // TODO: The user should be able to know that this is safe to modify and won't be overwritten.
-    name: path.basename(props.cwd),
-    // Like `../alpha`
-    path: props.cwd,
-    sourceTree: "<group>",
-    children: [
-      ...swiftGroups,
-
-      ...intentFiles.sort((a, b) =>
-        a.getDisplayName().localeCompare(b.getDisplayName())
-      ),
-
-      ...assetFiles
-        .map((buildFile) => buildFile.props.fileRef)
-        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
-
-      ...entitlementFiles
-        .map((buildFile) => buildFile.props.fileRef)
-        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
-
-      // CD0706192A2EBE2F009C1192 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-      PBXFileReference.create(project, {
-        path: "Info.plist",
-        sourceTree: "<group>",
-      }),
-    ],
-    // children = (
-    //   CD0706102A2EBE2E009C1192 /* alphaBundle.swift */,
-    //   CD0706122A2EBE2E009C1192 /* alphaLiveActivity.swift */,
-    //   CD0706142A2EBE2E009C1192 /* index.swift */,
-    //   CD0706162A2EBE2E009C1192 /* alpha.intentdefinition */,
-    //   CD0706172A2EBE2F009C1192 /* Assets.xcassets */,
-    //   CD0706192A2EBE2F009C1192 /* Info.plist */,
-    // );
-    // name = "expo:alpha";
-    // path = "../alpha";
-    // sourceTree = "<group>";
-  });
-
-  if (resAssets.length > 0) {
-    protectedGroup.createGroup({
-      name: "assets",
-      path: "assets",
-      sourceTree: "<group>",
-      // @ts-expect-error
-      children: resAssets
-        .map((buildFile) => buildFile.props.fileRef)
-        .sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
+    mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+      files: [appExtensionBuildFile],
     });
   }
+
+  const syncException = PBXFileSystemSynchronizedBuildFileExceptionSet.create(
+    project,
+    {
+      target: extensionTarget,
+      membershipExceptions: [
+        // TODO: What other files belong here, why is this here?
+        "Info.plist",
+
+        // Exclude the config path
+        path.relative(magicCwd, props.configPath),
+      ],
+    }
+  );
+
+  const assetsDir = path.join(magicCwd, "assets");
+
+  // TODO: Maybe just limit this to Safari extensions?
+  const explicitFolders: string[] = !fs.existsSync(assetsDir)
+    ? []
+    : fs
+        .readdirSync(assetsDir)
+        .filter(
+          (file) =>
+            file !== ".DS_Store" &&
+            fs.statSync(path.join(assetsDir, file)).isDirectory()
+        )
+        .map((file) => path.join("assets", file));
+
+  const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
+    path: path.basename(props.cwd),
+    exceptions: [syncException],
+    explicitFileTypes: {},
+    explicitFolders: [
+      // Replaces the previous `lastKnownFileType: "folder",` system that's used in things like Safari extensions to include folders of assets.
+      // ex: `"Resources/_locales", "Resources/images"`
+      ...explicitFolders,
+    ],
+    sourceTree: "<group>",
+  });
+
+  if (!extensionTarget.props.fileSystemSynchronizedGroups) {
+    extensionTarget.props.fileSystemSynchronizedGroups = [];
+  }
+  extensionTarget.props.fileSystemSynchronizedGroups.push(syncRootGroup);
+
+  ensureProtectedGroup(project, path.dirname(props.cwd)).props.children.push(
+    syncRootGroup
+  );
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();
@@ -1429,7 +1121,10 @@ async function applyXcodeChanges(
 
 const PROTECTED_GROUP_NAME = "expo:targets";
 
-function ensureProtectedGroup(project: XcodeProject) {
+function ensureProtectedGroup(
+  project: XcodeProject,
+  relativePath = "../targets"
+) {
   const hasProtectedGroup = project.rootObject.props.mainGroup
     .getChildGroups()
     .find((group) => group.getDisplayName() === PROTECTED_GROUP_NAME);
@@ -1438,24 +1133,12 @@ function ensureProtectedGroup(project: XcodeProject) {
     hasProtectedGroup ??
     PBXGroup.create(project, {
       name: PROTECTED_GROUP_NAME,
+      path: relativePath,
       sourceTree: "<group>",
     });
 
   if (!hasProtectedGroup) {
     project.rootObject.props.mainGroup.props.children.unshift(protectedGroup);
-
-    // let libIndex = project.rootObject.props.mainGroup
-    //   .getChildGroups()
-    //   .findIndex((group) => group.getDisplayName() === "Libraries");
-    // if (libIndex === -1) {
-    //   libIndex = 0;
-    // }
-    // add above the group named "Libraries"
-    // project.rootObject.props.mainGroup.props.children.splice(
-    //   libIndex,
-    //   0,
-    //   protectedGroup
-    // );
   }
 
   return protectedGroup;

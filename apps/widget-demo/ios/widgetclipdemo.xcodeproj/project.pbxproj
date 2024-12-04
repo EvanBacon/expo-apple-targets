@@ -7,41 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		081DD6FD959D4FE09E4A615F /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0CC3A1C072643C7B42A76F7 /* noop-file.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2D2931792A7046CEA1A16710 /* index.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44286FD175D45C6BDD88764 /* index.swift */; };
-		3781CAF9E35E458FB4D9EA39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9510F5F01ED7475B8BDF7AC8 /* Assets.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4B3FA32BA5404793AA35A790 /* widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672DF281735D44A684C1F9E6 /* widgets.swift */; };
-		5139CBF8481441DFA9E7E0B7 /* widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0D025426EB7F4C6CB7C05E23 /* widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		70306444EFC54D39A1D55C98 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E665FB5FB6F144BBAC863C02 /* noop-file.swift */; };
+		853A86223B084E34BDDF0E13 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F09262E1945541A3BE0F66C3 /* WidgetKit.framework */; };
 		96905EF65AED1B983A6B3ABC /* libPods-widgetclipdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */; };
-		B16A7772E5E24C10ABDFCF4D /* widgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5D93CF5A4ABD49E1872B8A4D /* widgets.intentdefinition */; };
-		B745E288897B4C6AB3C7FA23 /* widgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5D93CF5A4ABD49E1872B8A4D /* widgets.intentdefinition */; };
+		B0D1D1BA67424557927FDD7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4A9323C33FA4E648AEF1171 /* SwiftUI.framework */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C04154A52DDC40D7838F3C16 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4E1A2F0899543A2B9A65458 /* WidgetKit.framework */; };
-		FEF91850DF49420B8E5BDC3C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C2BA1C7497447AB88ECF61E /* SwiftUI.framework */; };
+		E6E9947BF6264FC3B5AC0BC6 /* widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 71111BF121F64FF2A0E7E916 /* widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2D045BBB392A4962B62C0FA1 /* PBXContainerItemProxy */ = {
+		A40ADB898D5D4D2C94DC3454 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 30E69B3A670E4EB9996B535A;
+			remoteGlobalIDString = 98825F521893483A8CB86AE9;
 			remoteInfo = widgets;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3E032552AF574563BA4D09A0 /* Embed Foundation Extensions */ = {
+		DBCF6B364DD4464AAABBC15B /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				5139CBF8481441DFA9E7E0B7 /* widgets.appex in Embed Foundation Extensions */,
+				E6E9947BF6264FC3B5AC0BC6 /* widgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,29 +44,49 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0D025426EB7F4C6CB7C05E23 /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; name = widgets.appex; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* widgetclipdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = wrapper.application; name = widgetclipdemo.app; path = widgetclipdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* widgetclipdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = widgetclipdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = widgetclipdemo/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = widgetclipdemo/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = widgetclipdemo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = widgetclipdemo/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = main.m; path = widgetclipdemo/main.m; sourceTree = "<group>"; };
-		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = archive.ar; name = "libPods-widgetclipdemo.a"; path = "libPods-widgetclipdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		59063F67188A4C82A74D07B5 /* generated.entitlements */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.entitlements; name = generated.entitlements; path = generated.entitlements; sourceTree = "<group>"; };
-		5D93CF5A4ABD49E1872B8A4D /* widgets.intentdefinition */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.intentdefinition; name = widgets.intentdefinition; path = widgets.intentdefinition; sourceTree = "<group>"; };
-		64970FF73B4B45AA8DBF8D4D /* widgetclipdemo-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "widgetclipdemo-Bridging-Header.h"; path = "widgetclipdemo/widgetclipdemo-Bridging-Header.h"; sourceTree = "<group>"; };
-		672DF281735D44A684C1F9E6 /* widgets.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = widgets.swift; path = "/Users/evanbacon/Documents/GitHub/bacons/expo-apple-targets/apps/widget-demo/targets/widgets/widgets.swift"; sourceTree = "<group>"; };
+		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-widgetclipdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-widgetclipdemo.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetclipdemo.debug.xcconfig"; path = "Target Support Files/Pods-widgetclipdemo/Pods-widgetclipdemo.debug.xcconfig"; sourceTree = "<group>"; };
-		718CE2C81A684D6D9C79BE53 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = Info.plist; sourceTree = "<group>"; };
+		71111BF121F64FF2A0E7E916 /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4D352CD337FB3A3BF06240 /* Pods-widgetclipdemo.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetclipdemo.release.xcconfig"; path = "Target Support Files/Pods-widgetclipdemo/Pods-widgetclipdemo.release.xcconfig"; sourceTree = "<group>"; };
-		7C2BA1C7497447AB88ECF61E /* SwiftUI.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		9510F5F01ED7475B8BDF7AC8 /* Assets.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
+		A4A9323C33FA4E648AEF1171 /* SwiftUI.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = widgetclipdemo/SplashScreen.storyboard; sourceTree = "<group>"; };
-		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Expo.plist; path = Expo.plist; sourceTree = "<group>"; };
-		C4E1A2F0899543A2B9A65458 /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		D44286FD175D45C6BDD88764 /* index.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = index.swift; path = "/Users/evanbacon/Documents/GitHub/bacons/expo-apple-targets/apps/widget-demo/targets/widgets/index.swift"; sourceTree = "<group>"; };
-		F0CC3A1C072643C7B42A76F7 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "widgetclipdemo/noop-file.swift"; sourceTree = "<group>"; };
+		ADAD891E648F4D78B8159F87 /* widgetclipdemo-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "widgetclipdemo-Bridging-Header.h"; path = "widgetclipdemo/widgetclipdemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		E665FB5FB6F144BBAC863C02 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "widgetclipdemo/noop-file.swift"; sourceTree = "<group>"; };
+		F09262E1945541A3BE0F66C3 /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A9944DBFFBDD4ED7A414142F /* Exceptions for "widgets" folder in "widgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				"expo-target.config.js",
+			);
+			target = 98825F521893483A8CB86AE9 /* widgets */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F5F105CBA464424D9B3FF2F4 /* widgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A9944DBFFBDD4ED7A414142F /* Exceptions for "widgets" folder in "widgets" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = widgets;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
@@ -82,12 +97,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1643D603E6A14C7F99B311F4 /* Frameworks */ = {
+		A53D64BFC7A9495D886EC839 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C04154A52DDC40D7838F3C16 /* WidgetKit.framework in Frameworks */,
-				FEF91850DF49420B8E5BDC3C /* SwiftUI.framework in Frameworks */,
+				853A86223B084E34BDDF0E13 /* WidgetKit.framework in Frameworks */,
+				B0D1D1BA67424557927FDD7A /* SwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,8 +119,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				F0CC3A1C072643C7B42A76F7 /* noop-file.swift */,
-				64970FF73B4B45AA8DBF8D4D /* widgetclipdemo-Bridging-Header.h */,
+				E665FB5FB6F144BBAC863C02 /* noop-file.swift */,
+				ADAD891E648F4D78B8159F87 /* widgetclipdemo-Bridging-Header.h */,
 			);
 			name = widgetclipdemo;
 			sourceTree = "<group>";
@@ -114,10 +129,19 @@
 			isa = PBXGroup;
 			children = (
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */,
-				C4E1A2F0899543A2B9A65458 /* WidgetKit.framework */,
-				7C2BA1C7497447AB88ECF61E /* SwiftUI.framework */,
+				F09262E1945541A3BE0F66C3 /* WidgetKit.framework */,
+				A4A9323C33FA4E648AEF1171 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		753DBEB2866E47F7B0112C1A /* expo:targets */ = {
+			isa = PBXGroup;
+			children = (
+				F5F105CBA464424D9B3FF2F4 /* widgets */,
+			);
+			name = "expo:targets";
+			path = ../targets;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -130,7 +154,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				FD1F0F6683354002A850B78F /* expo:targets */,
+				753DBEB2866E47F7B0112C1A /* expo:targets */,
 				13B07FAE1A68108700A75B9A /* widgetclipdemo */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -147,7 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* widgetclipdemo.app */,
-				0D025426EB7F4C6CB7C05E23 /* widgets.appex */,
+				71111BF121F64FF2A0E7E916 /* widgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -168,20 +192,6 @@
 			path = widgetclipdemo/Supporting;
 			sourceTree = "<group>";
 		};
-		C3A0A34C18F448C992025E60 /* widgets */ = {
-			isa = PBXGroup;
-			children = (
-				672DF281735D44A684C1F9E6 /* widgets.swift */,
-				D44286FD175D45C6BDD88764 /* index.swift */,
-				5D93CF5A4ABD49E1872B8A4D /* widgets.intentdefinition */,
-				9510F5F01ED7475B8BDF7AC8 /* Assets.xcassets */,
-				59063F67188A4C82A74D07B5 /* generated.entitlements */,
-				718CE2C81A684D6D9C79BE53 /* Info.plist */,
-			);
-			name = widgets;
-			path = ../targets/widgets;
-			sourceTree = "<group>";
-		};
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,14 +209,6 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		FD1F0F6683354002A850B78F /* expo:targets */ = {
-			isa = PBXGroup;
-			children = (
-				C3A0A34C18F448C992025E60 /* widgets */,
-			);
-			name = "expo:targets";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -218,33 +220,36 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
-				3E032552AF574563BA4D09A0 /* Embed Foundation Extensions */,
+				DBCF6B364DD4464AAABBC15B /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				9CBF110D88964F8EA53362BE /* PBXTargetDependency */,
+				CACD8332538D414CB31AA867 /* PBXTargetDependency */,
 			);
 			name = widgetclipdemo;
 			productName = widgetclipdemo;
 			productReference = 13B07F961A680F5B00A75B9A /* widgetclipdemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		30E69B3A670E4EB9996B535A /* widgets */ = {
+		98825F521893483A8CB86AE9 /* widgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F899960D61E042D7A89C5E1C /* Build configuration list for PBXNativeTarget "widgets" */;
+			buildConfigurationList = C9B0FF4C9B0940438BD9097C /* Build configuration list for PBXNativeTarget "widgets" */;
 			buildPhases = (
-				A39FC23C3AB745A2A9CC16B9 /* Sources */,
-				1643D603E6A14C7F99B311F4 /* Frameworks */,
-				AF2D4B18835743BDA3CE27F9 /* Resources */,
+				A53D64BFC7A9495D886EC839 /* Frameworks */,
+				75D97D5E3A404205B98B7982 /* Sources */,
+				5EE4CA82E82A40E1818B68BE /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				F5F105CBA464424D9B3FF2F4 /* widgets */,
+			);
 			name = widgets;
 			productName = widgets;
-			productReference = 0D025426EB7F4C6CB7C05E23 /* widgets.appex */;
+			productReference = 71111BF121F64FF2A0E7E916 /* widgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -258,7 +263,7 @@
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
 					};
-					30E69B3A670E4EB9996B535A = {
+					98825F521893483A8CB86AE9 = {
 						CreatedOnToolsVersion = 14.3;
 						DevelopmentTeam = QQ57RJ5UTD;
 						ProvisioningStyle = Automatic;
@@ -279,7 +284,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* widgetclipdemo */,
-				30E69B3A670E4EB9996B535A /* widgets */,
+				98825F521893483A8CB86AE9 /* widgets */,
 			);
 		};
 /* End PBXProject section */
@@ -295,11 +300,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AF2D4B18835743BDA3CE27F9 /* Resources */ = {
+		5EE4CA82E82A40E1818B68BE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3781CAF9E35E458FB4D9EA39 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,28 +341,24 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				081DD6FD959D4FE09E4A615F /* noop-file.swift in Sources */,
-				B16A7772E5E24C10ABDFCF4D /* widgets.intentdefinition in Sources */,
+				70306444EFC54D39A1D55C98 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A39FC23C3AB745A2A9CC16B9 /* Sources */ = {
+		75D97D5E3A404205B98B7982 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B3FA32BA5404793AA35A790 /* widgets.swift in Sources */,
-				2D2931792A7046CEA1A16710 /* index.swift in Sources */,
-				B745E288897B4C6AB3C7FA23 /* widgets.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9CBF110D88964F8EA53362BE /* PBXTargetDependency */ = {
+		CACD8332538D414CB31AA867 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 30E69B3A670E4EB9996B535A /* widgets */;
-			targetProxy = 2D045BBB392A4962B62C0FA1 /* PBXContainerItemProxy */;
+			target = 98825F521893483A8CB86AE9 /* widgets */;
+			targetProxy = A40ADB898D5D4D2C94DC3454 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -420,6 +420,42 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		6DF14EC92CF64B4AB9AA68CA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ../targets/widgets/generated.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../targets/widgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = widgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -528,7 +564,7 @@
 			};
 			name = Release;
 		};
-		BED2D7B363BF4645888D0206 /* Debug */ = {
+		982FF9618CA34A6AA10392C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
@@ -564,42 +600,6 @@
 			};
 			name = Debug;
 		};
-		D2A8C243E20A49BA8F06D7F6 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = ../targets/widgets/generated.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../targets/widgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = widgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -621,11 +621,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F899960D61E042D7A89C5E1C /* Build configuration list for PBXNativeTarget "widgets" */ = {
+		C9B0FF4C9B0940438BD9097C /* Build configuration list for PBXNativeTarget "widgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BED2D7B363BF4645888D0206 /* Debug */,
-				D2A8C243E20A49BA8F06D7F6 /* Release */,
+				982FF9618CA34A6AA10392C3 /* Debug */,
+				6DF14EC92CF64B4AB9AA68CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
