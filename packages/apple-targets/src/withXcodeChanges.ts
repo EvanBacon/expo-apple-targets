@@ -108,15 +108,19 @@ function createNotificationContentConfigurationList(
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
 
-    LD_RUNPATH_SEARCH_PATHS:
-      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
     MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
     PRODUCT_NAME: "$(TARGET_NAME)",
     SKIP_INSTALL: "YES",
     SWIFT_EMIT_LOC_STRINGS: "YES",
-    SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+    SWIFT_COMPILATION_MODE: "wholemodule",
+    SWIFT_OPTIMIZATION_LEVEL: "-O",
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
   };
@@ -241,8 +245,11 @@ function createShareConfigurationList(
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-    LD_RUNPATH_SEARCH_PATHS:
-      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
     MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -326,8 +333,11 @@ function createIMessageConfigurationList(
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-    LD_RUNPATH_SEARCH_PATHS:
-      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
     MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -402,7 +412,7 @@ function createWatchAppConfigurationList(
       mainAppTarget.props.buildSettings.PRODUCT_BUNDLE_IDENTIFIER,
     // INFOPLIST_KEY_WKCompanionAppBundleIdentifier: "$(BUNDLE_IDENTIFIER)",
     // INFOPLIST_KEY_WKCompanionAppBundleIdentifier: rootBundleId,
-    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/Frameworks"],
     MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -437,7 +447,8 @@ function createWatchAppConfigurationList(
     buildSettings: {
       ...common,
       // Diff
-      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     },
@@ -477,8 +488,11 @@ function createSafariConfigurationList(
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-    LD_RUNPATH_SEARCH_PATHS:
-      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
     MARKETING_VERSION: "1.0",
     MTL_FAST_MATH: "YES",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -507,7 +521,8 @@ function createSafariConfigurationList(
     buildSettings: {
       ...common,
       // Diff
-      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     },
@@ -587,7 +602,7 @@ function createAppClipConfigurationList(
 
     ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
 
-    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/Frameworks"],
     MTL_FAST_MATH: "YES",
     ENABLE_PREVIEWS: "YES",
   };
@@ -609,7 +624,8 @@ function createAppClipConfigurationList(
     buildSettings: {
       ...common,
       // Diff
-      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
     },
@@ -655,8 +671,11 @@ function createConfigurationList(
       INFOPLIST_KEY_CFBundleDisplayName: name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-      LD_RUNPATH_SEARCH_PATHS:
-        "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      LD_RUNPATH_SEARCH_PATHS: [
+        "$(inherited)",
+        "@executable_path/Frameworks",
+        "@executable_path/../../Frameworks",
+      ],
       MARKETING_VERSION: "1.0",
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       MTL_FAST_MATH: "YES",
@@ -693,15 +712,19 @@ function createConfigurationList(
       INFOPLIST_KEY_CFBundleDisplayName: name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-      LD_RUNPATH_SEARCH_PATHS:
-        "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      LD_RUNPATH_SEARCH_PATHS: [
+        "$(inherited)",
+        "@executable_path/Frameworks",
+        "@executable_path/../../Frameworks",
+      ],
       MARKETING_VERSION: "1.0",
       MTL_FAST_MATH: "YES",
       PRODUCT_BUNDLE_IDENTIFIER: bundleId,
       PRODUCT_NAME: "$(TARGET_NAME)",
       SKIP_INSTALL: "YES",
       SWIFT_EMIT_LOC_STRINGS: "YES",
-      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
       SWIFT_VERSION: "5",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
@@ -749,15 +772,7 @@ function addFrameworksToDisplayFolder(
   project: XcodeProject,
   frameworks: PBXFileReference[]
 ) {
-  const mainFrameworksGroup =
-    project.rootObject.props.mainGroup
-      .getChildGroups()
-      .find((group) => group.getDisplayName() === "Frameworks") ??
-    // If this happens, there's a big problem. But just in case...
-    project.rootObject.props.mainGroup.createGroup({
-      name: "Frameworks",
-      sourceTree: "<group>",
-    });
+  const mainFrameworksGroup = project.rootObject.getFrameworksGroup();
 
   frameworks.forEach((file) => {
     if (
@@ -1227,15 +1242,6 @@ async function applyXcodeChanges(
           PBXBuildFile.create(project, {
             fileRef: PBXFileReference.create(project, {
               path: file,
-              explicitFileType: file.endsWith(".js")
-                ? "sourcecode.javascript"
-                : file.endsWith(".json")
-                ? "text.json"
-                : file.endsWith(".html")
-                ? "text.html"
-                : file.endsWith(".css")
-                ? "text.css"
-                : "text",
               sourceTree: "<group>",
             }),
           })
