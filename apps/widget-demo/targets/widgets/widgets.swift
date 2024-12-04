@@ -20,8 +20,12 @@ extension View {
                                 .opacity(0.6),
                                 lineWidth: 1
                             )
-                        CircleBadge()
+                        CircleBadge(imageName: "mecha", padding: 4, rotation: 0)
                             .offset(y: -40) // Adjust the position as needed
+                        CircleBadge(imageName: "booster", padding: 8, rotation: 24)
+                            .offset(x: -105, y: 0) // Adjust the position as needed
+                        CircleBadge(imageName: "ship", padding: 8, rotation: 120)
+                            .offset(x: 105, y: 0) // Adjust the position as needed
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
@@ -142,17 +146,22 @@ struct Arc: Shape {
 }
 
 struct CircleBadge: View {
+    var imageName: String
+    var padding: CGFloat
+    var rotation: Double
+    
     var body: some View {
         Circle()
         .fill(Color.white)
             .frame(width: 45, height: 45)
             .overlay(
-              Image(.mecha)
+              Image(imageName)
                 .resizable()
                 .renderingMode(.template)
                 .foregroundColor(.black)
                 .aspectRatio(contentMode: .fit)
-                .padding(4)
+                .padding(padding)
+                .rotationEffect(.degrees(rotation))
             )
             .overlay(
                 Circle()
