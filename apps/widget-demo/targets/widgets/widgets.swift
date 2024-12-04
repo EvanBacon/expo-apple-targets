@@ -20,12 +20,12 @@ extension View {
                                 .opacity(0.6),
                                 lineWidth: 1
                             )
-                        CircleBadge(imageName: "mecha", padding: 4, rotation: 0)
+                        CircleBadge(imageName: "mecha", padding: 6, rotation: 0, badgeColor: .white)
                             .offset(y: -40) // Adjust the position as needed
-                        CircleBadge(imageName: "booster", padding: 8, rotation: 24)
+                        CircleBadge(imageName: "booster", padding: 8, rotation: 24, badgeColor: .black)
                             .offset(x: -105, y: 0) // Adjust the position as needed
-                        CircleBadge(imageName: "ship", padding: 8, rotation: 120)
-                            .offset(x: 105, y: 0) // Adjust the position as needed
+                        CircleBadge(imageName: "ship", padding: 8, rotation: 120, badgeColor: .black)
+                        .offset(x: 105, y: 0).opacity(0.8) // Adjust the position as needed
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
@@ -149,23 +149,24 @@ struct CircleBadge: View {
     var imageName: String
     var padding: CGFloat
     var rotation: Double
+    var badgeColor: Color
     
     var body: some View {
         Circle()
-        .fill(Color.white)
+        .fill(badgeColor)
             .frame(width: 45, height: 45)
             .overlay(
               Image(imageName)
                 .resizable()
                 .renderingMode(.template)
-                .foregroundColor(.black)
+                .foregroundColor(badgeColor == .black ? .white : .black)
                 .aspectRatio(contentMode: .fit)
                 .padding(padding)
                 .rotationEffect(.degrees(rotation))
             )
             .overlay(
                 Circle()
-                    .stroke(Color.black, lineWidth: 5)
+                  .stroke(Color.white.opacity(0.5), lineWidth: 1)
             )
     }
 }
