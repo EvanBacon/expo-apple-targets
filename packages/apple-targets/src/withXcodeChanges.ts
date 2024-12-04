@@ -1357,10 +1357,11 @@ async function applyXcodeChanges(
     }
   }
 
-  const mainSourcesBuildPhase =
-    mainAppTarget.getBuildPhase(PBXSourcesBuildPhase);
-  // TODO: Idempotent
-  mainSourcesBuildPhase?.props.files.push(...intentBuildFiles[1]);
+  const mainSourcesBuildPhase = mainAppTarget.getSourcesBuildPhase();
+
+  intentBuildFiles[1].forEach((file) => {
+    mainSourcesBuildPhase.ensureFile(file.props);
+  });
 
   const protectedGroup = ensureProtectedGroup(project).createGroup({
     // This is where it gets fancy
