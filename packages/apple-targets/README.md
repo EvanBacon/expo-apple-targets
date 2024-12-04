@@ -67,7 +67,10 @@ This file can have the following properties:
   },
 
   // The iOS version fot the target.
-  "deploymentTarget": "13.4"
+  "deploymentTarget": "13.4",
+
+  // Default is true. When true it will embed the target in the app (this is very likely what you want).
+  "embedInApp": true
 }
 ```
 

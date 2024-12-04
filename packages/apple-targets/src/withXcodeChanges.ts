@@ -30,6 +30,7 @@ import {
   productTypeForType,
 } from "./target";
 import fixture from "./template/XCBuildConfiguration.json";
+import { withXcodeProjectBeta } from "./withXcparse";
 const TemplateBuildSettings = fixture as unknown as Record<
   string,
   {
@@ -39,7 +40,6 @@ const TemplateBuildSettings = fixture as unknown as Record<
     info: any;
   }
 >;
-import { withXcodeProjectBeta } from "./withXcparse";
 
 export type XcodeSettings = {
   name: string;
@@ -58,6 +58,8 @@ export type XcodeSettings = {
   type: ExtensionType;
 
   hasAccentColor?: boolean;
+
+  embedInApp: boolean;
 
   colors?: Record<string, string>;
 
@@ -1314,13 +1316,15 @@ async function applyXcodeChanges(
     remoteInfo: productName,
   });
 
-  const targetDependency = PBXTargetDependency.create(project, {
-    target: widgetTarget,
-    targetProxy: containerItemProxy,
-  });
+  if (props.embedInApp) {
+    const targetDependency = PBXTargetDependency.create(project, {
+      target: widgetTarget,
+      targetProxy: containerItemProxy,
+    });
 
-  // Add the target dependency to the main app, should be only one.
-  mainAppTarget.props.dependencies.push(targetDependency);
+    // Add the target dependency to the main app, should be only one.
+    mainAppTarget.props.dependencies.push(targetDependency);
+  }
 
   const WELL_KNOWN_COPY_EXTENSIONS_NAME =
     props.type === "clip"
@@ -1336,10 +1340,10 @@ async function applyXcodeChanges(
     }
   });
 
-  if (copyFilesBuildPhase) {
+  if (copyFilesBuildPhase && props.embedInApp) {
     // Assume that this is the first run if there is no matching target that we identified from a previous run.
     copyFilesBuildPhase.props.files.push(alphaExtensionAppexBf);
-  } else {
+  } else if (props.embedInApp) {
     const dstPath = (
       { clip: "AppClips", watch: "Watch" } as Record<string, string>
     )[props.type];

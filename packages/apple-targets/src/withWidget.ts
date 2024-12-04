@@ -158,6 +158,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
     hasAccentColor: !!props.colors?.$accent,
 
+    embedInApp: props.embedInApp ?? true,
+
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
 
