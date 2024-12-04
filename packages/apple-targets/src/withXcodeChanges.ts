@@ -14,6 +14,8 @@ import {
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
+  XCRemoteSwiftPackageReference,
+  XCSwiftPackageProductDependency,
 } from "@bacons/xcode";
 import { BuildSettings, ISA } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
@@ -22,6 +24,7 @@ import fs from "fs";
 import { sync as globSync } from "glob";
 import path from "path";
 
+import { SwiftDependency } from "./config";
 import {
   ExtensionType,
   getMainAppTarget,
@@ -56,6 +59,8 @@ export type XcodeSettings = {
   frameworks: string[];
 
   type: ExtensionType;
+
+  swiftDependencies?: SwiftDependency[];
 
   hasAccentColor?: boolean;
 
@@ -1084,6 +1089,81 @@ async function applyXcodeChanges(
     }
   }
 
+  function configureTargetWithSwiftDependencies(target: PBXNativeTarget) {
+    // Add Swift Package Dependency
+    props.swiftDependencies?.forEach((dependency) => {
+      const requirementOptions: { [key: string]: string } = {};
+
+      if (dependency.version) {
+        requirementOptions["kind"] = "exactVersion";
+        requirementOptions["version"] = dependency.version;
+      } else if (dependency.branch) {
+        requirementOptions["kind"] = "branch";
+        requirementOptions["version"] = dependency.branch;
+      } else {
+        console.warn(
+          `Error adding dependency: ${dependency.name}. No versioning options specified!`
+        );
+      }
+
+      // Check for project dependency
+      const remoteProps = {
+        repositoryURL: dependency.repository,
+        requirement: {
+          branch: dependency.branch,
+          kind: "branch",
+        },
+      };
+      const swiftDependency = XCRemoteSwiftPackageReference.create(
+        project,
+        remoteProps
+      );
+
+      const existingPkgReference =
+        project.rootObject.props.packageReferences?.find(
+          (r) =>
+            r instanceof XCRemoteSwiftPackageReference &&
+            r.props.repositoryURL === dependency.repository
+        ) as XCRemoteSwiftPackageReference | undefined;
+
+      if (existingPkgReference) {
+        console.log("Existing PKG Reference");
+        // existingPkgReference.removeFromProject();
+        existingPkgReference.props.repositoryURL = remoteProps.repositoryURL;
+        existingPkgReference.props.requirement = remoteProps.requirement;
+      } else {
+        if (project.rootObject.props.packageReferences) {
+          project.rootObject.props.packageReferences.push(swiftDependency);
+        } else {
+          project.rootObject.props.packageReferences = [swiftDependency];
+        }
+      }
+
+      // Add dependency to target
+      const existingProductDependency =
+        target.props.packageProductDependencies?.find((dep) => {
+          return dep.props.productName === dependency.name;
+        });
+
+      if (existingProductDependency) {
+        // existingProductDependency.removeFromProject();
+        existingProductDependency.props.productName = dependency.name;
+        existingProductDependency.props.package =
+          existingPkgReference ?? swiftDependency;
+      } else {
+        const packageProduct = XCSwiftPackageProductDependency.create(project, {
+          productName: dependency.name,
+          package: swiftDependency,
+        });
+        if (target.props.packageProductDependencies) {
+          target.props.packageProductDependencies.push(packageProduct);
+        } else {
+          target.props.packageProductDependencies = [packageProduct];
+        }
+      }
+    });
+  }
+
   if (targetToUpdate) {
     // Remove existing build phases
     targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
@@ -1115,6 +1195,8 @@ async function applyXcodeChanges(
     configureJsExport(targetToUpdate);
 
     applyDevelopmentTeamIdToTargets();
+
+    configureTargetWithSwiftDependencies(targetToUpdate);
 
     syncMarketingVersions();
     return project;
@@ -1276,6 +1358,8 @@ async function applyXcodeChanges(
       alphaExtensionAppexBf.props.fileRef /* alphaExtension.appex */,
     productType: productTypeForType(props.type),
   });
+
+  configureTargetWithSwiftDependencies(widgetTarget);
 
   configureTargetWithKnownSettings(widgetTarget);
 

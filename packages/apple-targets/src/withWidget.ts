@@ -164,6 +164,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
     type: props.type,
     teamId: props.appleTeamId,
+    swiftDependencies: props.swiftDependencies,
 
     exportJs:
       props.exportJs ??
