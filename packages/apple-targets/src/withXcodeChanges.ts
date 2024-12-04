@@ -933,13 +933,20 @@ async function applyXcodeChanges(
     });
   }
 
-  function buildFileGroupHierarchy(files: string[]): (PBXBuildFile | PBXGroup)[] {
+  function buildFileGroupHierarchy(
+    files: string[]
+  ): (PBXBuildFile | PBXGroup)[] {
     const root: (PBXBuildFile | PBXGroup)[] = [];
 
-    function getOrCreateGroup(name: string, segment: string, group: (PBXBuildFile | PBXGroup)[]): PBXGroup {
+    function getOrCreateGroup(
+      name: string,
+      segment: string,
+      group: (PBXBuildFile | PBXGroup)[]
+    ): PBXGroup {
       const fullPath = path.join(magicCwd, name);
       let newGroup = group.find(
-        (child): child is PBXGroup => child.props.isa === ISA.PBXGroup && child.props.path === fullPath
+        (child): child is PBXGroup =>
+          child.props.isa === ISA.PBXGroup && child.props.path === fullPath
       );
 
       if (!newGroup) {
@@ -962,7 +969,9 @@ async function applyXcodeChanges(
       pathSegments.forEach((part, index) => {
         const isRoot = part === ".";
         const currentPath = pathSegments.slice(0, index + 1).join(path.sep);
-        currentLevel = isRoot ? currentLevel : getOrCreateGroup(currentPath, part, currentLevel).props.children;
+        currentLevel = isRoot
+          ? currentLevel
+          : getOrCreateGroup(currentPath, part, currentLevel).props.children;
 
         const isFinalPart = index === pathSegments.length - 1;
         if (swiftBuildFiles[filePath] && isFinalPart) {
@@ -975,11 +984,20 @@ async function applyXcodeChanges(
     return root;
   }
 
-  function generateProjectGroups(project: any, structure: (PBXBuildFile | PBXGroup)[], magicCwd: string): any[] {
+  function generateProjectGroups(
+    project: any,
+    structure: (PBXBuildFile | PBXGroup)[],
+    magicCwd: string
+  ): any[] {
     return structure.map((item) => {
       if (item.props.isa === ISA.PBXGroup) {
-        // @ts-ignore
-        const childGroups = generateProjectGroups(project, item.props.children, path.join(magicCwd, item.props.name));
+        const childGroups = generateProjectGroups(
+          project,
+          // @ts-ignore
+          item.props.children,
+          // @ts-ignore
+          path.join(magicCwd, item.props.name)
+        );
         item.props.children = childGroups;
 
         return item;
@@ -1016,9 +1034,11 @@ async function applyXcodeChanges(
       ) as PBXShellScriptBuildPhase | undefined;
 
       if (!shellScript) {
-        throw new Error(
-          'Failed to find the "Bundle React Native code and images" build phase in the main app target.'
+        console.warn(
+          'Failed to find the "Bundle React Native code and images" build phase in the main app target. Will not be able to configure: ' +
+            props.type
         );
+        return;
       }
 
       const currentShellScript = target.props.buildPhases.find(
@@ -1068,7 +1088,8 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
     // Create new build phases
-    targetToUpdate.props.buildConfigurationList = createConfigurationListForType(project, props);
+    targetToUpdate.props.buildConfigurationList =
+      createConfigurationListForType(project, props);
 
     configureTargetWithEntitlements(targetToUpdate);
 
@@ -1351,7 +1372,9 @@ async function applyXcodeChanges(
     children: [
       ...swiftGroups,
 
-      ...intentFiles.sort((a, b) => a.getDisplayName().localeCompare(b.getDisplayName())),
+      ...intentFiles.sort((a, b) =>
+        a.getDisplayName().localeCompare(b.getDisplayName())
+      ),
 
       ...assetFiles
         .map((buildFile) => buildFile.props.fileRef)
