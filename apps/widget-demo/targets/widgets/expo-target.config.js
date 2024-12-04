@@ -6,6 +6,9 @@ module.exports = {
     $accent: "steelblue",
     $widgetBackground: "dodgerblue",
   },
+  images: {
+    spacex: "../../assets/spacex.png",
+  },
   // Add entitlements for shared data with the main app.
   entitlements: {
     "com.apple.security.application-groups": ["group.bacon.data"],

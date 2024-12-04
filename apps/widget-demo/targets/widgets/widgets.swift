@@ -14,12 +14,12 @@ extension View {
             Arc(startAngle: .degrees(180), endAngle: .degrees(0))
               .stroke(
                 LinearGradient(
-                  colors: [.white, Color.gray],
+                  colors: [.white, .white],
                   startPoint: .leading,
                   endPoint: .trailing
                 )
                 .opacity(0.6),
-                lineWidth: 4
+                lineWidth: 1
               )
           }
           .frame(maxWidth: .infinity, alignment: .center)
@@ -91,11 +91,14 @@ struct LockScreenLiveActivityView: View {
       
       VStack {
         HStack {
-          Image(systemName: "rocket.fill")
-          Text(context?.attributes.launchName ?? "Rocket Launch")
+          Image("spacex")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 60, height: 20)
           Spacer()
           Text("STARSHIP")
-            .font(.caption.bold())
+            .font(.subheadline.bold())
+            .monospaced()
         }
         
         Spacer()
@@ -104,8 +107,9 @@ struct LockScreenLiveActivityView: View {
           .font(.caption)
           .foregroundStyle(.secondary)
         
-        Text(context?.state.launchPhase ?? "T+00:00:00")
+        Text(context?.state.launchPhase ?? "T+00:06:13")
           .font(.title2)
+          .monospaced()
           .foregroundStyle(.primary)
       }
       
