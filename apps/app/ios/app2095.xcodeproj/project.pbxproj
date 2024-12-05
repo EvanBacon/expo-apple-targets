@@ -11,12 +11,14 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		7A41791A6C1042B59088355B /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9CC5DAD0CD42F5A3B13350 /* noop-file.swift */; };
 		96905EF65AED1B983A6B3ABC /* libPods-app2095.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-app2095.a */; };
+		AB43D8345B504D1DA21F9FC8 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDFFC384B3B449BA2F4D97F /* noop-file.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		XX026D99FE0FF7194AA44EXX /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX8617831C2B3F6BB4B6C1XX /* UserNotificationsUI.framework */; };
 		XX0417EB58625E01B0A71CXX /* IntentsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX8BF115AD6F99661B057FXX /* IntentsUI.framework */; };
+		XX0FA76D19A0F84A300474XX /* appIntent.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = XX247031388915D0625F55XX /* appIntent.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		XX12B55A1EDABF083C3B51XX /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */; };
+		XX1A6800511A685AB346D2XX /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XXA12889081EB894481655XX /* AppIntents.framework */; };
 		XX27A67106B2CA718DB6D3XX /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XXFC9ACF348725E599BFF4XX /* UniformTypeIdentifiers.framework */; };
 		XX27FC93861AE007945010XX /* siriIntentUi.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = XXECD800C8579CD86CAD79XX /* siriIntentUi.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		XX284E90CFE587239AF8DBXX /* watchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = XX2CE509930412B6A6C68EXX /* watchApp.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -124,6 +126,13 @@
 			remoteGlobalIDString = XX9AE8C704084A2DDEC0B3XX;
 			remoteInfo = siriIntent;
 		};
+		XX7CB9097BC0CABC33E5B5XX /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = XXC045B1544F82A78482E4XX;
+			remoteInfo = appIntent;
+		};
 		XX8B3BF92A4E441A2A41FCXX /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -176,6 +185,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		XX15EE79985EB896D094EBXX /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				XX0FA76D19A0F84A300474XX /* appIntent.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		XX265FB1B303ED1789C288XX /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -233,14 +252,15 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = app2095/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = app2095/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = main.m; path = app2095/main.m; sourceTree = "<group>"; };
+		3BDFFC384B3B449BA2F4D97F /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "app2095/noop-file.swift"; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-app2095.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-app2095.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-app2095.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2095.debug.xcconfig"; path = "Target Support Files/Pods-app2095/Pods-app2095.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-app2095.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app2095.release.xcconfig"; path = "Target Support Files/Pods-app2095/Pods-app2095.release.xcconfig"; sourceTree = "<group>"; };
-		8E9CC5DAD0CD42F5A3B13350 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "app2095/noop-file.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = app2095/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B5C3FC0F2C2347C1A3D3ABAF /* app2095-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "app2095-Bridging-Header.h"; path = "app2095/app2095-Bridging-Header.h"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		E47F166D8A3B48C5A949ADD4 /* app2095-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "app2095-Bridging-Header.h"; path = "app2095/app2095-Bridging-Header.h"; sourceTree = "<group>"; };
 		XX00953E504FD646C9B188XX /* Social.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		XX247031388915D0625F55XX /* appIntent.app */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; fileEncoding = 4; includeInIndex = 0; path = appIntent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX2CE509930412B6A6C68EXX /* watchApp.app */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = watchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX2D602F8ADB70CB14B066XX /* credentialsProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = credentialsProvider.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX33D0B8E8E4B540CDDCD6XX /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,6 +276,7 @@
 		XX8E5A6868B1260CB13F89XX /* Intents.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		XX934B43F85EEBF73FE1DFXX /* appClip.app */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = appClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX99DB34EAB420F9CA31AFXX /* UserNotifications.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		XXA12889081EB894481655XX /* AppIntents.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
 		XXAFEFDDD7221179EA6109XX /* MobileCoreServices.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		XXCA68A9416C78B970D1D9XX /* DeviceActivity.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
 		XXCC4136B26F6906B223E1XX /* safariExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = safariExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -352,6 +373,14 @@
 				"expo-target.config.js",
 			);
 			target = XXE09F6F9BD1DDE67EFFA7XX /* Inspect Element 🥓 */;
+		};
+		XX92E69ADBF324F7250928XX /* Exceptions for "app-intent" folder in "appIntent" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				"expo-target.config.js",
+			);
+			target = XXC045B1544F82A78482E4XX /* appIntent */;
 		};
 		XX9E6072CA5B1E10752276XX /* Exceptions for "notification-service" folder in "notificationService" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -614,6 +643,18 @@
 			path = matter;
 			sourceTree = "<group>";
 		};
+		XXF396C14D1A34E3CE0ACCXX /* app-intent */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				XX92E69ADBF324F7250928XX /* Exceptions for "app-intent" folder in "appIntent" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "app-intent";
+			sourceTree = "<group>";
+		};
 		XXF57F74D8C38DE29F0112XX /* location-push-service */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -653,7 +694,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XXD33E402502F114432AD3XX /* DeviceActivity.framework in Frameworks */,
+				XX1A6800511A685AB346D2XX /* AppIntents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,7 +702,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XX0417EB58625E01B0A71CXX /* IntentsUI.framework in Frameworks */,
+				XX2EF27964D02A8065112AXX /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,11 +710,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XX2EF27964D02A8065112AXX /* Intents.framework in Frameworks */,
+				XXDAA6E3B6F09EDDA60933XX /* UIKit.framework in Frameworks */,
+				XX348B82E0B0735A068DC3XX /* Social.framework in Frameworks */,
+				XX586963CCDFDDAF95259BXX /* MobileCoreServices.framework in Frameworks */,
+				XX27A67106B2CA718DB6D3XX /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		XX976AEF112A0A2CB42518XX /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				XX0417EB58625E01B0A71CXX /* IntentsUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		XXA3B3F3381B3880B075B7XX /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -686,7 +738,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XXA4B3793E3B2928D768EEXX /* QuickLookThumbnailing.framework in Frameworks */,
+				XXD492FB1555A651E8C029XX /* UserNotifications.framework in Frameworks */,
+				XX026D99FE0FF7194AA44EXX /* UserNotificationsUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,8 +747,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XXD492FB1555A651E8C029XX /* UserNotifications.framework in Frameworks */,
-				XX026D99FE0FF7194AA44EXX /* UserNotificationsUI.framework in Frameworks */,
+				XXD33E402502F114432AD3XX /* DeviceActivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,10 +755,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				XXDAA6E3B6F09EDDA60933XX /* UIKit.framework in Frameworks */,
-				XX348B82E0B0735A068DC3XX /* Social.framework in Frameworks */,
-				XX586963CCDFDDAF95259BXX /* MobileCoreServices.framework in Frameworks */,
-				XX27A67106B2CA718DB6D3XX /* UniformTypeIdentifiers.framework in Frameworks */,
+				XXA4B3793E3B2928D768EEXX /* QuickLookThumbnailing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,8 +772,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				8E9CC5DAD0CD42F5A3B13350 /* noop-file.swift */,
-				E47F166D8A3B48C5A949ADD4 /* app2095-Bridging-Header.h */,
+				3BDFFC384B3B449BA2F4D97F /* noop-file.swift */,
+				B5C3FC0F2C2347C1A3D3ABAF /* app2095-Bridging-Header.h */,
 			);
 			name = app2095;
 			sourceTree = "<group>";
@@ -733,6 +782,7 @@
 			isa = PBXGroup;
 			children = (
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-app2095.a */,
+				XXA12889081EB894481655XX /* AppIntents.framework */,
 				XXCA68A9416C78B970D1D9XX /* DeviceActivity.framework */,
 				XX99DB34EAB420F9CA31AFXX /* UserNotifications.framework */,
 				XX8617831C2B3F6BB4B6C1XX /* UserNotificationsUI.framework */,
@@ -779,6 +829,7 @@
 				XX8B8A7FA4F80977191CCFXX /* accountAuth.appex */,
 				XXE5C49802403C03851823XX /* Inspect Element 🥓.appex */,
 				XX934B43F85EEBF73FE1DFXX /* appClip.app */,
+				XX247031388915D0625F55XX /* appIntent.app */,
 				XXF0F43C7C187144C9ACE0XX /* backgroundDownloads.appex */,
 				XX2D602F8ADB70CB14B066XX /* credentialsProvider.appex */,
 				XXE3350AF4693A31F60078XX /* deviceActivityMonitor.appex */,
@@ -837,6 +888,7 @@
 				XX8469DB13623957B9F803XX /* account-auth */,
 				XXE55E5FD3EDECFCFAECEFXX /* action */,
 				XX791A0C1E11F4A24B0FFFXX /* app-clip */,
+				XXF396C14D1A34E3CE0ACCXX /* app-intent */,
 				XXB0C2894309714667D9C1XX /* background-downloads */,
 				XXAD7638B21D70C3585591XX /* credentials-provider */,
 				XX53424B1183F2949AE29EXX /* device-activity-monitor */,
@@ -870,6 +922,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				XX265FB1B303ED1789C288XX /* Embed Foundation Extensions */,
 				XX4592C3C216ED2151811EXX /* Embed App Clips */,
+				XX15EE79985EB896D094EBXX /* CopyFiles */,
 				XXF04E331EBCEFD2E505ADXX /* Embed Watch Content */,
 			);
 			buildRules = (
@@ -878,6 +931,7 @@
 				XX9C1ABDCC99E79B80C872XX /* PBXTargetDependency */,
 				XXAF9D766DCCF242F8554BXX /* PBXTargetDependency */,
 				XX6B850DEA3F598DEE0008XX /* PBXTargetDependency */,
+				XX7E65D73E4615B8DFE245XX /* PBXTargetDependency */,
 				XXC3E356675C3D826EB5E9XX /* PBXTargetDependency */,
 				XXC7AED19E58AE7E3DA2D7XX /* PBXTargetDependency */,
 				XXAE27ABE2EB88159A8E11XX /* PBXTargetDependency */,
@@ -903,9 +957,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX2BB0BFAFAF7F18C8FB1CXX /* Build configuration list for PBXNativeTarget "notificationContent" */;
 			buildPhases = (
-				XXBA6CDF0021ABEEEDFCFBXX /* Frameworks */,
-				XX075616B940C1090CBFAAXX /* Sources */,
-				XX611F26B6FC8E1C5DB6A2XX /* Resources */,
+				XXA94A5604E6B418CE81CFXX /* Frameworks */,
+				XX28B9C3BC0D1B00852747XX /* Sources */,
+				XX8BABF002F77F0F3EB8D0XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -942,8 +996,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX691816E0C56BC7F8AE31XX /* Build configuration list for PBXNativeTarget "credentialsProvider" */;
 			buildPhases = (
-				XX783511D557B9CA570633XX /* Sources */,
-				XX733E9915BC67E725AE19XX /* Resources */,
+				XXA4F0F3B51BB4CA9D7AB5XX /* Sources */,
+				XX8E24DDF42C316567B7B0XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -961,9 +1015,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXE6189CF41A0233562161XX /* Build configuration list for PBXNativeTarget "quicklookThumbnail" */;
 			buildPhases = (
-				XXA94A5604E6B418CE81CFXX /* Frameworks */,
-				XXC939B9679F95B035A8ABXX /* Sources */,
-				XXA2732B0303AAE74E4BDFXX /* Resources */,
+				XXFEC66A3D34C599B9116EXX /* Frameworks */,
+				XXF07C0C042E4167ACEBB9XX /* Sources */,
+				XX9B7AD625600B343892A3XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1000,8 +1054,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXD44ACF452FCD4CCC9F67XX /* Build configuration list for PBXNativeTarget "matter" */;
 			buildPhases = (
-				XXD7D963E34AE78C764455XX /* Sources */,
-				XX54100A5082931D1BF0B2XX /* Resources */,
+				XX075616B940C1090CBFAAXX /* Sources */,
+				XX611F26B6FC8E1C5DB6A2XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1019,8 +1073,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX9FE1061D86BD848BDDF5XX /* Build configuration list for PBXNativeTarget "safariExtension" */;
 			buildPhases = (
-				XXF07C0C042E4167ACEBB9XX /* Sources */,
-				XX9B7AD625600B343892A3XX /* Resources */,
+				XXC4B4FAF30059FF46B4D4XX /* Sources */,
+				XXA9752F907AC0E493A173XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1038,8 +1092,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX78B3876E3E1086F961DBXX /* Build configuration list for PBXNativeTarget "backgroundDownloads" */;
 			buildPhases = (
-				XXC5084C12C64FC7E35DC4XX /* Sources */,
-				XX83D73E7DEA7226ADE3BAXX /* Resources */,
+				XX783511D557B9CA570633XX /* Sources */,
+				XX733E9915BC67E725AE19XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1057,8 +1111,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXCEFB6F67DA1C4EA549D7XX /* Build configuration list for PBXNativeTarget "locationPushService" */;
 			buildPhases = (
-				XX18A2A17A55CCA9D55174XX /* Sources */,
-				XX30A8FF32A7B771BFB67FXX /* Resources */,
+				XXD7D963E34AE78C764455XX /* Sources */,
+				XX54100A5082931D1BF0B2XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1076,8 +1130,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX3794FD3384C0EF17D50AXX /* Build configuration list for PBXNativeTarget "watchApp" */;
 			buildPhases = (
-				XX3CA7CFCAF84A4B532F0FXX /* Sources */,
-				XX436B9F8A5E2F77207FC9XX /* Resources */,
+				XXC2CE0AA8664E98F650CBXX /* Sources */,
+				XX96F4D3265E63FE45844BXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1095,9 +1149,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX3ADB778DD8821F4BB79CXX /* Build configuration list for PBXNativeTarget "siriIntentUi" */;
 			buildPhases = (
-				XX5E4DB9E2BABBA05C2FABXX /* Frameworks */,
-				XX7C3A12C0CD6EF5AE805EXX /* Sources */,
-				XX8FBF329B66FA8AD8AD1EXX /* Resources */,
+				XX976AEF112A0A2CB42518XX /* Frameworks */,
+				XX8D75C44BC1BEA289F15CXX /* Sources */,
+				XX362FF6D6D0F37EDAFBEFXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1115,9 +1169,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXE3B8919D01A23C2712C9XX /* Build configuration list for PBXNativeTarget "deviceActivityMonitor" */;
 			buildPhases = (
-				XX074B8811C1CF8E8A3D74XX /* Frameworks */,
-				XXA4F0F3B51BB4CA9D7AB5XX /* Sources */,
-				XX8E24DDF42C316567B7B0XX /* Resources */,
+				XXBA6CDF0021ABEEEDFCFBXX /* Frameworks */,
+				XX18A2A17A55CCA9D55174XX /* Sources */,
+				XX30A8FF32A7B771BFB67FXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1135,8 +1189,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX7D8C0ADD91BB43DC4585XX /* Build configuration list for PBXNativeTarget "notificationService" */;
 			buildPhases = (
-				XX28B9C3BC0D1B00852747XX /* Sources */,
-				XX8BABF002F77F0F3EB8D0XX /* Resources */,
+				XXC939B9679F95B035A8ABXX /* Sources */,
+				XXA2732B0303AAE74E4BDFXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1154,9 +1208,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXD66294EE16C87E5FAB0CXX /* Build configuration list for PBXNativeTarget "siriIntent" */;
 			buildPhases = (
-				XX85707D41C81C0CBFDDEDXX /* Frameworks */,
-				XXC8B7345D416E637AEE44XX /* Sources */,
-				XXF3BB32E4D3C3E91EDE73XX /* Resources */,
+				XX5E4DB9E2BABBA05C2FABXX /* Frameworks */,
+				XX7C3A12C0CD6EF5AE805EXX /* Sources */,
+				XX8FBF329B66FA8AD8AD1EXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1174,8 +1228,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXED1FFD331B1E151BB515XX /* Build configuration list for PBXNativeTarget "spotlightSearch" */;
 			buildPhases = (
-				XX8D75C44BC1BEA289F15CXX /* Sources */,
-				XX362FF6D6D0F37EDAFBEFXX /* Resources */,
+				XX3CA7CFCAF84A4B532F0FXX /* Sources */,
+				XX436B9F8A5E2F77207FC9XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1193,9 +1247,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX65DF976EAA92ACA7158AXX /* Build configuration list for PBXNativeTarget "shareExtension" */;
 			buildPhases = (
-				XXFEC66A3D34C599B9116EXX /* Frameworks */,
-				XXC4B4FAF30059FF46B4D4XX /* Sources */,
-				XXA9752F907AC0E493A173XX /* Resources */,
+				XX85707D41C81C0CBFDDEDXX /* Frameworks */,
+				XXC8B7345D416E637AEE44XX /* Sources */,
+				XXF3BB32E4D3C3E91EDE73XX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1208,6 +1262,26 @@
 			productName = shareExtension;
 			productReference = XXDB00F82892B9D1B9F758XX /* shareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		XXC045B1544F82A78482E4XX /* appIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = XXB290503A6E33247D9A3EXX /* Build configuration list for PBXNativeTarget "appIntent" */;
+			buildPhases = (
+				XX074B8811C1CF8E8A3D74XX /* Frameworks */,
+				XXC5084C12C64FC7E35DC4XX /* Sources */,
+				XX83D73E7DEA7226ADE3BAXX /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				XXF396C14D1A34E3CE0ACCXX /* app-intent */,
+			);
+			name = appIntent;
+			productName = appIntent;
+			productReference = XX247031388915D0625F55XX /* appIntent.app */;
+			productType = "com.apple.product-type.extensionkit-extension";
 		};
 		XXE09F6F9BD1DDE67EFFA7XX /* Inspect Element 🥓 */ = {
 			isa = PBXNativeTarget;
@@ -1232,9 +1306,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX085E8572856A88B99C69XX /* Build configuration list for PBXNativeTarget "widgets" */;
 			buildPhases = (
-				XX976AEF112A0A2CB42518XX /* Frameworks */,
-				XXC2CE0AA8664E98F650CBXX /* Sources */,
-				XX96F4D3265E63FE45844BXX /* Resources */,
+				XXA3B3F3381B3880B075B7XX /* Frameworks */,
+				XX7FA8EAF36CCF71559C56XX /* Sources */,
+				XX7B2350D81568B845DBFEXX /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1339,6 +1413,11 @@
 						DevelopmentTeam = QQ57RJ5UTD;
 						ProvisioningStyle = Automatic;
 					};
+					XXC045B1544F82A78482E4XX = {
+						CreatedOnToolsVersion = 14.3;
+						DevelopmentTeam = QQ57RJ5UTD;
+						ProvisioningStyle = Automatic;
+					};
 					XXE09F6F9BD1DDE67EFFA7XX = {
 						CreatedOnToolsVersion = 14.3;
 						DevelopmentTeam = QQ57RJ5UTD;
@@ -1368,6 +1447,7 @@
 				XX23923D05465F267B5C1BXX /* accountAuth */,
 				XXE09F6F9BD1DDE67EFFA7XX /* Inspect Element 🥓 */,
 				XX0D2EECA0897D25BE6107XX /* appClip */,
+				XXC045B1544F82A78482E4XX /* appIntent */,
 				XX46610C14CFC90056227DXX /* backgroundDownloads */,
 				XX1338CE552BD5DBFF946DXX /* credentialsProvider */,
 				XX99E5123407A64FB4AA5BXX /* deviceActivityMonitor */,
@@ -1441,6 +1521,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		XX733E9915BC67E725AE19XX /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		XX7B2350D81568B845DBFEXX /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1558,7 +1645,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				7A41791A6C1042B59088355B /* noop-file.swift in Sources */,
+				AB43D8345B504D1DA21F9FC8 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1598,6 +1685,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		XX7C3A12C0CD6EF5AE805EXX /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		XX7FA8EAF36CCF71559C56XX /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1710,6 +1804,11 @@
 			isa = PBXTargetDependency;
 			target = XX2F317E5BA591CD9A16CEXX /* matter */;
 			targetProxy = XXEBCF42DE8574AA6E0A95XX /* PBXContainerItemProxy */;
+		};
+		XX7E65D73E4615B8DFE245XX /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = XXC045B1544F82A78482E4XX /* appIntent */;
+			targetProxy = XX7CB9097BC0CABC33E5B5XX /* PBXContainerItemProxy */;
 		};
 		XX8E830F69B8F2F5D676DFXX /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2138,6 +2237,48 @@
 			};
 			name = Debug;
 		};
+		XX2B81E067A586E0AA30ADXX /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "../targets/app-intent/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = appIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.2095.appIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		XX367C2D692B14D05A51F6XX /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2318,6 +2459,43 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		XX49F619B31800C9FBEAECXX /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "../targets/app-intent/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = appIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.2095.appIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3405,6 +3583,15 @@
 			buildConfigurations = (
 				XX442997759F3685065A30XX /* Debug */,
 				XX3F6A935B8E53A43AE4FFXX /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		XXB290503A6E33247D9A3EXX /* Build configuration list for PBXNativeTarget "appIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				XX2B81E067A586E0AA30ADXX /* Debug */,
+				XX49F619B31800C9FBEAECXX /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

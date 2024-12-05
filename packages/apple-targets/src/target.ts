@@ -20,6 +20,7 @@ export type ExtensionType =
   | "account-auth"
   | "action"
   | "safari"
+  | "app-intent"
   | "device-activity-monitor";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -42,6 +43,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.authentication-services-account-authentication-modification-ui":
       "account-auth",
     "com.apple.services": "action",
+    "com.apple.appintents-extension": "app-intent",
     // "com.apple.intents-service": "intents",
   };
 
@@ -257,6 +259,8 @@ export function productTypeForType(type: ExtensionType) {
       return "com.apple.product-type.application.on-demand-install-capable";
     case "watch":
       return "com.apple.product-type.application";
+    case "app-intent":
+      return "com.apple.product-type.extensionkit-extension";
     default:
       return "com.apple.product-type.app-extension";
   }
@@ -292,6 +296,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
+  } else if (type === "app-intent") {
+    return ["AppIntents"];
   } else if (type === "device-activity-monitor") {
     return ["DeviceActivity"];
   } else if (type === "action") {

@@ -218,6 +218,76 @@ function createExtensionConfigurationListFromTemplate(
   return configurationList;
 }
 
+function createAppIntentConfigurationList(
+  project: XcodeProject,
+  { name, cwd, bundleId }: XcodeSettings
+) {
+  const commonBuildSettings: BuildSettings = {
+    // @ts-expect-error
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: "1",
+    DEBUG_INFORMATION_FORMAT: "dwarf",
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES",
+    GCC_C_LANGUAGE_STANDARD: "gnu17",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0",
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
+    LOCALIZATION_PREFERS_STRING_CATALOGS: "YES",
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...commonBuildSettings,
+      GCC_PREPROCESSOR_DEFINITIONS: ["DEBUG=1", "$(inherited)"],
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...commonBuildSettings,
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+      ...({ SWIFT_COMPILATION_MODE: "wholemodule" } as any),
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createShareConfigurationList(
   project: XcodeProject,
   {
@@ -761,6 +831,8 @@ function createConfigurationListForType(
     return createAppClipConfigurationList(project, props);
   } else if (props.type === "watch") {
     return createWatchAppConfigurationList(project, props);
+  } else if (props.type === "app-intent") {
+    return createAppIntentConfigurationList(project, props);
   } else {
     // TODO: More
     return createNotificationContentConfigurationList(project, props);
@@ -989,10 +1061,14 @@ async function applyXcodeChanges(
 
   const productType = productTypeForType(props.type);
   const isExtension = productType === "com.apple.product-type.app-extension";
+  const isExtensionKit =
+    productType === "com.apple.product-type.extensionkit-extension";
 
   const appExtensionBuildFile = PBXBuildFile.create(project, {
     fileRef: PBXFileReference.create(project, {
-      explicitFileType: "wrapper.app-extension",
+      explicitFileType: isExtensionKit
+        ? "wrapper.extensionkit-extension"
+        : "wrapper.app-extension",
       includeInIndex: 0,
       path: productName + (isExtension ? ".appex" : ".app"),
       sourceTree: "BUILT_PRODUCTS_DIR",
@@ -1044,12 +1120,19 @@ async function applyXcodeChanges(
   // Add the target dependency to the main app, should be only one.
   mainAppTarget.props.dependencies.push(targetDependency);
 
-  const WELL_KNOWN_COPY_EXTENSIONS_NAME =
-    props.type === "clip"
-      ? "Embed App Clips"
-      : props.type === "watch"
-      ? "Embed Watch Content"
-      : "Embed Foundation Extensions";
+  const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
+    switch (props.type) {
+      case "clip":
+        return "Embed App Clips";
+      case "watch":
+        return "Embed Watch Content";
+      case "app-intent":
+        return "Embed ExtensionKit Extensions";
+      default:
+        return "Embed Foundation Extensions";
+    }
+  })();
+
   // Could exist from a Share Extension
   const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
     if (PBXCopyFilesBuildPhase.is(phase)) {
