@@ -245,6 +245,7 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | Type                    | Description                        |
 | ----------------------- | ---------------------------------- |
 | action                  | Share Action                       |
+| app-intent              | App Intent Extension               |
 | widget                  | Widget / Live Activity             |
 | watch                   | Watch App (with companion iOS App) |
 | clip                    | App Clip                           |
