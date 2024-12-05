@@ -36,7 +36,7 @@ You can change the root directory from `./targets` to something else with `root:
 
 ## Using React Native in Targets
 
-I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want.
+I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want. Look at the App Clip example for a starting point.
 
 ## `expo-target.config.json`
 
@@ -242,24 +242,25 @@ module.exports = {
 
 Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store. I haven't tested all of these and they may not work.
 
-| Type                 | Description                        |
-| -------------------- | ---------------------------------- |
-| action               | Share Action                       |
-| widget               | Widget / Live Activity             |
-| watch                | Watch App (with companion iOS App) |
-| clip                 | App Clip                           |
-| safari               | Safari Extension                   |
-| share                | Share Extension                    |
-| notification-content | Notification Content Extension     |
-| notification-service | Notification Service Extension     |
-| intent               | Siri Intent Extension              |
-| intent-ui            | Siri Intent UI Extension           |
-| spotlight            | Spotlight Index Extension          |
-| bg-download          | Background Download Extension      |
-| quicklook-thumbnail  | Quick Look Thumbnail Extension     |
-| location-push        | Location Push Service Extension    |
-| credentials-provider | Credentials Provider Extension     |
-| account-auth         | Account Authentication Extension   |
+| Type                    | Description                        |
+| ----------------------- | ---------------------------------- |
+| action                  | Share Action                       |
+| widget                  | Widget / Live Activity             |
+| watch                   | Watch App (with companion iOS App) |
+| clip                    | App Clip                           |
+| safari                  | Safari Extension                   |
+| share                   | Share Extension                    |
+| notification-content    | Notification Content Extension     |
+| notification-service    | Notification Service Extension     |
+| intent                  | Siri Intent Extension              |
+| intent-ui               | Siri Intent UI Extension           |
+| spotlight               | Spotlight Index Extension          |
+| bg-download             | Background Download Extension      |
+| quicklook-thumbnail     | Quick Look Thumbnail Extension     |
+| location-push           | Location Push Service Extension    |
+| credentials-provider    | Credentials Provider Extension     |
+| account-auth            | Account Authentication Extension   |
+| device-activity-monitor | Device Activity Monitor Extension  |
 
 <!-- | imessage             | iMessage Extension               | -->
 
