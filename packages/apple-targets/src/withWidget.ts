@@ -143,7 +143,10 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   ]);
 
   const targetName = props.name ?? widget;
-  const bundleId = config.ios!.bundleIdentifier! + "." + widget;
+  const mainAppBundleId = config.ios!.bundleIdentifier!;
+  const bundleId = props.bundleIdentifier?.startsWith(".")
+    ? mainAppBundleId + props.bundleIdentifier
+    : props.bundleIdentifier ?? `${mainAppBundleId}.${targetName}`;
 
   withXcodeChanges(config, {
     configPath: props.configPath,

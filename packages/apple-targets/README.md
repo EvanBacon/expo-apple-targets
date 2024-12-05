@@ -69,7 +69,11 @@ This file can have the following properties:
   },
 
   // The iOS version fot the target.
-  "deploymentTarget": "13.4"
+  "deploymentTarget": "13.4",
+
+  // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
+  // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
+  "bundleIdentifier": ".mywidget"
 }
 ```
 
