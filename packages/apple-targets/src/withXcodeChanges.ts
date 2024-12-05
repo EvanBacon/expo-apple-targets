@@ -988,11 +988,14 @@ async function applyXcodeChanges(
     return project;
   }
 
+  const productType = productTypeForType(props.type);
+  const isExtension = productType === "com.apple.product-type.app-extension";
+
   const appExtensionBuildFile = PBXBuildFile.create(project, {
     fileRef: PBXFileReference.create(project, {
       explicitFileType: "wrapper.app-extension",
       includeInIndex: 0,
-      path: productName + ".appex",
+      path: productName + (isExtension ? ".appex" : ".app"),
       sourceTree: "BUILT_PRODUCTS_DIR",
     }),
     settings: {
@@ -1012,7 +1015,7 @@ async function applyXcodeChanges(
     // @ts-expect-error
     productReference:
       appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
-    productType: productTypeForType(props.type),
+    productType: productType,
   });
 
   configureTargetWithKnownSettings(extensionTarget);
