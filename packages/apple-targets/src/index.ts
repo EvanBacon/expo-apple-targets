@@ -37,6 +37,7 @@ export const withTargetsDir: ConfigPlugin<
       appleTeamId,
       ...require(configPath),
       directory: path.relative(projectRoot, path.dirname(configPath)),
+      configPath,
     });
   });
 

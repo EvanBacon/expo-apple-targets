@@ -14,6 +14,7 @@ import { withXcodeChanges } from "./withXcodeChanges";
 
 type Props = Config & {
   directory: string;
+  configPath: string;
 };
 let hasWarned = false;
 
@@ -145,6 +146,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   const bundleId = config.ios!.bundleIdentifier! + "." + widget;
 
   withXcodeChanges(config, {
+    configPath: props.configPath,
     name: targetName,
     cwd:
       "../" +
