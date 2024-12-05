@@ -1,6 +1,5 @@
 // Generate aspects of the plugin from an Xcode project.
 
-import plist from "@expo/plist";
 import fs from "fs-extra";
 import path from "path";
 
@@ -9,7 +8,6 @@ import {
   PBXFrameworksBuildPhase,
   PBXLegacyTarget,
   PBXNativeTarget,
-  XCBuildConfiguration,
   XcodeProject,
 } from "@bacons/xcode";
 
