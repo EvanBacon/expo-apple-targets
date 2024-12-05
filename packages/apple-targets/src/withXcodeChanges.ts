@@ -108,7 +108,6 @@ function createNotificationContentConfigurationList(
     INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
-
     LD_RUNPATH_SEARCH_PATHS: [
       "$(inherited)",
       "@executable_path/Frameworks",
@@ -1078,7 +1077,7 @@ async function applyXcodeChanges(
 
         // Exclude the config path
         path.relative(magicCwd, props.configPath),
-      ],
+      ].sort(),
     }
   );
 
