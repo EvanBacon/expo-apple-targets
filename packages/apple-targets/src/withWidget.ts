@@ -144,6 +144,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   const targetName = props.name ?? widget;
   const bundleId = config.ios!.bundleIdentifier! + "." + widget;
+  const displayName = props.displayName ?? widget;
 
   withXcodeChanges(config, {
     configPath: props.configPath,
@@ -156,6 +157,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       ),
     deploymentTarget: props.deploymentTarget ?? "16.4",
     bundleId,
+    displayName,
     icon: props.icon,
 
     hasAccentColor: !!props.colors?.$accent,

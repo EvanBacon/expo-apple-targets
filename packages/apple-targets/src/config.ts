@@ -90,6 +90,12 @@ export type Config = {
   type: ExtensionType;
   /** Name of the target. Will default to a sanitized version of the directory name. */
   name?: string;
+
+  /**
+   * The display name of the widget.
+   * @example "My Widget"
+   */
+  displayName?: string;
   /**
    * A local file path or URL to an image asset.
    * @example "./assets/icon.png"
