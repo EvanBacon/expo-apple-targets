@@ -19,7 +19,8 @@ export type ExtensionType =
   | "credentials-provider"
   | "account-auth"
   | "action"
-  | "safari";
+  | "safari"
+  | "device-activity-monitor";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -291,6 +292,8 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["QuickLookThumbnailing"];
   } else if (type === "notification-content") {
     return ["UserNotifications", "UserNotificationsUI"];
+  } else if (type === "device-activity-monitor") {
+    return ["DeviceActivity"];
   } else if (type === "action") {
     return [
       // "UniformTypeIdentifiers"
