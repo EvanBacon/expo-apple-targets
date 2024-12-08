@@ -90,6 +90,29 @@ module.exports = {
 };
 ```
 
+Finally, you can return a function that accepts the Expo Config and returns a target function for syncing app groups:
+
+```js
+/** @type {import('@bacons/apple-targets').ConfigFunction} */
+module.exports = (config) => ({
+  type: "widget",
+  colors: {
+    $accent: "steelblue",
+  },
+  entitlements: {
+    // Use the same app groups:
+    "com.apple.security.application-groups":
+      config.ios.entitlements["com.apple.security.application-groups"],
+    // Or generate an app group:
+    "com.apple.security.application-groups": [
+      `group.${config.ios.bundleIdentifier}.widget`,
+    ],
+  },
+});
+```
+
+> ESM and TypeScript are not supported in the target config. Stick to `require` for sharing variables across targets.
+
 ## Colors
 
 There are certain values that are shared across targets. We use a predefined convention to map these values across targets.
@@ -278,3 +301,14 @@ You can also manually sign all sub-targets if you want, I'll light a candle for 
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
+
+## Building Widgets
+
+I've written a blog post about building widgets with this plugin: [Expo x Apple Widgets](https://evanbacon.dev/blog/apple-home-screen-widgets).
+
+If you experience issues building widgets, it might be because React Native is shipped uncompiled which makes the build complexity much higher. This often leads to issues with the Swift compiler and SwiftUI previews.
+
+Some workarounds:
+
+- Prebuild without React Native: `npx expo prebuild --template node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
+- If the widget doesn't show on the home screen when building the app, use iOS 18. You can long press the app icon and select the widget display options to transform the app icon into the widget.

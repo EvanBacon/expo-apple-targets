@@ -1,5 +1,5 @@
-/** @type {import('@bacons/apple-targets').Config} */
-module.exports = {
+/** @type {import('@bacons/apple-targets').ConfigFunction} */
+module.exports = (config) => ({
   type: "clip",
   icon: "../../assets/icon.png",
   colors: {
@@ -7,7 +7,7 @@ module.exports = {
   },
   entitlements: {
     "com.apple.developer.parent-application-identifiers": [
-      "$(AppIdentifierPrefix)com.bacon.2095",
+      `$(AppIdentifierPrefix)${config.ios.bundleIdentifier}`,
     ],
   },
-};
+});

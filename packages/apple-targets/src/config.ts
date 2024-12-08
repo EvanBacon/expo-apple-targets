@@ -140,3 +140,7 @@ export type Config = {
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
 };
+
+export type ConfigFunction = (
+  config: import("expo/config").ExpoConfig
+) => Config;
