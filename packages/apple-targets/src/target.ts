@@ -21,7 +21,9 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor";
+  | "device-activity-monitor"
+  | "shield-action"
+  | "shield-configuration";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -300,6 +302,10 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["AppIntents"];
   } else if (type === "device-activity-monitor") {
     return ["DeviceActivity"];
+  } else if (type === "shield-action") {
+    return ["ManagedSettingsUI"];
+  } else if (type === "shield-configuration") {
+    return [];
   } else if (type === "action") {
     return [
       // "UniformTypeIdentifiers"
