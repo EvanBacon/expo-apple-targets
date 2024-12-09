@@ -1105,20 +1105,18 @@ async function applyXcodeChanges(
 
   configureJsExport(extensionTarget);
 
-  const containerItemProxy = PBXContainerItemProxy.create(project, {
-    containerPortal: project.rootObject,
-    proxyType: 1,
-    remoteGlobalIDString: extensionTarget.uuid,
-    remoteInfo: productName,
-  });
-
-  const targetDependency = PBXTargetDependency.create(project, {
-    target: extensionTarget,
-    targetProxy: containerItemProxy,
-  });
-
   // Add the target dependency to the main app, should be only one.
-  mainAppTarget.props.dependencies.push(targetDependency);
+  mainAppTarget.props.dependencies.push(
+    PBXTargetDependency.create(project, {
+      target: extensionTarget,
+      targetProxy: PBXContainerItemProxy.create(project, {
+        containerPortal: project.rootObject,
+        proxyType: 1,
+        remoteGlobalIDString: extensionTarget.uuid,
+        remoteInfo: productName,
+      }),
+    })
+  );
 
   const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
     switch (props.type) {
