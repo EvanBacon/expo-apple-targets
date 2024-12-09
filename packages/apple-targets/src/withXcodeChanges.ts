@@ -866,7 +866,6 @@ async function applyXcodeChanges(
   const targets = getExtensionTargets();
 
   const productName = props.name;
-  // const productName = props.name + "Extension";
 
   let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
@@ -890,9 +889,16 @@ async function applyXcodeChanges(
   }
 
   function applyDevelopmentTeamIdToTargets() {
+    // Set to the provided value or any value.
+    const devTeamId =
+      developmentTeamId ||
+      project.rootObject.props.targets
+        .map((target) => target.getDefaultBuildSetting("DEVELOPMENT_TEAM"))
+        .find(Boolean);
+
     project.rootObject.props.targets.forEach((target) => {
-      if (developmentTeamId) {
-        target.setBuildSetting("DEVELOPMENT_TEAM", developmentTeamId);
+      if (devTeamId) {
+        target.setBuildSetting("DEVELOPMENT_TEAM", devTeamId);
       } else {
         target.removeBuildSetting("DEVELOPMENT_TEAM");
       }
@@ -905,7 +911,7 @@ async function applyXcodeChanges(
       project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
         CreatedOnToolsVersion: "14.3",
         ProvisioningStyle: "Automatic",
-        DevelopmentTeam: developmentTeamId,
+        DevelopmentTeam: devTeamId,
       };
     }
   }
@@ -1044,19 +1050,6 @@ async function applyXcodeChanges(
     // Create new build phases
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
-
-    // configureTargetWithEntitlements(targetToUpdate);
-
-    // configureTargetWithPreview(targetToUpdate);
-
-    // configureTargetWithKnownSettings(targetToUpdate);
-
-    // configureJsExport(targetToUpdate);
-
-    // applyDevelopmentTeamIdToTargets();
-
-    // syncMarketingVersions();
-    // return project;
   } else {
     const productType = productTypeForType(props.type);
     const isExtension = productType === "com.apple.product-type.app-extension";
@@ -1097,44 +1090,6 @@ async function applyXcodeChanges(
     if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
       copyPhase.props.files.push(appExtensionBuildFile);
     }
-
-    // const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
-    //   if (targetToUpdate.props.productType === 'com.apple.product-type.application.on-demand-install-capable') {
-    //     return "Embed App Clips";
-    //   } else if (targetToUpdate.props.productType === 'com.apple.product-type.application') {
-    //     return "Embed Watch Content";
-    //   } else if (targetToUpdate.props.productType === 'com.apple.product-type.extensionkit-extension') {
-    //     return "Embed ExtensionKit Extensions";
-    //   }
-    //   return "Embed Foundation Extensions";
-    // })();
-
-    // // const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
-    // //   switch (props.type) {
-    // //     case "clip":
-    // //       return "Embed App Clips";
-    // //     case "watch":
-    // //       return "Embed Watch Content";
-    // //     case "app-intent":
-    // //       return "Embed ExtensionKit Extensions";
-    // //     default:
-    // //       return "Embed Foundation Extensions";
-    // //   }
-    // // })();
-
-    // // Could exist from a Share Extension
-    // const copyFilesBuildPhase =
-    //   mainAppTarget.props.buildPhases.find((phase) => {
-    //     if (PBXCopyFilesBuildPhase.is(phase)) {
-    //       // TODO: maybe there's a safer way to do this? The name is not a good identifier.
-    //       return phase.props.name === WELL_KNOWN_COPY_EXTENSIONS_NAME;
-    //     }
-    //   }) ??
-    //   mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, { files: [] });
-
-    // copyFilesBuildPhase.ensureFile({
-    //   fileRef: appExtensionBuildFile.props.fileRef,
-    // });
   }
 
   configureTargetWithKnownSettings(targetToUpdate);
@@ -1150,19 +1105,6 @@ async function applyXcodeChanges(
   configureJsExport(targetToUpdate);
 
   mainAppTarget.addDependency(targetToUpdate);
-
-  // Add the target dependency to the main app, should be only one.
-  // mainAppTarget.props.dependencies.push(
-  //   PBXTargetDependency.create(project, {
-  //     target: targetToUpdate,
-  //     targetProxy: PBXContainerItemProxy.create(project, {
-  //       containerPortal: project.rootObject,
-  //       proxyType: 1,
-  //       remoteGlobalIDString: targetToUpdate.uuid,
-  //       remoteInfo: productName,
-  //     }),
-  //   })
-  // );
 
   const assetsDir = path.join(magicCwd, "assets");
 
@@ -1215,10 +1157,6 @@ async function applyXcodeChanges(
 
     protectedGroup.props.children.push(syncRootGroup);
   }
-
-  // ensureProtectedGroup(project, path.dirname(props.cwd)).props.children.push(
-  //   syncRootGroup
-  // );
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();

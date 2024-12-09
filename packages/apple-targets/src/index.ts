@@ -60,7 +60,9 @@ export const withTargetsDir: ConfigPlugin<
 
   withPodTargetExtension(config);
 
-  return withXcodeProjectBetaBaseMod(config);
+  withXcodeProjectBetaBaseMod(config);
+
+  return config;
 };
 
 export { Config, ConfigFunction };
