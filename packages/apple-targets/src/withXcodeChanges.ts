@@ -868,7 +868,7 @@ async function applyXcodeChanges(
   const productName = props.name;
   // const productName = props.name + "Extension";
 
-  const targetToUpdate =
+  let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
     targets[0];
 
@@ -1037,7 +1037,7 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList
       .getReferrers()
       .forEach((ref) => {
-        ref.removeReference(targetToUpdate.props.buildConfigurationList.uuid);
+        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
       });
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
@@ -1045,122 +1045,122 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
 
-    configureTargetWithEntitlements(targetToUpdate);
+    // configureTargetWithEntitlements(targetToUpdate);
 
-    configureTargetWithPreview(targetToUpdate);
+    // configureTargetWithPreview(targetToUpdate);
 
-    configureTargetWithKnownSettings(targetToUpdate);
+    // configureTargetWithKnownSettings(targetToUpdate);
 
-    configureJsExport(targetToUpdate);
+    // configureJsExport(targetToUpdate);
 
-    applyDevelopmentTeamIdToTargets();
+    // applyDevelopmentTeamIdToTargets();
 
-    syncMarketingVersions();
-    return project;
+    // syncMarketingVersions();
+    // return project;
+  } else {
+    const productType = productTypeForType(props.type);
+    const isExtension = productType === "com.apple.product-type.app-extension";
+    const isExtensionKit =
+      productType === "com.apple.product-type.extensionkit-extension";
+
+    const appExtensionBuildFile = PBXBuildFile.create(project, {
+      fileRef: PBXFileReference.create(project, {
+        explicitFileType: isExtensionKit
+          ? "wrapper.extensionkit-extension"
+          : "wrapper.app-extension",
+        includeInIndex: 0,
+        path: productName + (isExtension ? ".appex" : ".app"),
+        sourceTree: "BUILT_PRODUCTS_DIR",
+      }),
+      settings: {
+        ATTRIBUTES: ["RemoveHeadersOnCopy"],
+      },
+    });
+
+    project.rootObject.ensureProductGroup().props.children.push(
+      // @ts-expect-error
+      appExtensionBuildFile.props.fileRef
+    );
+
+    targetToUpdate = project.rootObject.createNativeTarget({
+      buildConfigurationList: createConfigurationListForType(project, props),
+      name: productName,
+      productName,
+      // @ts-expect-error
+      productReference:
+        appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
+      productType: productType,
+    });
+
+    mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate).ensureFile({
+      fileRef: appExtensionBuildFile.props.fileRef,
+    });
+
+    // const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
+    //   if (targetToUpdate.props.productType === 'com.apple.product-type.application.on-demand-install-capable') {
+    //     return "Embed App Clips";
+    //   } else if (targetToUpdate.props.productType === 'com.apple.product-type.application') {
+    //     return "Embed Watch Content";
+    //   } else if (targetToUpdate.props.productType === 'com.apple.product-type.extensionkit-extension') {
+    //     return "Embed ExtensionKit Extensions";
+    //   }
+    //   return "Embed Foundation Extensions";
+    // })();
+
+    // // const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
+    // //   switch (props.type) {
+    // //     case "clip":
+    // //       return "Embed App Clips";
+    // //     case "watch":
+    // //       return "Embed Watch Content";
+    // //     case "app-intent":
+    // //       return "Embed ExtensionKit Extensions";
+    // //     default:
+    // //       return "Embed Foundation Extensions";
+    // //   }
+    // // })();
+
+    // // Could exist from a Share Extension
+    // const copyFilesBuildPhase =
+    //   mainAppTarget.props.buildPhases.find((phase) => {
+    //     if (PBXCopyFilesBuildPhase.is(phase)) {
+    //       // TODO: maybe there's a safer way to do this? The name is not a good identifier.
+    //       return phase.props.name === WELL_KNOWN_COPY_EXTENSIONS_NAME;
+    //     }
+    //   }) ??
+    //   mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, { files: [] });
+
+    // copyFilesBuildPhase.ensureFile({
+    //   fileRef: appExtensionBuildFile.props.fileRef,
+    // });
   }
 
-  const productType = productTypeForType(props.type);
-  const isExtension = productType === "com.apple.product-type.app-extension";
-  const isExtensionKit =
-    productType === "com.apple.product-type.extensionkit-extension";
+  configureTargetWithKnownSettings(targetToUpdate);
 
-  const appExtensionBuildFile = PBXBuildFile.create(project, {
-    fileRef: PBXFileReference.create(project, {
-      explicitFileType: isExtensionKit
-        ? "wrapper.extensionkit-extension"
-        : "wrapper.app-extension",
-      includeInIndex: 0,
-      path: productName + (isExtension ? ".appex" : ".app"),
-      sourceTree: "BUILT_PRODUCTS_DIR",
-    }),
-    settings: {
-      ATTRIBUTES: ["RemoveHeadersOnCopy"],
-    },
-  });
+  configureTargetWithEntitlements(targetToUpdate);
 
-  project.rootObject.ensureProductGroup().props.children.push(
-    // @ts-expect-error
-    appExtensionBuildFile.props.fileRef
-  );
+  configureTargetWithPreview(targetToUpdate);
 
-  const extensionTarget = project.rootObject.createNativeTarget({
-    buildConfigurationList: createConfigurationListForType(project, props),
-    name: productName,
-    productName,
-    // @ts-expect-error
-    productReference:
-      appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
-    productType: productType,
-  });
+  targetToUpdate.ensureFrameworks(props.frameworks);
+  targetToUpdate.getSourcesBuildPhase();
+  targetToUpdate.getResourcesBuildPhase();
 
-  configureTargetWithKnownSettings(extensionTarget);
+  configureJsExport(targetToUpdate);
 
-  configureTargetWithEntitlements(extensionTarget);
-
-  configureTargetWithPreview(extensionTarget);
-
-  extensionTarget.ensureFrameworks(props.frameworks);
-  extensionTarget.getSourcesBuildPhase();
-  extensionTarget.getResourcesBuildPhase();
-
-  configureJsExport(extensionTarget);
+  mainAppTarget.addDependency(targetToUpdate);
 
   // Add the target dependency to the main app, should be only one.
-  mainAppTarget.props.dependencies.push(
-    PBXTargetDependency.create(project, {
-      target: extensionTarget,
-      targetProxy: PBXContainerItemProxy.create(project, {
-        containerPortal: project.rootObject,
-        proxyType: 1,
-        remoteGlobalIDString: extensionTarget.uuid,
-        remoteInfo: productName,
-      }),
-    })
-  );
-
-  const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
-    switch (props.type) {
-      case "clip":
-        return "Embed App Clips";
-      case "watch":
-        return "Embed Watch Content";
-      case "app-intent":
-        return "Embed ExtensionKit Extensions";
-      default:
-        return "Embed Foundation Extensions";
-    }
-  })();
-
-  // Could exist from a Share Extension
-  const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
-    if (PBXCopyFilesBuildPhase.is(phase)) {
-      // TODO: maybe there's a safer way to do this? The name is not a good identifier.
-      return phase.props.name === WELL_KNOWN_COPY_EXTENSIONS_NAME;
-    }
-  });
-
-  if (copyFilesBuildPhase) {
-    // Assume that this is the first run if there is no matching target that we identified from a previous run.
-    copyFilesBuildPhase.props.files.push(appExtensionBuildFile);
-  } else {
-    mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-      files: [appExtensionBuildFile],
-    });
-  }
-
-  const syncException = PBXFileSystemSynchronizedBuildFileExceptionSet.create(
-    project,
-    {
-      target: extensionTarget,
-      membershipExceptions: [
-        // TODO: What other files belong here, why is this here?
-        "Info.plist",
-
-        // Exclude the config path
-        path.relative(magicCwd, props.configPath),
-      ].sort(),
-    }
-  );
+  // mainAppTarget.props.dependencies.push(
+  //   PBXTargetDependency.create(project, {
+  //     target: targetToUpdate,
+  //     targetProxy: PBXContainerItemProxy.create(project, {
+  //       containerPortal: project.rootObject,
+  //       proxyType: 1,
+  //       remoteGlobalIDString: targetToUpdate.uuid,
+  //       remoteInfo: productName,
+  //     }),
+  //   })
+  // );
 
   const assetsDir = path.join(magicCwd, "assets");
 
@@ -1176,26 +1176,47 @@ async function applyXcodeChanges(
         )
         .map((file) => path.join("assets", file));
 
-  const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
-    path: path.basename(props.cwd),
-    exceptions: [syncException],
-    explicitFileTypes: {},
-    explicitFolders: [
-      // Replaces the previous `lastKnownFileType: "folder",` system that's used in things like Safari extensions to include folders of assets.
-      // ex: `"Resources/_locales", "Resources/images"`
-      ...explicitFolders,
-    ],
-    sourceTree: "<group>",
-  });
+  const protectedGroup = ensureProtectedGroup(project, path.dirname(props.cwd));
 
-  if (!extensionTarget.props.fileSystemSynchronizedGroups) {
-    extensionTarget.props.fileSystemSynchronizedGroups = [];
+  if (
+    !protectedGroup.props.children.find(
+      (child) => child.props.path === path.basename(props.cwd)
+    )
+  ) {
+    const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
+      path: path.basename(props.cwd),
+      exceptions: [
+        PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+          target: targetToUpdate,
+          membershipExceptions: [
+            // TODO: What other files belong here, why is this here?
+            "Info.plist",
+
+            // Exclude the config path
+            path.relative(magicCwd, props.configPath),
+          ].sort(),
+        }),
+      ],
+      explicitFileTypes: {},
+      explicitFolders: [
+        // Replaces the previous `lastKnownFileType: "folder",` system that's used in things like Safari extensions to include folders of assets.
+        // ex: `"Resources/_locales", "Resources/images"`
+        ...explicitFolders,
+      ],
+      sourceTree: "<group>",
+    });
+
+    if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
+      targetToUpdate.props.fileSystemSynchronizedGroups = [];
+    }
+    targetToUpdate.props.fileSystemSynchronizedGroups.push(syncRootGroup);
+
+    protectedGroup.props.children.push(syncRootGroup);
   }
-  extensionTarget.props.fileSystemSynchronizedGroups.push(syncRootGroup);
 
-  ensureProtectedGroup(project, path.dirname(props.cwd)).props.children.push(
-    syncRootGroup
-  );
+  // ensureProtectedGroup(project, path.dirname(props.cwd)).props.children.push(
+  //   syncRootGroup
+  // );
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();
