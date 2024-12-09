@@ -1,5 +1,6 @@
 type NativeModule = {
-  setInt(key: string, value: string | number, suite?: string): void;
+  setInt(key: string, value: number, suite?: string): void;
+  setString(key: string, value: string, suite?: string): void;
   remove(key: string, suite?: string): void;
   reloadWidget(name?: string): void;
   setObject(
@@ -16,6 +17,7 @@ type NativeModule = {
 
 const nativeModule = (expo?.modules?.ExtensionStorage ?? {
   setInt() {},
+  setString() {},
   reloadWidget() {},
   setObject() {},
   remove() {},
@@ -51,10 +53,12 @@ export class ExtensionStorage {
       | Record<string, string | number>
       | Array<Record<string, string | number>>
   ) {
-    if (typeof value === "string" || typeof value === "number") {
+    if (typeof value === "number") {
       nativeModule.setInt(key, value, this.appGroup);
     } else if (Array.isArray(value)) {
       nativeModule.setArray(key, value, this.appGroup);
+    } else if (typeof value === "string") {
+      nativeModule.setString(key, value, this.appGroup);
     } else if (value == null) {
       nativeModule.remove(key, this.appGroup);
     } else {
