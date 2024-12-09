@@ -866,9 +866,8 @@ async function applyXcodeChanges(
   const targets = getExtensionTargets();
 
   const productName = props.name;
-  // const productName = props.name + "Extension";
 
-  const targetToUpdate =
+  let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
     targets[0];
 
@@ -890,9 +889,16 @@ async function applyXcodeChanges(
   }
 
   function applyDevelopmentTeamIdToTargets() {
+    // Set to the provided value or any value.
+    const devTeamId =
+      developmentTeamId ||
+      project.rootObject.props.targets
+        .map((target) => target.getDefaultBuildSetting("DEVELOPMENT_TEAM"))
+        .find(Boolean);
+
     project.rootObject.props.targets.forEach((target) => {
-      if (developmentTeamId) {
-        target.setBuildSetting("DEVELOPMENT_TEAM", developmentTeamId);
+      if (devTeamId) {
+        target.setBuildSetting("DEVELOPMENT_TEAM", devTeamId);
       } else {
         target.removeBuildSetting("DEVELOPMENT_TEAM");
       }
@@ -905,7 +911,7 @@ async function applyXcodeChanges(
       project.rootObject.props.attributes.TargetAttributes[target.uuid] ??= {
         CreatedOnToolsVersion: "14.3",
         ProvisioningStyle: "Automatic",
-        DevelopmentTeam: developmentTeamId,
+        DevelopmentTeam: devTeamId,
       };
     }
   }
@@ -1037,130 +1043,68 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList
       .getReferrers()
       .forEach((ref) => {
-        ref.removeReference(targetToUpdate.props.buildConfigurationList.uuid);
+        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
       });
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
     // Create new build phases
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
-
-    configureTargetWithEntitlements(targetToUpdate);
-
-    configureTargetWithPreview(targetToUpdate);
-
-    configureTargetWithKnownSettings(targetToUpdate);
-
-    configureJsExport(targetToUpdate);
-
-    applyDevelopmentTeamIdToTargets();
-
-    syncMarketingVersions();
-    return project;
-  }
-
-  const productType = productTypeForType(props.type);
-  const isExtension = productType === "com.apple.product-type.app-extension";
-  const isExtensionKit =
-    productType === "com.apple.product-type.extensionkit-extension";
-
-  const appExtensionBuildFile = PBXBuildFile.create(project, {
-    fileRef: PBXFileReference.create(project, {
-      explicitFileType: isExtensionKit
-        ? "wrapper.extensionkit-extension"
-        : "wrapper.app-extension",
-      includeInIndex: 0,
-      path: productName + (isExtension ? ".appex" : ".app"),
-      sourceTree: "BUILT_PRODUCTS_DIR",
-    }),
-    settings: {
-      ATTRIBUTES: ["RemoveHeadersOnCopy"],
-    },
-  });
-
-  project.rootObject.ensureProductGroup().props.children.push(
-    // @ts-expect-error
-    appExtensionBuildFile.props.fileRef
-  );
-
-  const extensionTarget = project.rootObject.createNativeTarget({
-    buildConfigurationList: createConfigurationListForType(project, props),
-    name: productName,
-    productName,
-    // @ts-expect-error
-    productReference:
-      appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
-    productType: productType,
-  });
-
-  configureTargetWithKnownSettings(extensionTarget);
-
-  configureTargetWithEntitlements(extensionTarget);
-
-  configureTargetWithPreview(extensionTarget);
-
-  extensionTarget.ensureFrameworks(props.frameworks);
-  extensionTarget.getSourcesBuildPhase();
-  extensionTarget.getResourcesBuildPhase();
-
-  configureJsExport(extensionTarget);
-
-  // Add the target dependency to the main app, should be only one.
-  mainAppTarget.props.dependencies.push(
-    PBXTargetDependency.create(project, {
-      target: extensionTarget,
-      targetProxy: PBXContainerItemProxy.create(project, {
-        containerPortal: project.rootObject,
-        proxyType: 1,
-        remoteGlobalIDString: extensionTarget.uuid,
-        remoteInfo: productName,
-      }),
-    })
-  );
-
-  const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
-    switch (props.type) {
-      case "clip":
-        return "Embed App Clips";
-      case "watch":
-        return "Embed Watch Content";
-      case "app-intent":
-        return "Embed ExtensionKit Extensions";
-      default:
-        return "Embed Foundation Extensions";
-    }
-  })();
-
-  // Could exist from a Share Extension
-  const copyFilesBuildPhase = mainAppTarget.props.buildPhases.find((phase) => {
-    if (PBXCopyFilesBuildPhase.is(phase)) {
-      // TODO: maybe there's a safer way to do this? The name is not a good identifier.
-      return phase.props.name === WELL_KNOWN_COPY_EXTENSIONS_NAME;
-    }
-  });
-
-  if (copyFilesBuildPhase) {
-    // Assume that this is the first run if there is no matching target that we identified from a previous run.
-    copyFilesBuildPhase.props.files.push(appExtensionBuildFile);
   } else {
-    mainAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
-      files: [appExtensionBuildFile],
+    const productType = productTypeForType(props.type);
+    const isExtension = productType === "com.apple.product-type.app-extension";
+    const isExtensionKit =
+      productType === "com.apple.product-type.extensionkit-extension";
+
+    const appExtensionBuildFile = PBXBuildFile.create(project, {
+      fileRef: PBXFileReference.create(project, {
+        explicitFileType: isExtensionKit
+          ? "wrapper.extensionkit-extension"
+          : "wrapper.app-extension",
+        includeInIndex: 0,
+        path: productName + (isExtension ? ".appex" : ".app"),
+        sourceTree: "BUILT_PRODUCTS_DIR",
+      }),
+      settings: {
+        ATTRIBUTES: ["RemoveHeadersOnCopy"],
+      },
     });
+
+    project.rootObject.ensureProductGroup().props.children.push(
+      // @ts-expect-error
+      appExtensionBuildFile.props.fileRef
+    );
+
+    targetToUpdate = project.rootObject.createNativeTarget({
+      buildConfigurationList: createConfigurationListForType(project, props),
+      name: productName,
+      productName,
+      // @ts-expect-error
+      productReference:
+        appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
+      productType: productType,
+    });
+
+    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+
+    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+      copyPhase.props.files.push(appExtensionBuildFile);
+    }
   }
 
-  const syncException = PBXFileSystemSynchronizedBuildFileExceptionSet.create(
-    project,
-    {
-      target: extensionTarget,
-      membershipExceptions: [
-        // TODO: What other files belong here, why is this here?
-        "Info.plist",
+  configureTargetWithKnownSettings(targetToUpdate);
 
-        // Exclude the config path
-        path.relative(magicCwd, props.configPath),
-      ].sort(),
-    }
-  );
+  configureTargetWithEntitlements(targetToUpdate);
+
+  configureTargetWithPreview(targetToUpdate);
+
+  targetToUpdate.ensureFrameworks(props.frameworks);
+  targetToUpdate.getSourcesBuildPhase();
+  targetToUpdate.getResourcesBuildPhase();
+
+  configureJsExport(targetToUpdate);
+
+  mainAppTarget.addDependency(targetToUpdate);
 
   const assetsDir = path.join(magicCwd, "assets");
 
@@ -1176,26 +1120,43 @@ async function applyXcodeChanges(
         )
         .map((file) => path.join("assets", file));
 
-  const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
-    path: path.basename(props.cwd),
-    exceptions: [syncException],
-    explicitFileTypes: {},
-    explicitFolders: [
-      // Replaces the previous `lastKnownFileType: "folder",` system that's used in things like Safari extensions to include folders of assets.
-      // ex: `"Resources/_locales", "Resources/images"`
-      ...explicitFolders,
-    ],
-    sourceTree: "<group>",
-  });
+  const protectedGroup = ensureProtectedGroup(project, path.dirname(props.cwd));
 
-  if (!extensionTarget.props.fileSystemSynchronizedGroups) {
-    extensionTarget.props.fileSystemSynchronizedGroups = [];
+  if (
+    !protectedGroup.props.children.find(
+      (child) => child.props.path === path.basename(props.cwd)
+    )
+  ) {
+    const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
+      path: path.basename(props.cwd),
+      exceptions: [
+        PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+          target: targetToUpdate,
+          membershipExceptions: [
+            // TODO: What other files belong here, why is this here?
+            "Info.plist",
+
+            // Exclude the config path
+            path.relative(magicCwd, props.configPath),
+          ].sort(),
+        }),
+      ],
+      explicitFileTypes: {},
+      explicitFolders: [
+        // Replaces the previous `lastKnownFileType: "folder",` system that's used in things like Safari extensions to include folders of assets.
+        // ex: `"Resources/_locales", "Resources/images"`
+        ...explicitFolders,
+      ],
+      sourceTree: "<group>",
+    });
+
+    if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
+      targetToUpdate.props.fileSystemSynchronizedGroups = [];
+    }
+    targetToUpdate.props.fileSystemSynchronizedGroups.push(syncRootGroup);
+
+    protectedGroup.props.children.push(syncRootGroup);
   }
-  extensionTarget.props.fileSystemSynchronizedGroups.push(syncRootGroup);
-
-  ensureProtectedGroup(project, path.dirname(props.cwd)).props.children.push(
-    syncRootGroup
-  );
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();
