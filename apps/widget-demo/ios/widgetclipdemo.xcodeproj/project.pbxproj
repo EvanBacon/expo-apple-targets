@@ -13,7 +13,7 @@
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		96905EF65AED1B983A6B3ABC /* libPods-widgetclipdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		EB7FF18CCCFE4FF0881F31B7 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B83AE122C540CE8279F214 /* noop-file.swift */; };
+		D787C3F5E14F4793AA7126DD /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3E21DA43FF40FA973D6FDD /* noop-file.swift */; };
 		XX12B55A1EDABF083C3B51XX /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */; };
 		XX6A44985675A04437B8C4XX /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */; };
 		XXC154B86D22D3E03C2972XX /* widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = XX33D0B8E8E4B540CDDCD6XX /* widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -30,7 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		XX6FBE118F7C44BB27333AXX /* Embed Foundation Extensions */ = {
+		XX72A8CFBF0FBA13A79902XX /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -51,12 +51,12 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = widgetclipdemo/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = main.m; path = widgetclipdemo/main.m; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-widgetclipdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-widgetclipdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		60B83AE122C540CE8279F214 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "widgetclipdemo/noop-file.swift"; sourceTree = "<group>"; };
 		6C2E3173556A471DD304B334 /* Pods-widgetclipdemo.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetclipdemo.debug.xcconfig"; path = "Target Support Files/Pods-widgetclipdemo/Pods-widgetclipdemo.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-widgetclipdemo.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-widgetclipdemo.release.xcconfig"; path = "Target Support Files/Pods-widgetclipdemo/Pods-widgetclipdemo.release.xcconfig"; sourceTree = "<group>"; };
-		9C16C60F793F41CCB3303D1A /* widgetclipdemo-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "widgetclipdemo-Bridging-Header.h"; path = "widgetclipdemo/widgetclipdemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		7C3E21DA43FF40FA973D6FDD /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "widgetclipdemo/noop-file.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = widgetclipdemo/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		FC43E547AB354F8F9EB88B7E /* widgetclipdemo-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "widgetclipdemo-Bridging-Header.h"; path = "widgetclipdemo/widgetclipdemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		XX33D0B8E8E4B540CDDCD6XX /* widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -119,8 +119,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				60B83AE122C540CE8279F214 /* noop-file.swift */,
-				9C16C60F793F41CCB3303D1A /* widgetclipdemo-Bridging-Header.h */,
+				7C3E21DA43FF40FA973D6FDD /* noop-file.swift */,
+				FC43E547AB354F8F9EB88B7E /* widgetclipdemo-Bridging-Header.h */,
 			);
 			name = widgetclipdemo;
 			sourceTree = "<group>";
@@ -220,7 +220,7 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
-				XX6FBE118F7C44BB27333AXX /* Embed Foundation Extensions */,
+				XX72A8CFBF0FBA13A79902XX /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -341,7 +341,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				EB7FF18CCCFE4FF0881F31B7 /* noop-file.swift in Sources */,
+				D787C3F5E14F4793AA7126DD /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

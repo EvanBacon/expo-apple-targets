@@ -1092,9 +1092,11 @@ async function applyXcodeChanges(
       productType: productType,
     });
 
-    mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate).ensureFile({
-      fileRef: appExtensionBuildFile.props.fileRef,
-    });
+    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+
+    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+      copyPhase.props.files.push(appExtensionBuildFile);
+    }
 
     // const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
     //   if (targetToUpdate.props.productType === 'com.apple.product-type.application.on-demand-install-capable') {
