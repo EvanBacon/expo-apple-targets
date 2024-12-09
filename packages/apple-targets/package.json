@@ -2,10 +2,13 @@
   "name": "@bacons/apple-targets",
   "version": "0.1.6",
   "description": "Generate Apple Targets with Expo Prebuild",
-  "main": "build/index.js",
+  "main": "build/ExtensionStorage.js",
+  "types": "build/ExtensionStorage.d.ts",
   "files": [
     "app.plugin.js",
     "build",
+    "ios",
+    "expo-module.config.json",
     "prebuild-blank.tgz"
   ],
   "scripts": {
