@@ -1,7 +1,6 @@
 import ExpoModulesCore
 import WidgetKit
 
-
 public class ExtensionStorageModule: Module {
     public func definition() -> ModuleDefinition {
         Name("ExtensionStorage")

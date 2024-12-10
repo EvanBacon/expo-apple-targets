@@ -15,14 +15,17 @@ type NativeModule = {
   ): boolean;
 };
 
-const nativeModule = (expo?.modules?.ExtensionStorage ?? {
+// @ts-expect-error
+const ExtensionStorageModule = expo?.modules?.ExtensionStorage;
+
+const nativeModule: NativeModule = ExtensionStorageModule ?? {
   setInt() {},
   setString() {},
   reloadWidget() {},
   setObject() {},
   remove() {},
   setArray() {},
-}) satisfies NativeModule;
+};
 
 const originalSetObject = nativeModule.setObject;
 
