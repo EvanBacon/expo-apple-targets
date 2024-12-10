@@ -121,6 +121,12 @@ function getTemplateConfig(target: string) {
     lines.push('  colors: { TouchBarBezel: "#DB739C", },');
   }
 
+  if (RECOMMENDED_ENTITLEMENTS[target]) {
+    lines.push(
+      `  entitlements: ${JSON.stringify(RECOMMENDED_ENTITLEMENTS[target])},`
+    );
+  }
+
   lines.push(`});`);
 
   return lines.join("\n");
@@ -129,3 +135,54 @@ function getTemplateConfig(target: string) {
 import { copy } from "fs-extra";
 
 const vendorTemplatePath = require.resolve("create-target/templates");
+
+// @ts-expect-error
+const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
+  "shield-config": {
+    "com.apple.developer.family-controls": true,
+  },
+  "shield-action": {
+    "com.apple.developer.family-controls": true,
+  },
+  "activity-report": {
+    "com.apple.developer.family-controls": true,
+  },
+  "activity-monitor": {
+    "com.apple.developer.family-controls": true,
+  },
+  // clip: {
+  //   "com.apple.developer.parent-application-identifiers": [
+  //     "$(AppIdentifierPrefix)REPLACE_ME",
+  //   ],
+  // },
+  "autofill-credentials": {
+    "com.apple.developer.authentication-services.autofill-credential-provider":
+      true,
+  },
+  classkit: {
+    "com.apple.developer.ClassKit-environment": true,
+  },
+  // "network-extension": {
+  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
+  // },
+  // share: {
+  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
+  // },
+  // "file-provider": {
+  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
+  // },
+  // "bg-download": {
+  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
+  //   // "com.apple.developer.team-identifier": "$(TeamIdentifierPrefix)",
+  // },
+  "credentials-provider": {
+    "com.apple.developer.authentication-services.autofill-credential-provider":
+      true,
+  },
+  "device-activity-monitor": {
+    "com.apple.developer.family-controls": true,
+  },
+  // 'media-discovery': {
+  //     'com.apple.developer.media-device-discovery-extension': true,
+  // }
+};

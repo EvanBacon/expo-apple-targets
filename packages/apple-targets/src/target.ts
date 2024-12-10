@@ -44,6 +44,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
       "account-auth",
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
+    "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
     // "com.apple.intents-service": "intents",
   };
 
