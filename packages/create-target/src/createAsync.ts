@@ -105,7 +105,14 @@ export async function createAsync(
 }
 
 function getTemplateConfig(target: string) {
-  const shouldAddIcon = ["widget", "clip", "action"].includes(target);
+  const shouldAddIcon = [
+    "widget",
+    "clip",
+    "action",
+    "safari",
+    "share",
+    "watch",
+  ].includes(target);
 
   const lines = [
     `/** @type {import('@bacons/apple-targets').ConfigFunction} */`,
@@ -117,8 +124,15 @@ function getTemplateConfig(target: string) {
     lines.push(`  icon: 'https://github.com/expo.png',`);
   }
 
-  if (target === "action") {
+  if (target === "watch") {
+    lines.push('  colors: { $accent: "darkcyan", },');
+    lines.push('  deploymentTarget: "9.4",');
+  } else if (target === "action") {
     lines.push('  colors: { TouchBarBezel: "#DB739C", },');
+  } else if (target === "share") {
+    lines.push(
+      '  "frameworks": ["UIKit", "Social", "MobileCoreServices", "UniformTypeIdentifiers"],'
+    );
   }
 
   if (RECOMMENDED_ENTITLEMENTS[target]) {

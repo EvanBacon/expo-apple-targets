@@ -21,7 +21,6 @@
     "prepublishOnly": "expo-module prepublishOnly"
   },
   "devDependencies": {
-    "@expo/config": "~10.0.4",
     "@expo/json-file": "^9.0.0",
     "@expo/package-manager": "^1.5.0",
     "@expo/spawn-async": "^1.7.2",
@@ -46,6 +45,6 @@
     "tar": "^6.2.1",
     "update-check": "^1.5.4"
   },
-  "author": "Evan Bacon",
+  "author": "Evan Bacon <baconbrix@gmail.com> (https://evanbacon.dev)",
   "license": "ISC"
 }
