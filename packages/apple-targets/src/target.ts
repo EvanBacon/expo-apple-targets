@@ -75,8 +75,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
       },
     });
-  }
-  if (type === "clip") {
+  } else if (type === "app-intent") {
+    return plist.build({
+      EXAppExtensionAttributes: {
+        EXExtensionPointIdentifier: "com.apple.appintents-extension",
+      },
+    });
+  } else if (type === "clip") {
     return plist.build({
       CFBundleName: "$(PRODUCT_NAME)",
       CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
@@ -89,6 +94,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSAppClipRequestEphemeralUserNotification: false,
         NSAppClipRequestLocationConfirmation: false,
       },
+      NSAppTransportSecurity: {
+        NSAllowsArbitraryLoads: false,
+        NSAllowsLocalNetworking: true,
+      },
+      UILaunchStoryboardName: "SplashScreen",
+      UIUserInterfaceStyle: "Automatic",
+      UIViewControllerBasedStatusBarAppearance: false,
     });
   }
   const NSExtensionPointIdentifier = Object.keys(
