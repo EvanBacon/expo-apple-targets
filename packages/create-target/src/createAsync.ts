@@ -6,6 +6,7 @@ import path from "path";
 import { assertValidTarget, promptTargetAsync } from "./promptTarget";
 import { Log } from "./log";
 
+// @ts-expect-error
 import { getTargetInfoPlistForType } from "@bacons/apple-targets/build/target";
 import spawnAsync from "@expo/spawn-async";
 
@@ -13,8 +14,6 @@ export type Options = {
   install: boolean;
   target?: string | true;
 };
-
-const debug = require("debug")("expo:create-target") as typeof console.log;
 
 function findUpPackageJson(projectRoot: string): string | null {
   let currentDir = projectRoot;
@@ -164,11 +163,6 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   "activity-monitor": {
     "com.apple.developer.family-controls": true,
   },
-  // clip: {
-  //   "com.apple.developer.parent-application-identifiers": [
-  //     "$(AppIdentifierPrefix)REPLACE_ME",
-  //   ],
-  // },
   "autofill-credentials": {
     "com.apple.developer.authentication-services.autofill-credential-provider":
       true,
