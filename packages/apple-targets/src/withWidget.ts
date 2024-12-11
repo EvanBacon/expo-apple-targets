@@ -3,12 +3,17 @@ import plist from "@expo/plist";
 import fs from "fs";
 import { sync as globSync } from "glob";
 import path from "path";
+import chalk from "chalk";
 
 import { withIosColorset } from "./colorset/withIosColorset";
 import { Config, Entitlements } from "./config";
 import { withImageAsset } from "./icon/withImageAsset";
 import { withIosIcon } from "./icon/withIosIcon";
-import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
+import {
+  getFrameworksForType,
+  getTargetInfoPlistForType,
+  SHOULD_USE_APP_GROUPS_BY_DEFAULT,
+} from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
 
@@ -17,6 +22,28 @@ type Props = Config & {
   configPath: string;
 };
 let hasWarned = false;
+
+function memoize<T extends (...args: any[]) => any>(fn: T): T {
+  let lastArgs: any[] = [];
+  let lastResult: any;
+  return function (...args: any[]) {
+    if (args.length !== lastArgs.length) {
+      lastResult = fn(...args);
+      lastArgs = args;
+      return lastResult;
+    }
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] !== lastArgs[i]) {
+        lastResult = fn(...args);
+        lastArgs = args;
+        return lastResult;
+      }
+    }
+    return lastResult;
+  } as T;
+}
+
+const warnOnce = memoize(console.warn);
 
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
@@ -55,20 +82,65 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   let entitlementsJson: undefined | Entitlements = props.entitlements;
 
-  // Apply default entitlements that must be present for a target to work.
-  function applyDefaultEntitlements(entitlements: Entitlements): Entitlements {
-    if (props.type === "clip") {
-      entitlements["com.apple.developer.parent-application-identifiers"] = [
-        `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
-      ];
-      // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
-      // entitlements["com.apple.developer.on-demand-install-capable"] = true;
-    }
-
-    return entitlements;
-  }
-
   if (entitlementsJson) {
+    // Apply default entitlements that must be present for a target to work.
+    const applyDefaultEntitlements = (
+      entitlements: Entitlements
+    ): Entitlements => {
+      if (props.type === "clip") {
+        entitlements["com.apple.developer.parent-application-identifiers"] = [
+          `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
+        ];
+        // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
+        // entitlements["com.apple.developer.on-demand-install-capable"] = true;
+      }
+
+      const APP_GROUP_KEY = "com.apple.security.application-groups";
+      const hasDefinedAppGroupsManually = APP_GROUP_KEY in entitlements;
+
+      if (
+        // If the user hasn't manually defined the app groups array.
+        !hasDefinedAppGroupsManually &&
+        // And the target is part of a predefined list of types that benefit from app groups that match the main app...
+        SHOULD_USE_APP_GROUPS_BY_DEFAULT[props.type]
+      ) {
+        const mainAppGroups = config.ios?.entitlements?.[APP_GROUP_KEY];
+
+        if (Array.isArray(mainAppGroups) && mainAppGroups.length > 0) {
+          // Then set the target app groups to match the main app.
+          entitlements[APP_GROUP_KEY] = mainAppGroups;
+          console.log(
+            chalk.dim`[${widget}] Syncing app groups with main app. Define entitlements[${JSON.stringify(
+              APP_GROUP_KEY
+            )}] in the {cyan expo-target.config} file to override.`
+          );
+          console.log(chalk.dim(`- ${mainAppGroups.join(", ")}`));
+        } else {
+          warnOnce(
+            `Apple target "${
+              props.type
+            }" may require the App Groups entitlement but none were found in the app.json.\nExample:\n${JSON.stringify(
+              {
+                ios: {
+                  entitlements: {
+                    [APP_GROUP_KEY]: [
+                      `group.${
+                        config.ios?.bundleIdentifier ??
+                        `com.example.${config.slug}`
+                      }`,
+                    ],
+                  },
+                },
+              },
+              null,
+              2
+            )}`
+          );
+        }
+      }
+
+      return entitlements;
+    };
     entitlementsJson = applyDefaultEntitlements(entitlementsJson);
   }
 
@@ -107,7 +179,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       if (!hasWarned) {
         hasWarned = true;
         console.warn(
-          "You're using an experimental Config Plugin that is subject to breaking changes and has no E2E tests."
+          chalk`Using experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
         );
       }
 

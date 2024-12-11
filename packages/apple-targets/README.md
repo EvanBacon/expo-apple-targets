@@ -11,48 +11,47 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 
 > This plugin requires at least CocoaPods 1.16.2, Xcode 16, and Expo SDK +52.
 
-Run the following command in your Expo project:
+1. Run `npx create-target` in your Expo project to generate an Apple target.
+2. Select a target to generate, I recommend starting with a `widget` (e.g. `npx create-target widget`). This will generate the required widget files in the root `/targets` directory, install `@bacons/apple-targets`, and add the Expo Config Plugin to your project.
+3. If you already know your Apple Team ID, then set it under the `ios.appleTeamId` property in your `app.json`. You can find this in Xcode under the Signing & Capabilities tab and set it later if needed.
+4. Run `npx expo prebuild -p ios --clean` to generate the Xcode project.
+5. You can now open your project in Xcode (`xed ios`) and develop the widget inside the `expo:targets/<target>` folder.
+6. When you're ready to build, select the target in Xcode and build it.
 
-```
-npx create-target
-```
+### How it works
 
-Select a target to generate, I recommend starting with a `widget`.
+The root `/targets` folder is magic, each sub-directory should have a `expo-target.config.js` file that defines the target settings. When you run `npx expo prebuild --clean`, the plugin will generate the Xcode project and link the target files to the project. The plugin will also generate an `Info.plist` file if one doesn't exist.
 
-This will generate the required widget files in the `targets` directory.
+The Config Plugin will link the subfolder (e.g. `targets/widget`) to Xcode, and all files inside of it will be part of the target. This means you can develop the target inside the `expo:targets` folder and the changes will be saved outside of the generated `ios` directory.
 
-Ensure the `ios.appleTeamId` property is set in your `app.json`, then run `npx expo prebuild -p ios --clean` to generate the Xcode project.
+The root `Info.plist` file in each target directory is not managed and can be freely modified.
 
-You can now open Xcode and develop the widget inside the `expo:targets` folder. When you're ready to build, run:
+Any files in a top-level `target/{name}/assets` directory will be linked as resources of the target. This rule was added to support Safari Extensions.
 
-### Manual usage
+### Entitlements
 
-- Add targets to `targets/` directory with an `expo-target.config.json` file.
-- If you don't have an `Info.plist`, it'll be generated on `npx expo prebuild`. This may be changed in the future so if you have an `Info.plist` it'll be used, otherwise, it'll be generated.
-- Any files in a top-level `target/*/assets` directory will be linked as resources of the target. This was added to support Safari Extensions.
-- A single top-level `*.entitlements` file will be linked as the entitlements of the target. This is not currently used in EAS Capability signing, but may be in the future.
-- All Swift files will be linked as build sources of the target. There is currently no support for storyboard or `.xib` files because I can't be bothered.
-- All `*.xcassets` files will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
-- In Expo SDK +52, set the `ios.appleTeamId`, for SDK 51 and below, set the `appleTeamId` prop in the Config Plugin in `app.config.js`:
+If the `expo-target.config` file defines an `entitlements: {}` object, then a `generated.entitlements` will be added. Avoid using this file directly, and instead update the `expo-target.config.js` file. If the `entitlements` object is not defined, you can manually add any top-level `*.entitlements` file to the target directory—re-running `npx expo prebuild` will link this file to the target as the entitlements file. Only one top-level `*.entitlements` file is supported per target.
 
-```json
-{
-  "plugins": [
-    [
-      "@bacons/apple-targets",
-      {
-        "appleTeamId": "XXXXXXXXXX"
-      }
-    ]
-  ]
-}
-```
+Some targets have special entitlements behavior:
 
-## `expo-target.config.js`
+- App Clips (`clip`) automatically set the required `com.apple.developer.parent-application-identifiers` to `$(AppIdentifierPrefix)${config.ios.bundleIdentifier}`
+- Targets that can utilize App Groups will automatically mirror the `ios.entitlements['com.apple.security.application-groups']` array from the `app.json` if it's defined. This can be overwritten by specifying an `entitlements['com.apple.security.application-groups']` array in the `expo-target.config.js` file.
+
+### Development
+
+Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the Info.plist or the `expo-target.config.js` file.
+If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
+
+You can use the custom Prebuild template `--template node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile.
+
+## Target config
+
+The target config can be a `expo-target.config.js`, or `expo-target.config.json` file.
 
 This file can have the following properties:
 
 ```js
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "widget",
 
@@ -67,7 +66,7 @@ module.exports = {
   icon: "../assets/icon.png",
   // Can also be a URL
   frameworks: [
-    // Frameworks without the extension, these will be added to the target.
+    // Frameworks with or without the `.frameworks` extension, these will be added to the target.
     "SwiftUI",
   ],
   entitlements: {
@@ -84,26 +83,16 @@ module.exports = {
   // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
   // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
   bundleIdentifier: ".mywidget",
+
+  // Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native.
+  exportJs: false,
 };
 ```
 
-You can also use `.js` with the typedoc for autocomplete:
+You can also return a function that accepts the Expo Config and returns a target function for syncing entitlements and other values:
 
 ```js
-/** @type {import('@bacons/apple-targets').Config} */
-module.exports = {
-  type: "watch",
-  colors: {
-    $accent: "steelblue",
-  },
-  deploymentTarget: "9.4",
-};
-```
-
-Finally, you can return a function that accepts the Expo Config and returns a target function for syncing app groups:
-
-```js
-/** @type {import('@bacons/apple-targets').ConfigFunction} */
+/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = (config) => ({
   type: "widget",
   colors: {
@@ -192,7 +181,7 @@ The name of the target must match the name of the target directory.
 > I wrote a blog about this one and used it in production. Learn more: [Expo x Apple Widgets](https://evanbacon.dev/blog/apple-home-screen-widgets).
 
 ```js
-/** @type {import('@bacons/apple-targets').Config} */
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "widget",
   icon: "../../icons/widget.png",
@@ -224,7 +213,7 @@ module.exports = {
 These show up in the share sheet. The icon should be transparent as it will be masked by the system.
 
 ```js
-/** @type {import('@bacons/apple-targets').Config} */
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "action",
   name: "Inspect Element",
@@ -269,7 +258,7 @@ Ensure `NSExtensionJavaScriptPreprocessingFile: "index"` in the Info.plist.
 Populate the Spotlight search results with your app's content.
 
 ```js
-/** @type {import('@bacons/apple-targets').Config} */
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "spotlight",
 };
@@ -308,9 +297,7 @@ The codesigning is theoretically handled entirely by [EAS Build](https://docs.ex
 
 You can also manually sign all sub-targets if you want, I'll light a candle for you.
 
-## Xcode parsing
-
-This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
+> I haven't gotten App Clip codesigning to be fully automated yet. PRs welcome.
 
 ## Building Widgets
 
@@ -349,7 +336,7 @@ First, define your main App Group entitlement in your `app.json`:
 Second, define the same App Group in your target's `expo-target.config.js`:
 
 ```js
-/** @type {import('@bacons/apple-targets').ConfigFunction} */
+/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = (config) => ({
   type: "widget",
   entitlements: {
@@ -402,6 +389,6 @@ let defaults = UserDefaults(suiteName:
 let index = defaults?.string(forKey: "myKey")
 ```
 
-## Using React Native in Targets
+## Xcode parsing
 
-I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want. Look at the App Clip example for a starting point.
+This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.

@@ -178,7 +178,7 @@ function getTemplateConfig(target: string) {
   ].includes(target);
 
   const lines = [
-    `/** @type {import('@bacons/apple-targets').ConfigFunction} */`,
+    `/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */`,
     `module.exports = config => ({`,
     `  type: ${JSON.stringify(target)},`,
   ];

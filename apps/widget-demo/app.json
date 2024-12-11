@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "appleTeamId": "QQ57RJ5UTD",
+
       "bundleIdentifier": "com.bacon.clipdemo",
       "entitlements": {
         "com.apple.security.application-groups": ["group.bacon.data"]
