@@ -25,7 +25,7 @@ export default function App() {
       </Text>
       <Text
         onPress={() => {
-          LiveActivities.endActivity("???");
+          LiveActivities.endActivity();
         }}
       >
         End Activity

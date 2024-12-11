@@ -9,7 +9,7 @@ declare class ExpoLiveActivityModule extends NativeModule<ExpoLiveActivityModule
   isActivityInProgress(): boolean;
   startActivity(name: string, emoji: string): Promise<boolean>;
   updateActivity(emoji: string): void;
-  endActivity(emoji: string): void;
+  endActivity(): void;
 }
 
 // This call loads the native module object from the JSI.

@@ -70,16 +70,14 @@ public class ExpoLiveActivityModule: Module {
             }
         }
         
-        Function("endActivity") { (emoji: String) -> Void in
+        Function("endActivity") { () -> Void in
             if #available(iOS 16.2, *) {
-                let contentState = WidgetAttributes.ContentState(emoji: emoji)
-                let finalContent = ActivityContent(state: contentState, staleDate: nil)
-                
                 Task {
                     for activity in Activity<WidgetAttributes>.activities {
-                        await activity.end(finalContent, dismissalPolicy: .default)
+                        await activity.end(nil, dismissalPolicy: .default)
                     }
                 }
+                
                 NotificationCenter.default.removeObserver(self, name: Notification.Name("onLiveActivityCancel"), object: nil)
             }
         }
