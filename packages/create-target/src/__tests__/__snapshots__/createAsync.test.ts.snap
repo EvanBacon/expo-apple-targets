@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getTemplateConfig should return a valid template for account-auth 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"account-auth\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for action 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"action\\",
+  icon: 'https://github.com/expo.png',
+  colors: { TouchBarBezel: \\"#000000\\", },
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for app-intent 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"app-intent\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for bg-download 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"bg-download\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for clip 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"clip\\",
+  icon: 'https://github.com/expo.png',
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for credentials-provider 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"credentials-provider\\",
+  entitlements: {\\"com.apple.developer.authentication-services.autofill-credential-provider\\":true},
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for device-activity-monitor 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"device-activity-monitor\\",
+  entitlements: {\\"com.apple.developer.family-controls\\":true},
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for intent 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"intent\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for intent-ui 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"intent-ui\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for location-push 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"location-push\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for notification-content 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"notification-content\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for notification-service 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"notification-service\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for quicklook-thumbnail 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"quicklook-thumbnail\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for safari 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"safari\\",
+  icon: 'https://github.com/expo.png',
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for share 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"share\\",
+  icon: 'https://github.com/expo.png',
+  \\"frameworks\\": [\\"UIKit\\", \\"Social\\", \\"MobileCoreServices\\", \\"UniformTypeIdentifiers\\"],
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for spotlight 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"spotlight\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for watch 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"watch\\",
+  icon: 'https://github.com/expo.png',
+  colors: { $accent: \\"darkcyan\\", },
+  deploymentTarget: \\"9.4\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for widget 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"widget\\",
+  icon: 'https://github.com/expo.png',
+  entitlements: { /* Add entitlements */ },
+});"
+`;

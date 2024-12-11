@@ -167,7 +167,7 @@ function notifyAboutManualConfigEdits(edits: Partial<ExpoConfig>) {
   Log.log();
 }
 
-function getTemplateConfig(target: string) {
+export function getTemplateConfig(target: string) {
   const shouldAddIcon = [
     "widget",
     "clip",
@@ -178,7 +178,7 @@ function getTemplateConfig(target: string) {
   ].includes(target);
 
   const lines = [
-    `/** @type {import('@bacons/apple-targets').ConfigFunction} */`,
+    `/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */`,
     `module.exports = config => ({`,
     `  type: ${JSON.stringify(target)},`,
   ];
@@ -202,6 +202,8 @@ function getTemplateConfig(target: string) {
     lines.push(
       `  entitlements: ${JSON.stringify(RECOMMENDED_ENTITLEMENTS[target])},`
     );
+  } else {
+    lines.push(`  entitlements: { /* Add entitlements */ },`);
   }
 
   lines.push(`});`);
@@ -234,19 +236,6 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   classkit: {
     "com.apple.developer.ClassKit-environment": true,
   },
-  // "network-extension": {
-  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
-  // },
-  // share: {
-  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
-  // },
-  // "file-provider": {
-  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
-  // },
-  // "bg-download": {
-  //   "com.apple.security.application-groups": ["group.com.bacon.bacon-widget"],
-  //   // "com.apple.developer.team-identifier": "$(TeamIdentifierPrefix)",
-  // },
   "credentials-provider": {
     "com.apple.developer.authentication-services.autofill-credential-provider":
       true,
@@ -254,7 +243,4 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   "device-activity-monitor": {
     "com.apple.developer.family-controls": true,
   },
-  // 'media-discovery': {
-  //     'com.apple.developer.media-device-discovery-extension': true,
-  // }
 };

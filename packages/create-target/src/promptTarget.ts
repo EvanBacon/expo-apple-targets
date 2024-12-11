@@ -10,15 +10,19 @@ export const TARGETS = [
     value: "widget",
     description: "Home screen widget",
   },
+
+  // Extras (sorted alphabetically)
+  { title: "Account Auth", value: "account-auth", description: "" },
+  {
+    title: "Action",
+    value: "action",
+    description: "Headless action that appears in share sheets",
+  },
   {
     title: "App Clip",
     value: "clip",
     description: "Instantly open your app without installing",
   },
-
-  // Extras (sorted alphabetically)
-  { title: "Account Auth", value: "account-auth", description: "" },
-  { title: "Action", value: "action", description: "" },
   { title: "App Intent", value: "app-intent", description: "" },
   { title: "Background Download", value: "bg-download", description: "" },
   {

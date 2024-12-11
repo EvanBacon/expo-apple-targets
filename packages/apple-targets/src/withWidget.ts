@@ -1,14 +1,23 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import {
+  ConfigPlugin,
+  withDangerousMod,
+  WarningAggregator,
+} from "@expo/config-plugins";
 import plist from "@expo/plist";
 import fs from "fs";
 import { sync as globSync } from "glob";
 import path from "path";
+import chalk from "chalk";
 
 import { withIosColorset } from "./colorset/withIosColorset";
 import { Config, Entitlements } from "./config";
 import { withImageAsset } from "./icon/withImageAsset";
 import { withIosIcon } from "./icon/withIosIcon";
-import { getFrameworksForType, getTargetInfoPlistForType } from "./target";
+import {
+  getFrameworksForType,
+  getTargetInfoPlistForType,
+  SHOULD_USE_APP_GROUPS_BY_DEFAULT,
+} from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
 
@@ -16,7 +25,41 @@ type Props = Config & {
   directory: string;
   configPath: string;
 };
-let hasWarned = false;
+
+function memoize<T extends (...args: any[]) => any>(fn: T): T {
+  const cache = new Map<string, any>();
+  return ((...args: any[]) => {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  }) as T;
+}
+
+const warnOnce = memoize(console.warn);
+const logOnce = memoize(console.log);
+
+function createLogQueue(): { add: (fn: Function) => void; flush: () => void } {
+  const queue: Function[] = [];
+
+  const flush = () => {
+    queue.forEach((fn) => fn());
+    queue.length = 0;
+  };
+
+  return {
+    flush,
+    add: (fn: Function) => {
+      queue.push(fn);
+    },
+  };
+}
+
+// Queue up logs so they only run when prebuild is actually running and not during standard config reads.
+const prebuildLogQueue = createLogQueue();
 
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
@@ -24,6 +67,12 @@ function kebabToCamelCase(str: string) {
   });
 }
 const withWidget: ConfigPlugin<Props> = (config, props) => {
+  prebuildLogQueue.add(() =>
+    warnOnce(
+      chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
+    )
+  );
+
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
   if (props.icon && !/https?:\/\//.test(props.icon)) {
@@ -49,26 +98,73 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (entitlementsFiles.length > 1) {
     throw new Error(
-      `Found multiple entitlements files in ${widgetFolderAbsolutePath}`
+      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${widgetFolderAbsolutePath}`
     );
   }
 
   let entitlementsJson: undefined | Entitlements = props.entitlements;
 
-  // Apply default entitlements that must be present for a target to work.
-  function applyDefaultEntitlements(entitlements: Entitlements): Entitlements {
-    if (props.type === "clip") {
-      entitlements["com.apple.developer.parent-application-identifiers"] = [
-        `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
-      ];
-      // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
-      // entitlements["com.apple.developer.on-demand-install-capable"] = true;
-    }
-
-    return entitlements;
-  }
-
   if (entitlementsJson) {
+    // Apply default entitlements that must be present for a target to work.
+    const applyDefaultEntitlements = (
+      entitlements: Entitlements
+    ): Entitlements => {
+      if (props.type === "clip") {
+        entitlements["com.apple.developer.parent-application-identifiers"] = [
+          `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
+        ];
+        // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
+        // entitlements["com.apple.developer.on-demand-install-capable"] = true;
+      }
+
+      const APP_GROUP_KEY = "com.apple.security.application-groups";
+      const hasDefinedAppGroupsManually = APP_GROUP_KEY in entitlements;
+
+      if (
+        // If the user hasn't manually defined the app groups array.
+        !hasDefinedAppGroupsManually &&
+        // And the target is part of a predefined list of types that benefit from app groups that match the main app...
+        SHOULD_USE_APP_GROUPS_BY_DEFAULT[props.type]
+      ) {
+        const mainAppGroups = config.ios?.entitlements?.[APP_GROUP_KEY];
+
+        if (Array.isArray(mainAppGroups) && mainAppGroups.length > 0) {
+          // Then set the target app groups to match the main app.
+          entitlements[APP_GROUP_KEY] = mainAppGroups;
+          prebuildLogQueue.add(() => {
+            logOnce(
+              chalk`[${widget}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
+                APP_GROUP_KEY
+              )}] in the {bold expo-target.config} file to override.}`
+            );
+          });
+        } else {
+          WarningAggregator.addWarningIOS(
+            `ios.entitlements["${APP_GROUP_KEY}"]`,
+            `[${
+              props.type
+            }] Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
+              {
+                ios: {
+                  entitlements: {
+                    [APP_GROUP_KEY]: [
+                      `group.${
+                        config.ios?.bundleIdentifier ??
+                        `com.example.${config.slug}`
+                      }`,
+                    ],
+                  },
+                },
+              },
+              null,
+              2
+            )}`
+          );
+        }
+      }
+
+      return entitlements;
+    };
     entitlementsJson = applyDefaultEntitlements(entitlementsJson);
   }
 
@@ -77,18 +173,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     withDangerousMod(config, [
       "ios",
       async (config) => {
+        const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
         const entitlementsFilePath =
           entitlementsFiles[0] ??
           // Use the name `generated` to help indicate that this file should be in sync with the config
-          path.join(widgetFolderAbsolutePath, `generated.entitlements`);
+          path.join(widgetFolderAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
 
         if (entitlementsFiles[0]) {
-          console.log(
-            `[${widget}] Replacing ${path.relative(
-              widgetFolderAbsolutePath,
-              entitlementsFiles[0]
-            )} with entitlements JSON from config`
+          const relativeName = path.relative(
+            widgetFolderAbsolutePath,
+            entitlementsFiles[0]
           );
+          if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
+            console.log(
+              `[${widget}] Replacing ${path.relative(
+                widgetFolderAbsolutePath,
+                entitlementsFiles[0]
+              )} with entitlements JSON from config`
+            );
+          }
         }
         fs.writeFileSync(entitlementsFilePath, plist.build(entitlementsJson));
         return config;
@@ -104,12 +207,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   withDangerousMod(config, [
     "ios",
     async (config) => {
-      if (!hasWarned) {
-        hasWarned = true;
-        console.warn(
-          "You're using an experimental Config Plugin that is subject to breaking changes and has no E2E tests."
-        );
-      }
+      prebuildLogQueue.flush();
 
       fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
 
@@ -231,6 +329,7 @@ const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
       });
     });
   }
+  // TODO: Add clean-up maybe? This would possibly restrict the ability to create native colors outside of the Expo target config.
 
   return config;
 };
