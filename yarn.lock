@@ -7459,7 +7459,7 @@ expo-keep-awake@~14.0.1:
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-14.0.1.tgz#77c38feefa95c494aa167e6df5a6eacd17af2358"
   integrity sha512-c5mGCAIk2YM+Vsdy90BlEJ4ZX+KG5Au9EkJUIxXWlpnuKmDAJ3N+5nEZ7EUO1ZTheqoSBeAo4jJ8rTWPU+JXdw==
 
-expo-module-scripts@^4.0.0, expo-module-scripts@^4.0.2:
+expo-module-scripts@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/expo-module-scripts/-/expo-module-scripts-4.0.2.tgz#80154101fedc35cd37763974f4b8a495ffe75d73"
   integrity sha512-N6mbUIHYW3rLy2t4vyN0btPhR+0IG2NMjpjfQlJtn+tojRH5bS4MOzD8DAocgDrc/pb0RPAubE4yteX6+zdd0g==

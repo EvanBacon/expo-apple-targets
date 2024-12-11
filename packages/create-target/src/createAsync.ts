@@ -167,7 +167,7 @@ function notifyAboutManualConfigEdits(edits: Partial<ExpoConfig>) {
   Log.log();
 }
 
-function getTemplateConfig(target: string) {
+export function getTemplateConfig(target: string) {
   const shouldAddIcon = [
     "widget",
     "clip",
