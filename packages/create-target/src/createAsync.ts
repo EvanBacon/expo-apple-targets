@@ -92,14 +92,20 @@ export async function createAsync(
     await copy(targetTemplate, targetDir);
   }
 
+  Log.log(chalk`Writing {cyan expo-target.config.js} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "expo-target.config.js"),
     getTemplateConfig(resolvedTemplate)
   );
 
+  Log.log(chalk`Writing {cyan Info.plist} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "Info.plist"),
     getTargetInfoPlistForType(resolvedTemplate as any)
+  );
+
+  Log.log(
+    chalk`Target created! Run {cyan npx expo prebuild -p ios} to fully generate the target. Develop native code in Xcode.`
   );
 }
 
@@ -127,7 +133,7 @@ function getTemplateConfig(target: string) {
     lines.push('  colors: { $accent: "darkcyan", },');
     lines.push('  deploymentTarget: "9.4",');
   } else if (target === "action") {
-    lines.push('  colors: { TouchBarBezel: "#DB739C", },');
+    lines.push('  colors: { TouchBarBezel: "#000000", },');
   } else if (target === "share") {
     lines.push(
       '  "frameworks": ["UIKit", "Social", "MobileCoreServices", "UniformTypeIdentifiers"],'
