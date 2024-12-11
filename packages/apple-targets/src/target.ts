@@ -323,6 +323,8 @@ export function getFrameworksForType(type: ExtensionType) {
       "WidgetKit",
       // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
       "SwiftUI",
+      "ActivityKit",
+      "AppIntents",
     ];
   } else if (type === "intent") {
     return ["Intents"];
