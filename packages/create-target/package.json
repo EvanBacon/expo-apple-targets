@@ -1,13 +1,17 @@
 {
   "name": "create-target",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create targets for your Expo app",
-  "main": "index.js",
+  "bin": "./build/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/evanbacon/expo-apple-targets.git",
     "directory": "packages/create-target"
   },
+  "files": [
+    "build"
+
+  ],
   "scripts": {
     "build": "ncc build ./src/index.ts -o build/",
     "build:prod": "ncc build ./src/index.ts -o build/ --minify --no-cache --no-source-map-register",

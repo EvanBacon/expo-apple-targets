@@ -3,6 +3,12 @@ import chalk from "chalk";
 import fs from "fs";
 import path from "path";
 
+import {
+  normalizeStaticPlugin,
+  resolveConfigPluginFunctionWithInfo,
+} from "@expo/config-plugins/build/utils/plugin-resolver";
+import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
+
 import { assertValidTarget, promptTargetAsync } from "./promptTarget";
 import { Log } from "./log";
 
@@ -13,6 +19,24 @@ import spawnAsync from "@expo/spawn-async";
 export type Options = {
   install: boolean;
 };
+
+function getNamedPlugins(
+  plugins: NonNullable<ExpoConfig["plugins"]>
+): string[] {
+  const namedPlugins: string[] = [];
+  for (const plugin of plugins) {
+    try {
+      // @ts-ignore
+      const [normal] = normalizeStaticPlugin(plugin);
+      if (typeof normal === "string") {
+        namedPlugins.push(normal);
+      }
+    } catch {
+      // ignore assertions
+    }
+  }
+  return namedPlugins;
+}
 
 function findUpPackageJson(projectRoot: string): string | null {
   let currentDir = projectRoot;
@@ -54,6 +78,21 @@ export async function createAsync(
     });
   }
 
+  const config = getConfig(projectRoot).exp;
+
+  const namedPlugins = getNamedPlugins(config.plugins || []);
+  if (!namedPlugins.includes("@bacons/apple-targets")) {
+    const modification = await modifyConfigAsync(projectRoot, {
+      ...config,
+      plugins: [...(config.plugins || []), "@bacons/apple-targets"],
+    });
+
+    if (modification.type !== "success") {
+      warnAboutConfigAndThrow(modification.type, modification.message!, {
+        plugins: ["@bacons/apple-targets"],
+      });
+    }
+  }
   let resolvedTarget: string | null = null;
   // @ts-ignore: This guards against someone passing --template without a name after it.
   if (target === true || !target) {
@@ -105,6 +144,27 @@ export async function createAsync(
   Log.log(
     chalk`Target created! Run {cyan npx expo prebuild -p ios} to fully generate the target. Develop native code in Xcode.`
   );
+}
+
+function warnAboutConfigAndThrow(
+  type: string,
+  message: string,
+  edits: Partial<ExpoConfig>
+) {
+  Log.log();
+  if (type === "warn") {
+    // The project is using a dynamic config, give the user a helpful log and bail out.
+    Log.log(chalk.yellow(message));
+  }
+  notifyAboutManualConfigEdits(edits);
+  process.exit(1);
+}
+
+function notifyAboutManualConfigEdits(edits: Partial<ExpoConfig>) {
+  Log.log(chalk.cyan(`Please add the following to your Expo config`));
+  Log.log();
+  Log.log(JSON.stringify(edits, null, 2));
+  Log.log();
 }
 
 function getTemplateConfig(target: string) {
