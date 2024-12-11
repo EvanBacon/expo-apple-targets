@@ -142,7 +142,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
           });
         } else {
           prebuildLogQueue.add(() =>
-            console.warn(
+            warnOnce(
               chalk`{yellow [${widget}]} Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
                 {
                   ios: {
