@@ -48,7 +48,6 @@ async function run() {
       `Creates a new Expo Apple target`,
       chalk`npx ${CLI_NAME} {cyan <target>} [options]`,
       [
-        chalk`-t, --target {gray [type]}   Type of target to create.`,
         `    --no-install      Skip installing npm packages`,
         `-v, --version         Version number`,
         `-h, --help            Usage info`,
@@ -66,19 +65,19 @@ async function run() {
   }
 
   try {
-    const parsed = await resolveStringOrBooleanArgsAsync(argv, rawArgsMap, {
-      "--target": Boolean,
-      "-t": "--target",
-    });
+    const parsed = await resolveStringOrBooleanArgsAsync(argv, rawArgsMap, {});
 
     debug(`Default args:\n%O`, args);
     debug(`Parsed:\n%O`, parsed);
 
     const { createAsync } = await import("./createAsync");
-    await createAsync(parsed.projectRoot, {
-      target: parsed.args["--target"],
-      install: !args["--no-install"],
-    });
+    await createAsync(
+      // This is the target
+      parsed.projectRoot,
+      {
+        install: !args["--no-install"],
+      }
+    );
   } catch (error: any) {
     // ExitError has already been logged, all others should be logged before exiting.
     if (!(error instanceof ExitError)) {

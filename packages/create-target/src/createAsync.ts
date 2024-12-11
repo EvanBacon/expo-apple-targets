@@ -12,7 +12,6 @@ import spawnAsync from "@expo/spawn-async";
 
 export type Options = {
   install: boolean;
-  target?: string | true;
 };
 
 function findUpPackageJson(projectRoot: string): string | null {
@@ -31,10 +30,9 @@ function findUpPackageJson(projectRoot: string): string | null {
 }
 
 export async function createAsync(
-  inputPath: string,
+  target: string,
   props: Options
 ): Promise<void> {
-  props.target ??= inputPath;
   const pkgJson = findUpPackageJson(process.cwd());
 
   if (!pkgJson) {
@@ -56,21 +54,21 @@ export async function createAsync(
     });
   }
 
-  let resolvedTemplate: string | null = null;
+  let resolvedTarget: string | null = null;
   // @ts-ignore: This guards against someone passing --template without a name after it.
-  if (props.target === true || !props.target) {
-    resolvedTemplate = await promptTargetAsync();
+  if (target === true || !target) {
+    resolvedTarget = await promptTargetAsync();
   } else {
-    resolvedTemplate = props.target;
-    console.log(chalk`Creating a {cyan ${resolvedTemplate}} Apple target.\n`);
+    resolvedTarget = target;
+    console.log(chalk`Creating a {cyan ${resolvedTarget}} Apple target.\n`);
   }
 
-  if (!resolvedTemplate) {
+  if (!resolvedTarget) {
     throw new Error("No --target was provided.");
   }
-  assertValidTarget(resolvedTemplate);
+  assertValidTarget(resolvedTarget);
 
-  const targetDir = path.join(projectRoot, "targets", resolvedTemplate);
+  const targetDir = path.join(projectRoot, "targets", resolvedTarget);
 
   if (fs.existsSync(targetDir)) {
     // Check if the target directory is empty
@@ -85,7 +83,7 @@ export async function createAsync(
 
   // Write the target config file
 
-  const targetTemplate = path.join(vendorTemplatePath, resolvedTemplate);
+  const targetTemplate = path.join(vendorTemplatePath, resolvedTarget);
 
   if (fs.existsSync(targetTemplate)) {
     // Deeply copy all files from the template directory to the target directory
@@ -95,13 +93,13 @@ export async function createAsync(
   Log.log(chalk`Writing {cyan expo-target.config.js} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "expo-target.config.js"),
-    getTemplateConfig(resolvedTemplate)
+    getTemplateConfig(resolvedTarget)
   );
 
   Log.log(chalk`Writing {cyan Info.plist} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "Info.plist"),
-    getTargetInfoPlistForType(resolvedTemplate as any)
+    getTargetInfoPlistForType(resolvedTarget as any)
   );
 
   Log.log(
