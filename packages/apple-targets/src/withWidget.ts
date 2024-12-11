@@ -141,26 +141,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
             );
           });
         } else {
-          WarningAggregator.addWarningIOS(
-            `ios.entitlements["${APP_GROUP_KEY}"]`,
-            `[${
-              props.type
-            }] Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
-              {
-                ios: {
-                  entitlements: {
-                    [APP_GROUP_KEY]: [
-                      `group.${
-                        config.ios?.bundleIdentifier ??
-                        `com.example.${config.slug}`
-                      }`,
-                    ],
+          prebuildLogQueue.add(() =>
+            console.warn(
+              chalk`{yellow [${widget}]} Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
+                {
+                  ios: {
+                    entitlements: {
+                      [APP_GROUP_KEY]: [
+                        `group.${
+                          config.ios?.bundleIdentifier ??
+                          `com.example.${config.slug}`
+                        }`,
+                      ],
+                    },
                   },
                 },
-              },
-              null,
-              2
-            )}`
+                null,
+                2
+              )}`
+            )
           );
         }
       }
