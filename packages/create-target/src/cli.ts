@@ -46,15 +46,14 @@ async function run() {
     const nameWithoutCreate = CLI_NAME.replace("create-", "");
     printHelp(
       `Creates a new Expo Apple target`,
-      chalk`npx ${CLI_NAME} {cyan <path>} [options]`,
+      chalk`npx ${CLI_NAME} {cyan <target>} [options]`,
       [
+        chalk`-t, --target {gray [type]}   Type of target to create.`,
         `    --no-install      Skip installing npm packages`,
-        chalk`-t, --target  {gray [type]}  Type of target to create.`,
         `-v, --version         Version number`,
         `-h, --help            Usage info`,
       ].join("\n"),
       chalk`
-
     {gray The package manager used for installing}
     {gray node modules is based on how you invoke the CLI:}
 
