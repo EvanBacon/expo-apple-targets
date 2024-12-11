@@ -1,6 +1,6 @@
 {
   "name": "create-target",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create targets for your Expo app",
   "bin": "./build/index.js",
   "repository": {

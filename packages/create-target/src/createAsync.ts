@@ -83,7 +83,6 @@ export async function createAsync(
   const namedPlugins = getNamedPlugins(config.plugins || []);
   if (!namedPlugins.includes("@bacons/apple-targets")) {
     const modification = await modifyConfigAsync(projectRoot, {
-      ...config,
       plugins: [...(config.plugins || []), "@bacons/apple-targets"],
     });
 
