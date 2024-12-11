@@ -44,6 +44,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
       "account-auth",
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
+    "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
     // "com.apple.intents-service": "intents",
   };
 
@@ -75,8 +76,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
       },
     });
-  }
-  if (type === "clip") {
+  } else if (type === "app-intent") {
+    return plist.build({
+      EXAppExtensionAttributes: {
+        EXExtensionPointIdentifier: "com.apple.appintents-extension",
+      },
+    });
+  } else if (type === "clip") {
     return plist.build({
       CFBundleName: "$(PRODUCT_NAME)",
       CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
@@ -89,6 +95,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSAppClipRequestEphemeralUserNotification: false,
         NSAppClipRequestLocationConfirmation: false,
       },
+      NSAppTransportSecurity: {
+        NSAllowsArbitraryLoads: false,
+        NSAllowsLocalNetworking: true,
+      },
+      UILaunchStoryboardName: "SplashScreen",
+      UIUserInterfaceStyle: "Automatic",
+      UIViewControllerBasedStatusBarAppearance: false,
     });
   }
   const NSExtensionPointIdentifier = Object.keys(

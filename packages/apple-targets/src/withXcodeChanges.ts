@@ -879,13 +879,18 @@ async function applyXcodeChanges(
 
   const magicCwd = path.join(config._internal!.projectRoot, "ios", props.cwd);
 
-  const developmentTeamId =
+  let developmentTeamId =
     props.teamId ?? mainAppTarget.getDefaultBuildSetting("DEVELOPMENT_TEAM");
 
   if (!developmentTeamId) {
-    throw new Error(
-      "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
+    console.error(
+      "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config. Using placeholder value."
     );
+    // Using a placeholder gives users a chance to see the value in Xcode.
+    developmentTeamId = "XXXXXXXXXX";
+    // throw new Error(
+    //   "Couldn't find DEVELOPMENT_TEAM in Xcode project and none were provided in the Expo config."
+    // );
   }
 
   function applyDevelopmentTeamIdToTargets() {
