@@ -9,14 +9,30 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 
 ## 🚀 How to use
 
-> This plugin requires at least CocoaPods 1.16.2 and Xcode 16.
+> This plugin requires at least CocoaPods 1.16.2, Xcode 16, and Expo SDK +52.
+
+Run the following command in your Expo project:
+
+```
+npx create-target
+```
+
+Select a target to generate, I recommend starting with a `widget`.
+
+This will generate the required widget files in the `targets` directory.
+
+Ensure the `ios.appleTeamId` property is set in your `app.json`, then run `npx expo prebuild -p ios --clean` to generate the Xcode project.
+
+You can now open Xcode and develop the widget inside the `expo:targets` folder. When you're ready to build, run:
+
+### Manual usage
 
 - Add targets to `targets/` directory with an `expo-target.config.json` file.
-- Currently, if you don't have an `Info.plist`, it'll be generated on `npx expo prebuild`. This may be changed in the future so if you have an `Info.plist` it'll be used, otherwise, it'll be generated.
+- If you don't have an `Info.plist`, it'll be generated on `npx expo prebuild`. This may be changed in the future so if you have an `Info.plist` it'll be used, otherwise, it'll be generated.
 - Any files in a top-level `target/*/assets` directory will be linked as resources of the target. This was added to support Safari Extensions.
 - A single top-level `*.entitlements` file will be linked as the entitlements of the target. This is not currently used in EAS Capability signing, but may be in the future.
 - All Swift files will be linked as build sources of the target. There is currently no support for storyboard or `.xib` files because I can't be bothered.
-- All top-level `*.xcassets` will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
+- All `*.xcassets` files will be linked as resources, and accessible in the targets. If you add files outside of Xcode, you'll need to re-run `npx expo prebuild` to link them.
 - In Expo SDK +52, set the `ios.appleTeamId`, for SDK 51 and below, set the `appleTeamId` prop in the Config Plugin in `app.config.js`:
 
 ```json
@@ -32,49 +48,43 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 }
 ```
 
-You can change the root directory from `./targets` to something else with `root: "./src/targets"`. Avoid doing this.
-
-## Using React Native in Targets
-
-I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want. Look at the App Clip example for a starting point.
-
-## `expo-target.config.json`
+## `expo-target.config.js`
 
 This file can have the following properties:
 
-```json
-{
-  "type": "widget",
+```js
+module.exports = {
+  type: "widget",
 
   // Name of the target/product. Defaults to the directory name.
-  "name": "My Widget",
+  name: "My Widget",
 
   // Generates colorset files for the target.
-  "colors": {
+  colors: {
     // or "$accent": "red",
-    "$accent": { "color": "red", "darkColor": "blue" }
+    $accent: { color: "red", darkColor: "blue" },
   },
-  "icon": "../assets/icon.png",
+  icon: "../assets/icon.png",
   // Can also be a URL
-  "frameworks": [
+  frameworks: [
     // Frameworks without the extension, these will be added to the target.
-    "SwiftUI"
+    "SwiftUI",
   ],
-  "entitlements": {
+  entitlements: {
     // Serialized entitlements. Useful for configuring with environment variables.
   },
   // Generates xcassets for the target.
-  "images": {
-    "thing": "../assets/thing.png"
+  images: {
+    thing: "../assets/thing.png",
   },
 
   // The iOS version fot the target.
-  "deploymentTarget": "13.4",
+  deploymentTarget: "13.4",
 
   // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
   // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
-  "bundleIdentifier": ".mywidget"
-}
+  bundleIdentifier: ".mywidget",
+};
 ```
 
 You can also use `.js` with the typedoc for autocomplete:
@@ -391,3 +401,7 @@ let defaults = UserDefaults(suiteName:
 // Access the value you set:
 let index = defaults?.string(forKey: "myKey")
 ```
+
+## Using React Native in Targets
+
+I'm not sure, that's not the purpose of this plugin. I built this so I could easily build iOS widgets and other minor targets with SwiftUI. I imagine it would be straightforward to use React Native in share, notification, iMessage, Safari, and photo editing extensions, you can build that on top of this plugin if you want. Look at the App Clip example for a starting point.
