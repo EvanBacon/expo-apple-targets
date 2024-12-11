@@ -3,11 +3,9 @@ import chalk from "chalk";
 import fs from "fs";
 import path from "path";
 
-import {
-  normalizeStaticPlugin,
-  resolveConfigPluginFunctionWithInfo,
-} from "@expo/config-plugins/build/utils/plugin-resolver";
+import { normalizeStaticPlugin } from "@expo/config-plugins/build/utils/plugin-resolver";
 import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
+import resolveFrom from "resolve-from";
 
 import { assertValidTarget, promptTargetAsync } from "./promptTarget";
 import { Log } from "./log";
@@ -69,7 +67,10 @@ export async function createAsync(
 
   const projectRoot = path.dirname(pkgJson);
 
-  if (props.install) {
+  if (
+    props.install &&
+    !resolveFrom.silent(projectRoot, "@bacons/apple-targets")
+  ) {
     Log.log("Installing @bacons/apple-targets package...");
     // This ensures the config plugin is added.
     await spawnAsync("npx", ["expo", "install", "@bacons/apple-targets"], {
