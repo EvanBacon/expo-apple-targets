@@ -1,4 +1,8 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import {
+  ConfigPlugin,
+  withDangerousMod,
+  WarningAggregator,
+} from "@expo/config-plugins";
 import plist from "@expo/plist";
 import fs from "fs";
 import { sync as globSync } from "glob";
@@ -21,29 +25,41 @@ type Props = Config & {
   directory: string;
   configPath: string;
 };
-let hasWarned = false;
 
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
-  let lastArgs: any[] = [];
-  let lastResult: any;
-  return function (...args: any[]) {
-    if (args.length !== lastArgs.length) {
-      lastResult = fn(...args);
-      lastArgs = args;
-      return lastResult;
+  const cache = new Map<string, any>();
+  return ((...args: any[]) => {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
     }
-    for (let i = 0; i < args.length; i++) {
-      if (args[i] !== lastArgs[i]) {
-        lastResult = fn(...args);
-        lastArgs = args;
-        return lastResult;
-      }
-    }
-    return lastResult;
-  } as T;
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  }) as T;
 }
 
 const warnOnce = memoize(console.warn);
+const logOnce = memoize(console.log);
+
+function createLogQueue(): { add: (fn: Function) => void; flush: () => void } {
+  const queue: Function[] = [];
+
+  const flush = () => {
+    queue.forEach((fn) => fn());
+    queue.length = 0;
+  };
+
+  return {
+    flush,
+    add: (fn: Function) => {
+      queue.push(fn);
+    },
+  };
+}
+
+// Queue up logs so they only run when prebuild is actually running and not during standard config reads.
+const prebuildLogQueue = createLogQueue();
 
 function kebabToCamelCase(str: string) {
   return str.replace(/-([a-z])/g, function (g) {
@@ -51,6 +67,12 @@ function kebabToCamelCase(str: string) {
   });
 }
 const withWidget: ConfigPlugin<Props> = (config, props) => {
+  prebuildLogQueue.add(() =>
+    warnOnce(
+      chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
+    )
+  );
+
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
   if (props.icon && !/https?:\/\//.test(props.icon)) {
@@ -76,7 +98,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (entitlementsFiles.length > 1) {
     throw new Error(
-      `Found multiple entitlements files in ${widgetFolderAbsolutePath}`
+      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${widgetFolderAbsolutePath}`
     );
   }
 
@@ -109,17 +131,19 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         if (Array.isArray(mainAppGroups) && mainAppGroups.length > 0) {
           // Then set the target app groups to match the main app.
           entitlements[APP_GROUP_KEY] = mainAppGroups;
-          console.log(
-            chalk.dim`[${widget}] Syncing app groups with main app. Define entitlements[${JSON.stringify(
-              APP_GROUP_KEY
-            )}] in the {cyan expo-target.config} file to override.`
-          );
-          console.log(chalk.dim(`- ${mainAppGroups.join(", ")}`));
+          prebuildLogQueue.add(() => {
+            logOnce(
+              chalk`[${widget}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
+                APP_GROUP_KEY
+              )}] in the {bold expo-target.config} file to override.}`
+            );
+          });
         } else {
-          warnOnce(
-            `Apple target "${
+          WarningAggregator.addWarningIOS(
+            `ios.entitlements["${APP_GROUP_KEY}"]`,
+            `[${
               props.type
-            }" may require the App Groups entitlement but none were found in the app.json.\nExample:\n${JSON.stringify(
+            }] Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
               {
                 ios: {
                   entitlements: {
@@ -149,18 +173,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     withDangerousMod(config, [
       "ios",
       async (config) => {
+        const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
         const entitlementsFilePath =
           entitlementsFiles[0] ??
           // Use the name `generated` to help indicate that this file should be in sync with the config
-          path.join(widgetFolderAbsolutePath, `generated.entitlements`);
+          path.join(widgetFolderAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
 
         if (entitlementsFiles[0]) {
-          console.log(
-            `[${widget}] Replacing ${path.relative(
-              widgetFolderAbsolutePath,
-              entitlementsFiles[0]
-            )} with entitlements JSON from config`
+          const relativeName = path.relative(
+            widgetFolderAbsolutePath,
+            entitlementsFiles[0]
           );
+          if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
+            console.log(
+              `[${widget}] Replacing ${path.relative(
+                widgetFolderAbsolutePath,
+                entitlementsFiles[0]
+              )} with entitlements JSON from config`
+            );
+          }
         }
         fs.writeFileSync(entitlementsFilePath, plist.build(entitlementsJson));
         return config;
@@ -176,12 +207,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   withDangerousMod(config, [
     "ios",
     async (config) => {
-      if (!hasWarned) {
-        hasWarned = true;
-        console.warn(
-          chalk`Using experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
-        );
-      }
+      prebuildLogQueue.flush();
 
       fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
 
@@ -303,6 +329,7 @@ const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
       });
     });
   }
+  // TODO: Add clean-up maybe? This would possibly restrict the ability to create native colors outside of the Expo target config.
 
   return config;
 };

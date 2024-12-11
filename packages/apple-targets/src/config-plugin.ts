@@ -8,6 +8,7 @@ import { withPodTargetExtension } from "./withPodTargetExtension";
 import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
+let hasWarned = false;
 export const withTargetsDir: ConfigPlugin<
   {
     appleTeamId?: string;
@@ -19,7 +20,8 @@ export const withTargetsDir: ConfigPlugin<
   const { root = "./targets", match = "*" } = _props || {};
   const projectRoot = config._internal!.projectRoot;
 
-  if (!appleTeamId) {
+  if (!appleTeamId && !hasWarned) {
+    hasWarned = true;
     console.warn(
       chalk`{yellow [bacons/apple-targets]} Expo config is missing required {cyan ios.appleTeamId} property. Find this in Xcode and add to the Expo Config to correct. iOS builds may fail until this is corrected.`
     );

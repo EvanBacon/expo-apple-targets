@@ -6,4 +6,5 @@ module.exports = () => ({
     $accent: "steelblue",
     $widgetBackground: "dodgerblue",
   },
+  entitlements: {},
 });
