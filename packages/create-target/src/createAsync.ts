@@ -6,7 +6,7 @@ import path from "path";
 import { assertValidTarget, promptTargetAsync } from "./promptTarget";
 import { Log } from "./log";
 
-// @ts-expect-error
+// @ts-ignore
 import { getTargetInfoPlistForType } from "@bacons/apple-targets/build/target";
 import spawnAsync from "@expo/spawn-async";
 
@@ -147,7 +147,7 @@ function getTemplateConfig(target: string) {
 
 import { copy } from "fs-extra";
 
-const vendorTemplatePath = require.resolve("create-target/templates");
+const vendorTemplatePath = path.resolve(__dirname, "../templates");
 
 // @ts-expect-error
 const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
