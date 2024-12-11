@@ -6,5 +6,6 @@ struct exportWidgets: WidgetBundle {
     var body: some Widget {
         // Export widgets here
         widgets()
+        widgetControl()
     }
 }

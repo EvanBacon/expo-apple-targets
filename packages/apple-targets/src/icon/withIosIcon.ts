@@ -10,6 +10,7 @@ import { join } from "path";
 
 import { ExtensionType } from "../target";
 
+// TODO: support dark, tinted, and universal icons for widgets.
 export const withIosIcon: ConfigPlugin<{
   cwd: string;
   type: ExtensionType;

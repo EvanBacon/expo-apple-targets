@@ -6,8 +6,13 @@ import path from "path";
 import { normalizeStaticPlugin } from "@expo/config-plugins/build/utils/plugin-resolver";
 import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
 import resolveFrom from "resolve-from";
-
-import { assertValidTarget, promptTargetAsync } from "./promptTarget";
+import { copy, remove } from "fs-extra";
+import {
+  assertValidTarget,
+  confirmAsync,
+  promptTargetAsync,
+} from "./promptTarget";
+import { env } from "./utils/env";
 import { Log } from "./log";
 
 // @ts-ignore
@@ -113,8 +118,18 @@ export async function createAsync(
     // Check if the target directory is empty
     const files = fs.readdirSync(targetDir);
     if (files.length > 0) {
-      // TODO: Maybe allow a force flag to overwrite the target directory
-      throw new Error(`Target directory ${targetDir} is not empty.`);
+      if (
+        env.CI ||
+        !(await confirmAsync({
+          message: `Target directory ${targetDir} is not empty. Continue?`,
+        }))
+      ) {
+        // TODO: Maybe allow a force flag to overwrite the target directory
+        throw new Error(`Target directory ${targetDir} is not empty.`);
+      }
+
+      // Remove all files in the target directory
+      await remove(targetDir);
     }
   }
 
@@ -210,8 +225,6 @@ export function getTemplateConfig(target: string) {
 
   return lines.join("\n");
 }
-
-import { copy } from "fs-extra";
 
 const vendorTemplatePath = path.resolve(__dirname, "../templates");
 

@@ -96,3 +96,34 @@ export async function promptTargetAsync() {
 
   return answer;
 }
+
+type Question<V extends string = string> = import("prompts").PromptObject<V> & {
+  optionsPerPage?: number;
+};
+
+type NamelessQuestion = Omit<Question<"value">, "name" | "type">;
+
+/**
+ * Create a standard yes/no confirmation that can be cancelled.
+ *
+ * @param questions
+ * @param options
+ */
+export async function confirmAsync(
+  questions: NamelessQuestion,
+  options?: prompts.Options
+): Promise<boolean> {
+  if (env.CI) {
+    throw new Error("Cannot prompt for confirmation in CI");
+  }
+  const { value } = await prompts(
+    {
+      initial: true,
+      ...questions,
+      name: "value",
+      type: "confirm",
+    },
+    options
+  );
+  return value ?? null;
+}

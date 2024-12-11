@@ -77,8 +77,8 @@ module.exports = {
     thing: "../assets/thing.png",
   },
 
-  // The iOS version fot the target.
-  deploymentTarget: "13.4",
+  // The iOS version fot the target. Defaults to 18.1
+  deploymentTarget: "15.1",
 
   // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
   // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.

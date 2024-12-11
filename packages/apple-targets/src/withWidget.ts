@@ -26,6 +26,8 @@ type Props = Config & {
   configPath: string;
 };
 
+const DEFAULT_DEPLOYMENT_TARGET = "18.1";
+
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = new Map<string, any>();
   return ((...args: any[]) => {
@@ -255,7 +257,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         config._internal!.projectRoot,
         path.resolve(props.directory)
       ),
-    deploymentTarget: props.deploymentTarget ?? "16.4",
+    deploymentTarget: props.deploymentTarget ?? DEFAULT_DEPLOYMENT_TARGET,
     bundleId,
     icon: props.icon,
 
