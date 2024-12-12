@@ -9,7 +9,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 
 ## 🚀 How to use
 
-> This plugin requires at least CocoaPods 1.16.2, Xcode 16, and Expo SDK +52.
+> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +52.
 
 1. Run `npx create-target` in your Expo project to generate an Apple target.
 2. Select a target to generate, I recommend starting with a `widget` (e.g. `npx create-target widget`). This will generate the required widget files in the root `/targets` directory, install `@bacons/apple-targets`, and add the Expo Config Plugin to your project.
