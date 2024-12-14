@@ -245,7 +245,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   const mainAppBundleId = config.ios!.bundleIdentifier!;
   const bundleId = props.bundleIdentifier?.startsWith(".")
     ? mainAppBundleId + props.bundleIdentifier
-    : props.bundleIdentifier ?? `${mainAppBundleId}.${targetName}`;
+    : props.bundleIdentifier ??
+      `${mainAppBundleId}.${getSanitizedBundleIdentifier(targetName)}`;
 
   withXcodeChanges(config, {
     configPath: props.configPath,
@@ -336,3 +337,11 @@ const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
 };
 
 export default withWidget;
+
+function getSanitizedBundleIdentifier(value: string) {
+  // According to the behavior observed when using the UI in Xcode.
+  // Must start with a letter, period, or hyphen (not number).
+  // Can only contain alphanumeric characters, periods, and hyphens.
+  // Can have empty segments (e.g. com.example..app).
+  return value.replace(/(^[^a-zA-Z.-]|[^a-zA-Z0-9-.])/g, "-");
+}
