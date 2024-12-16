@@ -21,8 +21,8 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor" 
-  | "keyboard";
+  | "device-activity-monitor"
+  | "custom-keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -47,7 +47,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
     // "com.apple.intents-service": "intents",
-    "com.apple.keyboard-service": "keyboard",
+    "com.apple.keyboard-service": "custom-keyboard",
   };
 
 // An exhaustive list of extension types that should sync app groups from the main target by default when
@@ -316,7 +316,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
-    "keyboard",
+    "custom-keyboard",
   ].includes(type);
 }
 

@@ -190,7 +190,7 @@ export function getTemplateConfig(target: string) {
     "safari",
     "share",
     "watch",
-    "keyboard",
+    "custom-keyboard",
   ].includes(target);
 
   const lines = [
@@ -257,7 +257,7 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   "device-activity-monitor": {
     "com.apple.developer.family-controls": true,
   },
-  "sandbox": {
-    "com.apple.security.app-sandbox": true
-  }
+  sandbox: {
+    "com.apple.security.app-sandbox": true,
+  },
 };
