@@ -58,6 +58,7 @@ export const TARGETS = [
   { title: "Siri Intent UI", value: "intent-ui", description: "" },
   { title: "Share Extension", value: "share", description: "" },
   { title: "Watch", value: "watch", description: "" },
+  { title: "Keyboard", value: "keyboard", description: "" },
 ];
 
 export function assertValidTarget(target: any): asserts target is string {
