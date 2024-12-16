@@ -74,7 +74,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     safari: false,
     spotlight: false,
     watch: false,
-    keyboard: true,
+    "custom-keyboard": true,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
@@ -280,6 +280,17 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           "$(PRODUCT_MODULE_NAME).NotificationViewController",
         // NSExtensionMainStoryboard: 'MainInterface',
         NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "custom-keyboard") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          RequestsOpenAccess: true,
+        },
+        NSExtensionPointIdentifier,
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).KeyboardViewController",
       },
     });
   }
