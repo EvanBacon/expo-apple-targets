@@ -1,56 +1,3 @@
-// import React from "react";
-// import { Image, StyleSheet, Text, View } from "react-native";
-
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <View
-//         style={{
-//           padding: 16,
-//           justifyContent: "center",
-//           alignItems: "center",
-//           backgroundColor: "#F6F6F6",
-//           gap: 8,
-//         }}
-//       >
-//         <View
-//           style={{
-//             borderRadius: 50,
-//             width: 100,
-//             height: 3,
-//             backgroundColor: "#737373",
-//           }}
-//         />
-
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             gap: 8,
-//             alignItems: "center",
-//           }}
-//         >
-//           <Image
-//             source={{
-//               uri: "https://github.com/evanbacon.png",
-//             }}
-//             style={{
-//               width: 30,
-//               height: 30,
-//               borderRadius: 18,
-//             }}
-//           />
-
-//           <Text>
-//             Sharing as <Text style={{ fontWeight: "bold" }}>baconbrix</Text>
-//           </Text>
-//         </View>
-//       </View>
-
-//       <Text>Open up App.js to start working on your app!!</Text>
-//     </View>
-//   );
-// }
-
 import React from "react";
 import {
   View,
@@ -58,14 +5,24 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   Linking,
   useWindowDimensions,
 } from "react-native";
 
 const App = (props) => {
+  if (props.extension === "com.apple.share-services") {
+    return <ShareExtension {...props} />;
+  }
+
+  return (
+    <View>
+      <Text>Hello App</Text>
+    </View>
+  );
+};
+
+function ShareExtension(props) {
   console.log("Props", props);
-  const { height } = useWindowDimensions();
   return (
     <View
       style={{
@@ -74,17 +31,13 @@ const App = (props) => {
         justifyContent: "flex-end",
       }}
     >
-      {/* <View style={{ flex: 1 }} /> */}
       <View
         style={{
           backgroundColor: "white",
           borderRadius: 20,
           overflow: "hidden",
           gap: 12,
-
           paddingBottom: 96,
-
-          // minHeight: height / 2,
         }}
       >
         {/* Header */}
@@ -147,7 +100,7 @@ const App = (props) => {
       </View>
     </View>
   );
-};
+}
 
 const Card = ({ type, image }) => {
   return (

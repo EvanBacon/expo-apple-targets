@@ -3,7 +3,7 @@ import Social
 import SwiftUI
 
 class ShareViewController: UIViewController {
-  private var sharedText: String = "Loading..."
+  private var sharedText: String = ""
 
   
   override func viewDidLoad() {
@@ -35,6 +35,7 @@ class ShareViewController: UIViewController {
     // Replace this with your React Native content or SwiftUI view
     let contentView = ReactNativeView(frame: view.frame, moduleName: "main",
                                       initialProps: [
+                                        "extension": "com.apple.share-services",
                                         "bundleId": Bundle.main.bundleIdentifier!,
                                         "text": sharedText
                                       ])
