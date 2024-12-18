@@ -63,7 +63,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-const App = () => {
+const App = (props) => {
+  console.log("Props", props);
   const { height } = useWindowDimensions();
   return (
     <View
