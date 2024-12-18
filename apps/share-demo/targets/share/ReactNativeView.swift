@@ -47,6 +47,7 @@ class ReactNativeView: UIView {
         // Embed the React Native view
         if let reactRootView = self.reactRootView {
             reactRootView.frame = self.bounds
+            reactRootView.backgroundColor = .clear
             reactRootView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             self.addSubview(reactRootView)
         }
