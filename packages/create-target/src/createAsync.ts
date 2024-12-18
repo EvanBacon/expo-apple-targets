@@ -188,7 +188,6 @@ export function getTemplateConfig(target: string) {
     "clip",
     "action",
     "safari",
-    "share",
     "watch",
   ].includes(target);
 
