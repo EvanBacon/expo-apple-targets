@@ -13,25 +13,7 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
-post_install_hooks = []
-
-Dir.glob(File.join(__dir__, '..', 'targets', '**', 'pods.rb')).each do |target_file|
-  target_name = File.basename(File.dirname(target_file))
-  target target_name do
-    target_binding = binding
-    target_binding.local_variable_set(:podfile_properties, podfile_properties)
-
-    eval(File.read(target_file), target_binding, target_file)
-
-    if target_binding.local_variable_defined?(:target_post_install)
-      post_install_hooks ||= []
-      post_install_hooks << target_binding.local_variable_get(:target_post_install)
-    end
-  end
-end
-
-
-target 'sharedemo' do
+target 'HelloWorld' do
   use_expo_modules!
 
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
@@ -57,14 +39,12 @@ target 'sharedemo' do
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
+    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
   post_install do |installer|
-    post_install_hooks.each do |hook|
-      hook.call(installer)
-    end
     react_native_post_install(
       installer,
       config[:reactNativePath],
@@ -72,12 +52,8 @@ target 'sharedemo' do
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
 
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'No'
-      end
-    end
-
+    # This is necessary for Xcode 14, because it signs resource bundles by default
+    # when building for devices.
     installer.target_installation_results.pod_target_installation_results
       .each do |pod_name, target_installation_result|
       target_installation_result.resource_bundle_targets.each do |resource_bundle_target|
@@ -86,7 +62,5 @@ target 'sharedemo' do
         end
       end
     end
-
   end
 end
-

@@ -174,6 +174,19 @@ end
 
 The name of the target must match the name of the target directory.
 
+A `pods.rb` file can define a function `target_post_install` which will be aggregated and run in the root `Podfile`'s `post_install` block.
+
+```rb
+def target_post_install(installer)
+  # Add any custom post-install actions here
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+     end
+  end
+end
+```
+
 ## Examples
 
 ### `widget`

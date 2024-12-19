@@ -30,3 +30,4 @@ use_react_native!(
   :app_path => "#{Pod::Config.instance.installation_root}/..",
   :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
 )
+
