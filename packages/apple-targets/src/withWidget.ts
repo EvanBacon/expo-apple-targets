@@ -1,8 +1,4 @@
-import {
-  ConfigPlugin,
-  withDangerousMod,
-  WarningAggregator,
-} from "@expo/config-plugins";
+import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
 import plist from "@expo/plist";
 import fs from "fs";
 import { sync as globSync } from "glob";
@@ -26,7 +22,7 @@ type Props = Config & {
   configPath: string;
 };
 
-const DEFAULT_DEPLOYMENT_TARGET = "18.1";
+const DEFAULT_DEPLOYMENT_TARGET = "18.0";
 
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = new Map<string, any>();

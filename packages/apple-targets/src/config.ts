@@ -111,7 +111,7 @@ export type Config = {
    */
   frameworks?: string[];
 
-  /** Deployment iOS version for the target. Defaults to `18.1` */
+  /** Deployment iOS version for the target. Defaults to `18.0` */
   deploymentTarget?: string;
 
   /** Apple team ID to use for signing the target. Defaults to whatever is used in the main App target. */
