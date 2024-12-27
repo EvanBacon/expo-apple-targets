@@ -174,6 +174,12 @@ end
 
 The name of the target must match the name of the target directory.
 
+## `exportJs`
+
+The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
+
+To detect which target is being built, you can read the bundle identifier using `expo-application`.
+
 ## Examples
 
 ### `widget`
