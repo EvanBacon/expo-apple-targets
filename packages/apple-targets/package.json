@@ -36,9 +36,11 @@
     "@react-native/normalize-colors": "^0.76.1",
     "glob": "^10.2.6",
     "@bacons/xcode": "1.0.0-alpha.24",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^8.1.0",
     "@expo/babel-preset-cli": "^0.3.1",
