@@ -998,13 +998,20 @@ async function applyXcodeChanges(
           phase.props.name === "Bundle React Native code and images"
       ) as PBXShellScriptBuildPhase | undefined;
       if (!currentShellScript) {
-        target.createBuildPhase(PBXShellScriptBuildPhase, {
-          ...shellScript.props,
-        });
+        // Link the same build script across targets to simplify updates.
+        target.props.buildPhases.push(shellScript);
+
+        // Alternatively, create a duplicate.
+        // target.createBuildPhase(PBXShellScriptBuildPhase, {
+        //   ...shellScript.props,
+        // });
       } else {
-        for (const key in shellScript.props) {
-          // @ts-expect-error
-          currentShellScript.props[key] = shellScript.props[key];
+        // If there already is a bundler shell script and it's not the one from the main target, then update it.
+        if (currentShellScript.uuid !== shellScript.uuid) {
+          for (const key in shellScript.props) {
+            // @ts-expect-error
+            currentShellScript.props[key] = shellScript.props[key];
+          }
         }
       }
     } else {
