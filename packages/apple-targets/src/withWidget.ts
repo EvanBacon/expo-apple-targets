@@ -77,7 +77,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     props.icon = path.join(props.directory, props.icon);
   }
 
-  const widgetDir = path
+  const widgetDir = props.name || path
     .basename(props.directory)
     .replace(/\/+$/, "")
     .replace(/^\/+/, "");
