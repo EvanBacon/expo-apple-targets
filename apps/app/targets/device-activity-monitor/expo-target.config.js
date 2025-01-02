@@ -1,11 +1,11 @@
-/** @type {import('@bacons/apple-targets').Config} */
-module.exports = {
+/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = (config) => ({
   type: "device-activity-monitor",
   entitlements: {
     "com.apple.developer.family-controls": true,
+    // Or generate an app group:
     "com.apple.security.application-groups": [
-      // Your app group identifier
-      "group.ActivityMonitor",
+      `group.${config.ios.bundleIdentifier}.activity-monitor`,
     ],
   },
-};
+});

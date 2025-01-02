@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "live-activities-demo",
+    "slug": "live-activities-demo",
+    "version": "1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bacon.liveactivities",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.bacon.data"]
+      },
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "plugins": ["@bacons/apple-targets"],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

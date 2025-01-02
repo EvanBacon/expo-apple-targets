@@ -111,7 +111,7 @@ export type Config = {
    */
   frameworks?: string[];
 
-  /** Deployment iOS version for the target. Defaults to `16.4` */
+  /** Deployment iOS version for the target. Defaults to `18.0` */
   deploymentTarget?: string;
 
   /** Apple team ID to use for signing the target. Defaults to whatever is used in the main App target. */
@@ -140,3 +140,7 @@ export type Config = {
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
 };
+
+export type ConfigFunction = (
+  config: import("expo/config").ExpoConfig
+) => Config;

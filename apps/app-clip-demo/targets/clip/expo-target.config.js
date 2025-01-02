@@ -1,12 +1,6 @@
-/** @type {import('@bacons/apple-targets').Config} */
-module.exports = {
+/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
   type: "clip",
-  icon: "../../assets/icon.png",
-  entitlements: {
-    "com.apple.developer.associated-domains": [
-      "applinks:oct12.staging.expo.app",
-      "activitycontinuation:oct12.staging.expo.app",
-      "webcredentials:oct12.staging.expo.app",
-    ],
-  },
-};
+  icon: 'https://github.com/expo.png',
+  entitlements: { /* Add entitlements */ },
+});

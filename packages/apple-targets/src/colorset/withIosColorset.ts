@@ -1,5 +1,5 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
-import { ContentsJsonImageIdiom } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
+import { ConfigPlugin, withDangerousMod } from "expo/config-plugins";
+import { type ContentsJsonImageIdiom } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
 import fs from "node:fs";
 import path from "node:path";
 

@@ -1,7 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import Widget from "local:expo-widget";
+import { ExtensionStorage } from "@bacons/apple-targets";
+
+const storage = new ExtensionStorage("group.bacon.data");
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
@@ -11,7 +13,8 @@ export default function App() {
       <Text
         onPress={() => {
           setIndex(index + 1);
-          Widget.set("index", String(index + 1), "group.bacon.data");
+          storage.set("index", String(index + 1));
+          ExtensionStorage.reloadWidget();
         }}
       >
         Index: {index}

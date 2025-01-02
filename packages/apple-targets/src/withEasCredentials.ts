@@ -5,6 +5,8 @@ import { Entitlements } from "./config";
 import { getAuxiliaryTargets, getMainAppTarget } from "./target";
 import { withXcodeProjectBeta } from "./withXcparse";
 
+const debug = require("debug")("expo:target:eas") as typeof console.log;
+
 function safeSet(obj: any, key: string, value: any) {
   const segments = key.split(".");
   const last = segments.pop();
@@ -21,6 +23,7 @@ function safeSet(obj: any, key: string, value: any) {
   return obj;
 }
 
+// TODO: This should all go into EAS instead.
 export const withEASTargets: ConfigPlugin<{
   bundleIdentifier: string;
   targetName: string;
@@ -31,25 +34,26 @@ export const withEASTargets: ConfigPlugin<{
 
   const existing =
     config.extra!.eas.build.experimental.ios.appExtensions.findIndex(
-      (ext: any) => ext.targetName === targetName
+      (ext: any) => ext.bundleIdentifier === bundleIdentifier
     );
 
+  const settings = {
+    bundleIdentifier,
+    targetName,
+    entitlements,
+  };
   if (existing > -1) {
-    config.extra!.eas.build.experimental.ios.appExtensions[existing] = {
-      ...config.extra!.eas.build.experimental.ios.appExtensions[existing],
-      bundleIdentifier,
-      entitlements: {
-        ...config.extra!.eas.build.experimental.ios.appExtensions[existing]
-          .entitlements,
-        ...entitlements,
-      },
-    };
+    debug(
+      "Found existing EAS target with bundle identifier: %s",
+      bundleIdentifier
+    );
+    debug("Using new settings: %o", settings);
+
+    config.extra!.eas.build.experimental.ios.appExtensions[existing] = settings;
   } else {
-    config.extra!.eas.build.experimental.ios.appExtensions.push({
-      bundleIdentifier,
-      targetName,
-      entitlements,
-    });
+    debug("Adding new iOS target for code signing with EAS: %o", settings);
+
+    config.extra!.eas.build.experimental.ios.appExtensions.push(settings);
 
     // "appExtensions": [
     //   {

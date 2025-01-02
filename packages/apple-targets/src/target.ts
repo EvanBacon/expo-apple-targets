@@ -46,15 +46,42 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
       "account-auth",
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
+    "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
     // "com.apple.intents-service": "intents",
+  };
+
+// An exhaustive list of extension types that should sync app groups from the main target by default when
+// no app groups are specified.
+export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
+  {
+    share: true,
+    "bg-download": true,
+    clip: true,
+    widget: true,
+    "account-auth": false,
+    "credentials-provider": false,
+    "device-activity-monitor": false,
+    "app-intent": false,
+    "intent-ui": false,
+    "location-push": false,
+    "notification-content": false,
+    "notification-service": false,
+    "quicklook-thumbnail": false,
+    action: false,
+    imessage: false,
+    intent: false,
+    matter: false,
+    safari: false,
+    spotlight: false,
+    watch: false,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
+  // TODO: Use exhaustive switch to ensure external contributors don't forget to add this.
   if (type === "watch") {
     return plist.build({});
-  }
-  if (type === "action") {
+  } else if (type === "action") {
     return plist.build({
       NSExtension: {
         NSExtensionAttributes: {
@@ -77,8 +104,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
       },
     });
-  }
-  if (type === "clip") {
+  } else if (type === "app-intent") {
+    return plist.build({
+      EXAppExtensionAttributes: {
+        EXExtensionPointIdentifier: "com.apple.appintents-extension",
+      },
+    });
+  } else if (type === "clip") {
     return plist.build({
       CFBundleName: "$(PRODUCT_NAME)",
       CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
@@ -91,6 +123,13 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSAppClipRequestEphemeralUserNotification: false,
         NSAppClipRequestLocationConfirmation: false,
       },
+      NSAppTransportSecurity: {
+        NSAllowsArbitraryLoads: false,
+        NSAllowsLocalNetworking: true,
+      },
+      UILaunchStoryboardName: "SplashScreen",
+      UIUserInterfaceStyle: "Automatic",
+      UIViewControllerBasedStatusBarAppearance: false,
     });
   }
   const NSExtensionPointIdentifier = Object.keys(
@@ -105,8 +144,7 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPrincipalClass: "StickerBrowserViewController",
       },
     });
-  }
-  if (type === "account-auth") {
+  } else if (type === "account-auth") {
     return plist.build({
       NSExtension: {
         NSExtensionPointIdentifier,
@@ -121,8 +159,7 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         },
       },
     });
-  }
-  if (type === "credentials-provider") {
+  } else if (type === "credentials-provider") {
     return plist.build({
       NSExtension: {
         NSExtensionPointIdentifier,
@@ -130,8 +167,7 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           "$(PRODUCT_MODULE_NAME).CredentialProviderViewController",
       },
     });
-  }
-  if (type === "notification-service") {
+  } else if (type === "notification-service") {
     return plist.build({
       NSExtension: {
         NSExtensionAttributes: {
@@ -289,6 +325,8 @@ export function getFrameworksForType(type: ExtensionType) {
       "WidgetKit",
       // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
       "SwiftUI",
+      "ActivityKit",
+      "AppIntents",
     ];
   } else if (type === "intent") {
     return ["Intents"];

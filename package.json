@@ -13,7 +13,8 @@
   ],
   "resolutions": {
     "expo": "^52",
-    "fs-extra": "^9.1.0"
+    "fs-extra": "^9.1.0",
+    "jest-watch-typeahead": "2.2.1"
   },
   "devDependencies": {
     "eslint": "^8.10.0",
@@ -24,6 +25,7 @@
     "typescript": "~5.3.3",
     "expo-module-scripts": "^4.0.2",
     "@types/jest": "^26",
-    "jest": "^26.6.3"
+    "jest": "^26.6.3",
+    "ts-jest": "~29.0.4"
   }
 }

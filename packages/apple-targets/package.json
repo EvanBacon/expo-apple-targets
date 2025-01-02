@@ -1,11 +1,15 @@
 {
   "name": "@bacons/apple-targets",
-  "version": "0.1.2",
+  "version": "0.1.15",
   "description": "Generate Apple Targets with Expo Prebuild",
-  "main": "build/index.js",
+  "main": "build/ExtensionStorage.js",
+  "types": "build/ExtensionStorage.d.ts",
   "files": [
     "app.plugin.js",
+    "app.plugin.d.ts",
     "build",
+    "ios",
+    "expo-module.config.json",
     "prebuild-blank.tgz"
   ],
   "scripts": {
@@ -31,13 +35,16 @@
   "dependencies": {
     "@react-native/normalize-colors": "^0.76.1",
     "glob": "^10.2.6",
-    "@bacons/xcode": "^1.0.0-alpha.22",
-    "fs-extra": "^11.2.0"
+    "@bacons/xcode": "1.0.0-alpha.24",
+    "fs-extra": "^11.2.0",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^8.1.0",
     "@expo/babel-preset-cli": "^0.3.1",
+    "chalk": "^4.0.0",
     "jest-environment-node": "^26"
   }
 }
