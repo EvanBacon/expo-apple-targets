@@ -47,6 +47,9 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
+    "com.apple.ManagedSettings.shield-action-service": "shield-action",
+    "com.apple.ManagedSettingsUI.shield-configuration-service":
+      "shield-configuration",
     // "com.apple.intents-service": "intents",
   };
 
