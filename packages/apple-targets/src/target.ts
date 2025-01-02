@@ -354,6 +354,9 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
+    "device-activity-monitor",
+    "shield-action",
+    "shield-configuration",
   ].includes(type);
 }
 
