@@ -283,7 +283,44 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "shield-action") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShieldAction",
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "shield-configuration") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShieldConfiguration",
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "device-activity-monitor") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        NSExtensionPointIdentifier,
+      },
+    });
   }
+
+  /*
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>NSExtension</key>
+        <dict>
+            <key>NSExtensionPointIdentifier</key>
+            <string>com.apple.deviceactivity.monitor-extension</string>
+            <key>NSExtensionPrincipalClass</key>
+            <string>$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension</string>
+        </dict>
+    </dict>
+</plist>
+  */
 
   // Default: used for widget and bg-download
   return plist.build({
