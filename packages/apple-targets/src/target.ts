@@ -74,6 +74,8 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     safari: false,
     spotlight: false,
     watch: false,
+    "shield-action": true,
+    "shield-configuration": true,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
