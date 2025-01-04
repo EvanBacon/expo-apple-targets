@@ -43,7 +43,7 @@ struct OpenAppIntent${index}: ControlConfigurationIntent {
     static let description = IntentDescription(stringLiteral: "${
       intent.description
     }")
-    static let isDiscoverable = false
+    static let isDiscoverable = true
     static let openAppWhenRun: Bool = true
     
     @MainActor

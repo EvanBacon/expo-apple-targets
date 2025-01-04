@@ -33,7 +33,7 @@ struct widgetControl0: ControlWidget {
 struct OpenAppIntent0: ControlConfigurationIntent {
     static let title: LocalizedStringResource = "Launch Bacon"
     static let description = IntentDescription(stringLiteral: "A an OPEN BACON control that runs a timer.")
-    static let isDiscoverable = false
+    static let isDiscoverable = true
     static let openAppWhenRun: Bool = true
     
     @MainActor
@@ -62,7 +62,7 @@ struct widgetControl1: ControlWidget {
 struct OpenAppIntent1: ControlConfigurationIntent {
     static let title: LocalizedStringResource = "Launch Eggs"
     static let description = IntentDescription(stringLiteral: "A control that launches eggs.")
-    static let isDiscoverable = false
+    static let isDiscoverable = true
     static let openAppWhenRun: Bool = true
     
     @MainActor
