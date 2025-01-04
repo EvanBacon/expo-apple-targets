@@ -3,25 +3,40 @@ import SwiftUI
 import WidgetKit
 
 struct widgetControl: ControlWidget {
-    static let kind: String = "com.developer.example.widget"
+    static let kind: String = "com.developer.bacon.widget"
 
     var body: some ControlWidgetConfiguration {
-        AppIntentControlConfiguration(
-            kind: Self.kind,
-            provider: Provider()
-        ) { value in
-            ControlWidgetToggle(
-                "Start Timer",
-                isOn: value.isRunning,
-                action: StartTimerIntent(value.name)
-            ) { isRunning in
-                Label(isRunning ? "On" : "Off", systemImage: "timer")
-            }
+      StaticControlConfiguration(kind: Self.kind) {
+        ControlWidgetButton(action: OpenAppIntent()) {
+          Label("BACON1", systemImage: "laurel.leading")
         }
-        .displayName("Timer")
-        .description("A an example control that runs a timer.")
+      }
+        .displayName("OPEN BACON")
+        .description("A an OPEN BACON control that runs a timer.")
     }
 }
+
+// This must be in both targets when `openAppWhenRun = true`
+// https://developer.apple.com/forums/thread/763851
+@available(iOS 18.0, *)
+struct OpenAppIntent: ControlConfigurationIntent {
+    static let title: LocalizedStringResource = "Launch App"
+    static let description = IntentDescription(stringLiteral: "Launch the app!")
+    static let isDiscoverable = false
+    static let openAppWhenRun: Bool = true
+    
+    @MainActor
+    func perform() async throws -> some IntentResult & OpensIntent {        
+        // let url = URL(string: "com.bacon.clipdemo://test")!
+        // return .result(opensIntent: OpenURLIntent(url))
+        let strUrl = "olivetree://startplanday"
+        UserDefaults.standard.setValue(strUrl, forKey: "StartupUrl")
+        return .result(opensIntent: OpenURLIntent(URL(string: strUrl)!))
+    }
+}
+
+
+
 
 extension widgetControl {
     struct Value {
@@ -47,6 +62,7 @@ struct TimerConfiguration: ControlConfigurationIntent {
     @Parameter(title: "Timer Name", default: "Timer")
     var timerName: String
 }
+
 
 struct StartTimerIntent: SetValueIntent {
     static let title: LocalizedStringResource = "Start a timer"
