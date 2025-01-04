@@ -10,8 +10,8 @@ function generateSwiftModule(config: WidgetConfig): string {
   const { intents } = config;
 
   const widgetBundleBody = intents
-    .map((intent, index) => `        widgetControl${index}()`)
-    .join(",\n");
+    .map((intent, index) => `//         widgetControl${index}()`)
+    .join("\n");
 
   const widgetDefinitions = intents
     .map((intent, index) => {
@@ -53,12 +53,13 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-@main
-struct exportWidgets: WidgetBundle {
-    var body: some Widget {
+// TODO: These must be added to the WidgetBundle manually. They need to be linked outside of the _shared folder.
+// @main
+// struct exportWidgets: WidgetBundle {
+//     var body: some Widget {
 ${widgetBundleBody}
-    }
-}
+//     }
+// }
 ${widgetDefinitions}
       `;
 }
