@@ -88,6 +88,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CD7295BC2D2906060018FDF0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"_shared/*",
+			);
+			target = 13B07F861A680F5B00A75B9A /* widgetclipdemo */;
+		};
 		XX7E9CDBCE2C6E3DCD323BXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -108,7 +115,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		XX0065AF4066FA275164C7XX /* app-intent */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (XX7E9CDBCE2C6E3DCD323BXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "app-intent"; sourceTree = "<group>"; };
-		XX44182A803FDBF024DEB6XX /* widget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (XXA3A32EF7C9F8448A2F6DXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = widget; sourceTree = "<group>"; };
+		XX44182A803FDBF024DEB6XX /* widget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (CD7295BC2D2906060018FDF0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, XXA3A32EF7C9F8448A2F6DXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = widget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */

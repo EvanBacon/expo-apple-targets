@@ -7,6 +7,19 @@ export type DynamicColor = {
   dark?: string;
 };
 
+export type AppIntent = {
+  /** Main text to show in the control */
+  label: string;
+  /** SF Symbol name */
+  icon: string;
+
+  displayName: string;
+  description: string;
+  kind?: string;
+  /** URL to open when the intent is triggered. Should be a universal link. */
+  url: string;
+};
+
 export type Entitlements = Partial<{
   "com.apple.developer.healthkit": boolean;
   "com.apple.developer.healthkit.access": string[];
@@ -139,6 +152,9 @@ export type Config = {
 
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
+
+  /** App Intents to generate. */
+  intents?: AppIntent[];
 };
 
 export type ConfigFunction = (

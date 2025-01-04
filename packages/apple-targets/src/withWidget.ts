@@ -16,6 +16,7 @@ import {
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { withXcodeChanges } from "./withXcodeChanges";
+import withLinkAppIntent from "./withLinkAppIntent";
 
 type Props = Config & {
   directory: string;
@@ -163,6 +164,13 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       return entitlements;
     };
     entitlementsJson = applyDefaultEntitlements(entitlementsJson);
+  }
+
+  if (props.intents) {
+    withLinkAppIntent(config, {
+      intents: props.intents,
+      targetRoot: widgetFolderAbsolutePath,
+    });
   }
 
   // If the user defined entitlements, then overwrite any existing entitlements file
