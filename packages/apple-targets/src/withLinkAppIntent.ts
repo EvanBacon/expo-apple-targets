@@ -22,7 +22,12 @@ struct widgetControl${index}: ControlWidget {
     var body: some ControlWidgetConfiguration {
       StaticControlConfiguration(kind: Self.kind) {
         ControlWidgetButton(action: OpenAppIntent${index}()) {
-          Label("${intent.label}", systemImage: "${intent.icon}")
+          Label("${intent.label}", ${
+        // If the icon is generated, use the image system
+        intent.icon.startsWith("generated_expo_intent_icon_")
+          ? "image"
+          : "systemImage"
+      }: "${intent.icon}")
         }
       }
       .displayName("${intent.displayName}")
@@ -35,13 +40,17 @@ struct widgetControl${index}: ControlWidget {
 @available(iOS 18.0, *)
 struct OpenAppIntent${index}: ControlConfigurationIntent {
     static let title: LocalizedStringResource = "${intent.displayName}"
-    static let description = IntentDescription(stringLiteral: "${intent.description}")
+    static let description = IntentDescription(stringLiteral: "${
+      intent.description
+    }")
     static let isDiscoverable = false
     static let openAppWhenRun: Bool = true
     
     @MainActor
     func perform() async throws -> some IntentResult & OpensIntent {
-        return .result(opensIntent: OpenURLIntent(URL(string: "${intent.url}")!))
+        return .result(opensIntent: OpenURLIntent(URL(string: "${
+          intent.url
+        }")!))
     }
 }`;
     })

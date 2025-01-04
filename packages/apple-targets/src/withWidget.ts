@@ -167,6 +167,27 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   }
 
   if (props.intents) {
+    // Add local images:
+
+    // TODO: Apple only supports custom SF Symbols for intents, so we'll need to create a system to generate these from an SVG or accept .SFSymbol.svg files.
+    // props.intents.forEach((intent, index) => {
+    //   // Is local image?
+    //   if (intent.icon.match(/^\./)) {
+    //     props.images ??= {};
+    //     const intentIconName = "generated_expo_intent_icon_" + index;
+    //     props.images[intentIconName] = intent.icon;
+    //     props.intents![index].icon = intentIconName;
+    //   }
+    // });
+    props.intents.forEach((intent) => {
+      if (intent.icon.match(/^\./)) {
+        throw new Error(
+          "Local images are not supported for intents. Use an SF Symbol name. From: " +
+            intent.icon
+        );
+      }
+    });
+
     withLinkAppIntent(config, {
       intents: props.intents,
       targetRoot: widgetFolderAbsolutePath,

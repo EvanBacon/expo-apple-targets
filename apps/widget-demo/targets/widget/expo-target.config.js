@@ -1,24 +1,23 @@
 /** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = (config) => ({
   type: "widget",
-  icon: "https://github.com/expo.png",
   entitlements: {
     /* Add entitlements */
   },
   intents: [
     {
-      displayName: "Launch App",
+      displayName: "Launch Bacon",
       description: "A an OPEN BACON control that runs a timer.",
-      label: "BACON1",
+      label: "Bacon",
       icon: "laurel.leading",
       url: "https://pillarvalley.netlify.app/settings",
     },
     {
       displayName: "Launch Eggs",
       description: "A control that launches eggs.",
-      label: "EGGO!",
+      label: "Expo",
       icon: "laurel.trailing",
-      url: "https://pillarvalley.netlify.app/settings/icon",
+      url: "https://expo.dev",
     },
   ],
 });

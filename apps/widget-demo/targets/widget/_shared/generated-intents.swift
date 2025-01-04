@@ -19,10 +19,10 @@ struct widgetControl0: ControlWidget {
     var body: some ControlWidgetConfiguration {
       StaticControlConfiguration(kind: Self.kind) {
         ControlWidgetButton(action: OpenAppIntent0()) {
-          Label("BACON1", systemImage: "laurel.leading")
+          Label("Bacon", systemImage: "laurel.leading")
         }
       }
-      .displayName("Launch App")
+      .displayName("Launch Bacon")
       .description("A an OPEN BACON control that runs a timer.")
     }
 }
@@ -31,7 +31,7 @@ struct widgetControl0: ControlWidget {
 // https://developer.apple.com/forums/thread/763851
 @available(iOS 18.0, *)
 struct OpenAppIntent0: ControlConfigurationIntent {
-    static let title: LocalizedStringResource = "Launch App"
+    static let title: LocalizedStringResource = "Launch Bacon"
     static let description = IntentDescription(stringLiteral: "A an OPEN BACON control that runs a timer.")
     static let isDiscoverable = false
     static let openAppWhenRun: Bool = true
@@ -48,7 +48,7 @@ struct widgetControl1: ControlWidget {
     var body: some ControlWidgetConfiguration {
       StaticControlConfiguration(kind: Self.kind) {
         ControlWidgetButton(action: OpenAppIntent1()) {
-          Label("EGGO!", systemImage: "laurel.trailing")
+          Label("Expo", systemImage: "laurel.trailing")
         }
       }
       .displayName("Launch Eggs")
@@ -67,7 +67,7 @@ struct OpenAppIntent1: ControlConfigurationIntent {
     
     @MainActor
     func perform() async throws -> some IntentResult & OpensIntent {
-        return .result(opensIntent: OpenURLIntent(URL(string: "https://pillarvalley.netlify.app/settings/icon")!))
+        return .result(opensIntent: OpenURLIntent(URL(string: "https://expo.dev")!))
     }
 }
       
