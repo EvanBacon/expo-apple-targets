@@ -174,6 +174,12 @@ end
 
 The name of the target must match the name of the target directory.
 
+## `_shared`
+
+Some files are required to be linked to both your target and the main target. To support this, you can add a top-level `_shared` directory. Any file in this directory will be linked to both the main target and the sub-target. You'll need to re-run prebuild every time you add, rename, or remove a file in this directory.
+
+This is especially useful for Live Activities and Intents.
+
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
@@ -398,3 +404,44 @@ let index = defaults?.string(forKey: "myKey")
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
+
+## Generated App Intents
+
+You can make any type of App Intent that you'd like with this plugin. However, the majority of app intents simply launch a URL (specifically a universal link for the same app). Expo Router apps have automatic deep linking and websites, meaning you can get to universal links pretty easily. As such, I've built in support for generating link-opening app intents from JSON.
+
+These actions will show up in the control center, siri suggestions, Shortcuts, and can be added to the bottom of the lock screen in iOS 18.
+
+```js
+{
+  intents: [
+    {
+      // Label that will show up in the control center.
+      label: "Bacon",
+      // Name of an SF Symbol (no custom icons are supported).
+      icon: "laurel.leading",
+      // Universal link to open.
+      url: "https://pillarvalley.netlify.app/settings",
+      // Auxiliary data
+      displayName: "Open Bacon AI",
+      description: "Launch the Bacon AI app.",
+    },
+  ];
+}
+```
+
+You can add multiple intents, they'll be generated during prebuild to the `[target]/_shared/generated-intents.swift` file. This file will have a comment block in it like:
+
+```swift
+// TODO: These must be added to the WidgetBundle manually. They need to be linked outside of the _shared folder.
+// @main
+// struct exportWidgets: WidgetBundle {
+//     var body: some Widget {
+//         widgetControl0()
+//         widgetControl1()
+//     }
+// }
+```
+
+You should copy the generated intents into your main `WidgetBundle` struct.
+
+This system is subject to change with the default intended behavior to be that anywhere a SF Symbol can be used to launch a deep link should be populated by this feature.
