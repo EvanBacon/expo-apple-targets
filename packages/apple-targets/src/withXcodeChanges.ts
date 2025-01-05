@@ -38,6 +38,7 @@ const TemplateBuildSettings = fixture as unknown as Record<
   }
 >;
 import { withXcodeProjectBeta } from "./withXcparse";
+import assert from "assert";
 
 export type XcodeSettings = {
   name: string;
@@ -1120,12 +1121,16 @@ async function applyXcodeChanges(
 
   const protectedGroup = ensureProtectedGroup(project, path.dirname(props.cwd));
 
-  if (
-    !protectedGroup.props.children.find(
-      (child) => child.props.path === path.basename(props.cwd)
-    )
-  ) {
-    const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
+  const sharedAssets = globSync("_shared/*", {
+    absolute: false,
+    cwd: magicCwd,
+  });
+
+  let syncRootGroup = protectedGroup.props.children.find(
+    (child) => child.props.path === path.basename(props.cwd)
+  );
+  if (!syncRootGroup) {
+    syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
       path: path.basename(props.cwd),
       exceptions: [
         PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
@@ -1154,6 +1159,28 @@ async function applyXcodeChanges(
     targetToUpdate.props.fileSystemSynchronizedGroups.push(syncRootGroup);
 
     protectedGroup.props.children.push(syncRootGroup);
+  }
+
+  // If there's a `_shared` folder, create a PBXFileSystemSynchronizedBuildFileExceptionSet and set the `target` to the main app target. Then add exceptions to the new target's PBXFileSystemSynchronizedRootGroup's exceptions. Finally, ensure the relative paths for each file in the _shared folder are added to the `membershipExceptions` array.
+  assert(syncRootGroup instanceof PBXFileSystemSynchronizedRootGroup);
+  syncRootGroup.props.exceptions ??= [];
+
+  const existingExceptionSet = syncRootGroup.props.exceptions.find(
+    (exception) =>
+      exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+      exception.props.target === mainAppTarget
+  );
+  if (sharedAssets.length) {
+    const exceptionSet =
+      existingExceptionSet ||
+      PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+        target: mainAppTarget,
+      });
+    exceptionSet.props.membershipExceptions = sharedAssets.sort();
+    syncRootGroup.props.exceptions.push(exceptionSet);
+  } else {
+    // Remove the exception set if there are no shared assets.
+    existingExceptionSet?.removeFromProject();
   }
 
   applyDevelopmentTeamIdToTargets();
