@@ -6,7 +6,7 @@ import {
   ContentsJsonImage,
   writeContentsJsonAsync,
 } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
-import * as fs from "fs-extra";
+import * as fs from "fs";
 import path, { join } from "path";
 
 export const withImageAsset: ConfigPlugin<{
@@ -23,7 +23,9 @@ export const withImageAsset: ConfigPlugin<{
 
       const imgPath = `Assets.xcassets/${name}.imageset`;
       // Ensure the Images.xcassets/AppIcon.appiconset path exists
-      await fs.ensureDir(join(iosNamedProjectRoot, imgPath));
+      await fs.promises.mkdir(join(iosNamedProjectRoot, imgPath), {
+        recursive: true,
+      });
 
       const userDefinedIcon =
         typeof image === "string"
@@ -128,7 +130,9 @@ export async function setIconsAsync(
   cacheComponent: string
 ) {
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
-  await fs.ensureDir(join(iosNamedProjectRoot, IMAGESET_PATH));
+  await fs.promises.mkdir(join(iosNamedProjectRoot, IMAGESET_PATH), {
+    recursive: true,
+  });
 
   // Finally, write the Config.json
   await writeContentsJsonAsync(join(iosNamedProjectRoot, IMAGESET_PATH), {
@@ -185,7 +189,7 @@ export async function generateResizedImageAsync(
         `Assets.xcassets/${name}.imageset`,
         filename
       );
-      await fs.writeFile(assetPath, source);
+      await fs.promises.writeFile(assetPath, source);
       if (filename) {
         imgEntry.filename = filename;
       }
@@ -240,7 +244,7 @@ export async function generateIconsInternalAsync(
           );
           // Write image buffer to the file system.
           const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
-          await fs.writeFile(assetPath, source);
+          await fs.promises.writeFile(assetPath, source);
           // Save a reference to the generated image so we don't create a duplicate.
           generatedIcons[filename] = true;
         }
@@ -289,7 +293,7 @@ export async function generateWatchIconsInternalAsync(
   );
   // Write image buffer to the file system.
   const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
-  await fs.writeFile(assetPath, source);
+  await fs.promises.writeFile(assetPath, source);
 
   imagesJson.push({
     filename: getAppleIconName(size, 1),

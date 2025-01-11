@@ -1,14 +1,11 @@
 import {
   PBXBuildFile,
-  PBXContainerItemProxy,
-  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
   PBXGroup,
   PBXNativeTarget,
   PBXShellScriptBuildPhase,
-  PBXTargetDependency,
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
@@ -17,7 +14,7 @@ import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
 import fs from "fs";
-import { sync as globSync } from "glob";
+import { globSync } from "glob";
 import path from "path";
 
 import {
