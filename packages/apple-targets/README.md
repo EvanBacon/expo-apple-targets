@@ -491,3 +491,5 @@ You should also add the `og:image` property using `expo-router/head`. [Learn mor
 You also need a `1800x1200` image for the App Store Connect image preview, so make both of these images around the same time.
 
 Launch App Clips from Test Flight to test deep linking. It doesn't seem like there's any reasonable way to test launching from your website in development. I got this to work once by setting up a local experience in my app's "Settings > Developer" screen, then installing the app, opening the website, deleting the app, then installing the App Clip without the app. You'll mostly need to go with God on this one.
+
+You can generate codes using the CLI tool [download here](https://developer.apple.com/download/all/?q=%22app%20clip%22).

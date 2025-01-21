@@ -15,7 +15,7 @@ import {
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
-import { withXcodeChanges } from "./withXcodeChanges";
+import { DeviceFamily, withXcodeChanges } from "./withXcodeChanges";
 
 type Props = Config & {
   directory: string;
@@ -318,6 +318,12 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     : props.bundleIdentifier ??
       `${mainAppBundleId}.${getSanitizedBundleIdentifier(targetName)}`;
 
+  const deviceFamilies: DeviceFamily[] = config.ios?.isTabletOnly
+    ? ["tablet"]
+    : config.ios?.supportsTablet
+    ? ["phone", "tablet"]
+    : ["phone"];
+
   withXcodeChanges(config, {
     configPath: props.configPath,
     name: targetName,
@@ -331,7 +337,10 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     bundleId,
     icon: props.icon,
 
+    orientation: config.orientation,
     hasAccentColor: !!props.colors?.$accent,
+
+    deviceFamilies,
 
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
