@@ -111,6 +111,80 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         entitlements["com.apple.developer.parent-application-identifiers"] = [
           `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
         ];
+
+        // Try to extract the linked website from the original associated domains:
+
+        const associatedDomainsKey = "com.apple.developer.associated-domains";
+        // If the target doesn't explicitly define associated domains, then try to use the main app's associated domains.
+        if (!entitlements[associatedDomainsKey]) {
+          const associatedDomains =
+            config.ios?.associatedDomains ??
+            config.ios?.entitlements?.[
+              "com.apple.developer.associated-domains"
+            ];
+
+          if (
+            !associatedDomains ||
+            !Array.isArray(associatedDomains) ||
+            associatedDomains.length === 0
+          ) {
+            warnOnce(
+              chalk`{yellow [${widget}]} Apple App Clip may require the associated domains entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
+                {
+                  ios: {
+                    associatedDomains: ["applinks:myproject.expo.app"],
+                  },
+                },
+                null,
+                2
+              )}`
+            );
+          } else {
+            // Associated domains are found:
+            // "applinks:pillarvalley.expo.app",
+            // "webcredentials:pillarvalley.expo.app",
+            // "activitycontinuation:pillarvalley.expo.app"
+            const sanitizedUrls = associatedDomains
+              .map((url) => {
+                return (
+                  url
+                    .replace(
+                      /^(appclips|applinks|webcredentials|activitycontinuation):/,
+                      ""
+                    )
+                    // Remove trailing slashes
+                    .replace(/\/$/, "")
+                    // Remove http/https
+                    .replace(/^https?:\/\//, "")
+                );
+              })
+              .filter(Boolean);
+
+            const unique = [...new Set(sanitizedUrls)];
+
+            if (unique.length) {
+              warnOnce(
+                chalk`{yellow [${widget}]} Apple App Clip missing associated domains entitlements in the target config.\nExample:\n${JSON.stringify(
+                  {
+                    entitlements: {
+                      [associatedDomainsKey]: [
+                        `appclips:${unique[0] || "mywebsite.expo.app"}`,
+                      ],
+                    },
+                  },
+                  null,
+                  2
+                )}`
+              );
+
+              // Add anyways
+              entitlements[associatedDomainsKey] = unique.map(
+                (url) => `appclips:${url}`
+              );
+            }
+          }
+        }
+
         // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
         // entitlements["com.apple.developer.on-demand-install-capable"] = true;
       }

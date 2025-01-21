@@ -30,11 +30,11 @@ class AppDelegate: EXAppDelegateWrapper {
   // Linking API
   override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any UIUserActivityRestoring]?) -> Void) -> Bool {
     let result = RCTLinkingManager.application(application, continue: userActivity, restorationHandler: restorationHandler);
-    return super.application(application, continue: userActivity, restorationHandler: restorationHandler);
+    return super.application(application, continue: userActivity, restorationHandler: restorationHandler) || result;
   }
   
   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-    return super.application(app, open: url, options: options)
+    return super.application(app, open: url, options: options) || RCTLinkingManager.application(app, open: url, options: options)
   }
   
 }
