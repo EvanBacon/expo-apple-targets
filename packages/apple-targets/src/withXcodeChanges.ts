@@ -68,7 +68,13 @@ export type XcodeSettings = {
 
   /** File path to the extension config file. */
   configPath: string;
+
+  orientation?: "default" | "portrait" | "landscape";
+
+  deviceFamilies?: DeviceFamily[];
 };
+
+export type DeviceFamily = "phone" | "tablet";
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
@@ -616,6 +622,8 @@ function createAppClipConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
+    orientation,
+    deviceFamilies,
   }: XcodeSettings
 ) {
   // TODO: Unify AppIcon and AccentColor logic
@@ -651,7 +659,7 @@ function createAppClipConfigurationList(
     PRODUCT_NAME: "$(TARGET_NAME)",
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_VERSION: "5.0",
-    TARGETED_DEVICE_FAMILY: "1,2",
+    ...getDeviceFamilyBuildSettings(deviceFamilies),
   };
 
   const infoPlist: Partial<BuildSettings> = {
@@ -659,10 +667,7 @@ function createAppClipConfigurationList(
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    ...getOrientationBuildSettings(orientation),
   };
 
   // @ts-expect-error
@@ -709,6 +714,56 @@ function createAppClipConfigurationList(
   });
 
   return configurationList;
+}
+
+function getOrientationBuildSettings(
+  orientation?: "default" | "portrait" | "landscape"
+) {
+  // Try to align the orientation with the main app.
+  if (orientation === "landscape") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    };
+  } else if (orientation === "portrait") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationPortrait",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
+    };
+  }
+
+  return {
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+  };
+}
+
+function getDeviceFamilyBuildSettings(
+  deviceFamilies?: DeviceFamily[]
+): Partial<BuildSettings> {
+  if (!deviceFamilies) {
+    return {
+      TARGETED_DEVICE_FAMILY: "1,2",
+    };
+  }
+
+  const families: number[] = [];
+  if (deviceFamilies.includes("phone")) {
+    families.push(1);
+  }
+  if (deviceFamilies.includes("tablet")) {
+    families.push(2);
+  }
+
+  return {
+    TARGETED_DEVICE_FAMILY: families.join(","),
+  };
 }
 
 function createConfigurationList(

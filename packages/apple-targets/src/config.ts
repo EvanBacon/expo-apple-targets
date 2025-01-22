@@ -80,6 +80,7 @@ export type Entitlements = Partial<{
   "com.apple.developer.driverkit.transport.hid": boolean;
   "com.apple.developer.driverkit.family.audio": boolean;
   "com.apple.developer.shared-with-you": boolean;
+  "com.apple.developer.associated-domains": string[];
 }>;
 
 export type Config = {
