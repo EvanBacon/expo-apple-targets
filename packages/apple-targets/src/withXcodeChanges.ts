@@ -884,9 +884,6 @@ function createConfigurationListForType(
   } else if (props.type === "imessage") {
     return createIMessageConfigurationList(project, props);
   } else if (props.type === "clip") {
-    // TODO: Set the device orientation to match the full app using:
-    // INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-    // INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
     return createAppClipConfigurationList(project, props);
   } else if (props.type === "watch") {
     return createWatchAppConfigurationList(project, props);
