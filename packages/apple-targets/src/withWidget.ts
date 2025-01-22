@@ -132,7 +132,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
               chalk`{yellow [${widget}]} Apple App Clip may require the associated domains entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
                 {
                   ios: {
-                    associatedDomains: ["applinks:myproject.expo.app"],
+                    associatedDomains: [`applinks:placeholder.expo.app`],
                   },
                 },
                 null,
@@ -164,7 +164,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
             if (unique.length) {
               warnOnce(
-                chalk`{yellow [${widget}]} Apple App Clip missing associated domains entitlements in the target config.\nExample:\n${JSON.stringify(
+                chalk`{gray [${widget}]} Apple App Clip expo-target.config.js missing associated domains entitlements in the target config. Using the following defaults:\n${JSON.stringify(
                   {
                     entitlements: {
                       [associatedDomainsKey]: [
