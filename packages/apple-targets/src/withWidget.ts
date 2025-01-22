@@ -316,7 +316,12 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   const bundleId = props.bundleIdentifier?.startsWith(".")
     ? mainAppBundleId + props.bundleIdentifier
     : props.bundleIdentifier ??
-      `${mainAppBundleId}.${getSanitizedBundleIdentifier(targetName)}`;
+      `${mainAppBundleId}.${
+        props.type === "clip"
+          ? // Use a more standardized bundle identifier for App Clips.
+            "clip"
+          : getSanitizedBundleIdentifier(targetName)
+      }`;
 
   const deviceFamilies: DeviceFamily[] = config.ios?.isTabletOnly
     ? ["tablet"]

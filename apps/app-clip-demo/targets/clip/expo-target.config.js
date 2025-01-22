@@ -1,6 +1,9 @@
 /** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
-module.exports = config => ({
+module.exports = (config) => ({
   type: "clip",
-  icon: 'https://github.com/expo.png',
-  entitlements: { /* Add entitlements */ },
+  name: "Complex Name",
+  icon: "https://github.com/expo.png",
+  entitlements: {
+    /* Add entitlements */
+  },
 });
