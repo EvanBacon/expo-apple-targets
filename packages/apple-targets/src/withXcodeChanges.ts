@@ -811,7 +811,7 @@ function createConfigurationList(
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -851,7 +851,7 @@ function createConfigurationList(
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
