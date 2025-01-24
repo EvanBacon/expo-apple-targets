@@ -1,6 +1,9 @@
 /** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
-module.exports = config => ({
+module.exports = (config) => ({
   type: "widget",
-  icon: 'https://github.com/expo.png',
-  entitlements: { /* Add entitlements */ },
+  name: "My Widget 😄",
+  icon: "https://github.com/expo.png",
+  entitlements: {
+    /* Add entitlements */
+  },
 });

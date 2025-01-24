@@ -42,6 +42,8 @@ import assert from "assert";
 
 export type XcodeSettings = {
   name: string;
+  /** Name used for internal purposes. This has more strict rules and should be generated. */
+  productName: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
   cwd: string;
 
@@ -921,7 +923,7 @@ async function applyXcodeChanges(
 
   const targets = getExtensionTargets();
 
-  const productName = props.name;
+  const productName = props.productName;
 
   let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
@@ -1116,7 +1118,7 @@ async function applyXcodeChanges(
           ? "wrapper.extensionkit-extension"
           : "wrapper.app-extension",
         includeInIndex: 0,
-        path: productName + (isExtension ? ".appex" : ".app"),
+        path: props.name + (isExtension ? ".appex" : ".app"),
         sourceTree: "BUILT_PRODUCTS_DIR",
       }),
       settings: {
@@ -1131,7 +1133,7 @@ async function applyXcodeChanges(
 
     targetToUpdate = project.rootObject.createNativeTarget({
       buildConfigurationList: createConfigurationListForType(project, props),
-      name: productName,
+      name: props.name,
       productName,
       // @ts-expect-error
       productReference:
