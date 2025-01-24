@@ -402,6 +402,12 @@ let defaults = UserDefaults(suiteName:
 let index = defaults?.string(forKey: "myKey")
 ```
 
+### More data updates
+
+For more advanced uses, I recommend the following resources:
+
+- Updating widgets when the app is in the background: [Keeping A Widget Up-to-Date](https://developer.apple.com/documentation/widgetkit/keeping-a-widget-up-to-date).
+
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
