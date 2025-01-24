@@ -319,6 +319,7 @@ If you experience issues building widgets, it might be because React Native is s
 
 Some workarounds:
 
+- Clear the SwiftUI previews cache: `xcrun simctl --set previews delete all`
 - Prebuild without React Native: `npx expo prebuild --template node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
 - If the widget doesn't show on the home screen when building the app, use iOS 18. You can long press the app icon and select the widget display options to transform the app icon into the widget.
 
