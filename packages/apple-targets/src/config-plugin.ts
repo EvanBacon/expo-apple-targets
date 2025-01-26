@@ -1,5 +1,5 @@
 import { ConfigPlugin } from "@expo/config-plugins";
-import { sync as globSync } from "glob";
+import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
 
