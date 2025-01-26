@@ -12,7 +12,7 @@ module.exports = (config) => ({
       description: "A an OPEN BACON control that runs a timer.",
       label: "Bacon",
       icon: "laurel.leading",
-      url: "https://pillarvalley.netlify.app/settings",
+      url: "https://pillarvalley.expo.app/settings",
     },
     {
       displayName: "Launch Eggs",

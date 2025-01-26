@@ -425,7 +425,7 @@ These actions will show up in the control center, siri suggestions, Shortcuts, a
       // Name of an SF Symbol (no custom icons are supported).
       icon: "laurel.leading",
       // Universal link to open.
-      url: "https://pillarvalley.netlify.app/settings",
+      url: "https://pillarvalley.expo.app/settings",
       // Auxiliary data
       displayName: "Open Bacon AI",
       description: "Launch the Bacon AI app.",

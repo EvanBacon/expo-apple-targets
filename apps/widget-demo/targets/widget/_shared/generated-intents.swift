@@ -38,7 +38,7 @@ struct OpenAppIntent0: ControlConfigurationIntent {
     
     @MainActor
     func perform() async throws -> some IntentResult & OpensIntent {
-        return .result(opensIntent: OpenURLIntent(URL(string: "https://pillarvalley.netlify.app/settings")!))
+        return .result(opensIntent: OpenURLIntent(URL(string: "https://pillarvalley.expo.app/settings")!))
     }
 }
 
