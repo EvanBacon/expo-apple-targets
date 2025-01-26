@@ -39,6 +39,8 @@ import assert from "assert";
 
 export type XcodeSettings = {
   name: string;
+  /** Name used for internal purposes. This has more strict rules and should be generated. */
+  productName: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
   cwd: string;
 
@@ -65,7 +67,13 @@ export type XcodeSettings = {
 
   /** File path to the extension config file. */
   configPath: string;
+
+  orientation?: "default" | "portrait" | "landscape";
+
+  deviceFamilies?: DeviceFamily[];
 };
+
+export type DeviceFamily = "phone" | "tablet";
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
@@ -613,6 +621,8 @@ function createAppClipConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
+    orientation,
+    deviceFamilies,
   }: XcodeSettings
 ) {
   // TODO: Unify AppIcon and AccentColor logic
@@ -648,7 +658,7 @@ function createAppClipConfigurationList(
     PRODUCT_NAME: "$(TARGET_NAME)",
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_VERSION: "5.0",
-    TARGETED_DEVICE_FAMILY: "1,2",
+    ...getDeviceFamilyBuildSettings(deviceFamilies),
   };
 
   const infoPlist: Partial<BuildSettings> = {
@@ -656,10 +666,7 @@ function createAppClipConfigurationList(
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    ...getOrientationBuildSettings(orientation),
   };
 
   // @ts-expect-error
@@ -708,6 +715,56 @@ function createAppClipConfigurationList(
   return configurationList;
 }
 
+function getOrientationBuildSettings(
+  orientation?: "default" | "portrait" | "landscape"
+) {
+  // Try to align the orientation with the main app.
+  if (orientation === "landscape") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    };
+  } else if (orientation === "portrait") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationPortrait",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
+    };
+  }
+
+  return {
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+  };
+}
+
+function getDeviceFamilyBuildSettings(
+  deviceFamilies?: DeviceFamily[]
+): Partial<BuildSettings> {
+  if (!deviceFamilies) {
+    return {
+      TARGETED_DEVICE_FAMILY: "1,2",
+    };
+  }
+
+  const families: number[] = [];
+  if (deviceFamilies.includes("phone")) {
+    families.push(1);
+  }
+  if (deviceFamilies.includes("tablet")) {
+    families.push(2);
+  }
+
+  return {
+    TARGETED_DEVICE_FAMILY: families.join(","),
+  };
+}
+
 function createConfigurationList(
   project: XcodeProject,
   {
@@ -753,7 +810,7 @@ function createConfigurationList(
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -793,7 +850,7 @@ function createConfigurationList(
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -863,7 +920,7 @@ async function applyXcodeChanges(
 
   const targets = getExtensionTargets();
 
-  const productName = props.name;
+  const productName = props.productName;
 
   let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
@@ -1058,7 +1115,7 @@ async function applyXcodeChanges(
           ? "wrapper.extensionkit-extension"
           : "wrapper.app-extension",
         includeInIndex: 0,
-        path: productName + (isExtension ? ".appex" : ".app"),
+        path: props.name + (isExtension ? ".appex" : ".app"),
         sourceTree: "BUILT_PRODUCTS_DIR",
       }),
       settings: {
@@ -1073,7 +1130,7 @@ async function applyXcodeChanges(
 
     targetToUpdate = project.rootObject.createNativeTarget({
       buildConfigurationList: createConfigurationListForType(project, props),
-      name: productName,
+      name: props.name,
       productName,
       // @ts-expect-error
       productReference:

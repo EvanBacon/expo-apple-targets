@@ -178,8 +178,6 @@ The name of the target must match the name of the target directory.
 
 Some files are required to be linked to both your target and the main target. To support this, you can add a top-level `_shared` directory. Any file in this directory will be linked to both the main target and the sub-target. You'll need to re-run prebuild every time you add, rename, or remove a file in this directory.
 
-This is especially useful for Live Activities and Intents.
-
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
@@ -319,6 +317,7 @@ If you experience issues building widgets, it might be because React Native is s
 
 Some workarounds:
 
+- Clear the SwiftUI previews cache: `xcrun simctl --set previews delete all`
 - Prebuild without React Native: `npx expo prebuild --template node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
 - If the widget doesn't show on the home screen when building the app, use iOS 18. You can long press the app icon and select the widget display options to transform the app icon into the widget.
 
@@ -401,6 +400,12 @@ let defaults = UserDefaults(suiteName:
 let index = defaults?.string(forKey: "myKey")
 ```
 
+### More data updates
+
+For more advanced uses, I recommend the following resources:
+
+- Updating widgets when the app is in the background: [Keeping A Widget Up-to-Date](https://developer.apple.com/documentation/widgetkit/keeping-a-widget-up-to-date).
+
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
@@ -445,3 +450,92 @@ You can add multiple intents, they'll be generated during prebuild to the `[targ
 You should copy the generated intents into your main `WidgetBundle` struct.
 
 This system is subject to change with the default intended behavior to be that anywhere a SF Symbol can be used to launch a deep link should be populated by this feature.
+
+## App Clips
+
+App Clips leverage the true power of Expo Router, enabling you to link a website and native app to just instantly open the native app on iOS. They're pretty hard to get working though.
+
+Here are a few notes from my experience building https://pillarvalley.expo.app (open on iOS to test).
+
+Build the app first, then the website. You can always instantly update the website if it's wrong. This includes the AASA, and metadata.
+
+You may need [this RN patch](https://github.com/facebook/react-native/pull/47000) to get your project working, otherwise it'll crash when launched from Test Flight. Alternatively, you can add App Clip experiences in App Store Connect and it'll launch as expected.
+
+After running prebuild, open the project in Xcode and navigate to the signing tab for each target, this'll ensure the first version of codesigning is absolutely correct. We'll need to adjust EAS Build to ensure it can do this too.
+
+Ensure your App Clip does not have `expo-updates` installed, otherwise it'll fail to build with some cryptic error about React missing in the AppDelegate.
+
+Ensure all the build numbers are the same across the `CURRENT_PROJECT_VERSION` and `CFBundleVersion` (Info.plist) otherwise the app will fail to build.
+
+Ensure you add a `public/.well-known/apple-app-site-association` file to your website and deploy it to the web (`eas deploy --prod`). Here's [an example](https://github.com/EvanBacon/pillar-valley/blob/d5ab82ae04f519310acf4b31aad8d9e22eb3747d/public/.well-known/apple-app-site-association#L27-L29).
+
+The value will be `<Apple Team ID>.<App Clip Bundle ID>`:
+
+```
+{
+  "appclips": {
+    "apps": ["QQ57RJ5UTD.com.evanbacon.pillarvalley.clip"]
+  }
+}
+```
+
+Add the website URL to your App Clip entitlements (not the main entitlements). Here's an example with `https://pillarvalley.expo.app`:
+
+```xml
+<key>com.apple.developer.associated-domains</key>
+<array>
+  <string>appclips:pillarvalley.expo.app</string>
+</array>
+```
+
+If this isn't done, then your App Clip will only be able to be launched from the default App Store URL: `https://appclip.apple.com/id?p=com.evanbacon.pillarvalley.clip` (where your App Clip bundle ID will be the ID in the URL).
+
+You should handle redirection from this default URL too with a [`app/+native-intent.ts`](https://docs.expo.dev/router/advanced/native-intent/) file:
+
+```ts
+export function redirectSystemPath({ path }: { path: string }): string {
+  try {
+    // Handle App Clip default page redirection.
+    // If path matches https://appclip.apple.com/id?p=com.evanbacon.pillarvalley.clip (with any query parameters), then redirect to `/` path.
+    const url = new URL(path);
+    if (url.hostname === "appclip.apple.com") {
+      // Redirect to the root path and make the original URL available as a query parameter (optional).
+      return "/?ref=" + encodeURIComponent(path);
+    }
+    return path;
+  } catch {
+    return path;
+  }
+}
+```
+
+You should use `expo-linking` to get URLs related to the App Clip as the upstream React Native Linking has some issues handling App Clips.
+
+When you publish an App Clip, the binary will take about 5 minutes to show up in the App Store (after it's approved) but the App Clip will take more like 25 minutes to show up in your website.
+
+You also need to add some meta tags to your website. These need to run fast so I recommend putting them in your `app/+html.tsx` file:
+
+```js
+<meta
+  name="apple-itunes-app"
+  content={
+    "app-id=1336398804, app-clip-bundle-id=com.evanbacon.pillarvalley.clip, app-clip-display=card"
+  }
+/>
+```
+
+You should also add the `og:image` property using `expo-router/head`. [Learn more](https://developer.apple.com/documentation/appclip/supporting-invocations-from-your-website-and-the-messages-app). It seems like an absolute path to a png image that is `1200×630` in dimensions ([based on this](https://developer.apple.com/library/archive/technotes/tn2444/_index.html)).
+
+```js
+<Head>
+  {/* Required for app clips: */}
+  {/* https://developer.apple.com/documentation/appclip/supporting-invocations-from-your-website-and-the-messages-app */}
+  <meta property="og:image" content="https://pillarvalley.expo.app/og.png" />
+</Head>
+```
+
+You also need a `1800x1200` image for the App Store Connect image preview, so make both of these images around the same time.
+
+Launch App Clips from Test Flight to test deep linking. It doesn't seem like there's any reasonable way to test launching from your website in development. I got this to work once by setting up a local experience in my app's "Settings > Developer" screen, then installing the app, opening the website, deleting the app, then installing the App Clip without the app. You'll mostly need to go with God on this one.
+
+You can generate codes using the CLI tool [download here](https://developer.apple.com/download/all/?q=%22app%20clip%22).

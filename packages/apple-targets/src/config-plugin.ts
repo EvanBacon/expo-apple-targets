@@ -51,6 +51,12 @@ export const withTargetsDir: ConfigPlugin<
       );
     }
 
+    if (!evaluatedTargetConfigObject.type) {
+      throw new Error(
+        `Expected target config to have a 'type' property denoting the type of target it is, e.g. 'widget'`
+      );
+    }
+
     config = withWidget(config, {
       appleTeamId,
       ...evaluatedTargetConfigObject,

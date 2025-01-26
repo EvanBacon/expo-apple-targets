@@ -15,8 +15,8 @@ import {
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
-import { withXcodeChanges } from "./withXcodeChanges";
 import withLinkAppIntent from "./withLinkAppIntent";
+import { DeviceFamily, withXcodeChanges } from "./withXcodeChanges";
 
 type Props = Config & {
   directory: string;
@@ -60,11 +60,6 @@ function createLogQueue(): { add: (fn: Function) => void; flush: () => void } {
 // Queue up logs so they only run when prebuild is actually running and not during standard config reads.
 const prebuildLogQueue = createLogQueue();
 
-function kebabToCamelCase(str: string) {
-  return str.replace(/-([a-z])/g, function (g) {
-    return g[1].toUpperCase();
-  });
-}
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   prebuildLogQueue.add(() =>
     warnOnce(
@@ -78,26 +73,38 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     props.icon = path.join(props.directory, props.icon);
   }
 
-  const widgetDir = path
-    .basename(props.directory)
-    .replace(/\/+$/, "")
-    .replace(/^\/+/, "");
+  // This value should be used for the target name and other internal uses.
+  const targetDirName = path.basename(path.dirname(props.configPath));
 
-  const widget = kebabToCamelCase(widgetDir);
+  // Sanitized for general usage. This name just needs to resemble the input value since it shouldn't be used for user-facing values such as the home screen or app store.
+  const productName =
+    sanitizeNameForNonDisplayUse(props.name || targetDirName) ||
+    sanitizeNameForNonDisplayUse(targetDirName) ||
+    sanitizeNameForNonDisplayUse(props.type);
 
-  const widgetFolderAbsolutePath = path.join(
+  // This should never happen.
+  if (!productName) {
+    throw new Error(
+      `[bacons/apple-targets][${props.type}] Target name does not contain any valid characters: ${targetDirName}`
+    );
+  }
+
+  // TODO: Are there characters that aren't allowed in `CFBundleDisplayName`?
+  const targetDisplayName = props.name ?? productName;
+
+  const targetDirAbsolutePath = path.join(
     config._internal?.projectRoot ?? "",
     props.directory
   );
 
   const entitlementsFiles = globSync("*.entitlements", {
     absolute: true,
-    cwd: widgetFolderAbsolutePath,
+    cwd: targetDirAbsolutePath,
   });
 
   if (entitlementsFiles.length > 1) {
     throw new Error(
-      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${widgetFolderAbsolutePath}`
+      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${targetDirAbsolutePath}`
     );
   }
 
@@ -112,6 +119,80 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         entitlements["com.apple.developer.parent-application-identifiers"] = [
           `$(AppIdentifierPrefix)${config.ios!.bundleIdentifier!}`,
         ];
+
+        // Try to extract the linked website from the original associated domains:
+
+        const associatedDomainsKey = "com.apple.developer.associated-domains";
+        // If the target doesn't explicitly define associated domains, then try to use the main app's associated domains.
+        if (!entitlements[associatedDomainsKey]) {
+          const associatedDomains =
+            config.ios?.associatedDomains ??
+            config.ios?.entitlements?.[
+              "com.apple.developer.associated-domains"
+            ];
+
+          if (
+            !associatedDomains ||
+            !Array.isArray(associatedDomains) ||
+            associatedDomains.length === 0
+          ) {
+            warnOnce(
+              chalk`{yellow [${targetDirName}]} Apple App Clip may require the associated domains entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
+                {
+                  ios: {
+                    associatedDomains: [`applinks:placeholder.expo.app`],
+                  },
+                },
+                null,
+                2
+              )}`
+            );
+          } else {
+            // Associated domains are found:
+            // "applinks:pillarvalley.expo.app",
+            // "webcredentials:pillarvalley.expo.app",
+            // "activitycontinuation:pillarvalley.expo.app"
+            const sanitizedUrls = associatedDomains
+              .map((url) => {
+                return (
+                  url
+                    .replace(
+                      /^(appclips|applinks|webcredentials|activitycontinuation):/,
+                      ""
+                    )
+                    // Remove trailing slashes
+                    .replace(/\/$/, "")
+                    // Remove http/https
+                    .replace(/^https?:\/\//, "")
+                );
+              })
+              .filter(Boolean);
+
+            const unique = [...new Set(sanitizedUrls)];
+
+            if (unique.length) {
+              warnOnce(
+                chalk`{gray [${targetDirName}]} Apple App Clip expo-target.config.js missing associated domains entitlements in the target config. Using the following defaults:\n${JSON.stringify(
+                  {
+                    entitlements: {
+                      [associatedDomainsKey]: [
+                        `appclips:${unique[0] || "mywebsite.expo.app"}`,
+                      ],
+                    },
+                  },
+                  null,
+                  2
+                )}`
+              );
+
+              // Add anyways
+              entitlements[associatedDomainsKey] = unique.map(
+                (url) => `appclips:${url}`
+              );
+            }
+          }
+        }
+
         // NOTE: This doesn't seem to be required anymore (Oct 12 2024):
         // entitlements["com.apple.developer.on-demand-install-capable"] = true;
       }
@@ -132,7 +213,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
           entitlements[APP_GROUP_KEY] = mainAppGroups;
           prebuildLogQueue.add(() => {
             logOnce(
-              chalk`[${widget}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
+              chalk`[${targetDirName}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
                 APP_GROUP_KEY
               )}] in the {bold expo-target.config} file to override.}`
             );
@@ -140,7 +221,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         } else {
           prebuildLogQueue.add(() =>
             warnOnce(
-              chalk`{yellow [${widget}]} Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
+              chalk`{yellow [${targetDirName}]} Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
                 {
                   ios: {
                     entitlements: {
@@ -203,17 +284,17 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         const entitlementsFilePath =
           entitlementsFiles[0] ??
           // Use the name `generated` to help indicate that this file should be in sync with the config
-          path.join(widgetFolderAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
+          path.join(targetDirAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
 
         if (entitlementsFiles[0]) {
           const relativeName = path.relative(
-            widgetFolderAbsolutePath,
+            targetDirAbsolutePath,
             entitlementsFiles[0]
           );
           if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
             console.log(
-              `[${widget}] Replacing ${path.relative(
-                widgetFolderAbsolutePath,
+              `[${targetDirName}] Replacing ${path.relative(
+                targetDirAbsolutePath,
                 entitlementsFiles[0]
               )} with entitlements JSON from config`
             );
@@ -235,7 +316,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     async (config) => {
       prebuildLogQueue.flush();
 
-      fs.mkdirSync(widgetFolderAbsolutePath, { recursive: true });
+      fs.mkdirSync(targetDirAbsolutePath, { recursive: true });
 
       const files: [string, string][] = [
         ["Info.plist", getTargetInfoPlistForType(props.type)],
@@ -256,7 +337,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       // }
 
       files.forEach(([filename, content]) => {
-        const filePath = path.join(widgetFolderAbsolutePath, filename);
+        const filePath = path.join(targetDirAbsolutePath, filename);
         if (!fs.existsSync(filePath)) {
           fs.writeFileSync(filePath, content);
         }
@@ -266,16 +347,39 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     },
   ]);
 
-  const targetName = props.name ?? widget;
   const mainAppBundleId = config.ios!.bundleIdentifier!;
-  const bundleId = props.bundleIdentifier?.startsWith(".")
-    ? mainAppBundleId + props.bundleIdentifier
-    : props.bundleIdentifier ??
-      `${mainAppBundleId}.${getSanitizedBundleIdentifier(targetName)}`;
+
+  const bundleId: string = (() => {
+    // Support the bundle identifier being appended to the main app's bundle identifier.
+    if (props.bundleIdentifier?.startsWith(".")) {
+      return mainAppBundleId + props.bundleIdentifier;
+    } else if (props.bundleIdentifier) {
+      return props.bundleIdentifier;
+    }
+
+    if (props.type === "clip") {
+      // Use a more standardized bundle identifier for App Clips.
+      return mainAppBundleId + ".clip";
+    }
+
+    let bundleId = mainAppBundleId;
+    bundleId += ".";
+
+    // Generate the bundle identifier. This logic needs to remain generally stable since it's used for a permanent value.
+    // Key here is simplicity and predictability since it's already appended to the main app's bundle identifier.
+    return mainAppBundleId + "." + getSanitizedBundleIdentifier(props.type);
+  })();
+
+  const deviceFamilies: DeviceFamily[] = config.ios?.isTabletOnly
+    ? ["tablet"]
+    : config.ios?.supportsTablet
+    ? ["phone", "tablet"]
+    : ["phone"];
 
   withXcodeChanges(config, {
+    productName,
     configPath: props.configPath,
-    name: targetName,
+    name: targetDisplayName,
     cwd:
       "../" +
       path.relative(
@@ -286,7 +390,10 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     bundleId,
     icon: props.icon,
 
+    orientation: config.orientation,
     hasAccentColor: !!props.colors?.$accent,
+
+    deviceFamilies,
 
     // @ts-expect-error: who cares
     currentProjectVersion: config.ios?.buildNumber || 1,
@@ -302,7 +409,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   });
 
   config = withEASTargets(config, {
-    targetName,
+    targetName: productName,
     bundleIdentifier: bundleId,
     entitlements: entitlementsJson,
   });
@@ -369,4 +476,11 @@ function getSanitizedBundleIdentifier(value: string) {
   // Can only contain alphanumeric characters, periods, and hyphens.
   // Can have empty segments (e.g. com.example..app).
   return value.replace(/(^[^a-zA-Z.-]|[^a-zA-Z0-9-.])/g, "-");
+}
+
+function sanitizeNameForNonDisplayUse(name: string) {
+  return name
+    .replace(/[\W_]+/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
