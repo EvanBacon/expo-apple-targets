@@ -42,7 +42,7 @@ Some targets have special entitlements behavior:
 Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the Info.plist or the `expo-target.config.js` file.
 If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
 
-You can use the custom Prebuild template `--template node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile.
+You can use the custom Prebuild template `--template node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
 
 ## Target config
 
