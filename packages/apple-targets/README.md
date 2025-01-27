@@ -410,6 +410,72 @@ For more advanced uses, I recommend the following resources:
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
 
+## Control widgets
+
+[Control widgets](https://developer.apple.com/documentation/swiftui/controlwidget) are a type of widget that appears in the control center, Siri suggestions, the lock screen, and Shortcuts.
+
+Generally, you'll want to add control widgets to a `widget` target, but they can be added to any target really.
+
+You can add multiple intents, they should be in the `[target]/_shared/*.swift` folder so they can be added to the main target as well as the widget target, this is required to make them work correctly.
+
+The following is an example of a control widget that launches a universal link for my app.
+
+```swift
+// targets/widget/_shared/intents.swift
+
+import AppIntents
+import SwiftUI
+import WidgetKit
+
+// TODO: These must be added to the WidgetBundle manually. They need to be linked outside of the _shared folder.
+// @main
+// struct exportWidgets: WidgetBundle {
+//     var body: some Widget {
+//         widgetControl0()
+//         widgetControl1()
+//     }
+// }
+
+@available(iOS 18.0, *)
+struct widgetControl0: ControlWidget {
+    // Unique ID for the control.
+    static let kind: String = "com.bacon.clipdemo.0"
+    var body: some ControlWidgetConfiguration {
+      StaticControlConfiguration(kind: Self.kind) {
+        ControlWidgetButton(action: OpenAppIntent0()) {
+          // You can also use a custom image but it must be an SF Symbol.
+          Label("App Settings", systemImage: "star")
+        }
+      }
+      // This is the configuration for the widget.
+      .displayName("Launch Settings")
+      .description("A control that launches the app settings.")
+    }
+}
+
+// This must be in both targets when `openAppWhenRun = true`. We can do that by adding it to the _shared folder.
+// https://developer.apple.com/forums/thread/763851
+@available(iOS 18.0, *)
+struct OpenAppIntent0: ControlConfigurationIntent {
+    static let title: LocalizedStringResource = "Launch Settings"
+    static let description = IntentDescription(stringLiteral: "A control that launches the app settings.")
+    static let isDiscoverable = true
+    static let openAppWhenRun: Bool = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult & OpensIntent {
+        // Here's the URL we want to launch. It can be any URL but it should be a universal link for your app.
+        return .result(opensIntent: OpenURLIntent(URL(string: "https://pillarvalley.expo.app/settings")!))
+    }
+}
+```
+
+You should copy the intents into your main `WidgetBundle` struct.
+
+Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
+
+You can do a lot of things with Control Widgets like launching a custom UI instead of opening the app. This plugin should allow for most of these things to work.
+
 ## App Clips
 
 App Clips leverage the true power of Expo Router, enabling you to link a website and native app to just instantly open the native app on iOS. They're pretty hard to get working though.

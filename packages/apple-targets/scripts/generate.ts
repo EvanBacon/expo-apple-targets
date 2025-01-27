@@ -1,7 +1,8 @@
 // Generate aspects of the plugin from an Xcode project.
 
-import fs from "fs-extra";
+import fs from "fs";
 import path from "path";
+import { globSync } from "glob";
 
 import {
   PBXAggregateTarget,
@@ -10,8 +11,6 @@ import {
   PBXNativeTarget,
   XcodeProject,
 } from "@bacons/xcode";
-
-import { sync as globSync } from "glob";
 
 function assertBasicConfigs(
   target: PBXNativeTarget | PBXAggregateTarget | PBXLegacyTarget

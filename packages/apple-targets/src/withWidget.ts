@@ -1,7 +1,7 @@
 import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
 import plist from "@expo/plist";
 import fs from "fs";
-import { sync as globSync } from "glob";
+import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
 
