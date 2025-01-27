@@ -480,6 +480,8 @@ You can do a lot of things with Control Widgets like launching a custom UI inste
 
 ## App Clips
 
+![IMG_6BC9D9534F1D-1](https://github.com/user-attachments/assets/f9847f6f-4f0a-44f9-932c-3f8e9703c133)
+
 App Clips leverage the true power of Expo Router, enabling you to link a website and native app to just instantly open the native app on iOS. They're pretty hard to get working though.
 
 Here are a few notes from my experience building https://pillarvalley.expo.app (open on iOS to test).
