@@ -220,6 +220,8 @@ module.exports = {
 
 ### `action`
 
+![IMG_C2C825ACC8C7-1](https://github.com/user-attachments/assets/8378e022-2061-4da8-9c46-efe3064dd40c)
+
 These show up in the share sheet. The icon should be transparent as it will be masked by the system.
 
 ```js
