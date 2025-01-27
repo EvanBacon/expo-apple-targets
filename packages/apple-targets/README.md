@@ -412,6 +412,8 @@ This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`]
 
 ## Control widgets
 
+![Simulator Screenshot - iPhone 16 - 2025-01-26 at 15 57 44](https://github.com/user-attachments/assets/c989a3bb-112d-4026-a718-49de4cdb2f3e)
+
 [Control widgets](https://developer.apple.com/documentation/swiftui/controlwidget) are a type of widget that appears in the control center, Siri suggestions, the lock screen, and Shortcuts.
 
 Generally, you'll want to add control widgets to a `widget` target, but they can be added to any target really.
