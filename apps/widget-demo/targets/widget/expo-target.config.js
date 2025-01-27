@@ -6,4 +6,8 @@ module.exports = (config) => ({
   entitlements: {
     /* Add entitlements */
   },
+  colors: {
+    $accent: "steelblue",
+    $widgetBackground: "dodgerblue",
+  },
 });

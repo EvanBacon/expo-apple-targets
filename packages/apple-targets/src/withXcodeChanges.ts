@@ -57,7 +57,7 @@ export type XcodeSettings = {
 
   hasAccentColor?: boolean;
 
-  colors?: Record<string, string>;
+  colors?: Record<string, any>;
 
   teamId?: string;
 
@@ -765,7 +765,7 @@ function getDeviceFamilyBuildSettings(
   };
 }
 
-function createConfigurationList(
+function createWidgetConfigurationList(
   project: XcodeProject,
   {
     name,
@@ -869,7 +869,7 @@ function createConfigurationListForType(
   props: XcodeSettings
 ) {
   if (props.type === "widget") {
-    return createConfigurationList(project, props);
+    return createWidgetConfigurationList(project, props);
   } else if (props.type === "action") {
     return createExtensionConfigurationListFromTemplate(
       project,

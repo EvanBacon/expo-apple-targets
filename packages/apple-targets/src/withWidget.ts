@@ -373,6 +373,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     type: props.type,
     teamId: props.appleTeamId,
 
+    colors: props.colors,
     exportJs:
       props.exportJs ??
       // Assume App Clips are used for React Native.
