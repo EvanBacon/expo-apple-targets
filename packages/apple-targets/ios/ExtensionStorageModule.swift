@@ -57,8 +57,7 @@ public class ExtensionStorageModule: Module {
                     let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
                     let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted])
                     return String(data: jsonData, encoding: .utf8)
-                } catch {
-                    print("Error processing JSON data: \(error)")
+                } catch {                    
                     return nil
                 }
             }
