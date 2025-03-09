@@ -21,17 +21,20 @@ export default function App() {
       >
         Index: {index}
       </Text>
-      <Switch
-        value={toggleState}
-        onValueChange={(value) => {
-          setToggleState(value);
-          storage.set("toggleState", value ? 1 : 0);
-          ExtensionStorage.reloadControls();
-        }}
-        trackColor={{ false: "#CCCCCC", true: "#007AFF" }}
-        thumbColor="#FFFFFF"
-        style={{ marginTop: 20 }}
-      />
+      <View style={{ marginTop: 20, alignItems: "center" }}>
+        <Text>Toggle State: {toggleState ? "ON" : "OFF"}</Text>
+        <Switch
+          value={toggleState}
+          onValueChange={(value) => {
+            setToggleState(value);
+            storage.set("toggleState", value ? 1 : 0);
+            ExtensionStorage.reloadControls();
+          }}
+          trackColor={{ false: "#CCCCCC", true: "#007AFF" }}
+          thumbColor="#FFFFFF"
+          style={{ marginTop: 20 }}
+        />
+      </View>
     </View>
   );
 }
