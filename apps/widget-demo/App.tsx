@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Switch, Text, View } from "react-native";
 
 import { ExtensionStorage } from "@bacons/apple-targets";
 
@@ -7,6 +7,8 @@ const storage = new ExtensionStorage("group.bacon.data");
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
+  const [toggleState, setToggleState] = React.useState(false);
+
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
@@ -19,6 +21,17 @@ export default function App() {
       >
         Index: {index}
       </Text>
+      <Switch
+        value={toggleState}
+        onValueChange={(value) => {
+          setToggleState(value);
+          storage.set("toggleState", value ? 1 : 0);
+          ExtensionStorage.reloadControls();
+        }}
+        trackColor={{ false: "#CCCCCC", true: "#007AFF" }}
+        thumbColor="#FFFFFF"
+        style={{ marginTop: 20 }}
+      />
     </View>
   );
 }
