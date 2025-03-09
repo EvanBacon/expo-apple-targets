@@ -388,6 +388,7 @@ ExtensionStorage.reloadWidget();
 
 - `set(key: string, value: string | number | Record<string, string | number> | Array<Record<string, string | number>> | undefined): void` - Sets a value in the shared storage for a given key. Setting `undefined` will remove the key.
 - `ExtensionStorage.reloadWidget(name?: string): void` - A static method for reloading the widget. Behind the scenes, this calls `WidgetCenter.shared.reloadAllTimelines()`. If given a name, it will reload a specific widget using `WidgetCenter.shared.reloadTimelines(ofKind: timeline)`.
+- `ExtensionStorage.reloadControls(name?: string): void` - A static method for reloading the controls. Behind the scenes, this calls `ControlCenter.shared.reloadAllControls(): void`. If given a name, it will reload a specific widget using `ControlCenter.shared.reloadControls(ofKind?: string): void`.
 
 ### Accessing shared data
 
@@ -475,6 +476,15 @@ struct OpenAppIntent0: ControlConfigurationIntent {
 ```
 
 You should copy the intents into your main `WidgetBundle` struct.
+
+**Reloading Controls from Your App**  
+
+Changes in your app’s state may affect control displays. You can request a reload of specific controls or all controls using
+
+```js
+ExtensionStorage.reloadControls()
+```
+
 
 Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
 
