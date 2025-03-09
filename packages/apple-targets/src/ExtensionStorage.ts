@@ -3,6 +3,7 @@ type NativeModule = {
   setString(key: string, value: string, suite?: string): void;
   remove(key: string, suite?: string): void;
   reloadWidget(name?: string): void;
+  reloadControls(name?: string): void;
   setObject(
     key: string,
     value: Record<string, string | number>,
@@ -22,6 +23,7 @@ const nativeModule: NativeModule = ExtensionStorageModule ?? {
   setInt() {},
   setString() {},
   reloadWidget() {},
+  reloadControls() {},
   setObject() {},
   remove() {},
   setArray() {},
@@ -44,6 +46,10 @@ nativeModule.setObject = (
 export class ExtensionStorage {
   static reloadWidget(name?: string) {
     nativeModule.reloadWidget(name);
+  }
+
+  static reloadControls(name?: string) {
+    nativeModule.reloadControls(name);
   }
 
   constructor(private readonly appGroup: string) {}
