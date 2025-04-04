@@ -7,6 +7,7 @@ const ALL_TARGET_TYPES = [
   "watch",
   "clip",
   "safari",
+  "content-blocker",
   "share",
   "notification-content",
   "notification-service",

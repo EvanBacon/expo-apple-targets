@@ -20,6 +20,7 @@ export type ExtensionType =
   | "account-auth"
   | "action"
   | "safari"
+  | "content-blocker"
   | "app-intent"
   | "device-activity-monitor";
 
@@ -70,6 +71,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     intent: false,
     matter: false,
     safari: false,
+    "content-blocker": false,
     spotlight: false,
     watch: false,
   };
@@ -262,6 +264,14 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPrincipalClass:
           "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
         // NSExtensionMainStoryboard: 'MainInterface',
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "content-blocker") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).ContentBlockerRequestHandler",
         NSExtensionPointIdentifier,
       },
     });
