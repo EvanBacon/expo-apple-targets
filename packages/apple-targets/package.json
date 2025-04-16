@@ -34,9 +34,11 @@
   "license": "MIT",
   "dependencies": {
     "@bacons/xcode": "1.0.0-alpha.24",
-    "@react-native/normalize-colors": "^0.76.1",
     "glob": "^10.4.2",
     "debug": "^4.3.4"
+  },
+  "peerDependencies": {
+    "@react-native/normalize-colors": "*",
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
