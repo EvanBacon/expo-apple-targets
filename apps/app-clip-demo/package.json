@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start --dev-client",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "android": "expo run:android"
   },
   "dependencies": {
     "@bacons/apple-targets": "*",

@@ -3,21 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		039DBCD1F2A66F92D6AFD3CD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D3BA0D570186F1CAB3723EB9 /* PrivacyInfo.xcprivacy */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		18A3880AD3310DE3FCE0B931 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A04A4EC68E87FC477BFB11F /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		6D443CA4392D2DF2A40B1033 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E603C91EF161CC39AD5B15 /* ExpoModulesProvider.swift */; };
-		96905EF65AED1B983A6B3ABC /* libPods-appclipdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-appclipdemo.a */; };
-		96E873CBDCFB694C171FB704 /* libPods-clip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 329F76657B8CE2CA6D66730E /* libPods-clip.a */; };
-		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
+		5CA3DFD0339B8DACDB9D2CFE /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 32511FEB66AC94B3CBA73F13 /* PrivacyInfo.xcprivacy */; };
+		70E7744A7215905747EDC934 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F09BF6992DE26B19D99D113 /* ExpoModulesProvider.swift */; };
+		AFFBC04C2E9D8F22D4E36148 /* libPods-clip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F313F2FDEFE62C1DAFF721CE /* libPods-clip.a */; };
+		B31386DF72E9B4788B9AAC27 /* libPods-baconsappclip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6300DA20C4CBE7D763A035C2 /* libPods-baconsappclip.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		F668443FA43C4B4B8C1C1403 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F64EDB929740B180FE7F7F /* noop-file.swift */; };
+		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		XX46893AD05B5C662745D7XX /* clip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = XX16DEE6A4EC6372F32A0DXX /* clip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -46,26 +44,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		081380C29B8379DC4F708896 /* Pods-clip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clip.release.xcconfig"; path = "Target Support Files/Pods-clip/Pods-clip.release.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* appclipdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = appclipdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = appclipdemo/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = appclipdemo/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = appclipdemo/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = appclipdemo/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = main.m; path = appclipdemo/main.m; sourceTree = "<group>"; };
-		329F76657B8CE2CA6D66730E /* libPods-clip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-clip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		53BF3AD0BF214E73BCDEB0AA /* appclipdemo-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "appclipdemo-Bridging-Header.h"; path = "appclipdemo/appclipdemo-Bridging-Header.h"; sourceTree = "<group>"; };
-		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-appclipdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; fileEncoding = 4; includeInIndex = 0; path = "libPods-appclipdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		59F64EDB929740B180FE7F7F /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "appclipdemo/noop-file.swift"; sourceTree = "<group>"; };
-		6C2E3173556A471DD304B334 /* Pods-appclipdemo.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appclipdemo.debug.xcconfig"; path = "Target Support Files/Pods-appclipdemo/Pods-appclipdemo.debug.xcconfig"; sourceTree = "<group>"; };
-		7A4D352CD337FB3A3BF06240 /* Pods-appclipdemo.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appclipdemo.release.xcconfig"; path = "Target Support Files/Pods-appclipdemo/Pods-appclipdemo.release.xcconfig"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = appclipdemo/SplashScreen.storyboard; sourceTree = "<group>"; };
+		088C0A90E141737F34099AAA /* Pods-clip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clip.release.xcconfig"; path = "Target Support Files/Pods-clip/Pods-clip.release.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* baconsappclip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = baconsappclip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = baconsappclip/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = baconsappclip/Info.plist; sourceTree = "<group>"; };
+		32511FEB66AC94B3CBA73F13 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = baconsappclip/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3F09BF6992DE26B19D99D113 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-baconsappclip/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		5A04A4EC68E87FC477BFB11F /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-clip/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6300DA20C4CBE7D763A035C2 /* libPods-baconsappclip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappclip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = baconsappclip/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B7BE6EE7A367D754E737540E /* Pods-baconsappclip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappclip.debug.xcconfig"; path = "Target Support Files/Pods-baconsappclip/Pods-baconsappclip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D0E603C91EF161CC39AD5B15 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-clip/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		D3BA0D570186F1CAB3723EB9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = appclipdemo/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E61562709363EAC0A15462BA /* Pods-clip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clip.debug.xcconfig"; path = "Target Support Files/Pods-clip/Pods-clip.debug.xcconfig"; sourceTree = "<group>"; };
+		CE534157CFEF9649D6E6BD2D /* Pods-clip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clip.debug.xcconfig"; path = "Target Support Files/Pods-clip/Pods-clip.debug.xcconfig"; sourceTree = "<group>"; };
+		E9DD81D505B3F067185C57DE /* Pods-baconsappclip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappclip.release.xcconfig"; path = "Target Support Files/Pods-baconsappclip/Pods-baconsappclip.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-appclipdemo/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = baconsappclip/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* baconsappclip-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "baconsappclip-Bridging-Header.h"; path = "baconsappclip/baconsappclip-Bridging-Header.h"; sourceTree = "<group>"; };
+		F313F2FDEFE62C1DAFF721CE /* libPods-clip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-clip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		XX16DEE6A4EC6372F32A0DXX /* clip.app */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; fileEncoding = 4; includeInIndex = 0; path = clip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -100,46 +95,68 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96905EF65AED1B983A6B3ABC /* libPods-appclipdemo.a in Frameworks */,
+				B31386DF72E9B4788B9AAC27 /* libPods-baconsappclip.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		27565D27CC2FFF3A1F95AE05 /* Frameworks */ = {
+		E0554D6258DCF47D8BD9F638 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96E873CBDCFB694C171FB704 /* libPods-clip.a in Frameworks */,
+				AFFBC04C2E9D8F22D4E36148 /* libPods-clip.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* appclipdemo */ = {
+		084F855EE4363E14A9B1E45F /* clip */ = {
 			isa = PBXGroup;
 			children = (
+				5A04A4EC68E87FC477BFB11F /* ExpoModulesProvider.swift */,
+			);
+			name = clip;
+			sourceTree = "<group>";
+		};
+		13B07FAE1A68108700A75B9A /* baconsappclip */ = {
+			isa = PBXGroup;
+			children = (
+				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
+				F11748442D0722820044C1D9 /* baconsappclip-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				59F64EDB929740B180FE7F7F /* noop-file.swift */,
-				53BF3AD0BF214E73BCDEB0AA /* appclipdemo-Bridging-Header.h */,
-				D3BA0D570186F1CAB3723EB9 /* PrivacyInfo.xcprivacy */,
+				32511FEB66AC94B3CBA73F13 /* PrivacyInfo.xcprivacy */,
 			);
-			name = appclipdemo;
+			name = baconsappclip;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-appclipdemo.a */,
-				329F76657B8CE2CA6D66730E /* libPods-clip.a */,
+				6300DA20C4CBE7D763A035C2 /* libPods-baconsappclip.a */,
+				F313F2FDEFE62C1DAFF721CE /* libPods-clip.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		38331626D0597728AE674F21 /* baconsappclip */ = {
+			isa = PBXGroup;
+			children = (
+				3F09BF6992DE26B19D99D113 /* ExpoModulesProvider.swift */,
+			);
+			name = baconsappclip;
+			sourceTree = "<group>";
+		};
+		77BDB51EB5D44C6CA2D6B0E0 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				38331626D0597728AE674F21 /* baconsappclip */,
+				084F855EE4363E14A9B1E45F /* clip */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -153,12 +170,12 @@
 			isa = PBXGroup;
 			children = (
 				XX3E41C1850246162C0061XX /* expo:targets */,
-				13B07FAE1A68108700A75B9A /* appclipdemo */,
+				13B07FAE1A68108700A75B9A /* baconsappclip */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				D65327D7A22EEC0BE12398D9 /* Pods */,
-				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
+				EB15F9E375D46842E9D0C96B /* Pods */,
+				77BDB51EB5D44C6CA2D6B0E0 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -168,18 +185,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* appclipdemo.app */,
+				13B07F961A680F5B00A75B9A /* baconsappclip.app */,
 				XX16DEE6A4EC6372F32A0DXX /* clip.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		92DBD88DE9BF7D494EA9DA96 /* appclipdemo */ = {
-			isa = PBXGroup;
-			children = (
-				FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */,
-			);
-			name = appclipdemo;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -188,35 +197,19 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = appclipdemo/Supporting;
+			path = baconsappclip/Supporting;
 			sourceTree = "<group>";
 		};
-		D65327D7A22EEC0BE12398D9 /* Pods */ = {
+		EB15F9E375D46842E9D0C96B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6C2E3173556A471DD304B334 /* Pods-appclipdemo.debug.xcconfig */,
-				7A4D352CD337FB3A3BF06240 /* Pods-appclipdemo.release.xcconfig */,
-				E61562709363EAC0A15462BA /* Pods-clip.debug.xcconfig */,
-				081380C29B8379DC4F708896 /* Pods-clip.release.xcconfig */,
+				B7BE6EE7A367D754E737540E /* Pods-baconsappclip.debug.xcconfig */,
+				E9DD81D505B3F067185C57DE /* Pods-baconsappclip.release.xcconfig */,
+				CE534157CFEF9649D6E6BD2D /* Pods-clip.debug.xcconfig */,
+				088C0A90E141737F34099AAA /* Pods-clip.release.xcconfig */,
 			);
+			name = Pods;
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				92DBD88DE9BF7D494EA9DA96 /* appclipdemo */,
-				FBB9A4151990E70FD46A0C99 /* clip */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		FBB9A4151990E70FD46A0C99 /* clip */ = {
-			isa = PBXGroup;
-			children = (
-				D0E603C91EF161CC39AD5B15 /* ExpoModulesProvider.swift */,
-			);
-			name = clip;
 			sourceTree = "<group>";
 		};
 		XX3E41C1850246162C0061XX /* expo:targets */ = {
@@ -231,42 +224,42 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* appclipdemo */ = {
+		13B07F861A680F5B00A75B9A /* baconsappclip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "appclipdemo" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "baconsappclip" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				4DA1D4E0F8C8B3337553BAC5 /* [Expo] Configure project */,
+				7E2754763068FFFBBC98D8BE /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
 				XXF738C40EC3AA7C79D472XX /* Embed App Clips */,
-				3D0D28640C0099A5287027CF /* [CP] Embed Pods Frameworks */,
+				F9E8DAA95B692F65BD6E3F9D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				XX1934B325ED6A177E99E2XX /* PBXTargetDependency */,
 			);
-			name = appclipdemo;
-			productName = appclipdemo;
-			productReference = 13B07F961A680F5B00A75B9A /* appclipdemo.app */;
+			name = baconsappclip;
+			productName = baconsappclip;
+			productReference = 13B07F961A680F5B00A75B9A /* baconsappclip.app */;
 			productType = "com.apple.product-type.application";
 		};
 		XXFB411DD0C177F183AA46XX /* clip */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = XX58367DDB8761629F6548XX /* Build configuration list for PBXNativeTarget "clip" */;
 			buildPhases = (
-				B7B830B44BF8AC45DB6027C4 /* [CP] Check Pods Manifest.lock */,
-				004324385FAD0F91AC9C4F29 /* [Expo] Configure project */,
+				2D2A2305789BA5170B6AB6B8 /* [CP] Check Pods Manifest.lock */,
+				E1774C065182E7DAC819DDEF /* [Expo] Configure project */,
 				XXE45443DC38DCFE1DB622XX /* Sources */,
 				XXFA5A8CCDD805DF7AEF9CXX /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				27565D27CC2FFF3A1F95AE05 /* Frameworks */,
-				711B8B13392AC85435DC6A28 /* [CP] Embed Pods Frameworks */,
-				38E6A49BD4DF71B072845A0F /* [CP] Copy Pods Resources */,
+				E0554D6258DCF47D8BD9F638 /* Frameworks */,
+				12C8C1DC46D11D15BECD8180 /* [CP] Embed Pods Frameworks */,
+				68880531D2D9177E9F174E6B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -298,7 +291,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "appclipdemo" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "baconsappclip" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -311,7 +304,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* appclipdemo */,
+				13B07F861A680F5B00A75B9A /* baconsappclip */,
 				XXFB411DD0C177F183AA46XX /* clip */,
 			);
 		};
@@ -325,7 +318,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				039DBCD1F2A66F92D6AFD3CD /* PrivacyInfo.xcprivacy in Resources */,
+				5CA3DFD0339B8DACDB9D2CFE /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,25 +332,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		004324385FAD0F91AC9C4F29 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-clip/expo-configure-project.sh\"\n";
-		};
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -392,14 +366,54 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-appclipdemo-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-baconsappclip-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		38E6A49BD4DF71B072845A0F /* [CP] Copy Pods Resources */ = {
+		12C8C1DC46D11D15BECD8180 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-clip/Pods-clip-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-clip/Pods-clip-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2D2A2305789BA5170B6AB6B8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-clip-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		68880531D2D9177E9F174E6B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -431,25 +445,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-clip/Pods-clip-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3D0D28640C0099A5287027CF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appclipdemo/Pods-appclipdemo-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-appclipdemo/Pods-appclipdemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4DA1D4E0F8C8B3337553BAC5 /* [Expo] Configure project */ = {
+		7E2754763068FFFBBC98D8BE /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -466,25 +462,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-appclipdemo/expo-configure-project.sh\"\n";
-		};
-		711B8B13392AC85435DC6A28 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-clip/Pods-clip-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-clip/Pods-clip-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-baconsappclip/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -492,7 +470,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appclipdemo/Pods-appclipdemo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-baconsappclip/Pods-baconsappclip-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
@@ -515,29 +493,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-appclipdemo/Pods-appclipdemo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-baconsappclip/Pods-baconsappclip-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B7B830B44BF8AC45DB6027C4 /* [CP] Check Pods Manifest.lock */ = {
+		E1774C065182E7DAC819DDEF /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-clip-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-clip/expo-configure-project.sh\"\n";
+		};
+		F9E8DAA95B692F65BD6E3F9D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-baconsappclip/Pods-baconsappclip-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-baconsappclip/Pods-baconsappclip-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -547,10 +540,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				F668443FA43C4B4B8C1C1403 /* noop-file.swift in Sources */,
+				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				70E7744A7215905747EDC934 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,7 +549,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D443CA4392D2DF2A40B1033 /* ExpoModulesProvider.swift in Sources */,
+				18A3880AD3310DE3FCE0B931 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,12 +566,12 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-appclipdemo.debug.xcconfig */;
+			baseConfigurationReference = B7BE6EE7A367D754E737540E /* Pods-baconsappclip.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = appclipdemo/appclipdemo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = baconsappclip/baconsappclip.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 				ENABLE_BITCODE = NO;
@@ -588,9 +579,12 @@
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = appclipdemo/Info.plist;
+				INFOPLIST_FILE = baconsappclip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -599,8 +593,8 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo;
-				PRODUCT_NAME = appclipdemo;
-				SWIFT_OBJC_BRIDGING_HEADER = "appclipdemo/appclipdemo-Bridging-Header.h";
+				PRODUCT_NAME = baconsappclip;
+				SWIFT_OBJC_BRIDGING_HEADER = "baconsappclip/baconsappclip-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -610,17 +604,20 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-appclipdemo.release.xcconfig */;
+			baseConfigurationReference = E9DD81D505B3F067185C57DE /* Pods-baconsappclip.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = appclipdemo/appclipdemo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = baconsappclip/baconsappclip.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QQ57RJ5UTD;
-				INFOPLIST_FILE = appclipdemo/Info.plist;
+				INFOPLIST_FILE = baconsappclip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -629,8 +626,8 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo;
-				PRODUCT_NAME = appclipdemo;
-				SWIFT_OBJC_BRIDGING_HEADER = "appclipdemo/appclipdemo-Bridging-Header.h";
+				PRODUCT_NAME = baconsappclip;
+				SWIFT_OBJC_BRIDGING_HEADER = "baconsappclip/baconsappclip-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -685,7 +682,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -741,7 +741,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
@@ -757,7 +760,7 @@
 		};
 		XXA8ED6C3F0D78D964E81BXX /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E61562709363EAC0A15462BA /* Pods-clip.debug.xcconfig */;
+			baseConfigurationReference = CE534157CFEF9649D6E6BD2D /* Pods-clip.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -783,7 +786,10 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -800,7 +806,7 @@
 		};
 		XXF1107C1D03080CE62F68XX /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 081380C29B8379DC4F708896 /* Pods-clip.release.xcconfig */;
+			baseConfigurationReference = 088C0A90E141737F34099AAA /* Pods-clip.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -826,7 +832,10 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
@@ -843,7 +852,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "appclipdemo" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "baconsappclip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -852,7 +861,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "appclipdemo" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "baconsappclip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

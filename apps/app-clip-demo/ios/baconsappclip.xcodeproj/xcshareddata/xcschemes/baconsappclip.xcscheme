@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "appclipdemo.app"
-               BlueprintName = "appclipdemo"
-               ReferencedContainer = "container:appclipdemo.xcodeproj">
+               BuildableName = "baconsappclip.app"
+               BlueprintName = "baconsappclip"
+               ReferencedContainer = "container:baconsappclip.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "appclipdemoTests.xctest"
-               BlueprintName = "appclipdemoTests"
-               ReferencedContainer = "container:appclipdemo.xcodeproj">
+               BuildableName = "baconsappclipTests.xctest"
+               BlueprintName = "baconsappclipTests"
+               ReferencedContainer = "container:baconsappclip.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "appclipdemo.app"
-            BlueprintName = "appclipdemo"
-            ReferencedContainer = "container:appclipdemo.xcodeproj">
+            BuildableName = "baconsappclip.app"
+            BlueprintName = "baconsappclip"
+            ReferencedContainer = "container:baconsappclip.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "appclipdemo.app"
-            BlueprintName = "appclipdemo"
-            ReferencedContainer = "container:appclipdemo.xcodeproj">
+            BuildableName = "baconsappclip.app"
+            BlueprintName = "baconsappclip"
+            ReferencedContainer = "container:baconsappclip.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
