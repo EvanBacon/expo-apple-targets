@@ -479,14 +479,13 @@ struct OpenAppIntent0: ControlConfigurationIntent {
 
 You should copy the intents into your main `WidgetBundle` struct.
 
-**Reloading Controls from Your App**  
+**Reloading Controls from Your App**
 
 Changes in your app’s state may affect control displays. You can request a reload of specific controls or all controls using
 
 ```js
-ExtensionStorage.reloadControls()
+ExtensionStorage.reloadControls();
 ```
-
 
 Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
 

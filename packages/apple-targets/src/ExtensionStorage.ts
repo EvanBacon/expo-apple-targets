@@ -26,8 +26,7 @@ const nativeModule: NativeModule = ExtensionStorageModule ?? {
   reloadWidget() {},
   reloadControls() {},
   setObject() {},
-  setArray() {},  
-  reloadWidget() {},
+  setArray() {},
   get() {},
   remove() {},
 };
@@ -78,7 +77,7 @@ export class ExtensionStorage {
     }
   }
 
-  get(key: string): string | null {      
+  get(key: string): string | null {
     return nativeModule.get(key, this.appGroup);
   }
 
