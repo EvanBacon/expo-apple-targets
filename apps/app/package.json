@@ -1,5 +1,5 @@
 {
-  "name": "@bacons/app-app",
+  "name": "@bacons/app-kitchen",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",

@@ -1,4 +1,6 @@
 {
+  "platforms": ["ios"],
+  "newArchEnabled": true,
   "ios": {
     "supportsTablet": true,
     "appleTeamId": "QQ57RJ5UTD",

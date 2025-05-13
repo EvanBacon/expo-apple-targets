@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start --dev-client",
+    "ios:clean": "expo prebuild -p ios --clean && expo run:ios",
+    "nprebuild": "expo prebuild --template ../../packages/apple-targets/prebuild-blank.tgz -p ios",
     "android": "expo run:android",
-    "ios": "expo run:ios",
-    "nprebuild": "expo prebuild --template ../../packages/apple-targets/prebuild-blank.tgz -p ios"
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@bacons/apple-targets": "*",

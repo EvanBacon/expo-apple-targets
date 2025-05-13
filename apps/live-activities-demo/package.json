@@ -1,11 +1,9 @@
 {
-  "name": "@bacons/app-live-activity-demo",
+  "name": "@bacons/app-live-activity",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start --dev-client",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "ios:clean": "expo prebuild -p ios --clean && expo run:ios",
     "nprebuild": "expo prebuild --template ../../packages/apple-targets/prebuild-blank.tgz -p ios"
   },
   "dependencies": {
