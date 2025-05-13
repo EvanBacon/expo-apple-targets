@@ -11,14 +11,14 @@
     "packages/*"
   ],
   "resolutions": {
-    "expo": "~52.0.26",
+    "expo": "^53",
     "fs-extra": "^9.1.0",
     "jest-watch-typeahead": "2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
-    "@types/react": "~18.3.12",
-    "eslint": "^8.10.0",
+    "@types/react": "^19.1.4",
+    "eslint": "^9.26.0",
     "lerna": "3.4.1",
     "prettier": "^2.2.1",
     "ts-node": "^10.0.0",
