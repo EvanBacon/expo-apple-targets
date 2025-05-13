@@ -9,5 +9,6 @@ struct exportWidgets: WidgetBundle {
         widgetControl()
         WidgetLiveActivity()
         widgetControl0()
+        WidgetToggleControl()
     }
 }

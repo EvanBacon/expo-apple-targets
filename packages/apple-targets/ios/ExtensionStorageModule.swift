@@ -17,6 +17,16 @@ public class ExtensionStorageModule: Module {
             }
         }
         
+        Function("reloadControls") { (kind: String?) in
+            if #available(iOS 18.0, *) {
+                if let kind = kind {
+                    ControlCenter.shared.reloadControls(ofKind: kind)
+                } else {
+                    ControlCenter.shared.reloadAllControls()
+                }
+            }
+        }
+        
         Function("setArray") { (forKey: String, data: [[String: Any]], suiteName: String?) -> Bool in
             // Convert the incoming array of dictionaries directly to JSON data
             do {
