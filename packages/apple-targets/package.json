@@ -1,6 +1,6 @@
 {
   "name": "@bacons/apple-targets",
-  "version": "0.2.1",
+  "version": "3.0.1",
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/ExtensionStorage.js",
   "types": "build/ExtensionStorage.d.ts",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "@bacons/xcode": "1.0.0-alpha.24",
-    "@react-native/normalize-colors": "^0.76.1",
+    "@react-native/normalize-colors": "^0.79.2",
     "glob": "^10.4.2",
     "debug": "^4.3.4"
   },

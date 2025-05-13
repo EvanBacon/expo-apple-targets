@@ -9,7 +9,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 
 ## 🚀 How to use
 
-> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +52.
+> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +53.
 
 1. Run `npx create-target` in your Expo project to generate an Apple target.
 2. Select a target to generate, I recommend starting with a `widget` (e.g. `npx create-target widget`). This will generate the required widget files in the root `/targets` directory, install `@bacons/apple-targets`, and add the Expo Config Plugin to your project.
@@ -42,7 +42,7 @@ Some targets have special entitlements behavior:
 Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the Info.plist or the `expo-target.config.js` file.
 If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
 
-You can use the custom Prebuild template `--template node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
+You can use the custom Prebuild template `--template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
 
 ## Target config
 
@@ -320,7 +320,7 @@ If you experience issues building widgets, it might be because React Native is s
 Some workarounds:
 
 - Clear the SwiftUI previews cache: `xcrun simctl --set previews delete all`
-- Prebuild without React Native: `npx expo prebuild --template node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
+- Prebuild without React Native: `npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
 - If the widget doesn't show on the home screen when building the app, use iOS 18. You can long press the app icon and select the widget display options to transform the app icon into the widget.
 
 ## Sharing data between targets
@@ -389,6 +389,8 @@ ExtensionStorage.reloadWidget();
 - `set(key: string, value: string | number | Record<string, string | number> | Array<Record<string, string | number>> | undefined): void` - Sets a value in the shared storage for a given key. Setting `undefined` will remove the key.
 - `ExtensionStorage.reloadWidget(name?: string): void` - A static method for reloading the widget. Behind the scenes, this calls `WidgetCenter.shared.reloadAllTimelines()`. If given a name, it will reload a specific widget using `WidgetCenter.shared.reloadTimelines(ofKind: timeline)`.
 - `ExtensionStorage.reloadControls(name?: string): void` - A static method for reloading the controls. Behind the scenes, this calls `ControlCenter.shared.reloadAllControls(): void`. If given a name, it will reload a specific widget using `ControlCenter.shared.reloadControls(ofKind?: string): void`.
+- `remove(key: string): void` - A method for removing the key from the shared storage.
+- `get(key: string): string | null` - A static method for getting the value from the shared storage.
 
 ### Accessing shared data
 
