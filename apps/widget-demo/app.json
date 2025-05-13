@@ -1,34 +1,11 @@
 {
-  "expo": {
-    "name": "widget-clip-demo",
-    "slug": "widget-clip-demo",
-    "version": "1.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "appleTeamId": "QQ57RJ5UTD",
-
-      "bundleIdentifier": "com.bacon.clipdemo",
-      "entitlements": {
-        "com.apple.security.application-groups": ["group.bacon.data"]
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "plugins": ["@bacons/apple-targets"],
-    "web": {
-      "favicon": "./assets/favicon.png"
+  "ios": {
+    "supportsTablet": true,
+    "appleTeamId": "QQ57RJ5UTD",
+    "bundleIdentifier": "com.bacon.clipdemo",
+    "entitlements": {
+      "com.apple.security.application-groups": ["group.bacon.data"]
     }
-  }
+  },
+  "plugins": ["@bacons/apple-targets"]
 }
