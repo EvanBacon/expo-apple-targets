@@ -13,6 +13,7 @@ type NativeModule = {
     value: Record<string, string | number>[],
     suite?: string
   ): boolean;
+  get(key: string, suite?: string): string | null;
 };
 
 // @ts-expect-error
@@ -21,10 +22,11 @@ const ExtensionStorageModule = expo?.modules?.ExtensionStorage;
 const nativeModule: NativeModule = ExtensionStorageModule ?? {
   setInt() {},
   setString() {},
-  reloadWidget() {},
   setObject() {},
+  setArray() {},  
+  reloadWidget() {},
+  get() {},
   remove() {},
-  setArray() {},
 };
 
 const originalSetObject = nativeModule.setObject;
@@ -67,5 +69,13 @@ export class ExtensionStorage {
     } else {
       nativeModule.setObject(key, value, this.appGroup);
     }
+  }
+
+  get(key: string): string | null {      
+    return nativeModule.get(key, this.appGroup);
+  }
+
+  remove(key: string) {
+    nativeModule.remove(key, this.appGroup);
   }
 }

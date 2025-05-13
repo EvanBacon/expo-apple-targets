@@ -388,6 +388,8 @@ ExtensionStorage.reloadWidget();
 
 - `set(key: string, value: string | number | Record<string, string | number> | Array<Record<string, string | number>> | undefined): void` - Sets a value in the shared storage for a given key. Setting `undefined` will remove the key.
 - `ExtensionStorage.reloadWidget(name?: string): void` - A static method for reloading the widget. Behind the scenes, this calls `WidgetCenter.shared.reloadAllTimelines()`. If given a name, it will reload a specific widget using `WidgetCenter.shared.reloadTimelines(ofKind: timeline)`.
+- `remove(key: string): void` - A method for removing the key from the shared storage.
+- `get(key: string): string | null` - A static method for getting the value from the shared storage.
 
 ### Accessing shared data
 
