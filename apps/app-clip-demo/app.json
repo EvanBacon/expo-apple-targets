@@ -1,7 +1,7 @@
 {
   "ios": {
-    "appleTeamId": "QQ57RJ5UTD",
     "supportsTablet": true,
+    "appleTeamId": "QQ57RJ5UTD",
     "bundleIdentifier": "com.bacon.clipdemo"
   },
   "plugins": ["@bacons/apple-targets"],
