@@ -611,6 +611,65 @@ function createSafariConfigurationList(
 
   return configurationList;
 }
+function createContentBlockerConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+    GENERATE_INFOPLIST_FILE: "YES",
+
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      DEBUG_INFORMATION_FORMAT: "dwarf",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
 function createAppClipConfigurationList(
   project: XcodeProject,
   {
@@ -879,6 +938,8 @@ function createConfigurationListForType(
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
     return createSafariConfigurationList(project, props);
+  } else if (props.type === "content-blocker") {
+    return createContentBlockerConfigurationList(project, props);
   } else if (props.type === "imessage") {
     return createIMessageConfigurationList(project, props);
   } else if (props.type === "clip") {

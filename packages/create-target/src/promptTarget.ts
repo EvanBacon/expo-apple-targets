@@ -54,6 +54,7 @@ export const TARGETS = [
   },
   { title: "Spotlight", value: "spotlight", description: "" },
   { title: "Safari Extension", value: "safari", description: "" },
+  { title: "Content Blocker", value: "content-blocker", description: "" },
   { title: "Siri Intent", value: "intent", description: "" },
   { title: "Siri Intent UI", value: "intent-ui", description: "" },
   { title: "Share Extension", value: "share", description: "" },
