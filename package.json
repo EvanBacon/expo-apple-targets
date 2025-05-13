@@ -11,19 +11,19 @@
     "packages/*"
   ],
   "resolutions": {
-    "expo": "~52.0.26",
+    "expo": "^53",
     "fs-extra": "^9.1.0",
     "jest-watch-typeahead": "2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
-    "@types/react": "~18.3.12",
-    "eslint": "^8.10.0",
+    "@types/react": "^19.1.4",
+    "eslint": "^9.26.0",
     "lerna": "3.4.1",
     "prettier": "^2.2.1",
     "ts-node": "^10.0.0",
     "typescript": "~5.3.3",
-    "expo-module-scripts": "^4.0.2",
+    "expo-module-scripts": "^4.1.7",
     "@types/jest": "^26",
     "jest": "^26.6.3",
     "ts-jest": "~29.0.4"
