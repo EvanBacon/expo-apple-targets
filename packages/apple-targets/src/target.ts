@@ -21,7 +21,8 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor";
+  | "device-activity-monitor"
+  | "custom-keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -46,6 +47,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
     // "com.apple.intents-service": "intents",
+    "com.apple.keyboard-service": "custom-keyboard",
   };
 
 // An exhaustive list of extension types that should sync app groups from the main target by default when
@@ -72,6 +74,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     safari: false,
     spotlight: false,
     watch: false,
+    "custom-keyboard": true,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
@@ -279,6 +282,17 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "custom-keyboard") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionAttributes: {
+          RequestsOpenAccess: true,
+        },
+        NSExtensionPointIdentifier,
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).KeyboardViewController",
+      },
+    });
   }
 
   // Default: used for widget and bg-download
@@ -313,6 +327,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
+    "custom-keyboard",
   ].includes(type);
 }
 
