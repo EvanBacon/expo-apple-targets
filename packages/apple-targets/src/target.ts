@@ -364,6 +364,15 @@ export function isNativeTargetOfType(
     );
   }
   if (
+    type === "watch-widget" &&
+    target.props.productType === "com.apple.product-type.app-extension"
+  ) {
+    return (
+      "WATCHOS_DEPLOYMENT_TARGET" in
+      target.getDefaultConfiguration().props.buildSettings
+    );
+  }
+  if (
     type === "clip" &&
     target.props.productType ===
       "com.apple.product-type.application.on-demand-install-capable"
