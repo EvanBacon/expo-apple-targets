@@ -364,13 +364,13 @@ export function isNativeTargetOfType(
     );
   }
   if (
-    type === "watch-widget" &&
+    (type === "watch-widget" || type === "widget") &&
     target.props.productType === "com.apple.product-type.app-extension"
   ) {
     return (
       "WATCHOS_DEPLOYMENT_TARGET" in
       target.getDefaultConfiguration().props.buildSettings
-    );
+    ) && type === "watch-widget"
   }
   if (
     type === "clip" &&
