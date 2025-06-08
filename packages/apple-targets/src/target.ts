@@ -57,6 +57,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     "bg-download": true,
     clip: true,
     widget: true,
+    "watch-widget": true,
     "account-auth": false,
     "credentials-provider": false,
     "device-activity-monitor": false,

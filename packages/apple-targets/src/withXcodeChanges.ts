@@ -1226,6 +1226,24 @@ async function applyXcodeChanges(
     if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
       copyPhase.props.files.push(appExtensionBuildFile);
     }
+
+    // For watch widget extensions, also add them to the watch app target's copy phase
+    if (props.type === "watch-widget") {
+      const watchAppTarget = project.rootObject.props.targets.find((target) => {
+        return (
+          PBXNativeTarget.is(target) &&
+          target.props.productType === "com.apple.product-type.application" &&
+          "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
+        );
+      }) as PBXNativeTarget | undefined;
+
+      if (watchAppTarget) {
+        const watchCopyPhase = watchAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+        if (!watchCopyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          watchCopyPhase.props.files.push(appExtensionBuildFile);
+        }
+      }
+    }
   }
 
   configureTargetWithKnownSettings(targetToUpdate);
@@ -1240,7 +1258,26 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // Add watch widget extensions as dependencies to the watch app target instead of the main app target
+  if (props.type === "watch-widget") {
+    // Find the watch app target
+    const watchAppTarget = project.rootObject.props.targets.find((target) => {
+      return (
+        PBXNativeTarget.is(target) &&
+        target.props.productType === "com.apple.product-type.application" &&
+        "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
+      );
+    }) as PBXNativeTarget | undefined;
+
+    if (watchAppTarget) {
+      watchAppTarget.addDependency(targetToUpdate);
+    } else {
+      // Fallback to main app target if watch app target is not found
+      mainAppTarget.addDependency(targetToUpdate);
+    }
+  } else {
+    mainAppTarget.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 
