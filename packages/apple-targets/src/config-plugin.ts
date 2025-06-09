@@ -64,13 +64,13 @@ export const withTargetsDir: ConfigPlugin<
     };
   });
 
-  // Sort so that any watch-widget targets come after any watch targets
+  // Sort so that any watch-widget targets come before any watch targets, LIFO
   evaluatedTargets.sort((a, b) => {
     if (a.type === "watch-widget") {
-      return 1;
+      return -1;
     }
     if (b.type === "watch-widget") {
-      return -1;
+      return 1;
     }
     return 0;
   });

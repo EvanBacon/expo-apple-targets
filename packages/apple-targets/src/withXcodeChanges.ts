@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -1238,10 +1239,20 @@ async function applyXcodeChanges(
       }) as PBXNativeTarget | undefined;
 
       if (watchAppTarget) {
-        const watchCopyPhase = watchAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-        if (!watchCopyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-          watchCopyPhase.props.files.push(appExtensionBuildFile);
-        }
+        watchAppTarget.createBuildPhase(
+          PBXCopyFilesBuildPhase,
+          {
+            dstPath: "",
+            dstSubfolderSpec: 6,
+            name: "Embed App Extensions",
+            files: [
+              PBXBuildFile.create(project, {
+                fileRef: appExtensionBuildFile.props.fileRef,
+              }),
+            ],
+            runOnlyForDeploymentPostprocessing: 0,
+          }
+        );
       }
     }
   }
