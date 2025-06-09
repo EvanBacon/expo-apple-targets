@@ -553,7 +553,6 @@ function createWatchWidgetConfigurationList(
   // NOTE: No base Info.plist needed.
 
   const common: BuildSettings = {
-    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",

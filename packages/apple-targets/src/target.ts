@@ -320,7 +320,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
 }
 
 export function getFrameworksForType(type: ExtensionType) {
-  if (type === "widget" || type === "watch-widget") {
+  if (type === "widget") {
     return [
       // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
       "WidgetKit",
@@ -329,6 +329,8 @@ export function getFrameworksForType(type: ExtensionType) {
       "ActivityKit",
       "AppIntents",
     ];
+  } else if (type === "watch-widget") {
+    return ["AppIntents", "WidgetKit", "SwiftUI"];
   } else if (type === "intent") {
     return ["Intents"];
   } else if (type === "intent-ui") {
