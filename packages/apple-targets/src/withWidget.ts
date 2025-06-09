@@ -334,11 +334,19 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     }
 
     let bundleId = mainAppBundleId;
+
+    // Watch widgets are embedded in the watch app, so the root bundle identifier needs to
+    // match the watch app's bundle identifier. If the bundle identifier is not set, then well 
+    // default to using the default main app's bundle identifier + watch suffix
+    if (props.type === "watch-widget") {
+      bundleId += ".watch";
+    }
+
     bundleId += ".";
 
     // Generate the bundle identifier. This logic needs to remain generally stable since it's used for a permanent value.
     // Key here is simplicity and predictability since it's already appended to the main app's bundle identifier.
-    return mainAppBundleId + "." + getSanitizedBundleIdentifier(props.type);
+    return bundleId + getSanitizedBundleIdentifier(props.type);
   })();
 
   const deviceFamilies: DeviceFamily[] = config.ios?.isTabletOnly

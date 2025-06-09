@@ -553,10 +553,10 @@ function createWatchWidgetConfigurationList(
   // NOTE: No base Info.plist needed.
 
   const common: BuildSettings = {
+    
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
-
     CLANG_ENABLE_OBJC_WEAK: "YES",
     CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
     CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
