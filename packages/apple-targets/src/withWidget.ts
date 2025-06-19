@@ -370,6 +370,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     currentProjectVersion: config.ios?.buildNumber || 1,
 
     frameworks: getFrameworksForType(props.type).concat(props.frameworks || []),
+    swiftPackages: props.swiftPackages,
     type: props.type,
     teamId: props.appleTeamId,
 
