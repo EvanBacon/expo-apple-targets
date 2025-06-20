@@ -89,7 +89,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   }
 
   // TODO: Are there characters that aren't allowed in `CFBundleDisplayName`?
-  const targetDisplayName = props.name ?? productName;
+  const targetDisplayName = props.displayName ?? props.name ?? productName;
 
   const targetDirAbsolutePath = path.join(
     config._internal?.projectRoot ?? "",
