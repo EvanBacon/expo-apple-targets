@@ -71,8 +71,6 @@ export type XcodeSettings = {
   orientation?: "default" | "portrait" | "landscape";
 
   deviceFamilies?: DeviceFamily[];
-
-  displayName?: string;
 };
 
 export type DeviceFamily = "phone" | "tablet";
@@ -95,7 +93,6 @@ function createNotificationContentConfigurationList(
     bundleId,
     deploymentTarget,
     currentProjectVersion,
-    displayName,
   }: XcodeSettings
 ) {
   const common: BuildSettings = {
@@ -113,7 +110,7 @@ function createNotificationContentConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -167,7 +164,6 @@ function createExtensionConfigurationListFromTemplate(
   extensionType: string,
   {
     name,
-    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -190,7 +186,7 @@ function createExtensionConfigurationListFromTemplate(
   const dynamic: Partial<BuildSettings> = {
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
   };
@@ -229,7 +225,7 @@ function createExtensionConfigurationListFromTemplate(
 
 function createAppIntentConfigurationList(
   project: XcodeProject,
-  { name, cwd, bundleId, displayName }: XcodeSettings
+  { name, cwd, bundleId }: XcodeSettings
 ) {
   const commonBuildSettings: BuildSettings = {
     // @ts-expect-error
@@ -248,7 +244,7 @@ function createAppIntentConfigurationList(
     GCC_C_LANGUAGE_STANDARD: "gnu17",
     GENERATE_INFOPLIST_FILE: "YES",
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: "17.0",
     LD_RUNPATH_SEARCH_PATHS: [
@@ -301,7 +297,6 @@ function createShareConfigurationList(
   project: XcodeProject,
   {
     name,
-    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -322,7 +317,7 @@ function createShareConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -393,7 +388,6 @@ function createIMessageConfigurationList(
     bundleId,
     deploymentTarget,
     currentProjectVersion,
-    displayName,
   }: XcodeSettings
 ) {
   const common: BuildSettings = {
@@ -411,7 +405,7 @@ function createIMessageConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -465,7 +459,6 @@ function createWatchAppConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
-    displayName,
   }: XcodeSettings
 ) {
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
@@ -487,7 +480,7 @@ function createWatchAppConfigurationList(
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     INFOPLIST_FILE: cwd + "/Info.plist",
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_UISupportedInterfaceOrientations:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     INFOPLIST_KEY_WKCompanionAppBundleIdentifier:
@@ -548,7 +541,6 @@ function createSafariConfigurationList(
   project: XcodeProject,
   {
     name,
-    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -568,7 +560,7 @@ function createSafariConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -623,7 +615,6 @@ function createAppClipConfigurationList(
   project: XcodeProject,
   {
     name,
-    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -637,7 +628,7 @@ function createAppClipConfigurationList(
   const dynamic: Partial<BuildSettings> = {
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_CFBundleDisplayName: name,
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     MARKETING_VERSION: "1.0",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -781,7 +772,6 @@ function createWidgetConfigurationList(
     bundleId,
     deploymentTarget,
     currentProjectVersion,
-    displayName,
   }: XcodeSettings
 ) {
   const debugBuildConfig = XCBuildConfiguration.create(project, {
@@ -802,7 +792,7 @@ function createWidgetConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+      INFOPLIST_KEY_CFBundleDisplayName: name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS: [
@@ -843,7 +833,7 @@ function createWidgetConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+      INFOPLIST_KEY_CFBundleDisplayName: name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS: [
