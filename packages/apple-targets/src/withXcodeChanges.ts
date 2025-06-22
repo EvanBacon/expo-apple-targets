@@ -1319,6 +1319,20 @@ async function applyXcodeChanges(
       } else {
         extensionExceptionSet.props.membershipExceptions = globalSharedAssets.sort();
       }
+      
+      // Ensure the current target has the synchronized group in its fileSystemSynchronizedGroups
+      if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
+        targetToUpdate.props.fileSystemSynchronizedGroups = [];
+      }
+      
+      // Check if this target already has the synchronized group
+      const hasGroup = targetToUpdate.props.fileSystemSynchronizedGroups.some(
+        (group) => group === globalSharedSyncGroup
+      );
+      
+      if (!hasGroup) {
+        targetToUpdate.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+      }
     }
   }
 
