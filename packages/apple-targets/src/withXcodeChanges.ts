@@ -1243,56 +1243,83 @@ async function applyXcodeChanges(
     existingExceptionSet?.removeFromProject();
   }
 
-  // Handle global shared assets from targets/_shared directory
+  // Handle global shared assets from targets/_shared directory using synchronized method
   if (globalSharedAssets.length) {
-    // Create or find the global shared group using traditional PBXGroup
-    let globalSharedGroup = protectedGroup.props.children.find(
-      (child) => child.props.path === "_shared" && child instanceof PBXGroup
-    ) as PBXGroup | undefined;
+    // Create or find the global shared synchronized root group
+    let globalSharedSyncGroup = protectedGroup.props.children.find(
+      (child) => child.props.path === "_shared" && child instanceof PBXFileSystemSynchronizedRootGroup
+    ) as PBXFileSystemSynchronizedRootGroup | undefined;
     
-    if (!globalSharedGroup) {
-      globalSharedGroup = PBXGroup.create(project, {
-        name: "Global Shared",
+    if (!globalSharedSyncGroup) {
+      globalSharedSyncGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
         path: "_shared",
-        children: [],
+        exceptions: [
+          // Create exception set for the main app target
+          PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+            target: mainAppTarget,
+            membershipExceptions: globalSharedAssets.sort(),
+          }),
+          // Create exception set for the extension target
+          PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+            target: targetToUpdate,
+            membershipExceptions: globalSharedAssets.sort(),
+          }),
+        ],
+        explicitFileTypes: {},
+        explicitFolders: [],
         sourceTree: "<group>",
       });
-      protectedGroup.props.children.push(globalSharedGroup);
-    }
-
-    // Create a map to store shared file references for reuse across targets
-    const globalFileRefs = new Map<string, PBXFileReference>();
-    
-    // Process each global shared asset
-    globalSharedAssets.forEach((assetPath) => {
-      if (assetPath.endsWith('.swift')) {
-        const filename = path.basename(assetPath);
-        
-        // Create or reuse file reference
-        let fileRef = globalFileRefs.get(filename);
-        if (!fileRef) {
-          fileRef = PBXFileReference.create(project, {
-            path: filename,
-            sourceTree: "<group>",
-          });
-          globalSharedGroup!.props.children.push(fileRef);
-          globalFileRefs.set(filename, fileRef);
-        }
-        
-        // Add to extension target sources
-        const sourcesBuildPhase = targetToUpdate!.getSourcesBuildPhase();
-        sourcesBuildPhase.ensureFile({ fileRef });
-        
-        // Add to main app target sources (only once)
-        const mainAppSourcesBuildPhase = mainAppTarget.getSourcesBuildPhase();
-        const existingMainAppBuildFile = mainAppSourcesBuildPhase.props.files.find(
-          (buildFile) => buildFile.props.fileRef === fileRef
-        );
-        if (!existingMainAppBuildFile) {
-          mainAppSourcesBuildPhase.ensureFile({ fileRef });
-        }
+      
+      // Add to both targets' fileSystemSynchronizedGroups
+      if (!mainAppTarget.props.fileSystemSynchronizedGroups) {
+        mainAppTarget.props.fileSystemSynchronizedGroups = [];
       }
-    });
+      mainAppTarget.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+      
+      if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
+        targetToUpdate.props.fileSystemSynchronizedGroups = [];
+      }
+      targetToUpdate.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+      
+      protectedGroup.props.children.push(globalSharedSyncGroup);
+    } else {
+      // Update existing synchronized group with current global shared assets
+      globalSharedSyncGroup.props.exceptions ??= [];
+      
+      // Update or create exception set for main app target
+      let mainAppExceptionSet = globalSharedSyncGroup.props.exceptions.find(
+        (exception) =>
+          exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+          exception.props.target === mainAppTarget
+      ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
+      
+      if (!mainAppExceptionSet) {
+        mainAppExceptionSet = PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+          target: mainAppTarget,
+          membershipExceptions: globalSharedAssets.sort(),
+        });
+        globalSharedSyncGroup.props.exceptions.push(mainAppExceptionSet);
+      } else {
+        mainAppExceptionSet.props.membershipExceptions = globalSharedAssets.sort();
+      }
+      
+      // Update or create exception set for extension target
+      let extensionExceptionSet = globalSharedSyncGroup.props.exceptions.find(
+        (exception) =>
+          exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+          exception.props.target === targetToUpdate
+      ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
+      
+      if (!extensionExceptionSet) {
+        extensionExceptionSet = PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+          target: targetToUpdate,
+          membershipExceptions: globalSharedAssets.sort(),
+        });
+        globalSharedSyncGroup.props.exceptions.push(extensionExceptionSet);
+      } else {
+        extensionExceptionSet.props.membershipExceptions = globalSharedAssets.sort();
+      }
+    }
   }
 
   applyDevelopmentTeamIdToTargets();
