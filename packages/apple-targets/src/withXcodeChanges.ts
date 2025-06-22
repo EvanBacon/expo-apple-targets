@@ -1179,6 +1179,13 @@ async function applyXcodeChanges(
     cwd: magicCwd,
   });
 
+  // Also look for global shared assets in the parent targets/_shared directory
+  const targetsDir = path.dirname(magicCwd);
+  const globalSharedAssets = globSync("_shared/*", {
+    absolute: false,
+    cwd: targetsDir,
+  });
+
   let syncRootGroup = protectedGroup.props.children.find(
     (child) => child.props.path === path.basename(props.cwd)
   );
@@ -1234,6 +1241,58 @@ async function applyXcodeChanges(
   } else {
     // Remove the exception set if there are no shared assets.
     existingExceptionSet?.removeFromProject();
+  }
+
+  // Handle global shared assets from targets/_shared directory
+  if (globalSharedAssets.length) {
+    // Create or find the global shared group using traditional PBXGroup
+    let globalSharedGroup = protectedGroup.props.children.find(
+      (child) => child.props.path === "_shared" && child instanceof PBXGroup
+    ) as PBXGroup | undefined;
+    
+    if (!globalSharedGroup) {
+      globalSharedGroup = PBXGroup.create(project, {
+        name: "Global Shared",
+        path: "_shared",
+        children: [],
+        sourceTree: "<group>",
+      });
+      protectedGroup.props.children.push(globalSharedGroup);
+    }
+
+    // Create a map to store shared file references for reuse across targets
+    const globalFileRefs = new Map<string, PBXFileReference>();
+    
+    // Process each global shared asset
+    globalSharedAssets.forEach((assetPath) => {
+      if (assetPath.endsWith('.swift')) {
+        const filename = path.basename(assetPath);
+        
+        // Create or reuse file reference
+        let fileRef = globalFileRefs.get(filename);
+        if (!fileRef) {
+          fileRef = PBXFileReference.create(project, {
+            path: filename,
+            sourceTree: "<group>",
+          });
+          globalSharedGroup!.props.children.push(fileRef);
+          globalFileRefs.set(filename, fileRef);
+        }
+        
+        // Add to extension target sources
+        const sourcesBuildPhase = targetToUpdate!.getSourcesBuildPhase();
+        sourcesBuildPhase.ensureFile({ fileRef });
+        
+        // Add to main app target sources (only once)
+        const mainAppSourcesBuildPhase = mainAppTarget.getSourcesBuildPhase();
+        const existingMainAppBuildFile = mainAppSourcesBuildPhase.props.files.find(
+          (buildFile) => buildFile.props.fileRef === fileRef
+        );
+        if (!existingMainAppBuildFile) {
+          mainAppSourcesBuildPhase.ensureFile({ fileRef });
+        }
+      }
+    });
   }
 
   applyDevelopmentTeamIdToTargets();
