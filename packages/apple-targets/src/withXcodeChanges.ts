@@ -1243,8 +1243,9 @@ async function applyXcodeChanges(
     existingExceptionSet?.removeFromProject();
   }
 
-  // Handle global shared assets from targets/_shared directory using synchronized method
-  if (globalSharedAssets.length) {
+  function configureTargetWithGlobalSharedAssets(target: PBXNativeTarget) {
+    if (!globalSharedAssets.length) return;
+
     // Create or find the global shared synchronized root group
     let globalSharedSyncGroup = protectedGroup.props.children.find(
       (child) => child.props.path === "_shared" && child instanceof PBXFileSystemSynchronizedRootGroup
@@ -1261,7 +1262,7 @@ async function applyXcodeChanges(
           }),
           // Create exception set for the extension target
           PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
-            target: targetToUpdate,
+            target: target,
             membershipExceptions: globalSharedAssets.sort(),
           }),
         ],
@@ -1276,10 +1277,10 @@ async function applyXcodeChanges(
       }
       mainAppTarget.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
       
-      if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
-        targetToUpdate.props.fileSystemSynchronizedGroups = [];
+      if (!target.props.fileSystemSynchronizedGroups) {
+        target.props.fileSystemSynchronizedGroups = [];
       }
-      targetToUpdate.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+      target.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
       
       protectedGroup.props.children.push(globalSharedSyncGroup);
     } else {
@@ -1307,12 +1308,12 @@ async function applyXcodeChanges(
       let extensionExceptionSet = globalSharedSyncGroup.props.exceptions.find(
         (exception) =>
           exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
-          exception.props.target === targetToUpdate
+          exception.props.target === target
       ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
       
       if (!extensionExceptionSet) {
         extensionExceptionSet = PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
-          target: targetToUpdate,
+          target: target,
           membershipExceptions: globalSharedAssets.sort(),
         });
         globalSharedSyncGroup.props.exceptions.push(extensionExceptionSet);
@@ -1321,20 +1322,22 @@ async function applyXcodeChanges(
       }
       
       // Ensure the current target has the synchronized group in its fileSystemSynchronizedGroups
-      if (!targetToUpdate.props.fileSystemSynchronizedGroups) {
-        targetToUpdate.props.fileSystemSynchronizedGroups = [];
+      if (!target.props.fileSystemSynchronizedGroups) {
+        target.props.fileSystemSynchronizedGroups = [];
       }
       
       // Check if this target already has the synchronized group
-      const hasGroup = targetToUpdate.props.fileSystemSynchronizedGroups.some(
+      const hasGroup = target.props.fileSystemSynchronizedGroups.some(
         (group) => group === globalSharedSyncGroup
       );
       
       if (!hasGroup) {
-        targetToUpdate.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+        target.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
       }
     }
   }
+
+  configureTargetWithGlobalSharedAssets(targetToUpdate);
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();
