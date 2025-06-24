@@ -465,6 +465,9 @@ function createWatchAppConfigurationList(
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
 
+  // Use the same name for the watch app and the main app
+  const mainAppName = mainAppTarget.props.name;
+
   const common: BuildSettings = {
     ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
     CLANG_ANALYZER_NONNULL: "YES",
@@ -481,7 +484,7 @@ function createWatchAppConfigurationList(
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     INFOPLIST_FILE: cwd + "/Info.plist",
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: mainAppName,
     INFOPLIST_KEY_UISupportedInterfaceOrientations:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     INFOPLIST_KEY_WKCompanionAppBundleIdentifier:
