@@ -1221,10 +1221,12 @@ async function applyXcodeChanges(
       productType: productType,
     });
 
+    if (props.type !== "watch-widget") {
     const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
 
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
 
     // For watch widget extensions, also add them to the watch app target's copy phase
