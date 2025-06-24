@@ -55,7 +55,8 @@ This file can have the following properties:
 module.exports = {
   type: "widget",
 
-  // Name of the target/product. Defaults to the directory name.
+  // Name of the target/product. Defaults to the directory name. On watch targets,
+  // this is only used for the product name, the display name is the same as the main app.
   name: "My Widget",
 
   // Generates colorset files for the target.
