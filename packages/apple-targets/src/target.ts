@@ -417,3 +417,10 @@ export function getAuxiliaryTargets(project: XcodeProject): PBXNativeTarget[] {
     return target.uuid !== mainTarget?.uuid;
   }) as PBXNativeTarget[];
 }
+
+export function getWatchAppTarget(project: XcodeProject): PBXNativeTarget | undefined {
+  return getAuxiliaryTargets(project).find((target) => {
+    return target.props.productType === "com.apple.product-type.application" &&
+    "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
+  })
+}

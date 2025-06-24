@@ -14,13 +14,14 @@ import {
 import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
-import fs from "fs";
+import fs, { watch } from "fs";
 import { globSync } from "glob";
 import path from "path";
 
 import {
   ExtensionType,
   getMainAppTarget,
+  getWatchAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
   productTypeForType,
@@ -554,6 +555,13 @@ function createWatchWidgetConfigurationList(
 ) {
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
+
+  const watchAppTarget = getWatchAppTarget(project);
+  const watchAppBundleId = watchAppTarget?.getDefaultConfiguration().props.buildSettings.PRODUCT_BUNDLE_IDENTIFIER;
+  if (watchAppBundleId) {
+    const suffix = bundleId.split(".").pop()
+    bundleId = watchAppBundleId + "." + suffix;
+  }
 
   const common: BuildSettings = {
     
@@ -1226,13 +1234,7 @@ async function applyXcodeChanges(
 
     // For watch widget extensions, also add them to the watch app target's copy phase
     if (props.type === "watch-widget") {
-      const watchAppTarget = project.rootObject.props.targets.find((target) => {
-        return (
-          PBXNativeTarget.is(target) &&
-          target.props.productType === "com.apple.product-type.application" &&
-          "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
-        );
-      }) as PBXNativeTarget | undefined;
+      const watchAppTarget = getWatchAppTarget(project);
 
       if (watchAppTarget) {
         watchAppTarget.createBuildPhase(

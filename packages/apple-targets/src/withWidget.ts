@@ -12,6 +12,7 @@ import { withIosIcon } from "./icon/withIosIcon";
 import {
   getFrameworksForType,
   getTargetInfoPlistForType,
+  getWatchAppTarget,
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
@@ -334,13 +335,6 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     }
 
     let bundleId = mainAppBundleId;
-
-    // Watch widgets are embedded in the watch app, so the root bundle identifier needs to
-    // match the watch app's bundle identifier. If the bundle identifier is not set, then well 
-    // default to using the default main app's bundle identifier + watch suffix
-    if (props.type === "watch-widget") {
-      bundleId += ".watch";
-    }
 
     bundleId += ".";
 
