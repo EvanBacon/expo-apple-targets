@@ -466,7 +466,7 @@ function createWatchAppConfigurationList(
   // NOTE: No base Info.plist needed.
 
   // Use the same name for the watch app and the main app
-  const mainAppName = mainAppTarget.props.name;
+  const mainAppName = mainAppTarget.getDisplayName();
 
   const common: BuildSettings = {
     ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
