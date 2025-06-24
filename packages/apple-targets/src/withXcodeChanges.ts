@@ -1221,14 +1221,6 @@ async function applyXcodeChanges(
       productType: productType,
     });
 
-    if (props.type !== "watch-widget") {
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-        copyPhase.props.files.push(appExtensionBuildFile);
-      }
-    }
-
     // For watch widget extensions, also add them to the watch app target's copy phase
     if (props.type === "watch-widget") {
       const watchAppTarget = project.rootObject.props.targets.find((target) => {
@@ -1254,6 +1246,13 @@ async function applyXcodeChanges(
             runOnlyForDeploymentPostprocessing: 0,
           }
         );
+      }
+    } else {
+      // For all other targets, add the target product to the main app target's copy phase
+      const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
       }
     }
   }
