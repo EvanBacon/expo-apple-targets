@@ -190,6 +190,7 @@ export function getTemplateConfig(target: string) {
     "safari",
     "share",
     "watch",
+    "watch-widget",
   ].includes(target);
 
   const lines = [
@@ -205,6 +206,10 @@ export function getTemplateConfig(target: string) {
   if (target === "watch") {
     lines.push('  colors: { $accent: "darkcyan", },');
     lines.push('  deploymentTarget: "9.4",');
+  } else if (target === "watch-widget") {
+    lines.push('  colors: { $accent: "#007AFF", },');
+    lines.push('  deploymentTarget: "9.4",');
+    lines.push('  frameworks: ["AppIntents", "WidgetKit", "SwiftUI"],');
   } else if (target === "action") {
     lines.push('  colors: { TouchBarBezel: "#000000", },');
   } else if (target === "share") {
