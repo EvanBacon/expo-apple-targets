@@ -24,6 +24,24 @@ type Props = Config & {
 
 const DEFAULT_DEPLOYMENT_TARGET = "18.0";
 
+function injectInfoPlistEntries(
+  plistPath: string,
+  entries: Record<string, any>
+) {
+  let content = fs.readFileSync(plistPath, 'utf8');
+  const insertion = Object.entries(entries)
+    .map(([key, value]) => {
+      const val = typeof value === 'boolean'
+        ? `<${value ? 'true' : 'false'}/>`
+        : `<string>${value}</string>`;
+      return `\n    <key>${key}</key>\n    ${val}`;
+    })
+    .join('');
+
+  content = content.replace('<dict>', `<dict>${insertion}`);
+  fs.writeFileSync(plistPath, content, 'utf8');
+}
+
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = new Map<string, any>();
   return ((...args: any[]) => {
@@ -317,6 +335,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       return config;
     },
   ]);
+
+  if (props.infoPlist) {
+    const plistPath = path.join(targetDirAbsolutePath, 'Info.plist');
+    injectInfoPlistEntries(plistPath, props.infoPlist);
+  }
 
   const mainAppBundleId = config.ios!.bundleIdentifier!;
 
