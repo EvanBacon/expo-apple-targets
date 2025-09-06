@@ -21,7 +21,11 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor";
+  | "device-activity-monitor"
+  | "network-packet-tunnel"
+  | "network-app-proxy"
+  | "network-content-filter"
+  | "network-dns-proxy";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
