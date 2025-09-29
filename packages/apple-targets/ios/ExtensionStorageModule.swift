@@ -17,6 +17,16 @@ public class ExtensionStorageModule: Module {
             }
         }
         
+        Function("reloadControls") { (kind: String?) in
+            if #available(iOS 18.0, *) {
+                if let kind = kind {
+                    ControlCenter.shared.reloadControls(ofKind: kind)
+                } else {
+                    ControlCenter.shared.reloadAllControls()
+                }
+            }
+        }
+        
         Function("setArray") { (forKey: String, data: [[String: Any]], suiteName: String?) -> Bool in
             // Convert the incoming array of dictionaries directly to JSON data
             do {
@@ -48,6 +58,24 @@ public class ExtensionStorageModule: Module {
         Function("setString") { (key: String, value: String, group: String?) in
             let userDefaults = UserDefaults(suiteName: group)
             userDefaults?.set(value, forKey: key)
+        }        
+
+        Function("get") { (key: String, group: String?) -> String? in
+            let userDefaults = UserDefaults(suiteName: group)
+            if let data = userDefaults?.data(forKey: key) {
+                do {
+                    let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+                    let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted])
+                    return String(data: jsonData, encoding: .utf8)
+                } catch {                    
+                    return nil
+                }
+            }
+            
+            if let value = userDefaults?.object(forKey: key) {
+                return String(describing: value)
+            }
+            return nil
         }
     }
 }

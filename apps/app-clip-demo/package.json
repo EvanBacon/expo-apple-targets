@@ -1,23 +1,18 @@
 {
-  "name": "app-clip-demo",
+  "name": "@bacons/app-clip",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "expo start --dev-client",
-    "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "android": "expo run:android"
   },
   "dependencies": {
     "@bacons/apple-targets": "*",
-    "expo": "^52",
-    "expo-splash-screen": "~0.29.7",
-    "expo-status-bar": "~2.0.0",
-    "react": "18.3.1",
-    "react-native": "0.76.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@types/react": "~18.3.12"
+    "expo": "^53",
+    "expo-splash-screen": "~0.30.8",
+    "react": "19.0.0",
+    "react-native": "0.79.2"
   },
   "private": true
 }

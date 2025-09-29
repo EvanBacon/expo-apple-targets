@@ -1,5 +1,5 @@
 import { ConfigPlugin } from "@expo/config-plugins";
-import { sync as globSync } from "glob";
+import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
 
@@ -48,6 +48,12 @@ export const withTargetsDir: ConfigPlugin<
     } else if (typeof targetConfig !== "object") {
       throw new Error(
         `Expected target config to be an object or function that returns an object, but got ${typeof targetConfig}`
+      );
+    }
+
+    if (!evaluatedTargetConfigObject.type) {
+      throw new Error(
+        `Expected target config to have a 'type' property denoting the type of target it is, e.g. 'widget'`
       );
     }
 

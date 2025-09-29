@@ -1,0 +1,26 @@
+{
+  "name": "targets-kitchen",
+  "slug": "targets-kitchen",
+  "version": "1.0",
+  "orientation": "portrait",
+  "icon": "./assets/icon.png",
+  "userInterfaceStyle": "light",
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "newArchEnabled": true,
+  "ios": {
+    "supportsTablet": true,
+    "appleTeamId": "QQ57RJ5UTD",
+    "bundleIdentifier": "com.bacon.2095"
+  },
+  "platforms": ["ios"],
+  "plugins": ["@bacons/apple-targets"],
+  "extra": {
+    "eas": {
+      "projectId": "493cc60b-ce18-46b5-8e04-f1c12293fc49"
+    }
+  }
+}

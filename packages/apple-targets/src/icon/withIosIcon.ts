@@ -5,7 +5,7 @@ import {
   ContentsJsonImageIdiom,
   writeContentsJsonAsync,
 } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
-import * as fs from "fs-extra";
+import * as fs from "fs";
 import { join } from "path";
 
 import { ExtensionType } from "../target";
@@ -24,7 +24,9 @@ export const withIosIcon: ConfigPlugin<{
       const namedProjectRoot = join(projectRoot, cwd);
       if (type === "watch") {
         // Ensure the Images.xcassets/AppIcon.appiconset path exists
-        await fs.ensureDir(join(namedProjectRoot, IMAGESET_PATH));
+        await fs.promises.mkdir(join(namedProjectRoot, IMAGESET_PATH), {
+          recursive: true,
+        });
 
         // Finally, write the Config.json
         await writeContentsJsonAsync(join(namedProjectRoot, IMAGESET_PATH), {
@@ -128,7 +130,9 @@ export async function setIconsAsync(
   isTransparent: boolean
 ) {
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
-  await fs.ensureDir(join(iosNamedProjectRoot, IMAGESET_PATH));
+  await fs.promises.mkdir(join(iosNamedProjectRoot, IMAGESET_PATH), {
+    recursive: true,
+  });
 
   // Finally, write the Config.json
   await writeContentsJsonAsync(join(iosNamedProjectRoot, IMAGESET_PATH), {
@@ -186,7 +190,7 @@ export async function generateIconsInternalAsync(
           );
           // Write image buffer to the file system.
           const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
-          await fs.writeFile(assetPath, source);
+          await fs.promises.writeFile(assetPath, source);
           // Save a reference to the generated image so we don't create a duplicate.
           generatedIcons[filename] = true;
         }
@@ -236,7 +240,7 @@ export async function generateWatchIconsInternalAsync(
   );
   // Write image buffer to the file system.
   const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
-  await fs.writeFile(assetPath, source);
+  await fs.promises.writeFile(assetPath, source);
 
   imagesJson.push({
     filename: getAppleIconName(size, 1),

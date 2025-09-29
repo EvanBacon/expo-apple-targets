@@ -3,6 +3,7 @@ type NativeModule = {
   setString(key: string, value: string, suite?: string): void;
   remove(key: string, suite?: string): void;
   reloadWidget(name?: string): void;
+  reloadControls(name?: string): void;
   setObject(
     key: string,
     value: Record<string, string | number>,
@@ -13,6 +14,7 @@ type NativeModule = {
     value: Record<string, string | number>[],
     suite?: string
   ): boolean;
+  get(key: string, suite?: string): string | null;
 };
 
 // @ts-expect-error
@@ -22,9 +24,11 @@ const nativeModule: NativeModule = ExtensionStorageModule ?? {
   setInt() {},
   setString() {},
   reloadWidget() {},
+  reloadControls() {},
   setObject() {},
-  remove() {},
   setArray() {},
+  get() {},
+  remove() {},
 };
 
 const originalSetObject = nativeModule.setObject;
@@ -44,6 +48,10 @@ nativeModule.setObject = (
 export class ExtensionStorage {
   static reloadWidget(name?: string) {
     nativeModule.reloadWidget(name);
+  }
+
+  static reloadControls(name?: string) {
+    nativeModule.reloadControls(name);
   }
 
   constructor(private readonly appGroup: string) {}
@@ -67,5 +75,13 @@ export class ExtensionStorage {
     } else {
       nativeModule.setObject(key, value, this.appGroup);
     }
+  }
+
+  get(key: string): string | null {
+    return nativeModule.get(key, this.appGroup);
+  }
+
+  remove(key: string) {
+    nativeModule.remove(key, this.appGroup);
   }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "@bacons/app-kitchen",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "nprebuild": "expo prebuild --template ../../packages/apple-targets/prebuild-blank.tgz -p ios"
+  },
+  "dependencies": {
+    "@bacons/apple-targets": "*",
+    "expo": "^53",
+    "expo-splash-screen": "~0.30.8",
+    "react": "19.0.0",
+    "react-native": "0.79.2"
+  },
+  "private": true
+}

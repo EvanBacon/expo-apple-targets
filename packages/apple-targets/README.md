@@ -9,7 +9,7 @@ An experimental Expo Config Plugin that generates native Apple Targets like Widg
 
 ## 🚀 How to use
 
-> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +52.
+> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +53.
 
 1. Run `npx create-target` in your Expo project to generate an Apple target.
 2. Select a target to generate, I recommend starting with a `widget` (e.g. `npx create-target widget`). This will generate the required widget files in the root `/targets` directory, install `@bacons/apple-targets`, and add the Expo Config Plugin to your project.
@@ -42,7 +42,7 @@ Some targets have special entitlements behavior:
 Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the Info.plist or the `expo-target.config.js` file.
 If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
 
-You can use the custom Prebuild template `--template node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile.
+You can use the custom Prebuild template `--template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
 
 ## Target config
 
@@ -174,6 +174,10 @@ end
 
 The name of the target must match the name of the target directory.
 
+## `_shared`
+
+Some files are required to be linked to both your target and the main target. To support this, you can add a top-level `_shared` directory. Any file in this directory will be linked to both the main target and the sub-target. You'll need to re-run prebuild every time you add, rename, or remove a file in this directory.
+
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
@@ -215,6 +219,8 @@ module.exports = {
 ```
 
 ### `action`
+
+![IMG_C2C825ACC8C7-1](https://github.com/user-attachments/assets/8378e022-2061-4da8-9c46-efe3064dd40c)
 
 These show up in the share sheet. The icon should be transparent as it will be masked by the system.
 
@@ -315,7 +321,8 @@ If you experience issues building widgets, it might be because React Native is s
 
 Some workarounds:
 
-- Prebuild without React Native: `npx expo prebuild --template node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
+- Clear the SwiftUI previews cache: `xcrun simctl --set previews delete all`
+- Prebuild without React Native: `npx expo prebuild --template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz --clean`
 - If the widget doesn't show on the home screen when building the app, use iOS 18. You can long press the app icon and select the widget display options to transform the app icon into the widget.
 
 ## Sharing data between targets
@@ -383,6 +390,9 @@ ExtensionStorage.reloadWidget();
 
 - `set(key: string, value: string | number | Record<string, string | number> | Array<Record<string, string | number>> | undefined): void` - Sets a value in the shared storage for a given key. Setting `undefined` will remove the key.
 - `ExtensionStorage.reloadWidget(name?: string): void` - A static method for reloading the widget. Behind the scenes, this calls `WidgetCenter.shared.reloadAllTimelines()`. If given a name, it will reload a specific widget using `WidgetCenter.shared.reloadTimelines(ofKind: timeline)`.
+- `ExtensionStorage.reloadControls(name?: string): void` - A static method for reloading the controls. Behind the scenes, this calls `ControlCenter.shared.reloadAllControls(): void`. If given a name, it will reload a specific widget using `ControlCenter.shared.reloadControls(ofKind?: string): void`.
+- `remove(key: string): void` - A method for removing the key from the shared storage.
+- `get(key: string): string | null` - A static method for getting the value from the shared storage.
 
 ### Accessing shared data
 
@@ -397,6 +407,179 @@ let defaults = UserDefaults(suiteName:
 let index = defaults?.string(forKey: "myKey")
 ```
 
+### More data updates
+
+For more advanced uses, I recommend the following resources:
+
+- Updating widgets when the app is in the background: [Keeping A Widget Up-to-Date](https://developer.apple.com/documentation/widgetkit/keeping-a-widget-up-to-date).
+
 ## Xcode parsing
 
 This plugin makes use of my proprietary Xcode parsing library, [`@bacons/xcode`](https://github.com/evanbacon/xcode). It's mostly typed, very untested, and possibly full of bugs––however, it's still 10x nicer than the alternative.
+
+## Control widgets
+
+![Simulator Screenshot - iPhone 16 - 2025-01-26 at 15 57 44](https://github.com/user-attachments/assets/c989a3bb-112d-4026-a718-49de4cdb2f3e)
+
+[Control widgets](https://developer.apple.com/documentation/swiftui/controlwidget) are a type of widget that appears in the control center, Siri suggestions, the lock screen, and Shortcuts.
+
+Generally, you'll want to add control widgets to a `widget` target, but they can be added to any target really.
+
+You can add multiple intents, they should be in the `[target]/_shared/*.swift` folder so they can be added to the main target as well as the widget target, this is required to make them work correctly.
+
+The following is an example of a control widget that launches a universal link for my app.
+
+```swift
+// targets/widget/_shared/intents.swift
+
+import AppIntents
+import SwiftUI
+import WidgetKit
+
+// TODO: These must be added to the WidgetBundle manually. They need to be linked outside of the _shared folder.
+// @main
+// struct exportWidgets: WidgetBundle {
+//     var body: some Widget {
+//         widgetControl0()
+//         widgetControl1()
+//     }
+// }
+
+@available(iOS 18.0, *)
+struct widgetControl0: ControlWidget {
+    // Unique ID for the control.
+    static let kind: String = "com.bacon.clipdemo.0"
+    var body: some ControlWidgetConfiguration {
+      StaticControlConfiguration(kind: Self.kind) {
+        ControlWidgetButton(action: OpenAppIntent0()) {
+          // You can also use a custom image but it must be an SF Symbol.
+          Label("App Settings", systemImage: "star")
+        }
+      }
+      // This is the configuration for the widget.
+      .displayName("Launch Settings")
+      .description("A control that launches the app settings.")
+    }
+}
+
+// This must be in both targets when `openAppWhenRun = true`. We can do that by adding it to the _shared folder.
+// https://developer.apple.com/forums/thread/763851
+@available(iOS 18.0, *)
+struct OpenAppIntent0: ControlConfigurationIntent {
+    static let title: LocalizedStringResource = "Launch Settings"
+    static let description = IntentDescription(stringLiteral: "A control that launches the app settings.")
+    static let isDiscoverable = true
+    static let openAppWhenRun: Bool = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult & OpensIntent {
+        // Here's the URL we want to launch. It can be any URL but it should be a universal link for your app.
+        return .result(opensIntent: OpenURLIntent(URL(string: "https://pillarvalley.expo.app/settings")!))
+    }
+}
+```
+
+You should copy the intents into your main `WidgetBundle` struct.
+
+**Reloading Controls from Your App**
+
+Changes in your app’s state may affect control displays. You can request a reload of specific controls or all controls using
+
+```js
+ExtensionStorage.reloadControls();
+```
+
+Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
+
+You can do a lot of things with Control Widgets like launching a custom UI instead of opening the app. This plugin should allow for most of these things to work.
+
+## App Clips
+
+![IMG_6BC9D9534F1D-1](https://github.com/user-attachments/assets/f9847f6f-4f0a-44f9-932c-3f8e9703c133)
+
+App Clips leverage the true power of Expo Router, enabling you to link a website and native app to just instantly open the native app on iOS. They're pretty hard to get working though.
+
+Here are a few notes from my experience building https://pillarvalley.expo.app (open on iOS to test).
+
+Build the app first, then the website. You can always instantly update the website if it's wrong. This includes the AASA, and metadata.
+
+You may need [this RN patch](https://github.com/facebook/react-native/pull/47000) to get your project working, otherwise it'll crash when launched from Test Flight. Alternatively, you can add App Clip experiences in App Store Connect and it'll launch as expected.
+
+After running prebuild, open the project in Xcode and navigate to the signing tab for each target, this'll ensure the first version of codesigning is absolutely correct. We'll need to adjust EAS Build to ensure it can do this too.
+
+Ensure your App Clip does not have `expo-updates` installed, otherwise it'll fail to build with some cryptic error about React missing in the AppDelegate.
+
+Ensure all the build numbers are the same across the `CURRENT_PROJECT_VERSION` and `CFBundleVersion` (Info.plist) otherwise the app will fail to build.
+
+Ensure you add a `public/.well-known/apple-app-site-association` file to your website and deploy it to the web (`eas deploy --prod`). Here's [an example](https://github.com/EvanBacon/pillar-valley/blob/d5ab82ae04f519310acf4b31aad8d9e22eb3747d/public/.well-known/apple-app-site-association#L27-L29).
+
+The value will be `<Apple Team ID>.<App Clip Bundle ID>`:
+
+```
+{
+  "appclips": {
+    "apps": ["QQ57RJ5UTD.com.evanbacon.pillarvalley.clip"]
+  }
+}
+```
+
+Add the website URL to your App Clip entitlements (not the main entitlements). Here's an example with `https://pillarvalley.expo.app`:
+
+```xml
+<key>com.apple.developer.associated-domains</key>
+<array>
+  <string>appclips:pillarvalley.expo.app</string>
+</array>
+```
+
+If this isn't done, then your App Clip will only be able to be launched from the default App Store URL: `https://appclip.apple.com/id?p=com.evanbacon.pillarvalley.clip` (where your App Clip bundle ID will be the ID in the URL).
+
+You should handle redirection from this default URL too with a [`app/+native-intent.ts`](https://docs.expo.dev/router/advanced/native-intent/) file:
+
+```ts
+export function redirectSystemPath({ path }: { path: string }): string {
+  try {
+    // Handle App Clip default page redirection.
+    // If path matches https://appclip.apple.com/id?p=com.evanbacon.pillarvalley.clip (with any query parameters), then redirect to `/` path.
+    const url = new URL(path);
+    if (url.hostname === "appclip.apple.com") {
+      // Redirect to the root path and make the original URL available as a query parameter (optional).
+      return "/?ref=" + encodeURIComponent(path);
+    }
+    return path;
+  } catch {
+    return path;
+  }
+}
+```
+
+You should use `expo-linking` to get URLs related to the App Clip as the upstream React Native Linking has some issues handling App Clips.
+
+When you publish an App Clip, the binary will take about 5 minutes to show up in the App Store (after it's approved) but the App Clip will take more like 25 minutes to show up in your website.
+
+You also need to add some meta tags to your website. These need to run fast so I recommend putting them in your `app/+html.tsx` file:
+
+```js
+<meta
+  name="apple-itunes-app"
+  content={
+    "app-id=1336398804, app-clip-bundle-id=com.evanbacon.pillarvalley.clip, app-clip-display=card"
+  }
+/>
+```
+
+You should also add the `og:image` property using `expo-router/head`. [Learn more](https://developer.apple.com/documentation/appclip/supporting-invocations-from-your-website-and-the-messages-app). It seems like an absolute path to a png image that is `1200×630` in dimensions ([based on this](https://developer.apple.com/library/archive/technotes/tn2444/_index.html)).
+
+```js
+<Head>
+  {/* Required for app clips: */}
+  {/* https://developer.apple.com/documentation/appclip/supporting-invocations-from-your-website-and-the-messages-app */}
+  <meta property="og:image" content="https://pillarvalley.expo.app/og.png" />
+</Head>
+```
+
+You also need a `1800x1200` image for the App Store Connect image preview, so make both of these images around the same time.
+
+Launch App Clips from Test Flight to test deep linking. It doesn't seem like there's any reasonable way to test launching from your website in development. I got this to work once by setting up a local experience in my app's "Settings > Developer" screen, then installing the app, opening the website, deleting the app, then installing the App Clip without the app. You'll mostly need to go with God on this one.
+
+You can generate codes using the CLI tool [download here](https://developer.apple.com/download/all/?q=%22app%20clip%22).

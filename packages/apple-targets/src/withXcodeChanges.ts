@@ -1,14 +1,11 @@
 import {
   PBXBuildFile,
-  PBXContainerItemProxy,
-  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
   PBXGroup,
   PBXNativeTarget,
   PBXShellScriptBuildPhase,
-  PBXTargetDependency,
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
@@ -17,7 +14,7 @@ import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
 import fs from "fs";
-import { sync as globSync } from "glob";
+import { globSync } from "glob";
 import path from "path";
 
 import {
@@ -38,9 +35,12 @@ const TemplateBuildSettings = fixture as unknown as Record<
   }
 >;
 import { withXcodeProjectBeta } from "./withXcparse";
+import assert from "assert";
 
 export type XcodeSettings = {
   name: string;
+  /** Name used for internal purposes. This has more strict rules and should be generated. */
+  productName: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
   cwd: string;
 
@@ -57,7 +57,7 @@ export type XcodeSettings = {
 
   hasAccentColor?: boolean;
 
-  colors?: Record<string, string>;
+  colors?: Record<string, any>;
 
   teamId?: string;
 
@@ -67,15 +67,20 @@ export type XcodeSettings = {
 
   /** File path to the extension config file. */
   configPath: string;
+
+  orientation?: "default" | "portrait" | "landscape";
+
+  deviceFamilies?: DeviceFamily[];
 };
+
+export type DeviceFamily = "phone" | "tablet";
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
   props
 ) => {
-  return withXcodeProjectBeta(config, (config) => {
-    // @ts-ignore
-    applyXcodeChanges(config, config.modResults, props);
+  return withXcodeProjectBeta(config, async (config) => {
+    await applyXcodeChanges(config, config.modResults, props);
     return config;
   });
 };
@@ -615,6 +620,8 @@ function createAppClipConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
+    orientation,
+    deviceFamilies,
   }: XcodeSettings
 ) {
   // TODO: Unify AppIcon and AccentColor logic
@@ -650,7 +657,7 @@ function createAppClipConfigurationList(
     PRODUCT_NAME: "$(TARGET_NAME)",
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_VERSION: "5.0",
-    TARGETED_DEVICE_FAMILY: "1,2",
+    ...getDeviceFamilyBuildSettings(deviceFamilies),
   };
 
   const infoPlist: Partial<BuildSettings> = {
@@ -658,10 +665,7 @@ function createAppClipConfigurationList(
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    ...getOrientationBuildSettings(orientation),
   };
 
   // @ts-expect-error
@@ -710,7 +714,57 @@ function createAppClipConfigurationList(
   return configurationList;
 }
 
-function createConfigurationList(
+function getOrientationBuildSettings(
+  orientation?: "default" | "portrait" | "landscape"
+) {
+  // Try to align the orientation with the main app.
+  if (orientation === "landscape") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    };
+  } else if (orientation === "portrait") {
+    return {
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+        "UIInterfaceOrientationPortrait",
+      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+        "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
+    };
+  }
+
+  return {
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+  };
+}
+
+function getDeviceFamilyBuildSettings(
+  deviceFamilies?: DeviceFamily[]
+): Partial<BuildSettings> {
+  if (!deviceFamilies) {
+    return {
+      TARGETED_DEVICE_FAMILY: "1,2",
+    };
+  }
+
+  const families: number[] = [];
+  if (deviceFamilies.includes("phone")) {
+    families.push(1);
+  }
+  if (deviceFamilies.includes("tablet")) {
+    families.push(2);
+  }
+
+  return {
+    TARGETED_DEVICE_FAMILY: families.join(","),
+  };
+}
+
+function createWidgetConfigurationList(
   project: XcodeProject,
   {
     name,
@@ -755,7 +809,7 @@ function createConfigurationList(
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -795,7 +849,7 @@ function createConfigurationList(
       SWIFT_EMIT_LOC_STRINGS: "YES",
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
-      SWIFT_VERSION: "5",
+      SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
   });
@@ -814,7 +868,7 @@ function createConfigurationListForType(
   props: XcodeSettings
 ) {
   if (props.type === "widget") {
-    return createConfigurationList(project, props);
+    return createWidgetConfigurationList(project, props);
   } else if (props.type === "action") {
     return createExtensionConfigurationListFromTemplate(
       project,
@@ -865,7 +919,7 @@ async function applyXcodeChanges(
 
   const targets = getExtensionTargets();
 
-  const productName = props.name;
+  const productName = props.productName;
 
   let targetToUpdate: PBXNativeTarget | undefined =
     targets.find((target) => target.props.productName === productName) ??
@@ -1060,7 +1114,7 @@ async function applyXcodeChanges(
           ? "wrapper.extensionkit-extension"
           : "wrapper.app-extension",
         includeInIndex: 0,
-        path: productName + (isExtension ? ".appex" : ".app"),
+        path: props.name + (isExtension ? ".appex" : ".app"),
         sourceTree: "BUILT_PRODUCTS_DIR",
       }),
       settings: {
@@ -1075,7 +1129,7 @@ async function applyXcodeChanges(
 
     targetToUpdate = project.rootObject.createNativeTarget({
       buildConfigurationList: createConfigurationListForType(project, props),
-      name: productName,
+      name: props.name,
       productName,
       // @ts-expect-error
       productReference:
@@ -1120,12 +1174,16 @@ async function applyXcodeChanges(
 
   const protectedGroup = ensureProtectedGroup(project, path.dirname(props.cwd));
 
-  if (
-    !protectedGroup.props.children.find(
-      (child) => child.props.path === path.basename(props.cwd)
-    )
-  ) {
-    const syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
+  const sharedAssets = globSync("_shared/*", {
+    absolute: false,
+    cwd: magicCwd,
+  });
+
+  let syncRootGroup = protectedGroup.props.children.find(
+    (child) => child.props.path === path.basename(props.cwd)
+  );
+  if (!syncRootGroup) {
+    syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
       path: path.basename(props.cwd),
       exceptions: [
         PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
@@ -1154,6 +1212,28 @@ async function applyXcodeChanges(
     targetToUpdate.props.fileSystemSynchronizedGroups.push(syncRootGroup);
 
     protectedGroup.props.children.push(syncRootGroup);
+  }
+
+  // If there's a `_shared` folder, create a PBXFileSystemSynchronizedBuildFileExceptionSet and set the `target` to the main app target. Then add exceptions to the new target's PBXFileSystemSynchronizedRootGroup's exceptions. Finally, ensure the relative paths for each file in the _shared folder are added to the `membershipExceptions` array.
+  assert(syncRootGroup instanceof PBXFileSystemSynchronizedRootGroup);
+  syncRootGroup.props.exceptions ??= [];
+
+  const existingExceptionSet = syncRootGroup.props.exceptions.find(
+    (exception) =>
+      exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+      exception.props.target === mainAppTarget
+  );
+  if (sharedAssets.length) {
+    const exceptionSet =
+      existingExceptionSet ||
+      PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+        target: mainAppTarget,
+      });
+    exceptionSet.props.membershipExceptions = sharedAssets.sort();
+    syncRootGroup.props.exceptions.push(exceptionSet);
+  } else {
+    // Remove the exception set if there are no shared assets.
+    existingExceptionSet?.removeFromProject();
   }
 
   applyDevelopmentTeamIdToTargets();
