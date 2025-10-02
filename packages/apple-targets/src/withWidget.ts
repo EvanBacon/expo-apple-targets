@@ -351,6 +351,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     productName,
     configPath: props.configPath,
     name: targetDisplayName,
+    displayName: props.displayName,
     cwd:
       "../" +
       path.relative(

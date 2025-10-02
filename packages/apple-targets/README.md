@@ -56,7 +56,10 @@ module.exports = {
   type: "widget",
 
   // Name of the target/product. Defaults to the directory name.
-  name: "My Widget",
+  name: "my_widget",
+
+  // Optional override for CFBundleDisplayName. Defaults to `name` if not provided.
+  displayName: "My Widget",
 
   // Generates colorset files for the target.
   colors: {
@@ -230,7 +233,7 @@ These show up in the share sheet. The icon should be transparent as it will be m
 /** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "action",
-  name: "Inspect Element",
+  displayName: "Inspect Element",
   icon: "./assets/icon.png",
   colors: {
     TouchBarBezel: "#DB739C",
