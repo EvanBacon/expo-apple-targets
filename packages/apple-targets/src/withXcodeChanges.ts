@@ -668,6 +668,13 @@ function createAppClipConfigurationList(
     ...getOrientationBuildSettings(orientation),
   };
 
+  // Attempt to automatically set the build number to match the main app. 
+  // This only works with EAS Build, other processes can simply set the number manually.
+  if (process.env.EAS_BUILD_IOS_BUILD_NUMBER) {
+    // NOTE: INFOPLIST_KEY_CFBundleVersion doesn't work here.
+      infoPlist.CURRENT_PROJECT_VERSION = process.env.EAS_BUILD_IOS_BUILD_NUMBER;
+  }
+
   // @ts-expect-error
   const common: BuildSettings = {
     ...dynamic,
@@ -717,28 +724,30 @@ function createAppClipConfigurationList(
 function getOrientationBuildSettings(
   orientation?: "default" | "portrait" | "landscape"
 ) {
+  // NOTE: The requiresFullScreen support is deprecated in iOS 26+
+  // https://developer.apple.com/documentation/BundleResources/Information-Property-List/UIRequiresFullScreen
+
   // Try to align the orientation with the main app.
   if (orientation === "landscape") {
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
         "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+      // INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      //   "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     };
   } else if (orientation === "portrait") {
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
         "UIInterfaceOrientationPortrait",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-        "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
+      // INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      //   "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     };
   }
-
   return {
     INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
+    // INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+    //   "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
   };
 }
 
