@@ -299,7 +299,11 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | location-push           | Location Push Service Extension    |
 | credentials-provider    | Credentials Provider Extension     |
 | account-auth            | Account Authentication Extension   |
-| device-activity-monitor | Device Activity Monitor Extension  |
+| network-packet-tunnel   | Packet Tunnel Network Extension    |
+| network-app-proxy       | App Proxy Network Extension        |
+| network-dns-proxy       | DNS Proxy Network Extension        |
+| network-filter-data     | Filter Data Network Extension      |
+
 
 <!-- | imessage             | iMessage Extension               | -->
 

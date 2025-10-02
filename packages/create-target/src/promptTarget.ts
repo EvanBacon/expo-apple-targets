@@ -38,6 +38,26 @@ export const TARGETS = [
   { title: "Location Push", value: "location-push", description: "" },
   { title: "Matter", value: "matter", description: "" },
   {
+    title: "Network Extension: Packet Tunnel Provider",
+    value: "network-packet-tunnel",
+    description: "",
+  },
+  {
+    title: "Network Extension: App Proxy",
+    value: "network-app-proxy",
+    description: "",
+  },
+  {
+    title: "Network Extension: DNS Proxy",
+    value: "network-dns-proxy",
+    description: "",
+  },
+  {
+    title: "Network Extension: Filter Data",
+    value: "network-filter-data",
+    description: "",
+  },
+  {
     title: "Notification Content",
     value: "notification-content",
     description: "",
