@@ -305,6 +305,8 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | credentials-provider    | Credentials Provider Extension     |
 | account-auth            | Account Authentication Extension   |
 | device-activity-monitor | Device Activity Monitor Extension  |
+| shield-configuration    | Shield Configuration Extension     |
+| shield-action           | Shield Action Extension            |
 
 <!-- | imessage             | iMessage Extension               | -->
 

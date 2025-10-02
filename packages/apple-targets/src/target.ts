@@ -21,7 +21,9 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor";
+  | "device-activity-monitor"
+  | "shield-action"
+  | "shield-configuration";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -45,6 +47,9 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
+    "com.apple.ManagedSettings.shield-action-service": "shield-action",
+    "com.apple.ManagedSettingsUI.shield-configuration-service":
+      "shield-configuration",
     // "com.apple.intents-service": "intents",
   };
 
@@ -72,6 +77,8 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     safari: false,
     spotlight: false,
     watch: false,
+    "shield-action": true,
+    "shield-configuration": true,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
@@ -278,7 +285,44 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "shield-action") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShieldAction",
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "shield-configuration") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShieldConfiguration",
+        NSExtensionPointIdentifier,
+      },
+    });
+  } else if (type === "device-activity-monitor") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        NSExtensionPointIdentifier,
+      },
+    });
   }
+
+  /*
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>NSExtension</key>
+        <dict>
+            <key>NSExtensionPointIdentifier</key>
+            <string>com.apple.deviceactivity.monitor-extension</string>
+            <key>NSExtensionPrincipalClass</key>
+            <string>$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension</string>
+        </dict>
+    </dict>
+</plist>
+  */
 
   // Default: used for widget and bg-download
   return plist.build({
@@ -312,6 +356,9 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
+    "device-activity-monitor",
+    "shield-action",
+    "shield-configuration",
   ].includes(type);
 }
 
@@ -337,6 +384,10 @@ export function getFrameworksForType(type: ExtensionType) {
     return ["AppIntents"];
   } else if (type === "device-activity-monitor") {
     return ["DeviceActivity"];
+  } else if (type === "shield-action") {
+    return ["ManagedSettingsUI"];
+  } else if (type === "shield-configuration") {
+    return [];
   } else if (type === "action") {
     return [
       // "UniformTypeIdentifiers"
