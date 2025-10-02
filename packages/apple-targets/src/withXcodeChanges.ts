@@ -665,6 +665,9 @@ function createAppClipConfigurationList(
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
+    
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     ...getOrientationBuildSettings(orientation),
   };
 
@@ -732,22 +735,16 @@ function getOrientationBuildSettings(
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
         "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     };
   } else if (orientation === "portrait") {
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
         "UIInterfaceOrientationPortrait",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     };
   }
   return {
     INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
   };
 }
 
