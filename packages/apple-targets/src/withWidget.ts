@@ -28,18 +28,16 @@ function injectInfoPlistEntries(
   plistPath: string,
   entries: Record<string, any>
 ) {
-  let content = fs.readFileSync(plistPath, 'utf8');
-  const insertion = Object.entries(entries)
-    .map(([key, value]) => {
-      const val = typeof value === 'boolean'
-        ? `<${value ? 'true' : 'false'}/>`
-        : `<string>${value}</string>`;
-      return `\n    <key>${key}</key>\n    ${val}`;
-    })
-    .join('');
+  const content = fs.readFileSync(plistPath, "utf8");
+  const obj = plist.parse(content) as Record<string, any>;
 
-  content = content.replace('<dict>', `<dict>${insertion}`);
-  fs.writeFileSync(plistPath, content, 'utf8');
+  // Ensure uniqueness: overwrite instead of append
+  for (const [key, value] of Object.entries(entries)) {
+    obj[key] = value;
+  }
+
+  const updated = plist.build(obj);
+  fs.writeFileSync(plistPath, updated, "utf8");
 }
 
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
@@ -337,7 +335,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   ]);
 
   if (props.infoPlist) {
-    const plistPath = path.join(targetDirAbsolutePath, 'Info.plist');
+    const plistPath = path.join(targetDirAbsolutePath, "Info.plist");
     injectInfoPlistEntries(plistPath, props.infoPlist);
   }
 
