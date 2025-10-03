@@ -83,6 +83,48 @@ export type Entitlements = Partial<{
   "com.apple.developer.associated-domains": string[];
 }>;
 
+/**
+ * The version settings for a SPM dependency supported by Xcode
+ */
+export type SwiftPackageRequirement =
+  | {
+    kind: "exactVersion";
+    version: string;
+  }
+  | {
+    kind: "upToNextMajorVersion";
+    minimumVersion: string;
+  }
+  | {
+    kind: "upToNextMinorVersion";
+    minimumVersion: string;
+  }
+  | {
+    kind: "versionRange";
+    minimumVersion: string;
+    maximumVersion: string;
+  }
+  | {
+    kind: "branch";
+    /** a branch in the repository */
+    branch: string;
+  }
+  | {
+    kind: "revision";
+    /** a commit hash */
+    revision: string;
+  };
+
+/**
+ * A Swift package dependency.
+ */
+export type SwiftPackage = {
+  /** The product name of the package. */
+  name: string;
+  /** The URL of the repository for the package. */
+  repositoryURL: string;
+} & SwiftPackageRequirement;
+
 export type Config = {
   /**
    * The type of extension to generate.
@@ -114,6 +156,8 @@ export type Config = {
    * @example ["UserNotifications", "Intents"]
    */
   frameworks?: string[];
+
+  swiftPackages: SwiftPackage[];
 
   /** Deployment iOS version for the target. Defaults to `18.0` */
   deploymentTarget?: string;
