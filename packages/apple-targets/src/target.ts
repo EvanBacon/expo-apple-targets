@@ -114,7 +114,6 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     return plist.build({
       CFBundleName: "$(PRODUCT_NAME)",
       CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
-      CFBundleVersion: "$(CURRENT_PROJECT_VERSION)",
       CFBundleExecutable: "$(EXECUTABLE_NAME)",
       CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
       CFBundleShortVersionString: "$(MARKETING_VERSION)",
