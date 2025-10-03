@@ -15,6 +15,7 @@ export type ExtensionType =
   | "imessage"
   | "clip"
   | "watch"
+  | "watch-widget"
   | "location-push"
   | "credentials-provider"
   | "account-auth"
@@ -56,6 +57,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     "bg-download": true,
     clip: true,
     widget: true,
+    "watch-widget": true,
     "account-auth": false,
     "credentials-provider": false,
     "device-activity-monitor": false,
@@ -304,6 +306,7 @@ export function productTypeForType(type: ExtensionType) {
 export function needsEmbeddedSwift(type: ExtensionType) {
   return [
     "watch",
+    "watch-widget",
     "spotlight",
     "share",
     "intent",
@@ -325,6 +328,8 @@ export function getFrameworksForType(type: ExtensionType) {
       "ActivityKit",
       "AppIntents",
     ];
+  } else if (type === "watch-widget") {
+    return ["AppIntents", "WidgetKit", "SwiftUI"];
   } else if (type === "intent") {
     return ["Intents"];
   } else if (type === "intent-ui") {
@@ -358,6 +363,15 @@ export function isNativeTargetOfType(
       "WATCHOS_DEPLOYMENT_TARGET" in
       target.getDefaultConfiguration().props.buildSettings
     );
+  }
+  if (
+    (type === "watch-widget" || type === "widget") &&
+    target.props.productType === "com.apple.product-type.app-extension"
+  ) {
+    return (
+      "WATCHOS_DEPLOYMENT_TARGET" in
+      target.getDefaultConfiguration().props.buildSettings
+    ) && type === "watch-widget"
   }
   if (
     type === "clip" &&
@@ -401,4 +415,11 @@ export function getAuxiliaryTargets(project: XcodeProject): PBXNativeTarget[] {
   return project.rootObject.props.targets.filter((target) => {
     return target.uuid !== mainTarget?.uuid;
   }) as PBXNativeTarget[];
+}
+
+export function getWatchAppTarget(project: XcodeProject): PBXNativeTarget | undefined {
+  return getAuxiliaryTargets(project).find((target) => {
+    return target.props.productType === "com.apple.product-type.application" &&
+    "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
+  })
 }
