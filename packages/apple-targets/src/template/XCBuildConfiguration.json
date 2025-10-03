@@ -437,6 +437,36 @@
       }
     }
   },
+  "com.apple.Safari.content-blocker": {
+    "default": {
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/content-blocker/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "ContentBlocker",
+      "IPHONEOS_DEPLOYMENT_TARGET": 16.0,
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.contentBlocker",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SKIP_INSTALL": "YES",
+      "SWIFT_VERSION": "5.0",
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "COPY_PHASE_STRIP": "NO",
+      "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym"
+    },
+    "debug": {
+      "DEBUG_INFORMATION_FORMAT": "dwarf",
+      "SWIFT_OPTIMIZATION_LEVEL": "-Onone"
+    },
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.Safari.content-blocker",
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ContentBlockerRequestHandler"
+      }
+    }
+  },
   "com.apple.share-services": {
     "default": {
       "CLANG_ANALYZER_NONNULL": "YES",
