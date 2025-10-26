@@ -755,5 +755,42 @@
         "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ActionRequestHandler"
       }
     }
+  },
+  "com.apple.keyboard-service": {
+    "default": {
+      "CODE_SIGN_STYLE": "Automatic",
+      "CURRENT_PROJECT_VERSION": 1,
+      "DEVELOPMENT_TEAM": "QQ57RJ5UTD",
+      "GENERATE_INFOPLIST_FILE": "YES",
+      "INFOPLIST_FILE": "../targets/keyboard/Info.plist",
+      "INFOPLIST_KEY_CFBundleDisplayName": "keyboard",
+      "INFOPLIST_KEY_NSHumanReadableCopyright": "",
+      "IPHONEOS_DEPLOYMENT_TARGET": 18.0,
+      "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+      "MARKETING_VERSION": 1,
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.bacon.2095.keyboard",
+      "PRODUCT_NAME": "$(TARGET_NAME)",
+      "SDKROOT": "iphoneos",
+      "SKIP_INSTALL": "YES",
+      "STRING_CATALOG_GENERATE_SYMBOLS": "YES",
+      "SWIFT_APPROACHABLE_CONCURRENCY": "YES",
+      "SWIFT_EMIT_LOC_STRINGS": "YES",
+      "SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY": "YES",
+      "SWIFT_VERSION": "5.0",
+      "TARGETED_DEVICE_FAMILY": "1,2"
+    },
+    "release": {
+      "VALIDATE_PRODUCT": "YES"
+    },
+    "debug": {},
+    "info": {
+      "NSExtension": {
+        "NSExtensionPointIdentifier": "com.apple.keyboard-service",
+        "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).KeyboardViewController",
+        "NSExtensionAttributes": {
+          "RequestsOpenAccess": true
+        }
+      }
+    }
   }
 }

@@ -35,6 +35,11 @@ export const TARGETS = [
     value: "device-activity-monitor",
     description: "",
   },
+  {
+    title: "Keyboard Extension",
+    value: "keyboard",
+    description: "Custom system keyboard",
+  },
   { title: "Location Push", value: "location-push", description: "" },
   { title: "Matter", value: "matter", description: "" },
   {
