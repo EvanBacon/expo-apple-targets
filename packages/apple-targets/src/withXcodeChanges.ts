@@ -17,6 +17,8 @@ import fs from "fs";
 import { globSync } from "glob";
 import path from "path";
 
+import type { SwiftPackage } from "./config";
+
 import {
   ExtensionType,
   getMainAppTarget,
@@ -35,6 +37,7 @@ const TemplateBuildSettings = fixture as unknown as Record<
   }
 >;
 import { withXcodeProjectBeta } from "./withXcparse";
+import { addSwiftPackagesToTarget } from "./withSwiftPackages";
 import assert from "assert";
 
 export type XcodeSettings = {
@@ -73,6 +76,8 @@ export type XcodeSettings = {
   orientation?: "default" | "portrait" | "landscape";
 
   deviceFamilies?: DeviceFamily[];
+
+  swiftPackages?: SwiftPackage[];
 };
 
 export type DeviceFamily = "phone" | "tablet";
@@ -1169,6 +1174,11 @@ async function applyXcodeChanges(
   targetToUpdate.ensureFrameworks(props.frameworks);
   targetToUpdate.getSourcesBuildPhase();
   targetToUpdate.getResourcesBuildPhase();
+
+  // Link Swift packages to the target if specified
+  if (props.swiftPackages && props.swiftPackages.length > 0) {
+    addSwiftPackagesToTarget(project, targetToUpdate, props.swiftPackages);
+  }
 
   configureJsExport(targetToUpdate);
 

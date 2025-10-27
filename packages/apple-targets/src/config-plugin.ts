@@ -3,10 +3,13 @@ import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
 
-import type { Config, ConfigFunction } from "./config";
+import type { Config, ConfigFunction, SwiftPackage } from "./config";
 import { withPodTargetExtension } from "./withPodTargetExtension";
 import withWidget from "./withWidget";
 import { withXcodeProjectBetaBaseMod } from "./withXcparse";
+import { withXcodeProjectBeta } from "./withXcparse";
+import { addSwiftPackagesToTarget } from "./withSwiftPackages";
+import { getMainAppTarget } from "./target";
 
 let hasWarned = false;
 export const withTargetsDir: ConfigPlugin<
@@ -67,11 +70,27 @@ export const withTargetsDir: ConfigPlugin<
 
   withPodTargetExtension(config);
 
+  // Support global Swift packages from ios.swiftPackages
+  const globalSwiftPackages = (config.ios as any)?.swiftPackages as
+    | SwiftPackage[]
+    | undefined;
+  if (globalSwiftPackages && globalSwiftPackages.length > 0) {
+    config = withXcodeProjectBeta(config, async (config) => {
+      const mainTarget = getMainAppTarget(config.modResults);
+      addSwiftPackagesToTarget(
+        config.modResults,
+        mainTarget,
+        globalSwiftPackages
+      );
+      return config;
+    });
+  }
+
   withXcodeProjectBetaBaseMod(config);
 
   return config;
 };
 
-export { Config, ConfigFunction };
+export { Config, ConfigFunction, SwiftPackage };
 
 module.exports = withTargetsDir;

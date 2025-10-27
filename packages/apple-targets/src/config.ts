@@ -143,6 +143,54 @@ export type Config = {
 
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
+
+  /**
+   * Swift Package Manager packages to link to the target.
+   * @example [{ url: "https://github.com/apple/swift-log", products: ["Logging"], version: "1.5.0" }]
+   */
+  swiftPackages?: SwiftPackage[];
+};
+
+export type SwiftPackage = {
+  /**
+   * The repository URL for the Swift package.
+   * @example "https://github.com/apple/swift-log"
+   */
+  url: string;
+
+  /**
+   * The product names to link from this package.
+   * @example ["Logging", "LoggingFoundation"]
+   */
+  products: string[];
+
+  /**
+   * Exact version to use.
+   * @example "1.5.0"
+   */
+  version?: string;
+
+  /**
+   * Branch to use instead of a version.
+   * @example "main"
+   */
+  branch?: string;
+
+  /**
+   * Commit hash to use instead of a version or branch.
+   * @example "abc123"
+   */
+  commit?: string;
+
+  /**
+   * Version requirement type. Defaults to "upToNextMajorVersion" if version is specified.
+   * @example "upToNextMajorVersion"
+   */
+  requirement?:
+    | "upToNextMajorVersion"
+    | "upToNextMinorVersion"
+    | "exactVersion"
+    | "versionRange";
 };
 
 export type ConfigFunction = (

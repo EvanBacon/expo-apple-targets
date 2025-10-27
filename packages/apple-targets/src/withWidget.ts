@@ -379,6 +379,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       props.exportJs ??
       // Assume App Clips are used for React Native.
       props.type === "clip",
+    swiftPackages: props.swiftPackages,
   });
 
   config = withEASTargets(config, {
