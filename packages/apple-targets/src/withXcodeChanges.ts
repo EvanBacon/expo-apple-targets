@@ -513,6 +513,8 @@ function createWatchAppConfigurationList(
     common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
   }
 
+  // Attempt to automatically set the build number to match the main app.
+  // This only works with EAS Build, other processes can simply set the number manually.
   if (process.env.EAS_BUILD_IOS_BUILD_NUMBER) {
     common.CURRENT_PROJECT_VERSION = process.env.EAS_BUILD_IOS_BUILD_NUMBER;
   }
