@@ -3,7 +3,7 @@
  * NPM-style dependency management for Swift packages in Expo projects
  */
 
-import { ConfigPlugin, createRunOncePlugin } from "@expo/config-plugins";
+import { type ConfigPlugin, createRunOncePlugin } from "@expo/config-plugins";
 import {
   PluginConfig,
   ResolvedPackage,
@@ -158,8 +158,8 @@ async function resolvePackage(
   if (packageConfig.version === "*" || packageConfig.version === "latest") {
     console.warn(
       `[@bacons/spm] Package "${identifier}" is using "${packageConfig.version}" version specifier. ` +
-      `This will resolve to the latest available version at build time, which may change without notice. ` +
-      `Consider using a specific version or version range (e.g., "^1.0.0") for reproducible builds.`
+        `This will resolve to the latest available version at build time, which may change without notice. ` +
+        `Consider using a specific version or version range (e.g., "^1.0.0") for reproducible builds.`
     );
   }
 

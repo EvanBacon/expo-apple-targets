@@ -4,9 +4,6 @@
  */
 
 import { PackageMetadata } from "./types";
-import * as https from "https";
-import * as http from "http";
-import * as url from "url";
 
 /**
  * Common package aliases for well-known Swift packages
@@ -60,48 +57,22 @@ const metadataCache = new Map<string, PackageMetadata>();
 /**
  * Simple HTTP/HTTPS GET request helper
  */
-function httpGet(urlString: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const parsedUrl = url.parse(urlString);
-    const protocol = parsedUrl.protocol === "https:" ? https : http;
-
-    const options = {
-      hostname: parsedUrl.hostname,
-      port: parsedUrl.port,
-      path: parsedUrl.path,
-      method: "GET",
-      headers: {
-        "User-Agent": "@bacons/spm",
-        Accept: "application/json",
-      },
-    };
-
-    const req = protocol.request(options, (res) => {
-      let data = "";
-
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-
-      res.on("end", () => {
-        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(data);
-        } else {
-          reject(
-            new Error(
-              `HTTP ${res.statusCode}: ${res.statusMessage} - ${urlString}`
-            )
-          );
-        }
-      });
-    });
-
-    req.on("error", (error) => {
-      reject(error);
-    });
-
-    req.end();
+async function httpGet(urlString: string): Promise<string> {
+  const response = await fetch(urlString, {
+    method: "GET",
+    headers: {
+      "User-Agent": "@bacons/spm",
+      Accept: "application/json",
+    },
   });
+
+  if (!response.ok) {
+    throw new Error(
+      `HTTP ${response.status}: ${response.statusText} - ${urlString}`
+    );
+  }
+
+  return await response.text();
 }
 
 /**
@@ -116,9 +87,7 @@ function httpGet(urlString: string): Promise<string> {
  * @param identifier Package identifier (name or URL)
  * @returns Repository URL
  */
-export async function resolvePackageURL(
-  identifier: string
-): Promise<string> {
+export async function resolvePackageURL(identifier: string): Promise<string> {
   // If it's already a full URL, return it
   if (identifier.startsWith("http://") || identifier.startsWith("https://")) {
     return identifier;
@@ -154,7 +123,7 @@ export async function resolvePackageURL(
 
   throw new Error(
     `Unable to resolve package identifier "${identifier}". ` +
-    `Please provide a full URL or ensure the package exists in Swift Package Index.`
+      `Please provide a full URL or ensure the package exists in Swift Package Index.`
   );
 }
 
@@ -180,8 +149,13 @@ export async function fetchPackageMetadata(
       identifier
     )}`;
 
-    const response = await httpGet(searchUrl);
-    const data = JSON.parse(response);
+    const data = await fetch(searchUrl, {
+      method: "GET",
+      headers: {
+        "User-Agent": "@bacons/spm",
+        Accept: "application/json",
+      },
+    }).then((res) => res.json());
 
     // Parse the response and extract metadata
     // This is a placeholder - actual API response structure may differ
@@ -279,8 +253,13 @@ export async function fetchPackageManifest(
       return null;
     }
 
-    const content = await httpGet(rawUrl);
-    return content;
+    return await fetch(rawUrl, {
+      method: "GET",
+      headers: {
+        "User-Agent": "@bacons/spm",
+        Accept: "application/json",
+      },
+    }).then((res) => res.text());
   } catch (error) {
     // Try alternate branch if main doesn't work
     if (branch === "main") {
@@ -297,9 +276,7 @@ export async function fetchPackageManifest(
  * @param repoUrl Repository URL
  * @returns Array of product names, or empty array if unable to resolve
  */
-export async function autoResolveProducts(
-  repoUrl: string
-): Promise<string[]> {
+export async function autoResolveProducts(repoUrl: string): Promise<string[]> {
   try {
     const manifest = await fetchPackageManifest(repoUrl);
     if (manifest) {
