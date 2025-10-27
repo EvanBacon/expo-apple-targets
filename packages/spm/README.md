@@ -124,10 +124,13 @@ For more control, use configuration objects:
 | `~1.2.3`         | `~5.6.1`         | Patch-level changes (>=5.6.1 <5.7.0)   |
 | `1.2.3`          | `2.1.0`          | Exact version                          |
 | `>=1.0.0 <2.0.0` |                  | Version range                          |
-| `latest`         |                  | Latest release                         |
+| `latest`         |                  | Latest release (⚠️ not recommended)     |
+| `*`              |                  | Wildcard - latest version (⚠️ not recommended) |
 | `branch-name`    | `develop`        | Git branch                             |
 | `commit:hash`    | `commit:a1b2c3d` | Specific commit                        |
 | `file:path`      | `file:../local`  | Local package                          |
+
+> ⚠️ **Note:** Using `latest` or `*` is not recommended for production apps as the resolved version can change without notice, breaking reproducible builds. Use specific versions or ranges instead.
 
 ## Package Configuration
 

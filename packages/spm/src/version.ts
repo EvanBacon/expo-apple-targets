@@ -15,6 +15,7 @@ import { SwiftPackageRequirement, ParsedVersion } from "./types";
  * - 1.2.3 → exact version
  * - >=1.0.0 <2.0.0 → range
  * - latest → latest version
+ * - * → wildcard, uses latest version (same as "latest")
  * - branch-name → git branch
  * - commit:abc123 → git revision
  * - file:../path → local package
@@ -46,8 +47,8 @@ export function parseVersionString(versionString: string): ParsedVersion {
     };
   }
 
-  // Handle 'latest' keyword
-  if (trimmed === "latest") {
+  // Handle 'latest' keyword or wildcard '*'
+  if (trimmed === "latest" || trimmed === "*") {
     return {
       original: versionString,
       requirement: { kind: "latest" },

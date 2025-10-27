@@ -1,30 +1,30 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	objectVersion = 54;
 	classes = {
 	};
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		EB32DF313ABA124E26F98F7C /* libPods-baconsspmdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D8B225C1D51BE064DEE3E4 /* libPods-baconsspmdemo.a */; };
+		EBA5D3D80A497A5CF66AD73A /* libPods-baconsspmdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD7AE53F6C902871AE9836EA /* libPods-baconsspmdemo.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0821FA53CACC695B73255966 /* Pods-baconsspmdemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsspmdemo.debug.xcconfig"; path = "Target Support Files/Pods-baconsspmdemo/Pods-baconsspmdemo.debug.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
 		13B07F961A680F5B00A75B9A /* baconsspmdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = baconsspmdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = baconsspmdemo/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = baconsspmdemo/Info.plist; sourceTree = "<group>"; };
-		22D8B225C1D51BE064DEE3E4 /* libPods-baconsspmdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsspmdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = 4; };
-		8F3438F7CCF725FFF305C9C4 /* Pods-baconsspmdemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsspmdemo.release.xcconfig"; path = "Target Support Files/Pods-baconsspmdemo/Pods-baconsspmdemo.release.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
+		77EF106F5D54A6707901CEF6 /* Pods-baconsspmdemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsspmdemo.release.xcconfig"; path = "Target Support Files/Pods-baconsspmdemo/Pods-baconsspmdemo.release.xcconfig"; sourceTree = "<group>"; };
+		A924620C9CC2C6A752C014DA /* Pods-baconsspmdemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsspmdemo.debug.xcconfig"; path = "Target Support Files/Pods-baconsspmdemo/Pods-baconsspmdemo.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = baconsspmdemo/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = baconsspmdemo/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* baconsspmdemo-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "baconsspmdemo-Bridging-Header.h"; path = "baconsspmdemo/baconsspmdemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		FD7AE53F6C902871AE9836EA /* libPods-baconsspmdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsspmdemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,7 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB32DF313ABA124E26F98F7C /* libPods-baconsspmdemo.a in Frameworks */,
+				EBA5D3D80A497A5CF66AD73A /* libPods-baconsspmdemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,9 +55,19 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				22D8B225C1D51BE064DEE3E4 /* libPods-baconsspmdemo.a */,
+				FD7AE53F6C902871AE9836EA /* libPods-baconsspmdemo.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		80F0D7832C54B477DA02BD9B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A924620C9CC2C6A752C014DA /* Pods-baconsspmdemo.debug.xcconfig */,
+				77EF106F5D54A6707901CEF6 /* Pods-baconsspmdemo.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -74,7 +84,7 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				8E1304EC7A0226934859E6C9 /* Pods */,
+				80F0D7832C54B477DA02BD9B /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -87,16 +97,6 @@
 				13B07F961A680F5B00A75B9A /* baconsspmdemo.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		8E1304EC7A0226934859E6C9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0821FA53CACC695B73255966 /* Pods-baconsspmdemo.debug.xcconfig */,
-				8F3438F7CCF725FFF305C9C4 /* Pods-baconsspmdemo.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -157,7 +157,7 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			packageReferences = (
 				XX9D2B926351F0867A6EEEXX /* XCRemoteSwiftPackageReference "Alamofire" */,
-				XX5039029F9A3451D77259XX /* XCRemoteSwiftPackageReference "KeyboardKit.git" */,
+				XX5039029F9A3451D77259XX /* XCRemoteSwiftPackageReference "KeyboardKit" */,
 			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
@@ -220,7 +220,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0821FA53CACC695B73255966 /* Pods-baconsspmdemo.debug.xcconfig */;
+			baseConfigurationReference = A924620C9CC2C6A752C014DA /* Pods-baconsspmdemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -256,7 +256,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F3438F7CCF725FFF305C9C4 /* Pods-baconsspmdemo.release.xcconfig */;
+			baseConfigurationReference = 77EF106F5D54A6707901CEF6 /* Pods-baconsspmdemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -419,9 +419,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		XX5039029F9A3451D77259XX /* XCRemoteSwiftPackageReference "KeyboardKit.git" */ = {
+		XX5039029F9A3451D77259XX /* XCRemoteSwiftPackageReference "KeyboardKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = https://github.com/KeyboardKit/KeyboardKit.git;
+			repositoryURL = "https://github.com/KeyboardKit/KeyboardKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 10.0.0;
@@ -429,7 +429,7 @@
 		};
 		XX9D2B926351F0867A6EEEXX /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = https://github.com/Alamofire/Alamofire;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
 			requirement = {
 				kind = upToNextMinorVersion;
 				minimumVersion = 5.6.0;
@@ -441,17 +441,6 @@
 		XX2CFF5B6F74B54F18D173XX /* KeyboardKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = KeyboardKit;
-			package = {
-				uuid = XX5039029F9A3451D77259XX /* XCRemoteSwiftPackageReference "KeyboardKit.git" */;
-				props = {
-					isa = XCRemoteSwiftPackageReference;
-					repositoryURL = https://github.com/KeyboardKit/KeyboardKit.git;
-					requirement = {
-						kind = upToNextMajorVersion;
-						minimumVersion = 10.0.0;
-					};
-				};
-			};
 		};
 		XX33BD620794FA9F5EF355XX /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

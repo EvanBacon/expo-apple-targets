@@ -154,6 +154,15 @@ async function resolvePackage(
   // Parse version string
   const parsedVersion = parseVersionString(packageConfig.version);
 
+  // Warn if using wildcard or latest version
+  if (packageConfig.version === "*" || packageConfig.version === "latest") {
+    console.warn(
+      `[@bacons/spm] Package "${identifier}" is using "${packageConfig.version}" version specifier. ` +
+      `This will resolve to the latest available version at build time, which may change without notice. ` +
+      `Consider using a specific version or version range (e.g., "^1.0.0") for reproducible builds.`
+    );
+  }
+
   // Determine if this is a local package
   const isLocal = parsedVersion.isLocal;
 

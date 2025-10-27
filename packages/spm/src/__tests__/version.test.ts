@@ -45,6 +45,12 @@ describe("parseVersionString", () => {
     expect(result.isLocal).toBe(false);
   });
 
+  it("should parse wildcard '*'", () => {
+    const result = parseVersionString("*");
+    expect(result.requirement.kind).toBe("latest");
+    expect(result.isLocal).toBe(false);
+  });
+
   it("should parse branch names", () => {
     const result = parseVersionString("develop");
     expect(result.requirement.kind).toBe("branch");
@@ -100,6 +106,7 @@ describe("isValidVersionString", () => {
     expect(isValidVersionString("~1.2.3")).toBe(true);
     expect(isValidVersionString("1.2.3")).toBe(true);
     expect(isValidVersionString("latest")).toBe(true);
+    expect(isValidVersionString("*")).toBe(true);
     expect(isValidVersionString("develop")).toBe(true);
     expect(isValidVersionString("commit:abc123")).toBe(true);
     expect(isValidVersionString("file:../path")).toBe(true);

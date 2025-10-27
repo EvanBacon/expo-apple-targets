@@ -1,0 +1,24 @@
+{
+  "originHash" : "6035e955021450569a35ad396e34016509ccca388e090045b2c16ccc0f213157",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "78424be314842833c04bc3bef5b72e85fff99204",
+        "version" : "5.6.4"
+      }
+    },
+    {
+      "identity" : "keyboardkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KeyboardKit/KeyboardKit.git",
+      "state" : {
+        "revision" : "89d0863d2ff9aa540bd99b9b8d7ffa9397a52f6b",
+        "version" : "10.0.4"
+      }
+    }
+  ],
+  "version" : 3
+}
