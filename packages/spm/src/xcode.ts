@@ -75,16 +75,13 @@ function convertRequirementToXcodeFormat(
  */
 export async function addSwiftPackagesToXcodeProject(
   project: XcodeProject,
-  packages: ResolvedPackage[],
-  targetName?: string
+  packages: ResolvedPackage[]
 ): Promise<void> {
   // Find the main app target
-  const mainTarget = findMainAppTarget(project, targetName);
+  const mainTarget = project.rootObject.getMainAppTarget();
 
   if (!mainTarget) {
-    throw new Error(
-      `Unable to find target "${targetName || "main app"}" in Xcode project`
-    );
+    throw new Error(`Unable to find main app target in Xcode project`);
   }
 
   // Process each package
@@ -97,34 +94,6 @@ export async function addSwiftPackagesToXcodeProject(
       await addRemotePackageReference(project, pkg, mainTarget);
     }
   }
-}
-
-/**
- * Find the main app target in the Xcode project
- */
-function findMainAppTarget(
-  project: XcodeProject,
-  targetName?: string
-): PBXNativeTarget | null {
-  const targets = project.rootObject.props.targets.filter((target) =>
-    PBXNativeTarget.is(target)
-  ) as PBXNativeTarget[];
-
-  if (targetName) {
-    // Look for specific target by name
-    return (
-      targets.find((t) => t.props.name === targetName || t.props.productName === targetName) ||
-      null
-    );
-  }
-
-  // Find the main application target (not extensions, tests, etc.)
-  const mainTarget = targets.find(
-    (target) =>
-      target.props.productType === "com.apple.product-type.application"
-  );
-
-  return mainTarget || targets[0] || null;
 }
 
 /**
@@ -224,7 +193,9 @@ function addProductDependencyToTarget(
     return;
   }
 
-  console.log(`Linking product "${productName}" to target "${target.props.name}"`);
+  console.log(
+    `Linking product "${productName}" to target "${target.props.name}"`
+  );
 
   // Create product dependency
   const productDep = XCSwiftPackageProductDependency.create(project, {
@@ -274,10 +245,7 @@ function findExistingLocalPackageReference(
   }
 
   for (const ref of project.rootObject.props.packageReferences) {
-    if (
-      XCLocalSwiftPackageReference.is(ref) &&
-      ref.props.path === path
-    ) {
+    if (XCLocalSwiftPackageReference.is(ref) && ref.props.path === path) {
       return ref;
     }
   }
@@ -332,7 +300,10 @@ export function removeSwiftPackageFromXcodeProject(
 
     // Remove product dependencies from all targets
     for (const target of project.rootObject.props.targets) {
-      if (PBXNativeTarget.is(target) && target.props.packageProductDependencies) {
+      if (
+        PBXNativeTarget.is(target) &&
+        target.props.packageProductDependencies
+      ) {
         target.props.packageProductDependencies =
           target.props.packageProductDependencies.filter(
             (dep) =>
