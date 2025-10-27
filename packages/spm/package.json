@@ -1,0 +1,49 @@
+{
+  "name": "@bacons/spm",
+  "version": "0.0.0",
+  "description": "NPM-style Swift Package Manager dependency management for Expo projects",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build",
+    "expo-module.config.json"
+  ],
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "jest --watch",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evanbacon/expo-apple-targets.git"
+  },
+  "keywords": [
+    "expo",
+    "config-plugins",
+    "swift-package-manager",
+    "spm",
+    "ios",
+    "dependencies"
+  ],
+  "author": "Evan Bacon",
+  "license": "MIT",
+  "dependencies": {
+    "@bacons/xcode": "1.0.0-alpha.27",
+    "@expo/config-plugins": "*",
+    "debug": "^4.3.4",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/semver": "^7.5.0",
+    "@expo/babel-preset-cli": "^0.3.1",
+    "jest-environment-node": "^26"
+  },
+  "peerDependencies": {
+    "expo": "*"
+  }
+}

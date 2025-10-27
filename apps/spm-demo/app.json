@@ -1,0 +1,23 @@
+{
+  "newArchEnabled": true,
+  "ios": {
+    "supportsTablet": true,
+    "appleTeamId": "QQ57RJ5UTD",
+    "bundleIdentifier": "com.bacon.spm"
+  },
+  "platforms": ["ios"],
+  "plugins": [
+    [
+      "@bacons/spm",
+      {
+        "dependencies": {
+          "alamofire": {
+            "version": "~5.6.0",
+            "products": ["Alamofire"]
+          },
+          "https://github.com/KeyboardKit/KeyboardKit.git": "*"
+        }
+      }
+    ]
+  ]
+}
