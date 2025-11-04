@@ -9,6 +9,8 @@ import {
   XCBuildConfiguration,
   XCConfigurationList,
   XcodeProject,
+  XCRemoteSwiftPackageReference,
+  XCSwiftPackageProductDependency,
 } from "@bacons/xcode";
 import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
@@ -36,6 +38,7 @@ const TemplateBuildSettings = fixture as unknown as Record<
 >;
 import { withXcodeProjectBeta } from "./withXcparse";
 import assert from "assert";
+import { SwiftPackage } from "./config";
 
 export type XcodeSettings = {
   name: string;
@@ -54,6 +57,8 @@ export type XcodeSettings = {
   currentProjectVersion: number;
 
   frameworks: string[];
+
+  swiftPackages: SwiftPackage[];
 
   type: ExtensionType;
 
@@ -1084,6 +1089,53 @@ async function applyXcodeChanges(
     // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
   }
 
+  function configureTargetWithSwiftPackages(target: PBXNativeTarget) {
+    props.swiftPackages?.forEach((pkg) => {
+      const { name, repositoryURL, ...requirement } = pkg;
+      // find if the package already exists in the project
+      let reference = project.rootObject.props.packageReferences?.find(
+        (r) =>
+          r instanceof XCRemoteSwiftPackageReference &&
+          r.props.repositoryURL === repositoryURL
+      ) as XCRemoteSwiftPackageReference | undefined;
+      // create a new reference if it doesn't yet exist
+      if (!reference) {
+        reference = XCRemoteSwiftPackageReference.create(project, {
+          repositoryURL: repositoryURL,
+          requirement: requirement,
+        });
+      } else {
+        // update the requirement if it already exists
+        reference.props.requirement = requirement;
+      }
+
+      // add to the project
+      if (project.rootObject.props.packageReferences) {
+        project.rootObject.props.packageReferences.push(reference);
+      } else {
+        project.rootObject.props.packageReferences = [reference];
+      }
+
+      // find if the package is already added to the target
+      const existingProductDependency =
+        target.props.packageProductDependencies?.find((dep) => {
+          return dep.props.productName === name;
+        });
+
+      if (!existingProductDependency) {
+        const packageProduct = XCSwiftPackageProductDependency.create(project, {
+          productName: name,
+          package: reference.uuid as unknown as XCRemoteSwiftPackageReference, // in Xcode 16, this should be the UUID of the reference, not the whole object
+        });
+        if (target.props.packageProductDependencies) {
+          target.props.packageProductDependencies.push(packageProduct);
+        } else {
+          target.props.packageProductDependencies = [packageProduct];
+        }
+      }
+    });
+  }
+
   function syncMarketingVersions() {
     const mainVersion = getMainMarketingVersion(project);
     project.rootObject.props.targets.forEach((target) => {
@@ -1230,6 +1282,8 @@ async function applyXcodeChanges(
   configureTargetWithEntitlements(targetToUpdate);
 
   configureTargetWithPreview(targetToUpdate);
+  
+  configureTargetWithSwiftPackages(targetToUpdate)
 
   targetToUpdate.ensureFrameworks(props.frameworks);
   targetToUpdate.getSourcesBuildPhase();
