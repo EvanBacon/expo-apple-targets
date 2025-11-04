@@ -879,6 +879,69 @@ function createWidgetConfigurationList(
   return configurationList;
 }
 
+function createKeyboardConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    displayName,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
+    MARKETING_VERSION: "1.0",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "iphoneos",
+    SKIP_INSTALL: "YES",
+    // @ts-expect-error - New Xcode build settings not in types yet
+    STRING_CATALOG_GENERATE_SYMBOLS: "YES",
+    SWIFT_APPROACHABLE_CONCURRENCY: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      VALIDATE_PRODUCT: "YES",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createConfigurationListForType(
   project: XcodeProject,
   props: XcodeSettings
@@ -891,6 +954,8 @@ function createConfigurationListForType(
       "com.apple.services",
       props
     );
+  } else if (props.type === "keyboard") {
+    return createKeyboardConfigurationList(project, props);
   } else if (props.type === "share") {
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
