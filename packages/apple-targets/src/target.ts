@@ -22,7 +22,8 @@ export type ExtensionType =
   | "action"
   | "safari"
   | "app-intent"
-  | "device-activity-monitor";
+  | "device-activity-monitor"
+  | "keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -46,6 +47,7 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
+    "com.apple.keyboard-service": "keyboard",
     // "com.apple.intents-service": "intents",
   };
 
@@ -58,6 +60,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     clip: true,
     widget: true,
     "watch-widget": true,
+    keyboard: true,
     "account-auth": false,
     "credentials-provider": false,
     "device-activity-monitor": false,
@@ -280,6 +283,20 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         NSExtensionPointIdentifier,
       },
     });
+  } else if (type === "keyboard") {
+    return plist.build({
+      NSExtension: {
+        NSExtensionPointIdentifier,
+        NSExtensionPrincipalClass:
+          "$(PRODUCT_MODULE_NAME).KeyboardViewController",
+        NSExtensionAttributes: {
+          RequestsOpenAccess: false,
+          IsASCIICapable: false,
+          PrefersRightToLeft: false,
+          PrimaryLanguage: "en-US",
+        },
+      },
+    });
   }
 
   // Default: used for widget and bg-download
@@ -315,6 +332,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
+    "keyboard",
   ].includes(type);
 }
 
