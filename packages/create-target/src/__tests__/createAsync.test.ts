@@ -5,6 +5,7 @@ const ALL_TARGET_TYPES = [
   "app-intent",
   "widget",
   "watch",
+  "watch-widget",
   "clip",
   "safari",
   "share",
