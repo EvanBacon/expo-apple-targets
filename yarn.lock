@@ -1149,10 +1149,10 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@bacons/xcode@1.0.0-alpha.25":
-  version "1.0.0-alpha.25"
-  resolved "https://registry.yarnpkg.com/@bacons/xcode/-/xcode-1.0.0-alpha.25.tgz#cc27331c354f1d80d75a884801d91b2796318950"
-  integrity sha512-HE/2UXkIFrKq/ZvxvB8b1OIk47Nf+jXDYJsAVfSoxCu3pNW/Zrws3ad/HbB/wWYb+bDvr4PD2wfGuNcTRbUQNQ==
+"@bacons/xcode@1.0.0-alpha.27":
+  version "1.0.0-alpha.27"
+  resolved "https://registry.yarnpkg.com/@bacons/xcode/-/xcode-1.0.0-alpha.27.tgz#d6ebdce9d4886d74c52662925363fb3b6f829bea"
+  integrity sha512-WlemTiwpwwVH8IMvg4VBsyxGUuFWUfzeWKzxhU+dRxd8MHvnX7F9PlWCf7T0ZXmtjbl39iEgQB+/Tf3wuGJbyg==
   dependencies:
     "@expo/plist" "^0.0.18"
     debug "^4.3.4"

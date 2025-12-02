@@ -103,6 +103,27 @@ export type Config = {
   bundleIdentifier?: string;
 
   /**
+   * Specifies which parent target (by name) this extension should be embedded into.
+   * If not provided, defaults to the main app target.
+   *
+   * Useful when you want a widget to be embedded in an App Clip or other auxiliary target
+   * instead of the main application target.
+   *
+   * @example "MyAppClip"
+   */
+  parentTarget?: string;
+
+  /**
+   * Disables automatic linking of this extension to any parent target.
+   * When true, the extension will be created but not embedded or added as a dependency.
+   *
+   * Use this for manual target management or when the target doesn't need embedding.
+   *
+   * @default false
+   */
+  disableAutolinking?: boolean;
+
+  /**
    * A local file path or URL to an image asset.
    * @example "./assets/icon.png"
    * @example "https://example.com/icon.png"

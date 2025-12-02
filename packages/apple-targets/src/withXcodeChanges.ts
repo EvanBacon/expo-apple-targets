@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -19,6 +20,7 @@ import path from "path";
 
 import {
   ExtensionType,
+  findTargetByName,
   getMainAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
@@ -73,6 +75,12 @@ export type XcodeSettings = {
   orientation?: "default" | "portrait" | "landscape";
 
   deviceFamilies?: DeviceFamily[];
+
+  /** Parent target name to embed this extension into. If not provided, uses main app target. */
+  parentTarget?: string;
+
+  /** If true, disables automatic linking to parent target. */
+  disableAutolinking?: boolean;
 };
 
 export type DeviceFamily = "phone" | "tablet";
@@ -1003,8 +1011,7 @@ async function applyXcodeChanges(
   const productName = props.productName;
 
   let targetToUpdate: PBXNativeTarget | undefined =
-    targets.find((target) => target.props.productName === productName) ??
-    targets[0];
+    targets.find((target) => target.props.productName === productName);
 
   if (targetToUpdate) {
     console.log(
@@ -1163,6 +1170,7 @@ async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
+    console.log(`[@bacons/apple-targets] Target "${props.name}" already exists, updating instead of creating a new one`);
     // Remove existing build phases
     targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
       (config) => {
@@ -1184,6 +1192,7 @@ async function applyXcodeChanges(
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
   } else {
+    console.log(`[@bacons/apple-targets] Creating new target "${props.name}"`);
     const productType = productTypeForType(props.type);
     const isExtension = productType === "com.apple.product-type.app-extension";
     const isExtensionKit =
@@ -1217,12 +1226,6 @@ async function applyXcodeChanges(
         appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
       productType: productType,
     });
-
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
-    }
   }
 
   configureTargetWithKnownSettings(targetToUpdate);
@@ -1237,7 +1240,143 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // Determine the parent target for embedding and dependency based on configuration
+  let parentTargetForLinking: PBXNativeTarget | undefined;
+
+  if (props.disableAutolinking) {
+    // Skip auto-linking entirely if disabled
+    console.log(
+      `[@bacons/apple-targets] Auto-linking disabled for "${props.name}" - target will not be embedded or added as dependency`
+    );
+  } else if (props.parentTarget) {
+    // Find the specified parent target by name
+    parentTargetForLinking = findTargetByName(project, props.parentTarget);
+
+    if (!parentTargetForLinking) {
+      const availableTargets = project.rootObject.props.targets
+        .filter((t) => PBXNativeTarget.is(t))
+        .map(
+          (t) =>
+            (t as PBXNativeTarget).props.name ||
+            (t as PBXNativeTarget).props.productName
+        )
+        .join(", ");
+
+      throw new Error(
+        `[@bacons/apple-targets] Could not find parent target "${props.parentTarget}" for extension "${props.name}". ` +
+          `Available targets: ${availableTargets}`
+      );
+    }
+
+    console.log(
+      `[@bacons/apple-targets] Embedding "${props.name}" into parent target: ${parentTargetForLinking.props.name || parentTargetForLinking.props.productName}`
+    );
+  } else {
+    // Default behavior: use main app target
+    parentTargetForLinking = mainAppTarget;
+  }
+
+  // Perform the actual embedding and dependency if a parent target was determined
+  if (parentTargetForLinking) {
+    console.log(
+      `[@bacons/apple-targets] Processing embedding for "${props.name}" into "${parentTargetForLinking.props.name}"`
+    );
+
+    // Get or create the appropriate copy build phase for embedding extensions
+    const WELL_KNOWN_COPY_EXTENSIONS_NAME = (() => {
+      if (
+        targetToUpdate.props.productType ===
+        "com.apple.product-type.application.on-demand-install-capable"
+      ) {
+        return "Embed App Clips";
+      } else if (
+        targetToUpdate.props.productType === "com.apple.product-type.application"
+      ) {
+        return "Embed Watch Content";
+      } else if (
+        targetToUpdate.props.productType ===
+        "com.apple.product-type.extensionkit-extension"
+      ) {
+        return "Embed ExtensionKit Extensions";
+      }
+      return "Embed Foundation Extensions";
+    })();
+
+    // Find all copy phases with this name (there might be duplicates from previous builds)
+    const allCopyPhases = parentTargetForLinking.props.buildPhases.filter((phase) => {
+      return (
+        PBXCopyFilesBuildPhase.is(phase) &&
+        phase.props.name === WELL_KNOWN_COPY_EXTENSIONS_NAME
+      );
+    }) as PBXCopyFilesBuildPhase[];
+
+    let copyPhase: PBXCopyFilesBuildPhase;
+
+    if (allCopyPhases.length === 0) {
+      // No copy phase exists, create one
+      copyPhase = parentTargetForLinking.createBuildPhase(PBXCopyFilesBuildPhase, {
+        name: WELL_KNOWN_COPY_EXTENSIONS_NAME,
+        files: [],
+      });
+      copyPhase.ensureDefaultsForTarget(targetToUpdate);
+    } else if (allCopyPhases.length === 1) {
+      // One copy phase exists, use it
+      copyPhase = allCopyPhases[0];
+    } else {
+      // Multiple copy phases exist (duplicates), merge them
+      console.warn(
+        `[@bacons/apple-targets] Found ${allCopyPhases.length} duplicate "${WELL_KNOWN_COPY_EXTENSIONS_NAME}" phases in "${parentTargetForLinking.props.name}". Merging into one.`
+      );
+      copyPhase = allCopyPhases[0];
+
+      // Collect all unique build files from all phases
+      const allBuildFiles = new Set<PBXBuildFile>();
+      for (const phase of allCopyPhases) {
+        for (const file of phase.props.files) {
+          allBuildFiles.add(file);
+        }
+      }
+
+      // Remove duplicate phases from the target
+      for (let i = 1; i < allCopyPhases.length; i++) {
+        const index = parentTargetForLinking.props.buildPhases.indexOf(allCopyPhases[i]);
+        if (index > -1) {
+          parentTargetForLinking.props.buildPhases.splice(index, 1);
+        }
+      }
+
+      // Update the remaining phase with all unique files
+      copyPhase.props.files = Array.from(allBuildFiles);
+    }
+
+    // Check if the target's product is already embedded
+    if (!targetToUpdate.props.productReference) {
+      console.warn(`[@bacons/apple-targets] No product reference found for "${props.name}" - skipping embedding`);
+    } else {
+      const existingBuildFile = copyPhase.getBuildFile(targetToUpdate.props.productReference);
+
+      if (!existingBuildFile) {
+        console.log(
+          `[@bacons/apple-targets] Creating build file for "${props.name}" in "${parentTargetForLinking.props.name}" copy phase "${WELL_KNOWN_COPY_EXTENSIONS_NAME}"`
+        );
+        // Create a build file wrapper for the product reference
+        const appExtensionBuildFile = PBXBuildFile.create(project, {
+          fileRef: targetToUpdate.props.productReference,
+          settings: {
+            ATTRIBUTES: ["RemoveHeadersOnCopy"],
+          },
+        });
+        copyPhase.props.files.push(appExtensionBuildFile);
+      } else {
+        console.log(
+          `[@bacons/apple-targets] Build file for "${props.name}" already exists in "${parentTargetForLinking.props.name}" copy phase "${WELL_KNOWN_COPY_EXTENSIONS_NAME}" - skipping`
+        );
+      }
+    }
+
+    // Add target dependency
+    parentTargetForLinking.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 
