@@ -414,6 +414,28 @@ export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {
   return target;
 }
 
+/**
+ * Finds a target by its name (matches against target.props.name or target.props.productName)
+ *
+ * @param project - The Xcode project
+ * @param targetName - The name to search for
+ * @returns The found target or undefined
+ */
+export function findTargetByName(
+  project: XcodeProject,
+  targetName: string
+): PBXNativeTarget | undefined {
+  return project.rootObject.props.targets.find((target) => {
+    if (!PBXNativeTarget.is(target)) return false;
+
+    // Match against both name and productName for flexibility
+    return (
+      target.props.name === targetName ||
+      target.props.productName === targetName
+    );
+  }) as PBXNativeTarget | undefined;
+}
+
 export function getAuxiliaryTargets(project: XcodeProject): PBXNativeTarget[] {
   const mainTarget = project.rootObject.getMainAppTarget("ios");
   return project.rootObject.props.targets.filter((target) => {
