@@ -103,11 +103,14 @@ export type Config = {
   bundleIdentifier?: string;
 
   /**
-   * A local file path or URL to an image asset.
+   * A local file path or URL to an image asset, or an object specifying light/dark/tinted variants.
+   * Can also be a path to a `.icon` folder for liquid glass icons (iOS 26+).
    * @example "./assets/icon.png"
    * @example "https://example.com/icon.png"
+   * @example "./assets/app.icon"
+   * @example { light: "./assets/icon.png", dark: "./assets/icon-dark.png", tinted: "./assets/icon-tinted.png" }
    */
-  icon?: string;
+  icon?: string | { light?: string; dark?: string; tinted?: string };
 
   /**
    * A list of additional frameworks to add to the target.

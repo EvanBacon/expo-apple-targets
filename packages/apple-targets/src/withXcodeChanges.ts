@@ -196,8 +196,10 @@ function createExtensionConfigurationListFromTemplate(
   };
 
   if (icon) {
-    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;` build settings
-    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = <icon>;` build settings
+    // For liquid glass icons (.icon folders), this will be the folder name
+    // For regular icons, this will be "AppIcon"
+    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = icon;
   }
 
   const debugBuildConfig = XCBuildConfiguration.create(project, {
@@ -788,11 +790,13 @@ function createWidgetConfigurationList(
     bundleId,
     deploymentTarget,
     currentProjectVersion,
+    icon,
   }: XcodeSettings
 ) {
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
+      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -833,6 +837,7 @@ function createWidgetConfigurationList(
   const releaseBuildConfig = XCBuildConfiguration.create(project, {
     name: "Release",
     buildSettings: {
+      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
