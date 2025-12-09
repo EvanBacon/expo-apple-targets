@@ -39,6 +39,8 @@ import assert from "assert";
 
 export type XcodeSettings = {
   name: string;
+  /** Optional custom value for CFBundleDisplayName */
+  displayName?: string;
   /** Name used for internal purposes. This has more strict rules and should be generated. */
   productName: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
@@ -89,6 +91,7 @@ function createNotificationContentConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -110,7 +113,7 @@ function createNotificationContentConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -164,6 +167,7 @@ function createExtensionConfigurationListFromTemplate(
   extensionType: string,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -186,14 +190,16 @@ function createExtensionConfigurationListFromTemplate(
   const dynamic: Partial<BuildSettings> = {
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
   };
 
   if (icon) {
-    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;` build settings
-    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
+    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = <icon>;` build settings
+    // For liquid glass icons (.icon folders), this will be the folder name
+    // For regular icons, this will be "AppIcon"
+    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = icon;
   }
 
   const debugBuildConfig = XCBuildConfiguration.create(project, {
@@ -225,7 +231,7 @@ function createExtensionConfigurationListFromTemplate(
 
 function createAppIntentConfigurationList(
   project: XcodeProject,
-  { name, cwd, bundleId }: XcodeSettings
+  { name, displayName, cwd, bundleId }: XcodeSettings
 ) {
   const commonBuildSettings: BuildSettings = {
     // @ts-expect-error
@@ -244,7 +250,7 @@ function createAppIntentConfigurationList(
     GCC_C_LANGUAGE_STANDARD: "gnu17",
     GENERATE_INFOPLIST_FILE: "YES",
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: "17.0",
     LD_RUNPATH_SEARCH_PATHS: [
@@ -297,6 +303,7 @@ function createShareConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -317,7 +324,7 @@ function createShareConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -384,6 +391,7 @@ function createIMessageConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -405,7 +413,7 @@ function createIMessageConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -454,6 +462,7 @@ function createWatchAppConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -480,7 +489,7 @@ function createWatchAppConfigurationList(
     GCC_C_LANGUAGE_STANDARD: "gnu11",
     INFOPLIST_FILE: cwd + "/Info.plist",
     GENERATE_INFOPLIST_FILE: "YES",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_UISupportedInterfaceOrientations:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     INFOPLIST_KEY_WKCompanionAppBundleIdentifier:
@@ -541,6 +550,7 @@ function createSafariConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -560,7 +570,7 @@ function createSafariConfigurationList(
     GENERATE_INFOPLIST_FILE: "YES",
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     INFOPLIST_KEY_NSHumanReadableCopyright: "",
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     LD_RUNPATH_SEARCH_PATHS: [
@@ -615,6 +625,7 @@ function createAppClipConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
@@ -628,7 +639,7 @@ function createAppClipConfigurationList(
   const dynamic: Partial<BuildSettings> = {
     CURRENT_PROJECT_VERSION: currentProjectVersion,
     INFOPLIST_FILE: cwd + "/Info.plist",
-    INFOPLIST_KEY_CFBundleDisplayName: name,
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
     IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
     MARKETING_VERSION: "1.0",
     PRODUCT_BUNDLE_IDENTIFIER: bundleId,
@@ -665,8 +676,18 @@ function createAppClipConfigurationList(
     INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES",
     INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: "YES",
     INFOPLIST_KEY_UILaunchScreen_Generation: "YES",
+
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     ...getOrientationBuildSettings(orientation),
   };
+
+  // Attempt to automatically set the build number to match the main app.
+  // This only works with EAS Build, other processes can simply set the number manually.
+  if (process.env.EAS_BUILD_IOS_BUILD_NUMBER) {
+    // NOTE: INFOPLIST_KEY_CFBundleVersion doesn't work here.
+    infoPlist.CURRENT_PROJECT_VERSION = process.env.EAS_BUILD_IOS_BUILD_NUMBER;
+  }
 
   // @ts-expect-error
   const common: BuildSettings = {
@@ -717,28 +738,24 @@ function createAppClipConfigurationList(
 function getOrientationBuildSettings(
   orientation?: "default" | "portrait" | "landscape"
 ) {
+  // NOTE: The requiresFullScreen support is deprecated in iOS 26+
+  // https://developer.apple.com/documentation/BundleResources/Information-Property-List/UIRequiresFullScreen
+
   // Try to align the orientation with the main app.
   if (orientation === "landscape") {
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
-        "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
         "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
     };
   } else if (orientation === "portrait") {
     return {
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
         "UIInterfaceOrientationPortrait",
-      INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-        "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown",
     };
   }
-
   return {
     INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone:
       "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
-    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
-      "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
   };
 }
 
@@ -768,15 +785,18 @@ function createWidgetConfigurationList(
   project: XcodeProject,
   {
     name,
+    displayName,
     cwd,
     bundleId,
     deploymentTarget,
     currentProjectVersion,
+    icon,
   }: XcodeSettings
 ) {
   const debugBuildConfig = XCBuildConfiguration.create(project, {
     name: "Debug",
     buildSettings: {
+      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -792,7 +812,7 @@ function createWidgetConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: name,
+      INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS: [
@@ -817,6 +837,7 @@ function createWidgetConfigurationList(
   const releaseBuildConfig = XCBuildConfiguration.create(project, {
     name: "Release",
     buildSettings: {
+      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -833,7 +854,7 @@ function createWidgetConfigurationList(
       GCC_C_LANGUAGE_STANDARD: "gnu11",
       GENERATE_INFOPLIST_FILE: "YES",
       INFOPLIST_FILE: cwd + "/Info.plist",
-      INFOPLIST_KEY_CFBundleDisplayName: name,
+      INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
       INFOPLIST_KEY_NSHumanReadableCopyright: "",
       IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
       LD_RUNPATH_SEARCH_PATHS: [
@@ -863,6 +884,69 @@ function createWidgetConfigurationList(
   return configurationList;
 }
 
+function createKeyboardConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    displayName,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+  }: XcodeSettings
+) {
+  const common: BuildSettings = {
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: deploymentTarget,
+    LD_RUNPATH_SEARCH_PATHS: [
+      "$(inherited)",
+      "@executable_path/Frameworks",
+      "@executable_path/../../Frameworks",
+    ],
+    MARKETING_VERSION: "1.0",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "iphoneos",
+    SKIP_INSTALL: "YES",
+    // @ts-expect-error - New Xcode build settings not in types yet
+    STRING_CATALOG_GENERATE_SYMBOLS: "YES",
+    SWIFT_APPROACHABLE_CONCURRENCY: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+  };
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      VALIDATE_PRODUCT: "YES",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createConfigurationListForType(
   project: XcodeProject,
   props: XcodeSettings
@@ -875,6 +959,8 @@ function createConfigurationListForType(
       "com.apple.services",
       props
     );
+  } else if (props.type === "keyboard") {
+    return createKeyboardConfigurationList(project, props);
   } else if (props.type === "share") {
     return createShareConfigurationList(project, props);
   } else if (props.type === "safari") {
@@ -1179,6 +1265,13 @@ async function applyXcodeChanges(
     cwd: magicCwd,
   });
 
+  // Also look for global shared assets in the parent targets/_shared directory
+  const targetsDir = path.dirname(magicCwd);
+  const globalSharedAssets = globSync("_shared/*", {
+    absolute: false,
+    cwd: targetsDir,
+  });
+
   let syncRootGroup = protectedGroup.props.children.find(
     (child) => child.props.path === path.basename(props.cwd)
   );
@@ -1235,6 +1328,113 @@ async function applyXcodeChanges(
     // Remove the exception set if there are no shared assets.
     existingExceptionSet?.removeFromProject();
   }
+
+  function configureTargetWithGlobalSharedAssets(target: PBXNativeTarget) {
+    if (!globalSharedAssets.length) return;
+
+    // Create or find the global shared synchronized root group
+    let globalSharedSyncGroup = protectedGroup.props.children.find(
+      (child) =>
+        child.props.path === "_shared" &&
+        child instanceof PBXFileSystemSynchronizedRootGroup
+    ) as PBXFileSystemSynchronizedRootGroup | undefined;
+
+    if (!globalSharedSyncGroup) {
+      globalSharedSyncGroup = PBXFileSystemSynchronizedRootGroup.create(
+        project,
+        {
+          path: "_shared",
+          exceptions: [
+            // Create exception set for the main app target
+            PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+              target: mainAppTarget,
+              membershipExceptions: globalSharedAssets.sort(),
+            }),
+            // Create exception set for the extension target
+            PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+              target: target,
+              membershipExceptions: globalSharedAssets.sort(),
+            }),
+          ],
+          explicitFileTypes: {},
+          explicitFolders: [],
+          sourceTree: "<group>",
+        }
+      );
+
+      // Add to both targets' fileSystemSynchronizedGroups
+      if (!mainAppTarget.props.fileSystemSynchronizedGroups) {
+        mainAppTarget.props.fileSystemSynchronizedGroups = [];
+      }
+      mainAppTarget.props.fileSystemSynchronizedGroups.push(
+        globalSharedSyncGroup
+      );
+
+      if (!target.props.fileSystemSynchronizedGroups) {
+        target.props.fileSystemSynchronizedGroups = [];
+      }
+      target.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+
+      protectedGroup.props.children.push(globalSharedSyncGroup);
+    } else {
+      // Update existing synchronized group with current global shared assets
+      globalSharedSyncGroup.props.exceptions ??= [];
+
+      // Update or create exception set for main app target
+      let mainAppExceptionSet = globalSharedSyncGroup.props.exceptions.find(
+        (exception) =>
+          exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+          exception.props.target === mainAppTarget
+      ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
+
+      if (!mainAppExceptionSet) {
+        mainAppExceptionSet =
+          PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+            target: mainAppTarget,
+            membershipExceptions: globalSharedAssets.sort(),
+          });
+        globalSharedSyncGroup.props.exceptions.push(mainAppExceptionSet);
+      } else {
+        mainAppExceptionSet.props.membershipExceptions =
+          globalSharedAssets.sort();
+      }
+
+      // Update or create exception set for extension target
+      let extensionExceptionSet = globalSharedSyncGroup.props.exceptions.find(
+        (exception) =>
+          exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
+          exception.props.target === target
+      ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
+
+      if (!extensionExceptionSet) {
+        extensionExceptionSet =
+          PBXFileSystemSynchronizedBuildFileExceptionSet.create(project, {
+            target: target,
+            membershipExceptions: globalSharedAssets.sort(),
+          });
+        globalSharedSyncGroup.props.exceptions.push(extensionExceptionSet);
+      } else {
+        extensionExceptionSet.props.membershipExceptions =
+          globalSharedAssets.sort();
+      }
+
+      // Ensure the current target has the synchronized group in its fileSystemSynchronizedGroups
+      if (!target.props.fileSystemSynchronizedGroups) {
+        target.props.fileSystemSynchronizedGroups = [];
+      }
+
+      // Check if this target already has the synchronized group
+      const hasGroup = target.props.fileSystemSynchronizedGroups.some(
+        (group) => group === globalSharedSyncGroup
+      );
+
+      if (!hasGroup) {
+        target.props.fileSystemSynchronizedGroups.push(globalSharedSyncGroup);
+      }
+    }
+  }
+
+  configureTargetWithGlobalSharedAssets(targetToUpdate);
 
   applyDevelopmentTeamIdToTargets();
   syncMarketingVersions();

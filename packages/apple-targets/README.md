@@ -56,7 +56,10 @@ module.exports = {
   type: "widget",
 
   // Name of the target/product. Defaults to the directory name.
-  name: "My Widget",
+  name: "my_widget",
+
+  // Optional override for CFBundleDisplayName. Defaults to `name` if not provided.
+  displayName: "My Widget",
 
   // Generates colorset files for the target.
   colors: {
@@ -178,6 +181,8 @@ The name of the target must match the name of the target directory.
 
 Some files are required to be linked to both your target and the main target. To support this, you can add a top-level `_shared` directory. Any file in this directory will be linked to both the main target and the sub-target. You'll need to re-run prebuild every time you add, rename, or remove a file in this directory.
 
+You can additionally add a `_shared` directory inside of the root `targets/_shared` directory. This will link files to all targets in your project.
+
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
@@ -228,7 +233,7 @@ These show up in the share sheet. The icon should be transparent as it will be m
 /** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
   type: "action",
-  name: "Inspect Element",
+  displayName: "Inspect Element",
   icon: "./assets/icon.png",
   colors: {
     TouchBarBezel: "#DB739C",

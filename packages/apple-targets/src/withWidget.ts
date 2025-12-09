@@ -68,8 +68,26 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
-  if (props.icon && !/https?:\/\//.test(props.icon)) {
-    props.icon = path.join(props.directory, props.icon);
+  // Resolve icon paths relative to the target directory
+  if (props.icon) {
+    if (typeof props.icon === "string") {
+      if (!/https?:\/\//.test(props.icon)) {
+        props.icon = path.join(props.directory, props.icon);
+      }
+    } else {
+      // Handle object icon config with light/dark/tinted variants
+      const resolvedIcon: { light?: string; dark?: string; tinted?: string } =
+        {};
+      for (const key of ["light", "dark", "tinted"] as const) {
+        const iconPath = props.icon[key];
+        if (iconPath) {
+          resolvedIcon[key] = /https?:\/\//.test(iconPath)
+            ? iconPath
+            : path.join(props.directory, iconPath);
+        }
+      }
+      props.icon = resolvedIcon;
+    }
   }
 
   // This value should be used for the target name and other internal uses.
@@ -347,10 +365,24 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     ? ["phone", "tablet"]
     : ["phone"];
 
+  // Compute icon name for Xcode build settings
+  // For .icon folders (liquid glass), use the folder name
+  // For regular icons, use "AppIcon"
+  const getIconName = (): string | undefined => {
+    if (!props.icon) return undefined;
+    const iconPath =
+      typeof props.icon === "string" ? props.icon : props.icon.light;
+    if (iconPath && path.extname(iconPath) === ".icon") {
+      return path.basename(iconPath, ".icon");
+    }
+    return "AppIcon";
+  };
+
   withXcodeChanges(config, {
     productName,
     configPath: props.configPath,
     name: targetDisplayName,
+    displayName: props.displayName,
     cwd:
       "../" +
       path.relative(
@@ -359,7 +391,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       ),
     deploymentTarget: props.deploymentTarget ?? DEFAULT_DEPLOYMENT_TARGET,
     bundleId,
-    icon: props.icon,
+    icon: getIconName(),
 
     orientation: config.orientation,
     hasAccentColor: !!props.colors?.$accent,
@@ -402,8 +434,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     withIosIcon(config, {
       type: props.type,
       cwd: props.directory,
-      // TODO: read from the top-level icon.png file in the folder -- ERR this doesn't allow for URLs
-      iconFilePath: props.icon,
+      icon: props.icon,
       isTransparent: ["action"].includes(props.type),
     });
   }

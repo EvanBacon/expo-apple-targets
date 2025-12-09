@@ -7,7 +7,8 @@
     "bundleIdentifier": "com.bacon.clipdemo",
     "entitlements": {
       "com.apple.security.application-groups": ["group.bacon.data"]
-    }
+    },
+    "icon": "./assets/expo.icon"
   },
   "plugins": ["@bacons/apple-targets"]
 }

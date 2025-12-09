@@ -25,7 +25,8 @@ export type ExtensionType =
   | "network-packet-tunnel"
   | "network-app-proxy"
   | "network-filter-data"
-  | "network-dns-proxy";
+  | "network-dns-proxy"
+  | "keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
   {
@@ -49,11 +50,13 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
-  // "com.apple.intents-service": "intents",
+    // "com.apple.intents-service": "intents",
     "com.apple.networkextension.packet-tunnel": "network-packet-tunnel",
     "com.apple.networkextension.app-proxy": "network-app-proxy",
     "com.apple.networkextension.dns-proxy": "network-dns-proxy",
     "com.apple.networkextension.filter-data": "network-filter-data",
+    "com.apple.keyboard-service": "keyboard",
+    // "com.apple.intents-service": "intents",
   };
 
 // An exhaustive list of extension types that should sync app groups from the main target by default when
@@ -64,6 +67,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     "bg-download": true,
     clip: true,
     widget: true,
+    keyboard: true,
     "account-auth": false,
     "credentials-provider": false,
     "device-activity-monitor": false,
@@ -90,7 +94,7 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
 export function getTargetInfoPlistForType(type: ExtensionType) {
   // TODO: Use exhaustive switch to ensure external contributors don't forget to add this.
 
-    const NSExtensionPointIdentifier = Object.keys(
+  const NSExtensionPointIdentifier = Object.keys(
     KNOWN_EXTENSION_POINT_IDENTIFIERS
   ).find((key) => KNOWN_EXTENSION_POINT_IDENTIFIERS[key] === type);
 
@@ -121,11 +125,11 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         },
       });
     case "app-intent":
-       return plist.build({
-          EXAppExtensionAttributes: {
+      return plist.build({
+        EXAppExtensionAttributes: {
           EXExtensionPointIdentifier: "com.apple.appintents-extension",
         },
-       });
+      });
     case "clip":
       return plist.build({
         CFBundleName: "$(PRODUCT_NAME)",
@@ -149,11 +153,11 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
       });
     case "imessage":
       return plist.build({
-            NSExtension: {
-              NSExtensionPointIdentifier,
-              // This is hardcoded as there is no Swift code in the imessage extension.
-              NSExtensionPrincipalClass: "StickerBrowserViewController",
-            },
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          // This is hardcoded as there is no Swift code in the imessage extension.
+          NSExtensionPrincipalClass: "StickerBrowserViewController",
+        },
       });
     case "account-auth":
       return plist.build({
@@ -164,7 +168,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
 
           NSExtensionAttributes: {
-            ASAccountAuthenticationModificationSupportsStrongPasswordChange: true,
+            ASAccountAuthenticationModificationSupportsStrongPasswordChange:
+              true,
             ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple:
               true,
           },
@@ -178,6 +183,20 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             "$(PRODUCT_MODULE_NAME).CredentialProviderViewController",
         },
       });
+    case "keyboard":
+      return plist.build({
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).KeyboardViewController",
+          NSExtensionAttributes: {
+            RequestsOpenAccess: false,
+            IsASCIICapable: false,
+            PrefersRightToLeft: false,
+            PrimaryLanguage: "en-US",
+          },
+        },
+      });
     case "notification-service":
       return plist.build({
         NSExtension: {
@@ -185,7 +204,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             NSExtensionActivationRule: "TRUEPREDICATE",
           },
           // TODO: Update `NotificationService` dynamically
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).NotificationService",
           // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
@@ -202,7 +222,7 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         },
       });
     case "spotlight":
-       return plist.build({
+      return plist.build({
         CSExtensionLabel: "myImporter",
         NSExtension: {
           NSExtensionAttributes: {
@@ -221,7 +241,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             NSExtensionActivationRule: "TRUEPREDICATE",
           },
           // TODO: Update `ShareViewController` dynamically
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ShareViewController",
           // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
@@ -264,7 +285,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     case "location-push":
       return plist.build({
         NSExtension: {
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).LocationPushService",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).LocationPushService",
           NSExtensionPointIdentifier,
         },
       });
@@ -295,8 +317,10 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     case "network-packet-tunnel":
       return plist.build({
         NSExtension: {
-          NSExtensionPointIdentifier: "com.apple.networkextension.packet-tunnel",
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).PacketTunnelProvider",
+          NSExtensionPointIdentifier:
+            "com.apple.networkextension.packet-tunnel",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).PacketTunnelProvider",
         },
       });
     case "network-app-proxy":
@@ -317,10 +341,11 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
       return plist.build({
         NSExtension: {
           NSExtensionPointIdentifier: "com.apple.networkextension.filter-data",
-          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).FilterDataProvider",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).FilterDataProvider",
         },
       });
-    default: 
+    default:
       // Default: used for widget and bg-download
       return plist.build({
         NSExtension: {
@@ -358,6 +383,7 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "network-app-proxy",
     "network-dns-proxy",
     "network-filter-data",
+    "keyboard",
   ].includes(type);
 }
 
@@ -388,8 +414,12 @@ export function getFrameworksForType(type: ExtensionType) {
       // "UniformTypeIdentifiers"
     ];
   } else if (
-    ["network-packet-tunnel", "network-app-proxy",
-      "network-dns-proxy", "network-filter-data"].includes(type)
+    [
+      "network-packet-tunnel",
+      "network-app-proxy",
+      "network-dns-proxy",
+      "network-filter-data",
+    ].includes(type)
   ) {
     return ["NetworkExtension"];
   }
