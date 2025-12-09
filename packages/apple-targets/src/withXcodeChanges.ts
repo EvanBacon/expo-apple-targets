@@ -24,16 +24,6 @@ import {
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
-import fixture from "./template/XCBuildConfiguration.json";
-const TemplateBuildSettings = fixture as unknown as Record<
-  string,
-  {
-    default: BuildSettings;
-    release: BuildSettings;
-    debug: BuildSettings;
-    info: any;
-  }
->;
 import { withXcodeProjectBeta } from "./withXcparse";
 import assert from "assert";
 
@@ -87,6 +77,30 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   });
 };
 
+function createCommonConfigListPair(
+  project: XcodeProject,
+  debug: BuildSettings,
+  release: BuildSettings
+) {
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: debug,
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: release,
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createNotificationContentConfigurationList(
   project: XcodeProject,
   {
@@ -132,9 +146,9 @@ function createNotificationContentConfigurationList(
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
   };
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
@@ -142,29 +156,15 @@ function createNotificationContentConfigurationList(
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       DEBUG_INFORMATION_FORMAT: "dwarf",
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
-      CLANG_ANALYZER_NONNULL: "YES",
+    {
       ...common,
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+      CLANG_ANALYZER_NONNULL: "YES",
+    }
+  );
 }
 
-function createExtensionConfigurationListFromTemplate(
+function createActionConfigurationList(
   project: XcodeProject,
-  // NSExtensionPointIdentifier
-  extensionType: string,
   {
     name,
     displayName,
@@ -174,17 +174,38 @@ function createExtensionConfigurationListFromTemplate(
     currentProjectVersion,
     icon,
   }: XcodeSettings
-) {
-  if (!TemplateBuildSettings[extensionType]) {
-    throw new Error(
-      `No template for extension type ${extensionType}. Add it to the xcode project and re-run the generation script.`
-    );
-  }
-
-  const template = TemplateBuildSettings[extensionType] as {
-    default: BuildSettings;
-    release: BuildSettings;
-    debug: BuildSettings;
+): XCConfigurationList {
+  const common: BuildSettings = {
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: 1,
+    DEVELOPMENT_TEAM: "QQ57RJ5UTD",
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES",
+    GCC_C_LANGUAGE_STANDARD: "gnu17",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: "axun/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: "axun",
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    IPHONEOS_DEPLOYMENT_TARGET: "17",
+    LD_RUNPATH_SEARCH_PATHS:
+      "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+    MARKETING_VERSION: 1,
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: "com.bacon.2095.axun",
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "1,2",
+    // @ts-expect-error
+    LOCALIZATION_PREFERS_STRING_CATALOGS: "YES",
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
   };
 
   const dynamic: Partial<BuildSettings> = {
@@ -202,31 +223,24 @@ function createExtensionConfigurationListFromTemplate(
     dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = icon;
   }
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
-      ...template.default,
-      ...template.debug,
+  return createCommonConfigListPair(
+    project,
+    {
+      ...common,
+      DEBUG_INFORMATION_FORMAT: "dwarf",
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       ...dynamic,
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
-      ...template.default,
-      ...template.release,
+    {
+      ...common,
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+      SWIFT_COMPILATION_MODE: "wholemodule",
       ...dynamic,
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function createAppIntentConfigurationList(
@@ -269,34 +283,22 @@ function createAppIntentConfigurationList(
     TARGETED_DEVICE_FAMILY: "1,2",
   };
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...commonBuildSettings,
       GCC_PREPROCESSOR_DEFINITIONS: ["DEBUG=1", "$(inherited)"],
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...commonBuildSettings,
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
       ...({ SWIFT_COMPILATION_MODE: "wholemodule" } as any),
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function createShareConfigurationList(
@@ -342,33 +344,21 @@ function createShareConfigurationList(
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
   };
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       CLANG_ANALYZER_NONNULL: "YES",
       ...common,
       // Diff
       COPY_PHASE_STRIP: "NO",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function getMainMarketingVersion(project: XcodeProject) {
@@ -431,32 +421,21 @@ function createIMessageConfigurationList(
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
   };
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...common,
       // Diff
       COPY_PHASE_STRIP: "NO",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 function createWatchAppConfigurationList(
   project: XcodeProject,
@@ -515,36 +494,24 @@ function createWatchAppConfigurationList(
     common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
   }
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...common,
       // Diff
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 function createSafariConfigurationList(
   project: XcodeProject,
@@ -590,36 +557,24 @@ function createSafariConfigurationList(
     OTHER_LDFLAGS: [`-framework`, "SafariServices"],
   };
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       // Diff
       MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...common,
       // Diff
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 function createAppClipConfigurationList(
   project: XcodeProject,
@@ -702,9 +657,9 @@ function createAppClipConfigurationList(
     ENABLE_PREVIEWS: "YES",
   };
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
       SWIFT_OPTIMIZATION_LEVEL: "-Onone",
       // Diff
@@ -712,27 +667,15 @@ function createAppClipConfigurationList(
       SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
       DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...common,
       // Diff
       SWIFT_COMPILATION_MODE: "wholemodule",
       SWIFT_OPTIMIZATION_LEVEL: "-O",
       COPY_PHASE_STRIP: "NO",
       DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function getOrientationBuildSettings(
@@ -793,9 +736,9 @@ function createWidgetConfigurationList(
     icon,
   }: XcodeSettings
 ) {
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
@@ -832,11 +775,7 @@ function createWidgetConfigurationList(
       SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
@@ -872,16 +811,8 @@ function createWidgetConfigurationList(
       SWIFT_OPTIMIZATION_LEVEL: "-O",
       SWIFT_VERSION: "5.0",
       TARGETED_DEVICE_FAMILY: "1,2",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function createKeyboardConfigurationList(
@@ -922,29 +853,17 @@ function createKeyboardConfigurationList(
     TARGETED_DEVICE_FAMILY: "1,2",
   };
 
-  const debugBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Debug",
-    buildSettings: {
+  return createCommonConfigListPair(
+    project,
+    {
       ...common,
     },
-  });
-
-  const releaseBuildConfig = XCBuildConfiguration.create(project, {
-    name: "Release",
-    buildSettings: {
+    {
       ...common,
       // Diff
       VALIDATE_PRODUCT: "YES",
-    },
-  });
-
-  const configurationList = XCConfigurationList.create(project, {
-    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
-    defaultConfigurationIsVisible: 0,
-    defaultConfigurationName: "Release",
-  });
-
-  return configurationList;
+    }
+  );
 }
 
 function createConfigurationListForType(
@@ -954,11 +873,7 @@ function createConfigurationListForType(
   if (props.type === "widget") {
     return createWidgetConfigurationList(project, props);
   } else if (props.type === "action") {
-    return createExtensionConfigurationListFromTemplate(
-      project,
-      "com.apple.services",
-      props
-    );
+    return createActionConfigurationList(project, props);
   } else if (props.type === "keyboard") {
     return createKeyboardConfigurationList(project, props);
   } else if (props.type === "share") {
