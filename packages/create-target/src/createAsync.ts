@@ -2,6 +2,7 @@
 import chalk from "chalk";
 import fs from "fs";
 import path from "path";
+import plist from "@expo/plist";
 
 import { normalizeStaticPlugin } from "@expo/config-plugins/build/utils/plugin-resolver";
 import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
@@ -153,7 +154,7 @@ export async function createAsync(
   Log.log(chalk`Writing {cyan Info.plist} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "Info.plist"),
-    getTargetInfoPlistForType(resolvedTarget as any)
+    plist.build(getTargetInfoPlistForType(resolvedTarget as any))
   );
 
   Log.log(
