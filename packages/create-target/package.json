@@ -8,6 +8,7 @@
     "url": "https://github.com/evanbacon/expo-apple-targets.git",
     "directory": "packages/create-target"
   },
+  "homepage": "https://github.com/evanbacon/expo-apple-targets",
   "files": [
     "build"
 

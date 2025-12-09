@@ -3,7 +3,7 @@ import { ConfigPlugin } from "expo/config-plugins";
 
 import { Entitlements } from "./config";
 import { getAuxiliaryTargets, getMainAppTarget } from "./target";
-import { withXcodeProjectBeta } from "./withXcparse";
+import { withXcodeProjectBeta } from "./with-bacons-xcode";
 
 const debug = require("debug")("expo:target:eas") as typeof console.log;
 

@@ -4,6 +4,7 @@
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/ExtensionStorage.js",
   "types": "build/ExtensionStorage.d.ts",
+  "homepage": "https://github.com/evanbacon/expo-apple-targets",
   "files": [
     "app.plugin.js",
     "app.plugin.d.ts",
@@ -30,7 +31,11 @@
     "config-plugins",
     "apple-targets"
   ],
-  "author": "Evan Bacon",
+  "author": {
+    "email": "baconbrix@gmail.com",
+    "name": "Evan Bacon",
+    "url": "https://evanbacon.dev"
+  },
   "license": "MIT",
   "dependencies": {
     "@bacons/xcode": "1.0.0-alpha.27",
