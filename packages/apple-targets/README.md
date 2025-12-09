@@ -291,6 +291,7 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | app-intent              | App Intent Extension               |
 | widget                  | Widget / Live Activity             |
 | watch                   | Watch App (with companion iOS App) |
+| watch-widget            | Widget for Watch App               |
 | clip                    | App Clip                           |
 | safari                  | Safari Extension                   |
 | share                   | Share Extension                    |

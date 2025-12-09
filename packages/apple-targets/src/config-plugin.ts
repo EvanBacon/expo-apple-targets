@@ -33,7 +33,7 @@ export const withTargetsDir: ConfigPlugin<
     absolute: true,
   });
 
-  targets.forEach((configPath) => {
+  const evaluatedTargets = targets.map((configPath) => {
     const targetConfig = require(configPath);
     let evaluatedTargetConfigObject = targetConfig;
     // If it's a function, evaluate it
@@ -57,11 +57,28 @@ export const withTargetsDir: ConfigPlugin<
       );
     }
 
-    config = withWidget(config, {
-      appleTeamId,
+    return {
       ...evaluatedTargetConfigObject,
       directory: path.relative(projectRoot, path.dirname(configPath)),
       configPath,
+    };
+  });
+
+  // Sort so that any watch-widget targets come before any watch targets, LIFO
+  evaluatedTargets.sort((a, b) => {
+    if (a.type === "watch-widget") {
+      return -1;
+    }
+    if (b.type === "watch-widget") {
+      return 1;
+    }
+    return 0;
+  });
+
+  evaluatedTargets.forEach((target) => {
+    config = withWidget(config, {
+      appleTeamId,
+      ...target,
     });
   });
 

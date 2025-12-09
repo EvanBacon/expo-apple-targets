@@ -145,6 +145,18 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for watch-widget 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"watch-widget\\",
+  icon: 'https://github.com/expo.png',
+  colors: { $accent: \\"#007AFF\\", },
+  deploymentTarget: \\"9.4\\",
+  frameworks: [\\"AppIntents\\", \\"WidgetKit\\", \\"SwiftUI\\"],
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for widget 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({

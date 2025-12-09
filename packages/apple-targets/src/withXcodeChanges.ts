@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -13,13 +14,14 @@ import {
 import { BuildSettings } from "@bacons/xcode/json";
 import { ExpoConfig } from "@expo/config";
 import { ConfigPlugin } from "@expo/config-plugins";
-import fs from "fs";
+import fs, { watch } from "fs";
 import { globSync } from "glob";
 import path from "path";
 
 import {
   ExtensionType,
   getMainAppTarget,
+  getWatchAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
   productTypeForType,
@@ -473,6 +475,9 @@ function createWatchAppConfigurationList(
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
 
+  // Use the same name for the watch app and the main app
+  const mainAppName = mainAppTarget.project.getMainAppTarget()?.getDisplayName() ?? name;
+
   const common: BuildSettings = {
     ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
     CLANG_ANALYZER_NONNULL: "YES",
@@ -546,6 +551,94 @@ function createWatchAppConfigurationList(
 
   return configurationList;
 }
+function createWatchWidgetConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    hasAccentColor,
+  }: XcodeSettings
+) {
+  const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
+  // NOTE: No base Info.plist needed.
+
+  const watchAppTarget = getWatchAppTarget(project);
+  const watchAppBundleId = watchAppTarget?.getDefaultConfiguration().props.buildSettings.PRODUCT_BUNDLE_IDENTIFIER;
+  if (watchAppBundleId) {
+    const suffix = bundleId.split(".").pop()
+    bundleId = watchAppBundleId + "." + suffix;
+  }
+
+  const common: BuildSettings = {
+    
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_KEY_CFBundleDisplayName: name,
+    // @ts-expect-error Not part of xcode project types yet
+    INTENTS_CODEGEN_LANGUAGE: "Swift",
+    LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/Frameworks",
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "watchos",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "4",
+    WATCHOS_DEPLOYMENT_TARGET: deploymentTarget ?? "9.4",
+  };
+
+  if (hasAccentColor) {
+    common.ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "$accent";
+  }
+
+  const debugBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Debug",
+    buildSettings: {
+      ...common,
+      // Diff
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG $(inherited)",
+      // SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      DEBUG_INFORMATION_FORMAT: "dwarf", // NOTE
+    },
+  });
+
+  const releaseBuildConfig = XCBuildConfiguration.create(project, {
+    name: "Release",
+    buildSettings: {
+      ...common,
+      // Diff
+      SWIFT_OPTIMIZATION_LEVEL: "-Owholemodule",
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+    },
+  });
+
+  const configurationList = XCConfigurationList.create(project, {
+    buildConfigurations: [debugBuildConfig, releaseBuildConfig],
+    defaultConfigurationIsVisible: 0,
+    defaultConfigurationName: "Release",
+  });
+
+  return configurationList;
+}
+
 function createSafariConfigurationList(
   project: XcodeProject,
   {
@@ -971,6 +1064,8 @@ function createConfigurationListForType(
     return createAppClipConfigurationList(project, props);
   } else if (props.type === "watch") {
     return createWatchAppConfigurationList(project, props);
+  } else if (props.type === "watch-widget") {
+    return createWatchWidgetConfigurationList(project, props);
   } else if (props.type === "app-intent") {
     return createAppIntentConfigurationList(project, props);
   } else {
@@ -1223,10 +1318,33 @@ async function applyXcodeChanges(
       productType: productType,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+    // For watch widget extensions, also add them to the watch app target's copy phase
+    if (props.type === "watch-widget") {
+      const watchAppTarget = getWatchAppTarget(project);
 
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+      if (watchAppTarget) {
+        watchAppTarget.createBuildPhase(
+          PBXCopyFilesBuildPhase,
+          {
+            dstPath: "",
+            dstSubfolderSpec: 6,
+            name: "Embed App Extensions",
+            files: [
+              PBXBuildFile.create(project, {
+                fileRef: appExtensionBuildFile.props.fileRef,
+              }),
+            ],
+            runOnlyForDeploymentPostprocessing: 0,
+          }
+        );
+      }
+    } else {
+      // For all other targets, add the target product to the main app target's copy phase
+      const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -1242,7 +1360,26 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // Add watch widget extensions as dependencies to the watch app target instead of the main app target
+  if (props.type === "watch-widget") {
+    // Find the watch app target
+    const watchAppTarget = project.rootObject.props.targets.find((target) => {
+      return (
+        PBXNativeTarget.is(target) &&
+        target.props.productType === "com.apple.product-type.application" &&
+        "WATCHOS_DEPLOYMENT_TARGET" in target.getDefaultConfiguration().props.buildSettings
+      );
+    }) as PBXNativeTarget | undefined;
+
+    if (watchAppTarget) {
+      watchAppTarget.addDependency(targetToUpdate);
+    } else {
+      // Fallback to main app target if watch app target is not found
+      mainAppTarget.addDependency(targetToUpdate);
+    }
+  } else {
+    mainAppTarget.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 

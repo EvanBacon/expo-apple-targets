@@ -12,6 +12,7 @@ import { withIosIcon } from "./icon/withIosIcon";
 import {
   getFrameworksForType,
   getTargetInfoPlistForType,
+  getWatchAppTarget,
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
@@ -352,11 +353,12 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     }
 
     let bundleId = mainAppBundleId;
+
     bundleId += ".";
 
     // Generate the bundle identifier. This logic needs to remain generally stable since it's used for a permanent value.
     // Key here is simplicity and predictability since it's already appended to the main app's bundle identifier.
-    return mainAppBundleId + "." + getSanitizedBundleIdentifier(props.type);
+    return bundleId + getSanitizedBundleIdentifier(props.type);
   })();
 
   const deviceFamilies: DeviceFamily[] = config.ios?.isTabletOnly
