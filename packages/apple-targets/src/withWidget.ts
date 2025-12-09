@@ -15,7 +15,7 @@ import {
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
-import { DeviceFamily, withXcodeChanges } from "./withXcodeChanges";
+import { withXcodeChanges } from "./withXcodeChanges";
 import {
   getSanitizedBundleIdentifier,
   LOG_QUEUE,
@@ -23,6 +23,7 @@ import {
   sanitizeNameForNonDisplayUse,
   warnOnce,
 } from "./util";
+import type { DeviceFamily } from "./configuration-list";
 
 type Props = Config & {
   directory: string;
