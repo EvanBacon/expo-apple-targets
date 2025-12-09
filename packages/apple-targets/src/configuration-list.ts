@@ -155,10 +155,8 @@ function createActionConfigurationList({
   };
 
   if (icon) {
-    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = <icon>;` build settings
-    // For liquid glass icons (.icon folders), this will be the folder name
-    // For regular icons, this will be "AppIcon"
-    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = icon;
+    // Add `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;` build settings
+    dynamic.ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon";
   }
 
   return {
@@ -640,7 +638,6 @@ function createWidgetConfigurationList({
 }: XcodeSettings): { debug: BuildSettings; release: BuildSettings } {
   return {
     debug: {
-      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -677,7 +674,6 @@ function createWidgetConfigurationList({
       TARGETED_DEVICE_FAMILY: "1,2",
     },
     release: {
-      ASSETCATALOG_COMPILER_APPICON_NAME: icon ?? "AppIcon",
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
