@@ -4,6 +4,7 @@
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/ExtensionStorage.js",
   "types": "build/ExtensionStorage.d.ts",
+  "homepage": "https://github.com/evanbacon/expo-apple-targets",
   "files": [
     "app.plugin.js",
     "app.plugin.d.ts",

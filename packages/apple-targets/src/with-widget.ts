@@ -5,17 +5,17 @@ import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
 
-import { withIosColorset } from "./colorset/withIosColorset";
+import { withIosColorset } from "./colorset/with-ios-colorset";
 import { Config, Entitlements } from "./config";
-import { withImageAsset } from "./icon/withImageAsset";
-import { withIosIcon } from "./icon/withIosIcon";
+import { withImageAsset } from "./icon/with-image-asset";
+import { withIosIcon } from "./icon/with-ios-icon";
 import {
   getFrameworksForType,
   getTargetInfoPlistForType,
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
-import { withEASTargets } from "./withEasCredentials";
-import { withXcodeChanges } from "./withXcodeChanges";
+import { withEASTargets } from "./with-eas-credentials";
+import { withXcodeChanges } from "./with-xcode-changes";
 import {
   getSanitizedBundleIdentifier,
   LOG_QUEUE,
