@@ -16,6 +16,13 @@ import {
 } from "./target";
 import { withEASTargets } from "./withEasCredentials";
 import { DeviceFamily, withXcodeChanges } from "./withXcodeChanges";
+import {
+  getSanitizedBundleIdentifier,
+  LOG_QUEUE,
+  logOnce,
+  sanitizeNameForNonDisplayUse,
+  warnOnce,
+} from "./util";
 
 type Props = Config & {
   directory: string;
@@ -24,43 +31,8 @@ type Props = Config & {
 
 const DEFAULT_DEPLOYMENT_TARGET = "18.0";
 
-function memoize<T extends (...args: any[]) => any>(fn: T): T {
-  const cache = new Map<string, any>();
-  return ((...args: any[]) => {
-    const key = JSON.stringify(args);
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    const result = fn(...args);
-    cache.set(key, result);
-    return result;
-  }) as T;
-}
-
-const warnOnce = memoize(console.warn);
-const logOnce = memoize(console.log);
-
-function createLogQueue(): { add: (fn: Function) => void; flush: () => void } {
-  const queue: Function[] = [];
-
-  const flush = () => {
-    queue.forEach((fn) => fn());
-    queue.length = 0;
-  };
-
-  return {
-    flush,
-    add: (fn: Function) => {
-      queue.push(fn);
-    },
-  };
-}
-
-// Queue up logs so they only run when prebuild is actually running and not during standard config reads.
-const prebuildLogQueue = createLogQueue();
-
 const withWidget: ConfigPlugin<Props> = (config, props) => {
-  prebuildLogQueue.add(() =>
+  LOG_QUEUE.add(() =>
     warnOnce(
       chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
     )
@@ -228,7 +200,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         if (Array.isArray(mainAppGroups) && mainAppGroups.length > 0) {
           // Then set the target app groups to match the main app.
           entitlements[APP_GROUP_KEY] = mainAppGroups;
-          prebuildLogQueue.add(() => {
+          LOG_QUEUE.add(() => {
             logOnce(
               chalk`[${targetDirName}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
                 APP_GROUP_KEY
@@ -236,7 +208,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
             );
           });
         } else {
-          prebuildLogQueue.add(() =>
+          LOG_QUEUE.add(() =>
             warnOnce(
               chalk`{yellow [${targetDirName}]} Apple target may require the App Groups entitlement but none were found in the Expo config.\nExample:\n${JSON.stringify(
                 {
@@ -303,7 +275,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   withDangerousMod(config, [
     "ios",
     async (config) => {
-      prebuildLogQueue.flush();
+      LOG_QUEUE.flush();
 
       fs.mkdirSync(targetDirAbsolutePath, { recursive: true });
 
@@ -472,18 +444,3 @@ const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
 };
 
 export default withWidget;
-
-function getSanitizedBundleIdentifier(value: string) {
-  // According to the behavior observed when using the UI in Xcode.
-  // Must start with a letter, period, or hyphen (not number).
-  // Can only contain alphanumeric characters, periods, and hyphens.
-  // Can have empty segments (e.g. com.example..app).
-  return value.replace(/(^[^a-zA-Z.-]|[^a-zA-Z0-9-.])/g, "-");
-}
-
-function sanitizeNameForNonDisplayUse(name: string) {
-  return name
-    .replace(/[\W_]+/g, "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
