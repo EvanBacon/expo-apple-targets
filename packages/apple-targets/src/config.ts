@@ -1,4 +1,5 @@
 import { ExtensionType } from "./target";
+import { PlistValue } from "@expo/plist";
 
 // Shape based on tailwind
 // https://tailwindcss.com/docs/customizing-colors
@@ -146,6 +147,9 @@ export type Config = {
 
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
+
+  /** Optional Info.plist entries */
+  infoPlist: Record<string, PlistValue>;
 };
 
 export type ConfigFunction = (
