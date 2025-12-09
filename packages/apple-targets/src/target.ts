@@ -1,5 +1,4 @@
 import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
-import plist from "@expo/plist";
 
 export type ExtensionType =
   | "widget"

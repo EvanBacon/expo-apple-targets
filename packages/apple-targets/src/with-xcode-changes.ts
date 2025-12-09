@@ -20,7 +20,7 @@ import {
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
-import { withXcodeProjectBeta } from "./withXcparse";
+import { withXcodeProjectBeta } from "./with-bacons-xcode";
 import assert from "assert";
 
 import {

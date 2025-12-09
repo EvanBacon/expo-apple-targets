@@ -4,9 +4,9 @@ import path from "path";
 import chalk from "chalk";
 
 import type { Config, ConfigFunction } from "./config";
-import { withPodTargetExtension } from "./withPodTargetExtension";
-import withWidget from "./withWidget";
-import { withXcodeProjectBetaBaseMod } from "./withXcparse";
+import { withPodTargetExtension } from "./with-pod-target-extension";
+import withWidget from "./with-widget";
+import { withXcodeProjectBetaBaseMod } from "./with-bacons-xcode";
 import { warnOnce } from "./util";
 
 export const withTargetsDir: ConfigPlugin<
