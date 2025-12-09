@@ -870,27 +870,46 @@ function createConfigurationListForType(
   project: XcodeProject,
   props: XcodeSettings
 ) {
-  if (props.type === "widget") {
-    return createWidgetConfigurationList(project, props);
-  } else if (props.type === "action") {
-    return createActionConfigurationList(project, props);
-  } else if (props.type === "keyboard") {
-    return createKeyboardConfigurationList(project, props);
-  } else if (props.type === "share") {
-    return createShareConfigurationList(project, props);
-  } else if (props.type === "safari") {
-    return createSafariConfigurationList(project, props);
-  } else if (props.type === "imessage") {
-    return createIMessageConfigurationList(project, props);
-  } else if (props.type === "clip") {
-    return createAppClipConfigurationList(project, props);
-  } else if (props.type === "watch") {
-    return createWatchAppConfigurationList(project, props);
-  } else if (props.type === "app-intent") {
-    return createAppIntentConfigurationList(project, props);
-  } else {
-    // TODO: More
-    return createNotificationContentConfigurationList(project, props);
+  switch (props.type) {
+    case "widget":
+      return createWidgetConfigurationList(project, props);
+    case "action":
+      return createActionConfigurationList(project, props);
+    case "keyboard":
+      return createKeyboardConfigurationList(project, props);
+    case "share":
+      return createShareConfigurationList(project, props);
+    case "safari":
+      return createSafariConfigurationList(project, props);
+    case "imessage":
+      return createIMessageConfigurationList(project, props);
+    case "clip":
+      return createAppClipConfigurationList(project, props);
+    case "watch":
+      return createWatchAppConfigurationList(project, props);
+    case "app-intent":
+      return createAppIntentConfigurationList(project, props);
+    case "notification-content":
+    // TODO: These just use this default value for now.
+    case "notification-service":
+    case "account-auth":
+    case "bg-download":
+    case "credentials-provider":
+    case "device-activity-monitor":
+    case "intent":
+    case "intent-ui":
+    case "location-push":
+    case "matter":
+    case "network-app-proxy":
+    case "network-dns-proxy":
+    case "network-filter-data":
+    case "network-packet-tunnel":
+    case "quicklook-thumbnail":
+    case "spotlight":
+      return createNotificationContentConfigurationList(project, props);
+    default:
+      const exhaustiveCheck: never = props.type;
+      throw new Error(`Unhandled case: ${exhaustiveCheck}`);
   }
 }
 
