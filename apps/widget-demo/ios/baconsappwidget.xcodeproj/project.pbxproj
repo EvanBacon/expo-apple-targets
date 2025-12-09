@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C352FCD8C1506F9DBD07520 /* libPods-baconsappwidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3854F8C1CEBD7AAEF0DEB1CF /* libPods-baconsappwidget.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4EEFB63CC1FF46EB99C0B808 /* expo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 5A88D7B415A448F5A19325FA /* expo.icon */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		DBA5B5B976CA0884B4FBB6B8 /* libPods-baconsappwidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		XX12B55A1EDABF083C3B51XX /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */; };
 		XX1A6800511A685AB346D2XX /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XXA12889081EB894481655XX /* AppIntents.framework */; };
@@ -21,11 +20,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		XX5CEC91B0781FF05162DFXX /* PBXContainerItemProxy */ = {
+		XXA64E64FBB5E0BCCD0762XX /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = XX8673E892DC6D4E60A1FEXX;
+			remoteGlobalIDString = XX219ADAAD1592813AB03DXX;
 			remoteInfo = "My Widget 😄";
 		};
 /* End PBXContainerItemProxy section */
@@ -48,12 +47,11 @@
 		13B07F961A680F5B00A75B9A /* baconsappwidget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = baconsappwidget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = baconsappwidget/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = baconsappwidget/Info.plist; sourceTree = "<group>"; };
-		15A6BBF0EA733F416FD8BE07 /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; };
-		3854F8C1CEBD7AAEF0DEB1CF /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A88D7B415A448F5A19325FA /* expo.icon */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = expo.icon; path = baconsappwidget/expo.icon; sourceTree = "<group>"; };
+		388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; };
+		964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = baconsappwidget/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C4B1391D8344D04790C12CCF /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; };
+		DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = baconsappwidget/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* baconsappwidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "baconsappwidget-Bridging-Header.h"; path = "baconsappwidget/baconsappwidget-Bridging-Header.h"; sourceTree = "<group>"; };
 		XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -64,14 +62,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		XX2A9D198C094CECB67FE3XX /* Exceptions for "widget" folder in "My Widget 😄" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-				"expo-target.config.js",
-			);
-			target = XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */;
-		};
 		XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -79,13 +69,21 @@
 			);
 			target = 13B07F861A680F5B00A75B9A /* baconsappwidget */;
 		};
+		XX5D8C69AEC31EB74E6A81XX /* Exceptions for "widget" folder in "My Widget 😄" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				"expo-target.config.js",
+			);
+			target = XX219ADAAD1592813AB03DXX /* My Widget 😄 */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		XX2080125B71C933391F34XX /* widget */ = {
+		XX5334B7CC062E958C75C1XX /* widget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				XX2A9D198C094CECB67FE3XX /* Exceptions for "widget" folder in "My Widget 😄" target */,
+				XX5D8C69AEC31EB74E6A81XX /* Exceptions for "widget" folder in "My Widget 😄" target */,
 				XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */,
 			);
 			explicitFileTypes = {
@@ -102,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C352FCD8C1506F9DBD07520 /* libPods-baconsappwidget.a in Frameworks */,
+				DBA5B5B976CA0884B4FBB6B8 /* libPods-baconsappwidget.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +118,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		079820807E7289CC3D342C56 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */,
+				964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* baconsappwidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -129,7 +137,6 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				5A88D7B415A448F5A19325FA /* expo.icon */,
 			);
 			name = baconsappwidget;
 			sourceTree = "<group>";
@@ -141,19 +148,9 @@
 				XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */,
 				XXCAF23C3FC41F82140FA1XX /* ActivityKit.framework */,
 				XXA12889081EB894481655XX /* AppIntents.framework */,
-				3854F8C1CEBD7AAEF0DEB1CF /* libPods-baconsappwidget.a */,
+				DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		7608CF55E26D3CCAD69FE350 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				15A6BBF0EA733F416FD8BE07 /* Pods-baconsappwidget.debug.xcconfig */,
-				C4B1391D8344D04790C12CCF /* Pods-baconsappwidget.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -171,7 +168,7 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				7608CF55E26D3CCAD69FE350 /* Pods */,
+				079820807E7289CC3D342C56 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -199,7 +196,7 @@
 		XX3E41C1850246162C0061XX /* expo:targets */ = {
 			isa = PBXGroup;
 			children = (
-				XX2080125B71C933391F34XX /* widget */,
+				XX5334B7CC062E958C75C1XX /* widget */,
 			);
 			name = "expo:targets";
 			path = ../targets;
@@ -221,16 +218,16 @@
 			buildRules = (
 			);
 			dependencies = (
-				XX7113A9368EBA1A0D46A2XX /* PBXTargetDependency */,
+				XX8A929EB0D10D043F0ABEXX /* PBXTargetDependency */,
 			);
 			name = baconsappwidget;
 			productName = baconsappwidget;
 			productReference = 13B07F961A680F5B00A75B9A /* baconsappwidget.app */;
 			productType = "com.apple.product-type.application";
 		};
-		XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */ = {
+		XX219ADAAD1592813AB03DXX /* My Widget 😄 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */;
+			buildConfigurationList = XX0E1B7C3454F9C8294256XX /* Build configuration list for PBXNativeTarget "My Widget 😄" */;
 			buildPhases = (
 				XX074B8811C1CF8E8A3D74XX /* Frameworks */,
 				XXE45443DC38DCFE1DB622XX /* Sources */,
@@ -241,7 +238,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				XX2080125B71C933391F34XX /* widget */,
+				XX5334B7CC062E958C75C1XX /* widget */,
 			);
 			name = "My Widget 😄";
 			productName = MyWidget;
@@ -259,7 +256,7 @@
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
 					};
-					XX8673E892DC6D4E60A1FEXX = {
+					XX219ADAAD1592813AB03DXX = {
 						CreatedOnToolsVersion = 14.3;
 						DevelopmentTeam = QQ57RJ5UTD;
 						ProvisioningStyle = Automatic;
@@ -280,7 +277,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* baconsappwidget */,
-				XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */,
+				XX219ADAAD1592813AB03DXX /* My Widget 😄 */,
 			);
 		};
 /* End PBXProject section */
@@ -293,7 +290,6 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				4EEFB63CC1FF46EB99C0B808 /* expo.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,19 +346,19 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		XX7113A9368EBA1A0D46A2XX /* PBXTargetDependency */ = {
+		XX8A929EB0D10D043F0ABEXX /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */;
-			targetProxy = XX5CEC91B0781FF05162DFXX /* PBXContainerItemProxy */;
+			target = XX219ADAAD1592813AB03DXX /* My Widget 😄 */;
+			targetProxy = XXA64E64FBB5E0BCCD0762XX /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 15A6BBF0EA733F416FD8BE07 /* Pods-baconsappwidget.debug.xcconfig */;
+			baseConfigurationReference = 388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = expo;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = baconsappwidget/baconsappwidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -396,9 +392,9 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C4B1391D8344D04790C12CCF /* Pods-baconsappwidget.release.xcconfig */;
+			baseConfigurationReference = 964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = expo;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = baconsappwidget/baconsappwidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -428,7 +424,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = expo;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -488,7 +483,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = expo;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -537,53 +531,9 @@
 			};
 			name = Release;
 		};
-		XX837C8E6452C22280907DXX /* Debug */ = {
+		XX2638145AAD3C31E3D763XX /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../targets/widget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "My Widget 😄";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		XXAA503238DFC7747BDB83XX /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -623,6 +573,48 @@
 			};
 			name = Release;
 		};
+		XXF46DABD2EDBAFE170DDCXX /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../targets/widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "My Widget 😄";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -644,11 +636,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */ = {
+		XX0E1B7C3454F9C8294256XX /* Build configuration list for PBXNativeTarget "My Widget 😄" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				XX837C8E6452C22280907DXX /* Debug */,
-				XXAA503238DFC7747BDB83XX /* Release */,
+				XXF46DABD2EDBAFE170DDCXX /* Debug */,
+				XX2638145AAD3C31E3D763XX /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
