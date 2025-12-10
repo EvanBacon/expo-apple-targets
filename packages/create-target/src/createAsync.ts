@@ -22,6 +22,7 @@ import spawnAsync from "@expo/spawn-async";
 
 export type Options = {
   install: boolean;
+  name?: string;
 };
 
 function getNamedPlugins(
@@ -105,7 +106,11 @@ export async function createAsync(
     resolvedTarget = await promptTargetAsync();
   } else {
     resolvedTarget = target;
-    console.log(chalk`Creating a {cyan ${resolvedTarget}} Apple target.\n`);
+    if (props.name) {
+      console.log(chalk`Creating a {cyan ${resolvedTarget}} Apple target named {cyan ${props.name}}.\n`);
+    } else {
+      console.log(chalk`Creating a {cyan ${resolvedTarget}} Apple target.\n`);
+    }
   }
 
   if (!resolvedTarget) {
@@ -113,7 +118,8 @@ export async function createAsync(
   }
   assertValidTarget(resolvedTarget);
 
-  const targetDir = path.join(projectRoot, "targets", resolvedTarget);
+  const targetName = props.name || resolvedTarget;
+  const targetDir = path.join(projectRoot, "targets", targetName);
 
   if (fs.existsSync(targetDir)) {
     // Check if the target directory is empty
