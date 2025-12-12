@@ -1,4 +1,5 @@
 import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
+import { warnOnce } from "./util";
 
 export type ExtensionType =
   | "widget"
@@ -28,66 +29,66 @@ export type ExtensionType =
   | "keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
-  {
-    "com.apple.message-payload-provider": "imessage",
-    "com.apple.widgetkit-extension": "widget",
-    "com.apple.usernotifications.content-extension": "notification-content",
-    "com.apple.share-services": "share",
-    "com.apple.usernotifications.service": "notification-service",
-    "com.apple.spotlight.import": "spotlight",
-    "com.apple.intents-service": "intent",
-    "com.apple.intents-ui-service": "intent-ui",
-    "com.apple.Safari.web-extension": "safari",
-    "com.apple.background-asset-downloader-extension": "bg-download",
-    "com.apple.matter.support.extension.device-setup": "matter",
-    "com.apple.quicklook.thumbnail": "quicklook-thumbnail",
-    "com.apple.location.push.service": "location-push",
-    "com.apple.authentication-services-credential-provider-ui":
-      "credentials-provider",
-    "com.apple.authentication-services-account-authentication-modification-ui":
-      "account-auth",
-    "com.apple.services": "action",
-    "com.apple.appintents-extension": "app-intent",
-    "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
-    // "com.apple.intents-service": "intents",
-    "com.apple.networkextension.packet-tunnel": "network-packet-tunnel",
-    "com.apple.networkextension.app-proxy": "network-app-proxy",
-    "com.apple.networkextension.dns-proxy": "network-dns-proxy",
-    "com.apple.networkextension.filter-data": "network-filter-data",
-    "com.apple.keyboard-service": "keyboard",
-    // "com.apple.intents-service": "intents",
-  };
+{
+  "com.apple.message-payload-provider": "imessage",
+  "com.apple.widgetkit-extension": "widget",
+  "com.apple.usernotifications.content-extension": "notification-content",
+  "com.apple.share-services": "share",
+  "com.apple.usernotifications.service": "notification-service",
+  "com.apple.spotlight.import": "spotlight",
+  "com.apple.intents-service": "intent",
+  "com.apple.intents-ui-service": "intent-ui",
+  "com.apple.Safari.web-extension": "safari",
+  "com.apple.background-asset-downloader-extension": "bg-download",
+  "com.apple.matter.support.extension.device-setup": "matter",
+  "com.apple.quicklook.thumbnail": "quicklook-thumbnail",
+  "com.apple.location.push.service": "location-push",
+  "com.apple.authentication-services-credential-provider-ui":
+    "credentials-provider",
+  "com.apple.authentication-services-account-authentication-modification-ui":
+    "account-auth",
+  "com.apple.services": "action",
+  "com.apple.appintents-extension": "app-intent",
+  "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
+  // "com.apple.intents-service": "intents",
+  "com.apple.networkextension.packet-tunnel": "network-packet-tunnel",
+  "com.apple.networkextension.app-proxy": "network-app-proxy",
+  "com.apple.networkextension.dns-proxy": "network-dns-proxy",
+  "com.apple.networkextension.filter-data": "network-filter-data",
+  "com.apple.keyboard-service": "keyboard",
+  // "com.apple.intents-service": "intents",
+};
 
 // An exhaustive list of extension types that should sync app groups from the main target by default when
 // no app groups are specified.
 export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
-  {
-    share: true,
-    "bg-download": true,
-    clip: true,
-    widget: true,
-    keyboard: true,
-    "account-auth": false,
-    "credentials-provider": false,
-    "device-activity-monitor": false,
-    "app-intent": false,
-    "intent-ui": false,
-    "location-push": false,
-    "notification-content": false,
-    "notification-service": false,
-    "quicklook-thumbnail": false,
-    action: false,
-    imessage: false,
-    intent: false,
-    matter: false,
-    safari: false,
-    spotlight: false,
-    watch: false,
-    "network-packet-tunnel": false,
-    "network-app-proxy": false,
-    "network-dns-proxy": false,
-    "network-filter-data": false,
-  };
+{
+  share: true,
+  "bg-download": true,
+  clip: true,
+  widget: true,
+  keyboard: true,
+  "account-auth": false,
+  "credentials-provider": false,
+  "device-activity-monitor": false,
+  "app-intent": false,
+  "intent-ui": false,
+  "location-push": false,
+  "notification-content": false,
+  "notification-service": false,
+  "quicklook-thumbnail": false,
+  action: false,
+  imessage: false,
+  intent: false,
+  matter: false,
+  safari: false,
+  spotlight: false,
+  watch: false,
+  "network-packet-tunnel": false,
+  "network-app-proxy": false,
+  "network-dns-proxy": false,
+  "network-filter-data": false,
+};
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
@@ -234,21 +235,24 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         },
       };
     case "share":
-  return {
-    NSExtension: {
-      NSExtensionAttributes: {
-        NSExtensionActivationRule: {
-          NSExtensionActivationSupportsText: true,
-          NSExtensionActivationSupportsWebURLWithMaxCount: 1,
-          NSExtensionActivationSupportsImageWithMaxCount: 10,
-          NSExtensionActivationSupportsFileWithMaxCount: 10,
-          NSExtensionActivationSupportsMovieWithMaxCount: 5,
+      warnOnce(
+        "share-extension-activation-rule",
+        `Share extension uses TRUEPREDICATE activation rule which will be rejected by App Store. ` +
+        `Create a custom Info.plist in your target directory with a proper NSExtensionActivationRule dictionary. ` +
+        `See: https://developer.apple.com/documentation/bundleresources/information_property_list/nsextension/nsextensionattributes/nsextensionactivationrule`
+      );
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            NSExtensionActivationRule: "TRUEPREDICATE",
+          },
+          // TODO: Update `ShareViewController` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ShareViewController",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
         },
-      },
-      NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
-      NSExtensionPointIdentifier,
-    },
-  };
+      };
     case "intent-ui":
       return {
         NSExtension: {
@@ -442,7 +446,7 @@ export function isNativeTargetOfType(
   if (
     type === "clip" &&
     target.props.productType ===
-      "com.apple.product-type.application.on-demand-install-capable"
+    "com.apple.product-type.application.on-demand-install-capable"
   ) {
     return true;
   }
@@ -456,7 +460,7 @@ export function isNativeTargetOfType(
   if (!infoPlist.NSExtension?.NSExtensionPointIdentifier) {
     console.error(
       "No NSExtensionPointIdentifier found in extension Info.plist for target: " +
-        target.getDisplayName()
+      target.getDisplayName()
     );
     return false;
   }
