@@ -234,18 +234,21 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
         },
       };
     case "share":
-      return {
-        NSExtension: {
-          NSExtensionAttributes: {
-            NSExtensionActivationRule: "TRUEPREDICATE",
-          },
-          // TODO: Update `ShareViewController` dynamically
-          NSExtensionPrincipalClass:
-            "$(PRODUCT_MODULE_NAME).ShareViewController",
-          // NSExtensionMainStoryboard: 'MainInterface',
-          NSExtensionPointIdentifier,
+  return {
+    NSExtension: {
+      NSExtensionAttributes: {
+        NSExtensionActivationRule: {
+          NSExtensionActivationSupportsText: true,
+          NSExtensionActivationSupportsWebURLWithMaxCount: 1,
+          NSExtensionActivationSupportsImageWithMaxCount: 10,
+          NSExtensionActivationSupportsFileWithMaxCount: 10,
+          NSExtensionActivationSupportsMovieWithMaxCount: 5,
         },
-      };
+      },
+      NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
+      NSExtensionPointIdentifier,
+    },
+  };
     case "intent-ui":
       return {
         NSExtension: {
