@@ -1,11 +1,11 @@
 # Apple Targets plugin
 
 > [!WARNING]
-> This is highly experimental and not part of any official Expo workflow.
+> This is an experimental Config Plugin not part of any official Expo workflow. Automated testing of targets is seemingly impossible meaning unexpected regressions can occur between versions.
+
+An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
 
 <img width="1061" alt="Screenshot 2023-06-10 at 1 59 26 PM" src="https://github.com/EvanBacon/expo-apple-targets/assets/9664363/4cd8399d-53aa-401a-9caa-3a1432a0640c">
-
-An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of Continuous Native Generation.
 
 ## 🚀 How to use
 
