@@ -17,7 +17,8 @@ const debug = require("debug")("expo:create-target") as typeof console.log;
 // pick type of target
 // find-up expo project
 // `npx expo install @bacons/apple-targets`
-// create `/targets/<name>` directory
+// create `/targets/<name>` directory. If the --name argument is passed,
+// that becomes the name, else, use the target name
 // add expo-target.config.js file
 // inject some template files.
 // Log about needing to re-run prebuild.
@@ -26,11 +27,13 @@ async function run() {
   const argv = process.argv.slice(2) ?? [];
   const rawArgsMap: Spec = {
     // Types
+    "--name": String,
     "--no-install": Boolean,
     "--help": Boolean,
     "--version": Boolean,
     // Aliases
     "-h": "--help",
+    "-n": "--name",
     "-v": "--version",
   };
   const args = assertWithOptionsArgs(rawArgsMap, {
@@ -46,8 +49,9 @@ async function run() {
     const nameWithoutCreate = CLI_NAME.replace("create-", "");
     printHelp(
       `Creates a new Expo Apple target`,
-      chalk`npx ${CLI_NAME} {cyan <target>} [options]`,
+      chalk`npx ${CLI_NAME} {cyan <target>} [--name <name>] [options]`,
       [
+        `-n, --name <name>     Custom name for the target directory`,
         `    --no-install      Skip installing npm packages`,
         `-v, --version         Version number`,
         `-h, --help            Usage info`,
@@ -71,12 +75,14 @@ async function run() {
     debug(`Parsed:\n%O`, parsed);
 
     const { createAsync } = await import("./createAsync");
+    const name = parsed.args["--name"] as string | undefined;
     await createAsync(
       // This is the target
       parsed.projectRoot,
       {
         install: !args["--no-install"],
-      }
+        name,
+      },
     );
   } catch (error: any) {
     // ExitError has already been logged, all others should be logged before exiting.
