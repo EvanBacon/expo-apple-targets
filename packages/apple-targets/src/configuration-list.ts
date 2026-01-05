@@ -640,6 +640,8 @@ function createWidgetConfigurationList({
     debug: {
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
+      // Add app icon name when icon is provided to prevent inheriting main app's icon setting
+      ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
       CLANG_ANALYZER_NONNULL: "YES",
       CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
       CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -676,6 +678,8 @@ function createWidgetConfigurationList({
     release: {
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
+      // Add app icon name when icon is provided to prevent inheriting main app's icon setting
+      ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
       CLANG_ANALYZER_NONNULL: "YES",
       CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
       CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
