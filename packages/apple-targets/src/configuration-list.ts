@@ -431,8 +431,10 @@ function createSafariConfigurationList({
   bundleId,
   deploymentTarget,
   currentProjectVersion,
+  icon,
 }: XcodeSettings): { debug: BuildSettings; release: BuildSettings } {
   const common: BuildSettings = {
+    ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -638,6 +640,7 @@ function createWidgetConfigurationList({
 }: XcodeSettings): { debug: BuildSettings; release: BuildSettings } {
   return {
     debug: {
+      ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
@@ -674,6 +677,7 @@ function createWidgetConfigurationList({
       TARGETED_DEVICE_FAMILY: "1,2",
     },
     release: {
+      ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
       ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
       CLANG_ANALYZER_NONNULL: "YES",
