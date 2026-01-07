@@ -4,11 +4,11 @@ import path from "path";
 import chalk from "chalk";
 
 import type { Config, ConfigFunction } from "./config";
-import { withPodTargetExtension } from "./with-pod-target-extension";
-import withWidget from "./with-widget";
-import { withXcodeProjectBetaBaseMod } from "./with-bacons-xcode";
-import { warnOnce } from "./util";
+import { withPodTargetExtension } from "./withPodTargetExtension";
+import withWidget from "./withWidget";
+import { withXcodeProjectBetaBaseMod } from "./withXcparse";
 
+let hasWarned = false;
 export const withTargetsDir: ConfigPlugin<
   {
     appleTeamId?: string;
@@ -20,8 +20,9 @@ export const withTargetsDir: ConfigPlugin<
   const { root = "./targets", match = "*" } = _props || {};
   const projectRoot = config._internal!.projectRoot;
 
-  if (!appleTeamId) {
-    warnOnce(
+  if (!appleTeamId && !hasWarned) {
+    hasWarned = true;
+    console.warn(
       chalk`{yellow [bacons/apple-targets]} Expo config is missing required {cyan ios.appleTeamId} property. Find this in Xcode and add to the Expo Config to correct. iOS builds may fail until this is corrected.`
     );
   }

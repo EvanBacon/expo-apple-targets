@@ -1,11 +1,11 @@
-# Apple Targets
+# Apple Targets plugin
 
 > [!WARNING]
-> This is an experimental Config Plugin not part of any official Expo workflow. Automated testing of targets is seemingly impossible meaning unexpected regressions can occur between versions.
+> This is highly experimental and not part of any official Expo workflow.
 
-An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
+<img width="1061" alt="Screenshot 2023-06-10 at 1 59 26 PM" src="https://github.com/EvanBacon/expo-apple-targets/assets/9664363/4cd8399d-53aa-401a-9caa-3a1432a0640c">
 
-<img width="1728" height="963" alt="targets" src="https://github.com/user-attachments/assets/aedaafa0-1ef0-403c-a797-9f4c82cdb9f1" />
+An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of Continuous Native Generation.
 
 ## 🚀 How to use
 
@@ -305,11 +305,7 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | location-push           | Location Push Service Extension    |
 | credentials-provider    | Credentials Provider Extension     |
 | account-auth            | Account Authentication Extension   |
-| network-packet-tunnel   | Packet Tunnel Network Extension    |
-| network-app-proxy       | App Proxy Network Extension        |
-| network-dns-proxy       | DNS Proxy Network Extension        |
-| network-filter-data     | Filter Data Network Extension      |
-
+| device-activity-monitor | Device Activity Monitor Extension  |
 
 <!-- | imessage             | iMessage Extension               | -->
 
