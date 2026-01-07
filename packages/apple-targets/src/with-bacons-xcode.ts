@@ -8,7 +8,7 @@ import {
   Mod,
   withMod,
 } from "@expo/config-plugins";
-import * as fs from "fs";
+import fs from "fs";
 
 const customModName = "xcodeProjectBeta2";
 
