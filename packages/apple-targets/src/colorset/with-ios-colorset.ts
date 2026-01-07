@@ -3,7 +3,7 @@ import { type ContentsJsonImageIdiom } from "@expo/prebuild-config/build/plugins
 import fs from "node:fs";
 import path from "node:path";
 
-import { customColorFromCSS } from "./customColorFromCSS";
+import { customColorFromCSS } from "./custom-color-from-css";
 
 type Appearance = {
   appearance: string;

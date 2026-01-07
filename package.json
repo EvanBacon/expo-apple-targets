@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "resolutions": {
-    "expo": "^53",
+    "expo": "^54",
     "fs-extra": "^9.1.0",
     "jest-watch-typeahead": "2.2.1"
   },

@@ -104,8 +104,6 @@ export type Config = {
 
   /**
    * A local file path or URL to an image asset.
-   * @example "./assets/icon.png"
-   * @example "https://example.com/icon.png"
    */
   icon?: string;
 

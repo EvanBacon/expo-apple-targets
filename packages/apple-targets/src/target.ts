@@ -1,5 +1,4 @@
 import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
-import plist from "@expo/plist";
 
 export type ExtensionType =
   | "widget"
@@ -23,6 +22,10 @@ export type ExtensionType =
   | "safari"
   | "app-intent"
   | "device-activity-monitor"
+  | "network-packet-tunnel"
+  | "network-app-proxy"
+  | "network-filter-data"
+  | "network-dns-proxy"
   | "keyboard";
 
 export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
@@ -47,6 +50,11 @@ export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
     "com.apple.services": "action",
     "com.apple.appintents-extension": "app-intent",
     "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
+    // "com.apple.intents-service": "intents",
+    "com.apple.networkextension.packet-tunnel": "network-packet-tunnel",
+    "com.apple.networkextension.app-proxy": "network-app-proxy",
+    "com.apple.networkextension.dns-proxy": "network-dns-proxy",
+    "com.apple.networkextension.filter-data": "network-filter-data",
     "com.apple.keyboard-service": "keyboard",
     // "com.apple.intents-service": "intents",
   };
@@ -77,234 +85,275 @@ export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
     safari: false,
     spotlight: false,
     watch: false,
+    "network-packet-tunnel": false,
+    "network-app-proxy": false,
+    "network-dns-proxy": false,
+    "network-filter-data": false,
   };
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
   // TODO: Use exhaustive switch to ensure external contributors don't forget to add this.
-  if (type === "watch") {
-    return plist.build({});
-  } else if (type === "action") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          NSExtensionActivationRule: {
-            NSExtensionActivationSupportsFileWithMaxCount: 0,
-            NSExtensionActivationSupportsImageWithMaxCount: 0,
-            NSExtensionActivationSupportsMovieWithMaxCount: 0,
-            NSExtensionActivationSupportsText: false,
-            NSExtensionActivationSupportsWebURLWithMaxCount: 1,
-          },
-          NSExtensionJavaScriptPreprocessingFile: "assets/index",
-          NSExtensionServiceAllowsFinderPreviewItem: true,
-          NSExtensionServiceAllowsTouchBarItem: true,
-          NSExtensionServiceFinderPreviewIconName: "NSActionTemplate",
-          NSExtensionServiceTouchBarBezelColorName: "TouchBarBezel",
-          NSExtensionServiceTouchBarIconName: "NSActionTemplate",
-        },
-        NSExtensionPointIdentifier: "com.apple.services",
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
-      },
-    });
-  } else if (type === "app-intent") {
-    return plist.build({
-      EXAppExtensionAttributes: {
-        EXExtensionPointIdentifier: "com.apple.appintents-extension",
-      },
-    });
-  } else if (type === "clip") {
-    return plist.build({
-      CFBundleName: "$(PRODUCT_NAME)",
-      CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
-      CFBundleExecutable: "$(EXECUTABLE_NAME)",
-      CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
-      CFBundleShortVersionString: "$(MARKETING_VERSION)",
-      UIApplicationSupportsIndirectInputEvents: true,
-      NSAppClip: {
-        NSAppClipRequestEphemeralUserNotification: false,
-        NSAppClipRequestLocationConfirmation: false,
-      },
-      NSAppTransportSecurity: {
-        NSAllowsArbitraryLoads: false,
-        NSAllowsLocalNetworking: true,
-      },
-      UILaunchStoryboardName: "SplashScreen",
-      UIUserInterfaceStyle: "Automatic",
-      UIViewControllerBasedStatusBarAppearance: false,
-    });
-  }
+
   const NSExtensionPointIdentifier = Object.keys(
     KNOWN_EXTENSION_POINT_IDENTIFIERS
   ).find((key) => KNOWN_EXTENSION_POINT_IDENTIFIERS[key] === type);
 
-  if (type === "imessage") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPointIdentifier,
-        // This is hardcoded as there is no Swift code in the imessage extension.
-        NSExtensionPrincipalClass: "StickerBrowserViewController",
-      },
-    });
-  } else if (type === "account-auth") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPointIdentifier,
+  switch (type) {
+    case "watch":
+      return {};
+    case "action":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            NSExtensionActivationRule: {
+              NSExtensionActivationSupportsFileWithMaxCount: 0,
+              NSExtensionActivationSupportsImageWithMaxCount: 0,
+              NSExtensionActivationSupportsMovieWithMaxCount: 0,
+              NSExtensionActivationSupportsText: false,
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1,
+            },
+            NSExtensionJavaScriptPreprocessingFile: "assets/index",
+            NSExtensionServiceAllowsFinderPreviewItem: true,
+            NSExtensionServiceAllowsTouchBarItem: true,
+            NSExtensionServiceFinderPreviewIconName: "NSActionTemplate",
+            NSExtensionServiceTouchBarBezelColorName: "TouchBarBezel",
+            NSExtensionServiceTouchBarIconName: "NSActionTemplate",
+          },
+          NSExtensionPointIdentifier: "com.apple.services",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ActionRequestHandler",
+        },
+      };
+    case "app-intent":
+      return {
+        EXAppExtensionAttributes: {
+          EXExtensionPointIdentifier: "com.apple.appintents-extension",
+        },
+      };
+    case "clip":
+      return {
+        CFBundleName: "$(PRODUCT_NAME)",
+        CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)",
+        CFBundleExecutable: "$(EXECUTABLE_NAME)",
+        CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
+        CFBundleShortVersionString: "$(MARKETING_VERSION)",
+        UIApplicationSupportsIndirectInputEvents: true,
+        NSAppClip: {
+          NSAppClipRequestEphemeralUserNotification: false,
+          NSAppClipRequestLocationConfirmation: false,
+        },
+        NSAppTransportSecurity: {
+          NSAllowsArbitraryLoads: false,
+          NSAllowsLocalNetworking: true,
+        },
+        UILaunchStoryboardName: "SplashScreen",
+        UIUserInterfaceStyle: "Automatic",
+        UIViewControllerBasedStatusBarAppearance: false,
+      };
+    case "imessage":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          // This is hardcoded as there is no Swift code in the imessage extension.
+          NSExtensionPrincipalClass: "StickerBrowserViewController",
+        },
+      };
+    case "account-auth":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
 
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
 
-        NSExtensionAttributes: {
-          ASAccountAuthenticationModificationSupportsStrongPasswordChange: true,
-          ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple:
-            true,
+          NSExtensionAttributes: {
+            ASAccountAuthenticationModificationSupportsStrongPasswordChange:
+              true,
+            ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple:
+              true,
+          },
         },
-      },
-    });
-  } else if (type === "credentials-provider") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPointIdentifier,
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).CredentialProviderViewController",
-      },
-    });
-  } else if (type === "notification-service") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          NSExtensionActivationRule: "TRUEPREDICATE",
+      };
+    case "credentials-provider":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).CredentialProviderViewController",
         },
-        // TODO: Update `NotificationService` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).NotificationService",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "quicklook-thumbnail") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          QLSupportedContentTypes: [],
-          QLThumbnailMinimumDimension: 0,
+      };
+    case "keyboard":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).KeyboardViewController",
+          NSExtensionAttributes: {
+            RequestsOpenAccess: false,
+            IsASCIICapable: false,
+            PrefersRightToLeft: false,
+            PrimaryLanguage: "en-US",
+          },
         },
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ThumbnailProvider",
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "spotlight") {
-    return plist.build({
-      CSExtensionLabel: "myImporter",
-      NSExtension: {
-        NSExtensionAttributes: {
-          CSSupportedContentTypes: ["com.example.plain-text"],
+      };
+    case "notification-service":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            NSExtensionActivationRule: "TRUEPREDICATE",
+          },
+          // TODO: Update `NotificationService` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).NotificationService",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
         },
-        // TODO: Update `ImportExtension` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ImportExtension",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "share") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          NSExtensionActivationRule: "TRUEPREDICATE",
+      };
+    case "quicklook-thumbnail":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            QLSupportedContentTypes: [],
+            QLThumbnailMinimumDimension: 0,
+          },
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ThumbnailProvider",
+          NSExtensionPointIdentifier,
         },
-        // TODO: Update `ShareViewController` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "intent-ui") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          IntentsSupported: ["INSendMessageIntent"],
+      };
+    case "spotlight":
+      return {
+        CSExtensionLabel: "myImporter",
+        NSExtension: {
+          NSExtensionAttributes: {
+            CSSupportedContentTypes: ["com.example.plain-text"],
+          },
+          // TODO: Update `ImportExtension` dynamically
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ImportExtension",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
         },
-        // TODO: Update `IntentViewController` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).IntentViewController",
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "intent") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          IntentsRestrictedWhileLocked: [],
-          IntentsSupported: [
-            "INSendMessageIntent",
-            "INSearchForMessagesIntent",
-            "INSetMessageAttributeIntent",
-          ],
+      };
+    case "share":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            NSExtensionActivationRule: "TRUEPREDICATE",
+          },
+          // TODO: Update `ShareViewController` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ShareViewController",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
         },
-        // TODO: Update `IntentHandler` dynamically
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "matter") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).RequestHandler",
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "location-push") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).LocationPushService",
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "safari") {
-    return plist.build({
-      NSExtension: {
-        // TODO: Update `SafariWebExtensionHandler` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "notification-content") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionAttributes: {
-          UNNotificationExtensionCategory: "myNotificationCategory",
-          UNNotificationExtensionInitialContentSizeRatio: 1,
+      };
+    case "intent-ui":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            IntentsSupported: ["INSendMessageIntent"],
+          },
+          // TODO: Update `IntentViewController` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IntentViewController",
+          NSExtensionPointIdentifier,
         },
-        // TODO: Update `NotificationViewController` dynamically
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).NotificationViewController",
-        // NSExtensionMainStoryboard: 'MainInterface',
-        NSExtensionPointIdentifier,
-      },
-    });
-  } else if (type === "keyboard") {
-    return plist.build({
-      NSExtension: {
-        NSExtensionPointIdentifier,
-        NSExtensionPrincipalClass:
-          "$(PRODUCT_MODULE_NAME).KeyboardViewController",
-        NSExtensionAttributes: {
-          RequestsOpenAccess: false,
-          IsASCIICapable: false,
-          PrefersRightToLeft: false,
-          PrimaryLanguage: "en-US",
+      };
+    case "intent":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            IntentsRestrictedWhileLocked: [],
+            IntentsSupported: [
+              "INSendMessageIntent",
+              "INSearchForMessagesIntent",
+              "INSetMessageAttributeIntent",
+            ],
+          },
+          // TODO: Update `IntentHandler` dynamically
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
+          NSExtensionPointIdentifier,
         },
-      },
-    });
+      };
+    case "matter":
+      return {
+        NSExtension: {
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).RequestHandler",
+          NSExtensionPointIdentifier,
+        },
+      };
+    case "location-push":
+      return {
+        NSExtension: {
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).LocationPushService",
+          NSExtensionPointIdentifier,
+        },
+      };
+    case "safari":
+      return {
+        NSExtension: {
+          // TODO: Update `SafariWebExtensionHandler` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
+        },
+      };
+    case "notification-content":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            UNNotificationExtensionCategory: "myNotificationCategory",
+            UNNotificationExtensionInitialContentSizeRatio: 1,
+          },
+          // TODO: Update `NotificationViewController` dynamically
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).NotificationViewController",
+          // NSExtensionMainStoryboard: 'MainInterface',
+          NSExtensionPointIdentifier,
+        },
+      };
+    case "network-packet-tunnel":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier:
+            "com.apple.networkextension.packet-tunnel",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).PacketTunnelProvider",
+        },
+      };
+    case "network-app-proxy":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier: "com.apple.networkextension.app-proxy",
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).AppProxyProvider",
+        },
+      };
+    case "network-dns-proxy":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier: "com.apple.networkextension.dns-proxy",
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).DNSProxyProvider",
+        },
+      };
+    case "network-filter-data":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier: "com.apple.networkextension.filter-data",
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).FilterDataProvider",
+        },
+      };
+    default:
+      // Default: used for widget and bg-download
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+        },
+      };
   }
-
-  // Default: used for widget and bg-download
-  return plist.build({
-    NSExtension: {
-      NSExtensionPointIdentifier,
-    },
-  });
 }
 
 export function productTypeForType(type: ExtensionType) {
@@ -332,41 +381,51 @@ export function needsEmbeddedSwift(type: ExtensionType) {
     "quicklook-thumbnail",
     "matter",
     "clip",
+    "network-packet-tunnel",
+    "network-app-proxy",
+    "network-dns-proxy",
+    "network-filter-data",
     "keyboard",
   ].includes(type);
 }
 
 export function getFrameworksForType(type: ExtensionType) {
-  if (type === "widget") {
-    return [
-      // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-      "WidgetKit",
-      // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-      "SwiftUI",
-      "ActivityKit",
-      "AppIntents",
-    ];
-  } else if (type === "watch-widget") {
-    return ["AppIntents", "WidgetKit", "SwiftUI"];
-  } else if (type === "intent") {
-    return ["Intents"];
-  } else if (type === "intent-ui") {
-    return ["IntentsUI"];
-  } else if (type === "quicklook-thumbnail") {
-    return ["QuickLookThumbnailing"];
-  } else if (type === "notification-content") {
-    return ["UserNotifications", "UserNotificationsUI"];
-  } else if (type === "app-intent") {
-    return ["AppIntents"];
-  } else if (type === "device-activity-monitor") {
-    return ["DeviceActivity"];
-  } else if (type === "action") {
-    return [
-      // "UniformTypeIdentifiers"
-    ];
+  switch (type) {
+    case "widget":
+      return [
+        // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+        "WidgetKit",
+        // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+        "SwiftUI",
+        "ActivityKit",
+        "AppIntents",
+      ];
+    case "watch-widget":
+      return ["AppIntents", "WidgetKit", "SwiftUI"];
+    case "intent":
+      return ["Intents"];
+    case "intent-ui":
+      return ["IntentsUI"];
+    case "quicklook-thumbnail":
+      return ["QuickLookThumbnailing"];
+    case "notification-content":
+      return ["UserNotifications", "UserNotificationsUI"];
+    case "app-intent":
+      return ["AppIntents"];
+    case "device-activity-monitor":
+      return ["DeviceActivity"];
+    case "action":
+      return [
+        // "UniformTypeIdentifiers"
+      ];
+    case "network-packet-tunnel":
+    case "network-app-proxy":
+    case "network-dns-proxy":
+    case "network-filter-data":
+      return ["NetworkExtension"];
+    default:
+      return [];
   }
-
-  return [];
 }
 
 export function isNativeTargetOfType(
@@ -413,11 +472,10 @@ export function isNativeTargetOfType(
     return false;
   }
 
-  return (
-    KNOWN_EXTENSION_POINT_IDENTIFIERS[
-      infoPlist.NSExtension?.NSExtensionPointIdentifier
-    ] === type
-  );
+  const identifier = infoPlist.NSExtension.NSExtensionPointIdentifier;
+  const mappedType = KNOWN_EXTENSION_POINT_IDENTIFIERS[identifier];
+
+  return mappedType === type;
 }
 
 export function getMainAppTarget(project: XcodeProject): PBXNativeTarget {

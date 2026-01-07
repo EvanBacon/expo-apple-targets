@@ -1,6 +1,6 @@
 {
   "name": "create-target",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Create targets for your Expo app",
   "bin": "./build/index.js",
   "repository": {
@@ -8,6 +8,7 @@
     "url": "https://github.com/evanbacon/expo-apple-targets.git",
     "directory": "packages/create-target"
   },
+  "homepage": "https://github.com/evanbacon/expo-apple-targets",
   "files": [
     "build"
 
