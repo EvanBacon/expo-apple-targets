@@ -39,21 +39,21 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   });
 };
 
-function getMainMarketingVersion(project: XcodeProject) {
-  const mainTarget = getMainAppTarget(project);
-  const config = mainTarget.getDefaultConfiguration();
-  const info = config.getInfoPlist();
+// function getMainMarketingVersion(project: XcodeProject) {
+//   const mainTarget = getMainAppTarget(project);
+//   const config = mainTarget.getDefaultConfiguration();
+//   const info = config.getInfoPlist();
 
-  const version = info.CFBundleShortVersionString;
-  // console.log('getMainMarketingVersion', mainTarget.getDisplayName(), version)
+//   const version = info.CFBundleShortVersionString;
+//   // console.log('getMainMarketingVersion', mainTarget.getDisplayName(), version)
 
-  if (!version || version === "$(MARKETING_VERSION)") {
-    // console.log('getMainMarketingVersion.fallback', config.props.buildSettings.MARKETING_VERSION)
-    return config.props.buildSettings.MARKETING_VERSION;
-  }
+//   if (!version || version === "$(MARKETING_VERSION)") {
+//     // console.log('getMainMarketingVersion.fallback', config.props.buildSettings.MARKETING_VERSION)
+//     return config.props.buildSettings.MARKETING_VERSION;
+//   }
 
-  return version;
-}
+//   return version;
+// }
 
 async function applyXcodeChanges(
   config: ExpoConfig,
@@ -166,7 +166,10 @@ async function applyXcodeChanges(
   }
 
   function syncMarketingVersions() {
-    const mainVersion = getMainMarketingVersion(project);
+    // In Expo managed projects, the version will always be overwritten. 
+    // Because the overwrite happens after this script runs, we just set it to the config value.
+    const mainVersion = config.ios?.version || config.version || '1.0.0';
+    // const mainVersion = getMainMarketingVersion(project);
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
         target.setBuildSetting("MARKETING_VERSION", mainVersion);
