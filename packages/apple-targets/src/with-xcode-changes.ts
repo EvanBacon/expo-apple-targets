@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -16,6 +17,7 @@ import path from "path";
 
 import {
   getMainAppTarget,
+  getWatchAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
   productTypeForType,
@@ -302,10 +304,30 @@ async function applyXcodeChanges(
       productType: productType,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+    // For watch widget extensions, add them to the watch app target's copy phase
+    if (props.type === "watch-widget") {
+      const watchAppTarget = getWatchAppTarget(project);
 
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+      if (watchAppTarget) {
+        watchAppTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+          dstPath: "",
+          dstSubfolderSpec: 6,
+          name: "Embed App Extensions",
+          files: [
+            PBXBuildFile.create(project, {
+              fileRef: appExtensionBuildFile.props.fileRef,
+            }),
+          ],
+          runOnlyForDeploymentPostprocessing: 0,
+        });
+      }
+    } else {
+      // For all other targets, add the target product to the main app target's copy phase
+      const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -321,7 +343,19 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // Add watch widget extensions as dependencies to the watch app target instead of the main app target
+  if (props.type === "watch-widget") {
+    const watchAppTarget = getWatchAppTarget(project);
+
+    if (watchAppTarget) {
+      watchAppTarget.addDependency(targetToUpdate);
+    } else {
+      // Fallback to main app target if watch app target is not found
+      mainAppTarget.addDependency(targetToUpdate);
+    }
+  } else {
+    mainAppTarget.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 
