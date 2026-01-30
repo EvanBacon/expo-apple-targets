@@ -1,5 +1,5 @@
 import { XcodeProject } from "@bacons/xcode";
-import { ConfigPlugin } from "expo/config-plugins";
+import { ConfigPlugin, ExpoConfig } from "expo/config-plugins";
 
 import { Entitlements } from "./config";
 import { getAuxiliaryTargets, getMainAppTarget } from "./target";
@@ -7,53 +7,70 @@ import { withXcodeProjectBeta } from "./with-bacons-xcode";
 
 const debug = require("debug")("expo:target:eas") as typeof console.log;
 
-function safeSet(obj: any, key: string, value: any) {
+type EASAppExtension = {
+  bundleIdentifier: string;
+  targetName: string;
+  entitlements?: Record<string, unknown>;
+};
+
+function getAppExtensions(config: ExpoConfig): EASAppExtension[] {
+  return config.extra!.eas.build.experimental.ios
+    .appExtensions as EASAppExtension[];
+}
+
+function safeSet(
+  obj: Record<string, unknown>,
+  key: string,
+  value: unknown
+): Record<string, unknown> {
   const segments = key.split(".");
-  const last = segments.pop();
+  const last = segments.pop()!;
+  let current = obj as Record<string, unknown>;
   segments.forEach((segment) => {
-    if (!obj[segment]) {
-      obj[segment] = {};
+    if (!current[segment]) {
+      current[segment] = {};
     }
-    obj = obj[segment];
+    current = current[segment] as Record<string, unknown>;
   });
-  if (!obj[last!]) {
-    obj[last!] = value;
+  if (!current[last]) {
+    current[last] = value;
   }
 
-  return obj;
+  return current;
 }
 
 // TODO: This should all go into EAS instead.
 export const withEASTargets: ConfigPlugin<{
   bundleIdentifier: string;
   targetName: string;
-  entitlements?: Record<string, any>;
+  entitlements?: Record<string, unknown>;
 }> = (config, { bundleIdentifier, targetName, entitlements }) => {
   // Extra EAS targets
-  safeSet(config, "extra.eas.build.experimental.ios.appExtensions", []);
+  safeSet(config as unknown as Record<string, unknown>, "extra.eas.build.experimental.ios.appExtensions", []);
 
-  const existing =
-    config.extra!.eas.build.experimental.ios.appExtensions.findIndex(
-      (ext: any) => ext.bundleIdentifier === bundleIdentifier
-    );
+  const extensions = getAppExtensions(config);
 
-  const settings = {
+  const existingIndex = extensions.findIndex(
+    (ext) => ext.bundleIdentifier === bundleIdentifier
+  );
+
+  const settings: EASAppExtension = {
     bundleIdentifier,
     targetName,
     entitlements,
   };
-  if (existing > -1) {
+  if (existingIndex > -1) {
     debug(
       "Found existing EAS target with bundle identifier: %s",
       bundleIdentifier
     );
     debug("Using new settings: %o", settings);
 
-    config.extra!.eas.build.experimental.ios.appExtensions[existing] = settings;
+    extensions[existingIndex] = settings;
   } else {
     debug("Adding new iOS target for code signing with EAS: %o", settings);
 
-    config.extra!.eas.build.experimental.ios.appExtensions.push(settings);
+    extensions.push(settings);
 
     // "appExtensions": [
     //   {
@@ -80,31 +97,32 @@ type EASCredentials = {
 
 export const withAutoEasExtensionCredentials: ConfigPlugin = (config) => {
   return withXcodeProjectBeta(config, async (config) => {
-    safeSet(config, "extra.eas.build.experimental.ios.appExtensions", []);
+    safeSet(config as unknown as Record<string, unknown>, "extra.eas.build.experimental.ios.appExtensions", []);
 
     const creds = getEASCredentialsForXcodeProject(config.modResults);
 
-    // Warn about duplicates
-    config.extra!.eas.build.experimental.ios.appExtensions.forEach(
-      (ext: any) => {
-        const existing = creds.find(
-          (cred) => cred.bundleIdentifier === ext.bundleIdentifier
-        );
+    const extensions = getAppExtensions(config);
 
-        if (
-          existing &&
-          (existing.targetName !== ext.targetName ||
-            existing.parentBundleIdentifier !== ext.parentBundleIdentifier)
-        ) {
-          throw new Error(
-            `EAS credentials already has a target "${ext.targetName}" with bundle identifier: ${ext.bundleIdentifier}.`
-          );
-        }
+    // Warn about duplicates
+    extensions.forEach((ext) => {
+      const existing = creds.find(
+        (cred) => cred.bundleIdentifier === ext.bundleIdentifier
+      );
+
+      if (
+        existing &&
+        (existing.targetName !== ext.targetName ||
+          existing.parentBundleIdentifier !==
+            (ext as unknown as EASCredentials).parentBundleIdentifier)
+      ) {
+        throw new Error(
+          `EAS credentials already has a target "${ext.targetName}" with bundle identifier: ${ext.bundleIdentifier}.`
+        );
       }
-    );
+    });
 
     config.extra!.eas.build.experimental.ios.appExtensions = [
-      ...config.extra!.eas.build.experimental.ios.appExtensions,
+      ...extensions,
       ...creds,
     ];
 

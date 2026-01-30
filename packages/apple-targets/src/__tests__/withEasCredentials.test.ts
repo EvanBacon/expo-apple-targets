@@ -1,38 +1,46 @@
+import { ExpoConfig } from "expo/config-plugins";
+
 import { withEASTargets } from "../with-eas-credentials";
+
+function createConfig(overrides?: Partial<ExpoConfig>): ExpoConfig {
+  return { name: "test", slug: "test", ...overrides };
+}
 
 describe(withEASTargets, () => {
   it("adds an app extension to the config", () => {
     expect(
-      withEASTargets({} as any, {
+      withEASTargets(createConfig(), {
         bundleIdentifier: "com.widget",
         targetName: "widgets",
         entitlements: {
           "com.apple.security.application-groups": ["group.bacon.data"],
         },
       })
-    ).toEqual({
-      extra: {
-        eas: {
-          build: {
-            experimental: {
-              ios: {
-                appExtensions: [
-                  {
-                    bundleIdentifier: "com.widget",
-                    entitlements: {
-                      "com.apple.security.application-groups": [
-                        "group.bacon.data",
-                      ],
+    ).toEqual(
+      expect.objectContaining({
+        extra: {
+          eas: {
+            build: {
+              experimental: {
+                ios: {
+                  appExtensions: [
+                    {
+                      bundleIdentifier: "com.widget",
+                      entitlements: {
+                        "com.apple.security.application-groups": [
+                          "group.bacon.data",
+                        ],
+                      },
+                      targetName: "widgets",
                     },
-                    targetName: "widgets",
-                  },
-                ],
+                  ],
+                },
               },
             },
           },
         },
-      },
-    });
+      })
+    );
   });
   it("doesn't double up app extensions in the config", () => {
     const props = {
@@ -43,7 +51,10 @@ describe(withEASTargets, () => {
       },
     } as const;
 
-    const res = withEASTargets(withEASTargets({} as any, props), props);
+    const res = withEASTargets(
+      withEASTargets(createConfig(), props),
+      props
+    );
     expect(res.extra!.eas.build.experimental.ios.appExtensions.length).toBe(1);
     expect(res.extra!.eas.build.experimental).toEqual({
       ios: {
@@ -68,7 +79,7 @@ describe(withEASTargets, () => {
       },
     } as const;
 
-    let res = withEASTargets({} as any, props);
+    let res = withEASTargets(createConfig(), props);
 
     res = withEASTargets(res, {
       ...props,
@@ -85,7 +96,7 @@ describe(withEASTargets, () => {
       },
     } as const;
 
-    let res = withEASTargets({} as any, props);
+    let res = withEASTargets(createConfig(), props);
 
     res = withEASTargets(res, {
       ...props,
