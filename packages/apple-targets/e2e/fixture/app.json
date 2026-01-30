@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "e2etest",
+    "slug": "e2etest",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.test.appletargets.e2e",
+      "appleTeamId": "XXXXXXXXXX"
+    },
+    "platforms": ["ios"],
+    "plugins": ["@bacons/apple-targets"]
+  }
+}
