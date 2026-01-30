@@ -22,29 +22,35 @@ export const withIosIcon: ConfigPlugin<{
     async (config) => {
       const projectRoot = config.modRequest.projectRoot;
       const namedProjectRoot = join(projectRoot, cwd);
-      if (type === "watch") {
-        // Ensure the Images.xcassets/AppIcon.appiconset path exists
-        await fs.promises.mkdir(join(namedProjectRoot, IMAGESET_PATH), {
-          recursive: true,
-        });
+      try {
+        if (type === "watch") {
+          // Ensure the Images.xcassets/AppIcon.appiconset path exists
+          await fs.promises.mkdir(join(namedProjectRoot, IMAGESET_PATH), {
+            recursive: true,
+          });
 
-        // Finally, write the Config.json
-        await writeContentsJsonAsync(join(namedProjectRoot, IMAGESET_PATH), {
-          images: await generateWatchIconsInternalAsync(
+          // Finally, write the Config.json
+          await writeContentsJsonAsync(join(namedProjectRoot, IMAGESET_PATH), {
+            images: await generateWatchIconsInternalAsync(
+              iconFilePath,
+              projectRoot,
+              namedProjectRoot,
+              cwd,
+              isTransparent
+            ),
+          });
+        } else {
+          await setIconsAsync(
             iconFilePath,
             projectRoot,
-            namedProjectRoot,
+            join(projectRoot, cwd),
             cwd,
             isTransparent
-          ),
-        });
-      } else {
-        await setIconsAsync(
-          iconFilePath,
-          projectRoot,
-          join(projectRoot, cwd),
-          cwd,
-          isTransparent
+          );
+        }
+      } catch (error: any) {
+        console.warn(
+          `Failed to generate icon for target "${cwd}" using "${iconFilePath}": ${error.message}. Skipping icon generation.`
         );
       }
       return config;

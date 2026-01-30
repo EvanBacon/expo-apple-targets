@@ -32,21 +32,27 @@ export const withImageAsset: ConfigPlugin<{
           ? { "1x": image, "2x": undefined, "3x": undefined }
           : image;
 
-      // Finally, write the Config.json
-      await writeContentsJsonAsync(join(iosNamedProjectRoot, imgPath), {
-        images: await generateResizedImageAsync(
-          Object.fromEntries(
-            Object.entries(userDefinedIcon).map(([key, value]) => [
-              key,
-              value?.match(/^[./]/) ? path.join(cwd, value) : value,
-            ])
+      try {
+        // Finally, write the Config.json
+        await writeContentsJsonAsync(join(iosNamedProjectRoot, imgPath), {
+          images: await generateResizedImageAsync(
+            Object.fromEntries(
+              Object.entries(userDefinedIcon).map(([key, value]) => [
+                key,
+                value?.match(/^[./]/) ? path.join(cwd, value) : value,
+              ])
+            ),
+            name,
+            projectRoot,
+            iosNamedProjectRoot,
+            path.join(cwd, "gen-image", name)
           ),
-          name,
-          projectRoot,
-          iosNamedProjectRoot,
-          path.join(cwd, "gen-image", name)
-        ),
-      });
+        });
+      } catch (error: any) {
+        console.warn(
+          `Failed to generate image asset "${name}" for target "${cwd}": ${error.message}. Skipping image generation.`
+        );
+      }
 
       return config;
     },
