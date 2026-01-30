@@ -1,4 +1,4 @@
-import { withEASTargets } from "../withEasCredentials";
+import { withEASTargets } from "../with-eas-credentials";
 
 describe(withEASTargets, () => {
   it("adds an app extension to the config", () => {
