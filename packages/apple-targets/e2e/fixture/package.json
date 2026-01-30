@@ -1,0 +1,11 @@
+{
+  "name": "e2e-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "expo": "~54.0.0",
+    "react": "19.0.0",
+    "react-native": "0.79.2",
+    "@bacons/apple-targets": "file:../../"
+  }
+}

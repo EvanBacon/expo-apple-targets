@@ -1,0 +1,35 @@
+name: E2E Build Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - "packages/apple-targets/**"
+      - "packages/create-target/templates/**"
+
+jobs:
+  e2e:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --ignore-scripts
+
+      - name: Build packages
+        run: bun run prepare
+
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/apple-targets/e2e/fixture/**') }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-
+
+      - name: Run E2E build tests
+        run: bun run test:e2e
+        working-directory: packages/apple-targets
