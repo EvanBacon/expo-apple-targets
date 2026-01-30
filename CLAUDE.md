@@ -61,6 +61,11 @@ bunx tsc --noEmit        # Alternative typecheck
 - **Xcode manipulation**: Uses `@bacons/xcode` for project file editing
 - **Target config**: Each target has an `expo-target.config.js` defining type, icon, colors, entitlements, etc.
 
+## Research & Documentation
+
+- `docs/xcode-target-discovery.md` — How to discover all Apple target/extension types from the local Xcode installation (xcspec files, template plists, extension point identifiers)
+- `scripts/scan-xcode-targets.ts` — Bun script that scans Xcode.app to enumerate all product types and extension templates. Run with `--diff` to compare against the project's `ExtensionType` enum.
+
 ## Code Conventions
 
 - TypeScript with strict mode (ES2019 target)
