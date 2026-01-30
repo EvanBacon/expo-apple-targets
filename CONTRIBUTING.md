@@ -8,6 +8,6 @@ This is not an official Expo project, but rather my (Evan Bacon) personal side-p
 
 If you want to work against the latest branch for contributions, you can use `apps`. There are currently no continuous tests.
 
-- Run `yarn` in the root of the repo to install dependencies.
-- Run `yarn start` in the root to compile the `packages/`
+- Run `bun install` in the root of the repo to install dependencies.
+- Run `bun start` in the root to compile the `packages/`
 - Change directory to `apps/widget-demo` and run `xed ios` to open the project in Xcode.

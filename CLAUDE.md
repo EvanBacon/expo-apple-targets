@@ -16,8 +16,8 @@ apps/              # Demo apps (widget-demo, app-clip-demo, etc.)
 ## Development Setup
 
 ```sh
-yarn                # Install dependencies (Yarn workspaces + Lerna)
-yarn start          # Compile all packages in watch mode
+bun install         # Install dependencies (Bun workspaces)
+bun start           # Compile all packages in watch mode
 ```
 
 ## Build
@@ -27,20 +27,20 @@ yarn start          # Compile all packages in watch mode
 cd packages/apple-targets && expo-module build
 
 # create-target
-cd packages/create-target && yarn build   # uses @vercel/ncc
+cd packages/create-target && bun run build   # uses @vercel/ncc
 ```
 
-The root `yarn prepare` runs Lerna's prepare across all packages.
+The root `bun run prepare` runs prepare across all packages.
 
 ## Test
 
 ```sh
 # apple-targets
-cd packages/apple-targets && yarn test          # jest --watch
+cd packages/apple-targets && bun test          # jest --watch
 
 # create-target
-cd packages/create-target && yarn test          # unit tests
-cd packages/create-target && yarn test:e2e      # e2e tests
+cd packages/create-target && bun test          # unit tests
+cd packages/create-target && bun run test:e2e  # e2e tests
 ```
 
 Test framework: Jest (Node environment). Tests live in `src/__tests__/` directories.
