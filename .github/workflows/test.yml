@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --ignore-scripts
+
+      - name: Test apple-targets
+        run: bun run jest --no-watch
+        working-directory: packages/apple-targets
+
+      - name: Test create-target
+        run: bun run jest
+        working-directory: packages/create-target

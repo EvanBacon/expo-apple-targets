@@ -11,6 +11,7 @@
     "noImplicitReturns": true,
     "downlevelIteration": true,
     "outDir": "build",
+    "module": "commonjs",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

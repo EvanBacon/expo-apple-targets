@@ -14,9 +14,6 @@ module.exports = {
     // require.resolve("jest-watch-typeahead/filename"),
     // require.resolve("jest-watch-typeahead/testname"),
   ],
-  // See: https://jestjs.io/docs/configuration#prettierpath-string
-  prettierPath: require.resolve("jest-snapshot-prettier"),
-
   preset: "ts-jest",
   displayName: require("./package").name,
   rootDir: __dirname,

@@ -1,4 +1,4 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import { ConfigPlugin, withDangerousMod } from "expo/config-plugins";
 import { generateImageAsync } from "@expo/image-utils";
 import {
   ContentsJson,
@@ -40,17 +40,17 @@ export const withImageAsset: ConfigPlugin<{
               Object.entries(userDefinedIcon).map(([key, value]) => [
                 key,
                 value?.match(/^[./]/) ? path.join(cwd, value) : value,
-              ])
+              ]),
             ),
             name,
             projectRoot,
             iosNamedProjectRoot,
-            path.join(cwd, "gen-image", name)
+            path.join(cwd, "gen-image", name),
           ),
         });
       } catch (error: any) {
         console.warn(
-          `Failed to generate image asset "${name}" for target "${cwd}": ${error.message}. Skipping image generation.`
+          `Failed to generate image asset "${name}" for target "${cwd}": ${error.message}. Skipping image generation.`,
         );
       }
 
@@ -133,7 +133,7 @@ export async function setIconsAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
 ) {
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
   await fs.promises.mkdir(join(iosNamedProjectRoot, IMAGESET_PATH), {
@@ -146,7 +146,7 @@ export async function setIconsAsync(
       icon,
       projectRoot,
       iosNamedProjectRoot,
-      cacheComponent
+      cacheComponent,
     ),
   });
 }
@@ -156,7 +156,7 @@ export async function generateResizedImageAsync(
   name: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJsonImage[] = [];
@@ -187,13 +187,13 @@ export async function generateResizedImageAsync(
         {
           src: iconPath,
           name: filename,
-        }
+        },
       );
       // Write image buffer to the file system.
       const assetPath = join(
         iosNamedProjectRoot,
         `Assets.xcassets/${name}.imageset`,
-        filename
+        filename,
       );
       await fs.promises.writeFile(assetPath, source);
       if (filename) {
@@ -211,7 +211,7 @@ export async function generateIconsInternalAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -246,7 +246,7 @@ export async function generateIconsInternalAsync(
               // Force the background color to solid white to prevent any transparency.
               // TODO: Maybe use a more adaptive option based on the icon color?
               backgroundColor: "#ffffff",
-            }
+            },
           );
           // Write image buffer to the file system.
           const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
@@ -273,7 +273,7 @@ export async function generateWatchIconsInternalAsync(
   icon: string,
   projectRoot: string,
   iosNamedProjectRoot: string,
-  cacheComponent: string
+  cacheComponent: string,
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -295,7 +295,7 @@ export async function generateWatchIconsInternalAsync(
       // Force the background color to solid white to prevent any transparency.
       // TODO: Maybe use a more adaptive option based on the icon color?
       backgroundColor: "#ffffff",
-    }
+    },
   );
   // Write image buffer to the file system.
   const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);

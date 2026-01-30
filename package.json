@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "lerna run build --parallel -- --watch",
-    "prepare": "lerna run prepare --parallel"
+    "start": "bun --filter './packages/*' build --watch",
+    "prepare": "bun --filter './packages/*' prepare"
   },
   "workspaces": [
     "apps/*",
@@ -19,7 +19,6 @@
     "@babel/core": "^7.24.0",
     "@types/react": "^19.1.4",
     "eslint": "^9.26.0",
-    "lerna": "3.4.1",
     "prettier": "^2.2.1",
     "ts-node": "^10.0.0",
     "typescript": "~5.3.3",

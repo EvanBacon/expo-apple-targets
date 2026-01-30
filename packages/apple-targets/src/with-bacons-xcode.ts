@@ -7,14 +7,14 @@ import {
   IOSConfig,
   Mod,
   withMod,
-} from "@expo/config-plugins";
+} from "expo/config-plugins";
 import fs from "fs";
 
 const customModName = "xcodeProjectBeta2";
 
 export const withXcodeProjectBeta: ConfigPlugin<Mod<XcodeProject>> = (
   config,
-  action
+  action,
 ) => {
   return withMod(config, {
     platform: "ios",
@@ -44,7 +44,7 @@ const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
             return XcodeProject.open(filePath);
           } catch (error: any) {
             throw new Error(
-              `Failed to parse the Xcode project: "${filePath}". ${error.message}}`
+              `Failed to parse the Xcode project: "${filePath}". ${error.message}}`,
             );
           }
         },
@@ -64,5 +64,5 @@ const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
 
 export const withXcodeProjectBetaBaseMod = createRunOncePlugin(
   withXcodeProjectBetaBaseModInternal,
-  "withXcodeProjectBeta2BaseMod"
+  "withXcodeProjectBeta2BaseMod",
 );

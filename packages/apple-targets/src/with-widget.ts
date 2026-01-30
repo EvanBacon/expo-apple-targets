@@ -1,4 +1,4 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import { ConfigPlugin, withDangerousMod } from "expo/config-plugins";
 import plist from "@expo/plist";
 import fs from "fs";
 import { globSync } from "glob";
@@ -35,8 +35,8 @@ const DEFAULT_DEPLOYMENT_TARGET = "18.0";
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   LOG_QUEUE.add(() =>
     warnOnce(
-      chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`
-    )
+      chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`,
+    ),
   );
 
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
@@ -57,7 +57,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   // This should never happen.
   if (!productName) {
     throw new Error(
-      `[bacons/apple-targets][${props.type}] Target name does not contain any valid characters: ${targetDirName}`
+      `[bacons/apple-targets][${props.type}] Target name does not contain any valid characters: ${targetDirName}`,
     );
   }
 
@@ -66,7 +66,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   const targetDirAbsolutePath = path.join(
     config._internal?.projectRoot ?? "",
-    props.directory
+    props.directory,
   );
 
   const entitlementsFiles = globSync("*.entitlements", {
@@ -76,7 +76,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (entitlementsFiles.length > 1) {
     throw new Error(
-      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${targetDirAbsolutePath}`
+      `[bacons/apple-targets][${props.type}] Found more than one '*.entitlements' file in ${targetDirAbsolutePath}`,
     );
   }
 
@@ -85,7 +85,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   if (entitlementsJson) {
     // Apply default entitlements that must be present for a target to work.
     const applyDefaultEntitlements = (
-      entitlements: Entitlements
+      entitlements: Entitlements,
     ): Entitlements => {
       if (props.type === "clip") {
         entitlements["com.apple.developer.parent-application-identifiers"] = [
@@ -116,8 +116,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
                   },
                 },
                 null,
-                2
-              )}`
+                2,
+              )}`,
             );
           } else {
             // Associated domains are found:
@@ -130,7 +130,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
                   url
                     .replace(
                       /^(appclips|applinks|webcredentials|activitycontinuation):/,
-                      ""
+                      "",
                     )
                     // Remove trailing slashes
                     .replace(/\/$/, "")
@@ -153,13 +153,13 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
                     },
                   },
                   null,
-                  2
-                )}`
+                  2,
+                )}`,
               );
 
               // Add anyways
               entitlements[associatedDomainsKey] = unique.map(
-                (url) => `appclips:${url}`
+                (url) => `appclips:${url}`,
               );
             }
           }
@@ -186,8 +186,8 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
           LOG_QUEUE.add(() => {
             logOnce(
               chalk`[${targetDirName}] Syncing app groups with main app. {dim Define entitlements[${JSON.stringify(
-                APP_GROUP_KEY
-              )}] in the {bold expo-target.config} file to override.}`
+                APP_GROUP_KEY,
+              )}] in the {bold expo-target.config} file to override.}`,
             );
           });
         } else {
@@ -207,9 +207,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
                   },
                 },
                 null,
-                2
-              )}`
-            )
+                2,
+              )}`,
+            ),
           );
         }
       }
@@ -233,14 +233,14 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         if (entitlementsFiles[0]) {
           const relativeName = path.relative(
             targetDirAbsolutePath,
-            entitlementsFiles[0]
+            entitlementsFiles[0],
           );
           if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
             console.log(
               `[${targetDirName}] Replacing ${path.relative(
                 targetDirAbsolutePath,
-                entitlementsFiles[0]
-              )} with entitlements JSON from config`
+                entitlementsFiles[0],
+              )} with entitlements JSON from config`,
             );
           }
         }
@@ -329,7 +329,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       "../" +
       path.relative(
         config._internal!.projectRoot,
-        path.resolve(props.directory)
+        path.resolve(props.directory),
       ),
     deploymentTarget: props.deploymentTarget ?? DEFAULT_DEPLOYMENT_TARGET,
     bundleId,
@@ -387,7 +387,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
 const withConfigColors: ConfigPlugin<Pick<Props, "colors" | "directory">> = (
   config,
-  props
+  props,
 ) => {
   props.colors = props.colors ?? {};
   // const colors: NonNullable<Props["colors"]> = props.colors ?? {};

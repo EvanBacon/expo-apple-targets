@@ -47,7 +47,16 @@
     "@types/debug": "^4.1.7",
     "@types/glob": "^8.1.0",
     "@expo/babel-preset-cli": "^0.3.1",
+    "@expo/config": "^12.0.13",
+    "@expo/config-plugins": "^54.0.4",
+    "@expo/image-utils": "^0.8.8",
+    "@expo/plist": "^0.4.8",
+    "@expo/prebuild-config": "^54.0.8",
     "chalk": "^4.0.0",
+    "expo": "^54.0.32",
     "jest-environment-node": "^26"
+  },
+  "peerDependencies": {
+    "expo": ">=52"
   }
 }

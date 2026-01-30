@@ -16,17 +16,21 @@
   "scripts": {
     "build": "ncc build ./src/index.ts -o build/",
     "build:prod": "ncc build ./src/index.ts -o build/ --minify --no-cache --no-source-map-register",
-    "prepare": "expo-module clean && yarn run build:prod",
+    "prepare": "expo-module clean && bun run build:prod",
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "typecheck": "expo-module typecheck",
     "test": "expo-module test",
     "test:e2e": "expo-module test --config e2e/jest.config.js --runInBand",
-    "watch": "yarn run build --watch",
+    "watch": "bun run build --watch",
     "prepublishOnly": "expo-module prepublishOnly"
   },
   "devDependencies": {
+    "@bacons/apple-targets": "workspace:*",
     "@tsconfig/node18": "^18.2.2",
+    "@expo/config": "^12.0.13",
+    "@expo/config-plugins": "^54.0.4",
+    "@expo/plist": "^0.4.8",
     "@expo/spawn-async": "^1.7.2",
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^11.0.4",
@@ -41,6 +45,7 @@
     "jest-watch-typeahead": "2.2.1",
     "getenv": "^1.0.0",
     "prompts": "^2.4.2",
+    "resolve-from": "^5.0.0",
     "update-check": "^1.5.4"
   },
   "author": "Evan Bacon <baconbrix@gmail.com> (https://evanbacon.dev)",
