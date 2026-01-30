@@ -18,6 +18,7 @@
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "jest --watch",
+    "test:e2e": "jest --no-watch --config e2e/jest.config.js",
     "prepare": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module"
