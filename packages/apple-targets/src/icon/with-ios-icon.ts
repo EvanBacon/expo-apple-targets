@@ -1,4 +1,4 @@
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
+import { ConfigPlugin, withDangerousMod } from "expo/config-plugins";
 import { generateImageAsync } from "@expo/image-utils";
 import {
   ContentsJson,
@@ -36,7 +36,7 @@ export const withIosIcon: ConfigPlugin<{
               projectRoot,
               namedProjectRoot,
               cwd,
-              isTransparent
+              isTransparent,
             ),
           });
         } else {
@@ -45,12 +45,12 @@ export const withIosIcon: ConfigPlugin<{
             projectRoot,
             join(projectRoot, cwd),
             cwd,
-            isTransparent
+            isTransparent,
           );
         }
       } catch (error: any) {
         console.warn(
-          `Failed to generate icon for target "${cwd}" using "${iconFilePath}": ${error.message}. Skipping icon generation.`
+          `Failed to generate icon for target "${cwd}" using "${iconFilePath}": ${error.message}. Skipping icon generation.`,
         );
       }
       return config;
@@ -133,7 +133,7 @@ export async function setIconsAsync(
   projectRoot: string,
   iosNamedProjectRoot: string,
   cacheComponent: string,
-  isTransparent: boolean
+  isTransparent: boolean,
 ) {
   // Ensure the Images.xcassets/AppIcon.appiconset path exists
   await fs.promises.mkdir(join(iosNamedProjectRoot, IMAGESET_PATH), {
@@ -147,7 +147,7 @@ export async function setIconsAsync(
       projectRoot,
       iosNamedProjectRoot,
       cacheComponent,
-      isTransparent
+      isTransparent,
     ),
   });
 }
@@ -157,7 +157,7 @@ export async function generateIconsInternalAsync(
   projectRoot: string,
   iosNamedProjectRoot: string,
   cacheComponent: string,
-  isTransparent: boolean
+  isTransparent: boolean,
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -192,7 +192,7 @@ export async function generateIconsInternalAsync(
               // Force the background color to solid white to prevent any transparency.
               // TODO: Maybe use a more adaptive option based on the icon color?
               backgroundColor: isTransparent ? "#ffffff00" : "#ffffff",
-            }
+            },
           );
           // Write image buffer to the file system.
           const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);
@@ -220,7 +220,7 @@ export async function generateWatchIconsInternalAsync(
   projectRoot: string,
   iosNamedProjectRoot: string,
   cacheComponent: string,
-  isTransparent: boolean
+  isTransparent: boolean,
 ) {
   // Store the image JSON data for assigning via the Contents.json
   const imagesJson: ContentsJson["images"] = [];
@@ -242,7 +242,7 @@ export async function generateWatchIconsInternalAsync(
       // Force the background color to solid white to prevent any transparency.
       // TODO: Maybe use a more adaptive option based on the icon color?
       backgroundColor: isTransparent ? "#ffffff00" : "#ffffff",
-    }
+    },
   );
   // Write image buffer to the file system.
   const assetPath = join(iosNamedProjectRoot, IMAGESET_PATH, filename);

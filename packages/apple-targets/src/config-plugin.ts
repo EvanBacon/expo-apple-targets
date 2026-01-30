@@ -1,4 +1,4 @@
-import { ConfigPlugin } from "@expo/config-plugins";
+import { ConfigPlugin } from "expo/config-plugins";
 import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
@@ -22,7 +22,7 @@ export const withTargetsDir: ConfigPlugin<
 
   if (!appleTeamId) {
     warnOnce(
-      chalk`{yellow [bacons/apple-targets]} Expo config is missing required {cyan ios.appleTeamId} property. Find this in Xcode and add to the Expo Config to correct. iOS builds may fail until this is corrected.`
+      chalk`{yellow [bacons/apple-targets]} Expo config is missing required {cyan ios.appleTeamId} property. Find this in Xcode and add to the Expo Config to correct. iOS builds may fail until this is corrected.`,
     );
   }
 
@@ -41,18 +41,18 @@ export const withTargetsDir: ConfigPlugin<
 
       if (typeof evaluatedTargetConfigObject !== "object") {
         throw new Error(
-          `Expected target config function to return an object, but got ${typeof evaluatedTargetConfigObject}`
+          `Expected target config function to return an object, but got ${typeof evaluatedTargetConfigObject}`,
         );
       }
     } else if (typeof targetConfig !== "object") {
       throw new Error(
-        `Expected target config to be an object or function that returns an object, but got ${typeof targetConfig}`
+        `Expected target config to be an object or function that returns an object, but got ${typeof targetConfig}`,
       );
     }
 
     if (!evaluatedTargetConfigObject.type) {
       throw new Error(
-        `Expected target config to have a 'type' property denoting the type of target it is, e.g. 'widget'`
+        `Expected target config to have a 'type' property denoting the type of target it is, e.g. 'widget'`,
       );
     }
 

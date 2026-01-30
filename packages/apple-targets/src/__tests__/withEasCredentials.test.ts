@@ -1,4 +1,4 @@
-import { ExpoConfig } from "expo/config-plugins";
+import type { ExpoConfig } from "expo/config";
 
 import { withEASTargets } from "../with-eas-credentials";
 
@@ -15,7 +15,7 @@ describe(withEASTargets, () => {
         entitlements: {
           "com.apple.security.application-groups": ["group.bacon.data"],
         },
-      })
+      }),
     ).toEqual(
       expect.objectContaining({
         extra: {
@@ -39,7 +39,7 @@ describe(withEASTargets, () => {
             },
           },
         },
-      })
+      }),
     );
   });
   it("doesn't double up app extensions in the config", () => {
@@ -51,10 +51,7 @@ describe(withEASTargets, () => {
       },
     } as const;
 
-    const res = withEASTargets(
-      withEASTargets(createConfig(), props),
-      props
-    );
+    const res = withEASTargets(withEASTargets(createConfig(), props), props);
     expect(res.extra!.eas.build.experimental.ios.appExtensions.length).toBe(1);
     expect(res.extra!.eas.build.experimental).toEqual({
       ios: {

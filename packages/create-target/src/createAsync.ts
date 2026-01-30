@@ -25,7 +25,7 @@ export type Options = {
 };
 
 function getNamedPlugins(
-  plugins: NonNullable<ExpoConfig["plugins"]>
+  plugins: NonNullable<ExpoConfig["plugins"]>,
 ): string[] {
   const namedPlugins: string[] = [];
   for (const plugin of plugins) {
@@ -59,7 +59,7 @@ function findUpPackageJson(projectRoot: string): string | null {
 
 export async function createAsync(
   target: string,
-  props: Options
+  props: Options,
 ): Promise<void> {
   const pkgJson = findUpPackageJson(process.cwd());
 
@@ -67,7 +67,7 @@ export async function createAsync(
     throw new Error(
       "Could not find Expo project root directory from: " +
         process.cwd() +
-        ". Please run this command from the root directory of your Expo project, or create one with: npx create-expo."
+        ". Please run this command from the root directory of your Expo project, or create one with: npx create-expo.",
     );
   }
 
@@ -148,24 +148,24 @@ export async function createAsync(
   Log.log(chalk`Writing {cyan expo-target.config.js} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "expo-target.config.js"),
-    getTemplateConfig(resolvedTarget)
+    getTemplateConfig(resolvedTarget),
   );
 
   Log.log(chalk`Writing {cyan Info.plist} file`);
   await fs.promises.writeFile(
     path.join(targetDir, "Info.plist"),
-    plist.build(getTargetInfoPlistForType(resolvedTarget as any))
+    plist.build(getTargetInfoPlistForType(resolvedTarget as any)),
   );
 
   Log.log(
-    chalk`Target created! Run {cyan npx expo prebuild -p ios} to fully generate the target. Develop native code in Xcode.`
+    chalk`Target created! Run {cyan npx expo prebuild -p ios} to fully generate the target. Develop native code in Xcode.`,
   );
 }
 
 function warnAboutConfigAndThrow(
   type: string,
   message: string,
-  edits: Partial<ExpoConfig>
+  edits: Partial<ExpoConfig>,
 ) {
   Log.log();
   if (type === "warn") {
@@ -210,13 +210,13 @@ export function getTemplateConfig(target: string) {
     lines.push('  colors: { TouchBarBezel: "#000000", },');
   } else if (target === "share") {
     lines.push(
-      '  "frameworks": ["UIKit", "Social", "MobileCoreServices", "UniformTypeIdentifiers"],'
+      '  "frameworks": ["UIKit", "Social", "MobileCoreServices", "UniformTypeIdentifiers"],',
     );
   }
 
   if (RECOMMENDED_ENTITLEMENTS[target]) {
     lines.push(
-      `  entitlements: ${JSON.stringify(RECOMMENDED_ENTITLEMENTS[target])},`
+      `  entitlements: ${JSON.stringify(RECOMMENDED_ENTITLEMENTS[target])},`,
     );
   } else {
     lines.push(`  entitlements: { /* Add entitlements */ },`);

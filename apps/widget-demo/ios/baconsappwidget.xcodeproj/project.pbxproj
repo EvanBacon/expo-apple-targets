@@ -1,9 +1,9 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
+	objectVersion = 54;
 	classes = {
 	};
-	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -47,11 +47,11 @@
 		13B07F961A680F5B00A75B9A /* baconsappwidget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = baconsappwidget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = baconsappwidget/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = baconsappwidget/Info.plist; sourceTree = "<group>"; };
-		388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; };
-		964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; };
+		388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
+		964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = baconsappwidget/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = 4; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = baconsappwidget/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* baconsappwidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "baconsappwidget-Bridging-Header.h"; path = "baconsappwidget/baconsappwidget-Bridging-Header.h"; sourceTree = "<group>"; };
 		XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -62,14 +62,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */ = {
+		XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				_shared/intents.swift,
 			);
 			target = 13B07F861A680F5B00A75B9A /* baconsappwidget */;
 		};
-		XX5D8C69AEC31EB74E6A81XX /* Exceptions for "widget" folder in "My Widget 😄" target */ = {
+		XX5D8C69AEC31EB74E6A81XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -83,11 +83,11 @@
 		XX5334B7CC062E958C75C1XX /* widget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				XX5D8C69AEC31EB74E6A81XX /* Exceptions for "widget" folder in "My Widget 😄" target */,
-				XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */,
+				XX5D8C69AEC31EB74E6A81XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
-			explicitFileTypes = {
-			};
+			explicitFileTypes = {};
 			explicitFolders = (
 			);
 			path = widget;
@@ -198,7 +198,7 @@
 			children = (
 				XX5334B7CC062E958C75C1XX /* widget */,
 			);
-			name = "expo:targets";
+			name = expo:targets;
 			path = ../targets;
 			sourceTree = "<group>";
 		};
@@ -227,7 +227,7 @@
 		};
 		XX219ADAAD1592813AB03DXX /* My Widget 😄 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = XX0E1B7C3454F9C8294256XX /* Build configuration list for PBXNativeTarget "My Widget 😄" */;
+			buildConfigurationList = XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */;
 			buildPhases = (
 				XX074B8811C1CF8E8A3D74XX /* Frameworks */,
 				XXE45443DC38DCFE1DB622XX /* Sources */,
@@ -374,7 +374,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -405,7 +405,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -573,11 +573,13 @@
 			};
 			name = Release;
 		};
-		XXF46DABD2EDBAFE170DDCXX /* Debug */ = {
+		XX837C8E6452C22280907DXX /* Debug */ = {
 			isa = XCBuildConfiguration;
+			name = Debug;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -585,11 +587,9 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ../targets/widget/Info.plist;
@@ -601,7 +601,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
@@ -612,8 +612,52 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 			};
-			name = Debug;
+		};
+		XXAA503238DFC7747BDB83XX /* Release */ = {
+			isa = XCBuildConfiguration;
+			name = Release;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ../targets/widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "My Widget 😄";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
+			};
 		};
 /* End XCBuildConfiguration section */
 
@@ -636,13 +680,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		XX0E1B7C3454F9C8294256XX /* Build configuration list for PBXNativeTarget "My Widget 😄" */ = {
+		XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */ = {
 			isa = XCConfigurationList;
-			buildConfigurations = (
-				XXF46DABD2EDBAFE170DDCXX /* Debug */,
-				XX2638145AAD3C31E3D763XX /* Release */,
-			);
 			defaultConfigurationIsVisible = 0;
+			buildConfigurations = (
+				XX837C8E6452C22280907DXX /* Debug */,
+				XXAA503238DFC7747BDB83XX /* Release */,
+			);
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

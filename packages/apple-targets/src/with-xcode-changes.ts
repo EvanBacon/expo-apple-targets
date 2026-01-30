@@ -8,8 +8,8 @@ import {
   PBXShellScriptBuildPhase,
   XcodeProject,
 } from "@bacons/xcode";
-import { ExpoConfig } from "@expo/config";
-import { ConfigPlugin } from "@expo/config-plugins";
+import type { ExpoConfig } from "expo/config";
+import type { ConfigPlugin } from "expo/config-plugins";
 import fs from "fs";
 import { globSync } from "glob";
 import path from "path";
@@ -31,7 +31,7 @@ import { warnOnce } from "./util";
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
-  props
+  props,
 ) => {
   return withXcodeProjectBeta(config, async (config) => {
     await applyXcodeChanges(config, config.modResults, props);
@@ -58,7 +58,7 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
 async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
 ) {
   const mainAppTarget = getMainAppTarget(project);
 
@@ -67,7 +67,7 @@ async function applyXcodeChanges(
     // Add ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to the main app target
     mainAppTarget.setBuildSetting(
       "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES",
-      "YES"
+      "YES",
     );
   }
 
@@ -89,7 +89,7 @@ async function applyXcodeChanges(
 
   if (targetToUpdate) {
     warnOnce(
-      `Target "${targetToUpdate.props.productName}" already exists, updating instead of creating a new one`
+      `Target "${targetToUpdate.props.productName}" already exists, updating instead of creating a new one`,
     );
   }
 
@@ -127,21 +127,21 @@ async function applyXcodeChanges(
     if (props.colors?.$accent) {
       target.setBuildSetting(
         "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME",
-        "$accent"
+        "$accent",
       );
     } else {
       target.removeBuildSetting(
-        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME"
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME",
       );
     }
     if (props.colors?.$widgetBackground) {
       target.setBuildSetting(
         "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME",
-        "$widgetBackground"
+        "$widgetBackground",
       );
     } else {
       target.removeBuildSetting(
-        "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME"
+        "ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME",
       );
     }
   }
@@ -155,7 +155,7 @@ async function applyXcodeChanges(
     if (entitlements.length > 0) {
       target.setBuildSetting(
         "CODE_SIGN_ENTITLEMENTS",
-        props.cwd + "/" + entitlements[0]
+        props.cwd + "/" + entitlements[0],
       );
     } else {
       target.removeBuildSetting("CODE_SIGN_ENTITLEMENTS");
@@ -166,9 +166,9 @@ async function applyXcodeChanges(
   }
 
   function syncMarketingVersions() {
-    // In Expo managed projects, the version will always be overwritten. 
+    // In Expo managed projects, the version will always be overwritten.
     // Because the overwrite happens after this script runs, we just set it to the config value.
-    const mainVersion = config.ios?.version || config.version || '1.0.0';
+    const mainVersion = config.ios?.version || config.version || "1.0.0";
     // const mainVersion = getMainMarketingVersion(project);
     project.rootObject.props.targets.forEach((target) => {
       if (PBXNativeTarget.is(target)) {
@@ -186,7 +186,7 @@ async function applyXcodeChanges(
     if (assets) {
       target.setBuildSetting(
         "DEVELOPMENT_ASSET_PATHS",
-        `"${props.cwd + "/preview"}"`
+        `"${props.cwd + "/preview"}"`,
       );
     } else {
       target.removeBuildSetting("DEVELOPMENT_ASSET_PATHS");
@@ -200,13 +200,13 @@ async function applyXcodeChanges(
       const shellScript = mainAppTarget.props.buildPhases.find(
         (phase) =>
           PBXShellScriptBuildPhase.is(phase) &&
-          phase.props.name === "Bundle React Native code and images"
+          phase.props.name === "Bundle React Native code and images",
       ) as PBXShellScriptBuildPhase | undefined;
 
       if (!shellScript) {
         console.warn(
           'Failed to find the "Bundle React Native code and images" build phase in the main app target. Will not be able to configure: ' +
-            props.type
+            props.type,
         );
         return;
       }
@@ -214,7 +214,7 @@ async function applyXcodeChanges(
       const currentShellScript = target.props.buildPhases.find(
         (phase) =>
           PBXShellScriptBuildPhase.is(phase) &&
-          phase.props.name === "Bundle React Native code and images"
+          phase.props.name === "Bundle React Native code and images",
       ) as PBXShellScriptBuildPhase | undefined;
       if (!currentShellScript) {
         // Link the same build script across targets to simplify updates.
@@ -238,7 +238,7 @@ async function applyXcodeChanges(
       const shellScript = target.props.buildPhases.findIndex(
         (phase) =>
           PBXShellScriptBuildPhase.is(phase) &&
-          phase.props.name === "Bundle React Native code and images"
+          phase.props.name === "Bundle React Native code and images",
       );
       if (shellScript !== -1) {
         target.props.buildPhases.splice(shellScript, 1);
@@ -254,7 +254,7 @@ async function applyXcodeChanges(
           ref.removeReference(config.uuid);
         });
         config.removeFromProject();
-      }
+      },
     );
     // Remove existing build configuration list
     targetToUpdate.props.buildConfigurationList
@@ -289,7 +289,7 @@ async function applyXcodeChanges(
 
     project.rootObject.ensureProductGroup().props.children.push(
       // @ts-expect-error
-      appExtensionBuildFile.props.fileRef
+      appExtensionBuildFile.props.fileRef,
     );
 
     targetToUpdate = project.rootObject.createNativeTarget({
@@ -333,7 +333,7 @@ async function applyXcodeChanges(
         .filter(
           (file) =>
             file !== ".DS_Store" &&
-            fs.statSync(path.join(assetsDir, file)).isDirectory()
+            fs.statSync(path.join(assetsDir, file)).isDirectory(),
         )
         .map((file) => path.join("assets", file));
 
@@ -352,7 +352,7 @@ async function applyXcodeChanges(
   });
 
   let syncRootGroup = protectedGroup.props.children.find(
-    (child) => child.props.path === path.basename(props.cwd)
+    (child) => child.props.path === path.basename(props.cwd),
   );
   if (!syncRootGroup) {
     syncRootGroup = PBXFileSystemSynchronizedRootGroup.create(project, {
@@ -393,7 +393,7 @@ async function applyXcodeChanges(
   const existingExceptionSet = syncRootGroup.props.exceptions.find(
     (exception) =>
       exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
-      exception.props.target === mainAppTarget
+      exception.props.target === mainAppTarget,
   );
   if (sharedAssets.length) {
     const exceptionSet =
@@ -415,7 +415,7 @@ async function applyXcodeChanges(
     let globalSharedSyncGroup = protectedGroup.props.children.find(
       (child) =>
         child.props.path === "_shared" &&
-        child instanceof PBXFileSystemSynchronizedRootGroup
+        child instanceof PBXFileSystemSynchronizedRootGroup,
     ) as PBXFileSystemSynchronizedRootGroup | undefined;
 
     if (!globalSharedSyncGroup) {
@@ -438,7 +438,7 @@ async function applyXcodeChanges(
           explicitFileTypes: {},
           explicitFolders: [],
           sourceTree: "<group>",
-        }
+        },
       );
 
       // Add to both targets' fileSystemSynchronizedGroups
@@ -446,7 +446,7 @@ async function applyXcodeChanges(
         mainAppTarget.props.fileSystemSynchronizedGroups = [];
       }
       mainAppTarget.props.fileSystemSynchronizedGroups.push(
-        globalSharedSyncGroup
+        globalSharedSyncGroup,
       );
 
       if (!target.props.fileSystemSynchronizedGroups) {
@@ -463,7 +463,7 @@ async function applyXcodeChanges(
       let mainAppExceptionSet = globalSharedSyncGroup.props.exceptions.find(
         (exception) =>
           exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
-          exception.props.target === mainAppTarget
+          exception.props.target === mainAppTarget,
       ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
 
       if (!mainAppExceptionSet) {
@@ -482,7 +482,7 @@ async function applyXcodeChanges(
       let extensionExceptionSet = globalSharedSyncGroup.props.exceptions.find(
         (exception) =>
           exception instanceof PBXFileSystemSynchronizedBuildFileExceptionSet &&
-          exception.props.target === target
+          exception.props.target === target,
       ) as PBXFileSystemSynchronizedBuildFileExceptionSet | undefined;
 
       if (!extensionExceptionSet) {
@@ -504,7 +504,7 @@ async function applyXcodeChanges(
 
       // Check if this target already has the synchronized group
       const hasGroup = target.props.fileSystemSynchronizedGroups.some(
-        (group) => group === globalSharedSyncGroup
+        (group) => group === globalSharedSyncGroup,
       );
 
       if (!hasGroup) {
@@ -524,7 +524,7 @@ const PROTECTED_GROUP_NAME = "expo:targets";
 
 function ensureProtectedGroup(
   project: XcodeProject,
-  relativePath = "../targets"
+  relativePath = "../targets",
 ) {
   const hasProtectedGroup = project.rootObject.props.mainGroup
     .getChildGroups()
