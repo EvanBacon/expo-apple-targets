@@ -251,6 +251,7 @@ const PROJECT_KNOWN_IDS = new Set([
   "com.apple.networkextension.dns-proxy",
   "com.apple.networkextension.filter-data",
   "com.apple.keyboard-service",
+  "com.apple.Safari.content-blocker",
 ]);
 
 function diffWithProject(templates: ExtensionTemplate[]) {

@@ -803,6 +803,7 @@ function getConfigurationListBuildSettingsForType(
     case "network-packet-tunnel":
     case "quicklook-thumbnail":
     case "spotlight":
+    case "content-blocker":
       return createNotificationContentConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;

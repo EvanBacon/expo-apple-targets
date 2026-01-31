@@ -60,11 +60,7 @@ Runs `expo prebuild` on a fixture project with all 24 target types, then `xcodeb
 - `e2e/__tests__/build.test.ts` has a `TARGET_REGISTRY` array — one `it()` per target type
 - Exception: `clip/AppDelegate.swift` is a custom non-RN override in the fixture
 
-**Adding a new target type:**
-1. Add the template to `packages/create-target/templates/<type>/`
-2. Add an `expo-target.config.json` to `e2e/fixture/targets/<type>/`
-3. Add an entry to `TARGET_REGISTRY` in `e2e/__tests__/build.test.ts`
-4. The meta-test will fail if `TARGET_REGISTRY` doesn't cover all `ExtensionType` values
+**Adding a new target type:** See "Adding a new target type" under Key Architecture below.
 
 **Updating templates after SDK changes:**
 No action needed — templates are copied from `create-target/templates/` at runtime, so updating the template source automatically updates the e2e tests.
@@ -85,10 +81,48 @@ bunx tsc --noEmit        # Alternative typecheck
 - **Xcode manipulation**: Uses `@bacons/xcode` for project file editing
 - **Target config**: Each target has an `expo-target.config.js` defining type, icon, colors, entitlements, etc.
 
+### Central Target Registry (`src/target.ts`)
+
+All extension type metadata lives in a single `TARGET_REGISTRY` object. Everything else is derived from it:
+
+- `ExtensionType` = `keyof typeof TARGET_REGISTRY`
+- `KNOWN_EXTENSION_POINT_IDENTIFIERS` — derived from `extensionPointIdentifier` fields
+- `SHOULD_USE_APP_GROUPS_BY_DEFAULT` — derived from `appGroupsByDefault` fields
+- `productTypeForType()` / `needsEmbeddedSwift()` / `getFrameworksForType()` — one-liner lookups into the registry
+- CLI `TARGETS` array in `create-target/src/promptTarget.ts` — derived from registry
+- E2E `ALL_EXTENSION_TYPES` in `e2e/__tests__/build.test.ts` — derived from registry
+
+### Adding a new target type
+
+1. **Add an entry to `TARGET_REGISTRY`** in `packages/apple-targets/src/target.ts`. This is the only required code change — the `ExtensionType` union, extension point ID map, CLI target list, and e2e coverage check all derive automatically. Fields:
+   - `extensionPointIdentifier` — the Apple `NSExtensionPointIdentifier` string (omit for app clips / watch apps)
+   - `productType` — defaults to `com.apple.product-type.app-extension` if omitted
+   - `needsEmbeddedSwift` — set `true` if the extension needs `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES`
+   - `frameworks` — system frameworks to link (e.g. `["WidgetKit", "SwiftUI"]`)
+   - `appGroupsByDefault` — set `true` if extension should sync app groups from main target
+   - `hasNoTemplate` — set `true` to exclude from CLI and e2e tests (e.g. `imessage`)
+   - `displayName` / `description` — used in the `create-target` CLI prompt
+
+2. **Add a case to `getTargetInfoPlistForType()`** in `src/target.ts` if the extension needs custom Info.plist content (most do — only widget and bg-download use the default). The switch is not exhaustive so new types fall through to a default `{ NSExtension: { NSExtensionPointIdentifier } }`.
+
+3. **Add a case to `getConfigurationListBuildSettingsForType()`** in `src/configuration-list.ts`. This switch IS exhaustive (`never` check) — TypeScript will error if a new type is missing. Most types can fall through to `createNotificationContentConfigurationList()`.
+
+4. **Create Swift template files** in `packages/create-target/templates/<type>/`. These are the source-of-truth files that get copied both by `create-target` CLI and e2e test setup.
+
+5. **Create e2e fixture config** at `packages/apple-targets/e2e/fixture/targets/<type>/expo-target.config.json` with `{ "type": "<type>" }`.
+
+6. **Add an entry to `TARGET_REGISTRY`** (the e2e one) in `e2e/__tests__/build.test.ts` with `type`, `dir`, `target` (hyphens stripped), and optionally `sdk`/`skip`.
+
+7. **Run `bunx expo-module build`** in `packages/apple-targets/` so that `create-target` picks up the updated build output.
+
+### Discovering new extension types from Xcode
+
+Run `bun scripts/scan-xcode-targets.ts --diff` to compare the locally installed Xcode's extension templates against `TARGET_REGISTRY`. This shows which Apple extension types exist in Xcode but aren't yet supported. See `docs/xcode-target-discovery.md` for details on how Xcode stores this data (xcspec files, TemplateInfo.plist structure, etc.).
+
 ## Research & Documentation
 
-- `docs/xcode-target-discovery.md` — How to discover all Apple target/extension types from the local Xcode installation (xcspec files, template plists, extension point identifiers)
-- `scripts/scan-xcode-targets.ts` — Bun script that scans Xcode.app to enumerate all product types and extension templates. Run with `--diff` to compare against the project's `ExtensionType` enum.
+- `docs/xcode-target-discovery.md` — How Xcode stores target/extension type definitions (xcspec files, template plists, extension point identifiers, platform template directories)
+- `scripts/scan-xcode-targets.ts` — Bun script that scans Xcode.app to enumerate all product types and extension templates. Run with `--diff` to compare against `TARGET_REGISTRY`.
 
 ## Code Conventions
 

@@ -1,101 +1,235 @@
 import { PBXNativeTarget, XcodeProject } from "@bacons/xcode";
 
-export type ExtensionType =
-  | "widget"
-  | "notification-content"
-  | "notification-service"
-  | "share"
-  | "intent"
-  | "bg-download"
-  | "intent-ui"
-  | "spotlight"
-  | "matter"
-  | "quicklook-thumbnail"
-  | "imessage"
-  | "clip"
-  | "watch"
-  | "location-push"
-  | "credentials-provider"
-  | "account-auth"
-  | "action"
-  | "safari"
-  | "app-intent"
-  | "device-activity-monitor"
-  | "network-packet-tunnel"
-  | "network-app-proxy"
-  | "network-filter-data"
-  | "network-dns-proxy"
-  | "keyboard";
+// ---------------------------------------------------------------------------
+// Central target registry — single source of truth for all extension types.
+// To add a new type, add an entry here. The ExtensionType union, extension
+// point ID map, framework list, etc. are all derived from this object.
+// ---------------------------------------------------------------------------
 
-export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<string, ExtensionType> =
-  {
-    "com.apple.message-payload-provider": "imessage",
-    "com.apple.widgetkit-extension": "widget",
-    "com.apple.usernotifications.content-extension": "notification-content",
-    "com.apple.share-services": "share",
-    "com.apple.usernotifications.service": "notification-service",
-    "com.apple.spotlight.import": "spotlight",
-    "com.apple.intents-service": "intent",
-    "com.apple.intents-ui-service": "intent-ui",
-    "com.apple.Safari.web-extension": "safari",
-    "com.apple.background-asset-downloader-extension": "bg-download",
-    "com.apple.matter.support.extension.device-setup": "matter",
-    "com.apple.quicklook.thumbnail": "quicklook-thumbnail",
-    "com.apple.location.push.service": "location-push",
-    "com.apple.authentication-services-credential-provider-ui":
-      "credentials-provider",
-    "com.apple.authentication-services-account-authentication-modification-ui":
-      "account-auth",
-    "com.apple.services": "action",
-    "com.apple.appintents-extension": "app-intent",
-    "com.apple.deviceactivity.monitor-extension": "device-activity-monitor",
-    // "com.apple.intents-service": "intents",
-    "com.apple.networkextension.packet-tunnel": "network-packet-tunnel",
-    "com.apple.networkextension.app-proxy": "network-app-proxy",
-    "com.apple.networkextension.dns-proxy": "network-dns-proxy",
-    "com.apple.networkextension.filter-data": "network-filter-data",
-    "com.apple.keyboard-service": "keyboard",
-    // "com.apple.intents-service": "intents",
-  };
+export interface TargetDefinition {
+  /** Apple NSExtensionPointIdentifier, e.g. "com.apple.widgetkit-extension" */
+  extensionPointIdentifier?: string;
+  /** Xcode product type. Defaults to "com.apple.product-type.app-extension" */
+  productType?: string;
+  /** Whether to set ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES. Default: false */
+  needsEmbeddedSwift?: boolean;
+  /** System frameworks to link. Default: [] */
+  frameworks?: readonly string[];
+  /** Whether app groups should sync from main target by default. Default: false */
+  appGroupsByDefault?: boolean;
+  /** If true, type has no Swift template and is excluded from CLI / e2e tests */
+  hasNoTemplate?: boolean;
+  /** Display name for the create-target CLI */
+  displayName: string;
+  /** Short description for the create-target CLI */
+  description?: string;
+}
 
-// An exhaustive list of extension types that should sync app groups from the main target by default when
-// no app groups are specified.
-export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<ExtensionType, boolean> =
-  {
-    share: true,
-    "bg-download": true,
-    clip: true,
-    widget: true,
-    keyboard: true,
-    "account-auth": false,
-    "credentials-provider": false,
-    "device-activity-monitor": false,
-    "app-intent": false,
-    "intent-ui": false,
-    "location-push": false,
-    "notification-content": false,
-    "notification-service": false,
-    "quicklook-thumbnail": false,
-    action: false,
-    imessage: false,
-    intent: false,
-    matter: false,
-    safari: false,
-    spotlight: false,
-    watch: false,
-    "network-packet-tunnel": false,
-    "network-app-proxy": false,
-    "network-dns-proxy": false,
-    "network-filter-data": false,
-  };
+export const TARGET_REGISTRY = {
+  widget: {
+    extensionPointIdentifier: "com.apple.widgetkit-extension",
+    frameworks: ["WidgetKit", "SwiftUI", "ActivityKit", "AppIntents"],
+    appGroupsByDefault: true,
+    displayName: "Widget",
+    description: "Home screen widget",
+  },
+  "notification-content": {
+    extensionPointIdentifier: "com.apple.usernotifications.content-extension",
+    frameworks: ["UserNotifications", "UserNotificationsUI"],
+    displayName: "Notification Content",
+  },
+  "notification-service": {
+    extensionPointIdentifier: "com.apple.usernotifications.service",
+    displayName: "Notification Service",
+  },
+  share: {
+    extensionPointIdentifier: "com.apple.share-services",
+    needsEmbeddedSwift: true,
+    appGroupsByDefault: true,
+    displayName: "Share Extension",
+  },
+  intent: {
+    extensionPointIdentifier: "com.apple.intents-service",
+    needsEmbeddedSwift: true,
+    frameworks: ["Intents"],
+    displayName: "Siri Intent",
+  },
+  "bg-download": {
+    extensionPointIdentifier:
+      "com.apple.background-asset-downloader-extension",
+    needsEmbeddedSwift: true,
+    appGroupsByDefault: true,
+    displayName: "Background Download",
+  },
+  "intent-ui": {
+    extensionPointIdentifier: "com.apple.intents-ui-service",
+    needsEmbeddedSwift: true,
+    frameworks: ["IntentsUI"],
+    displayName: "Siri Intent UI",
+  },
+  spotlight: {
+    extensionPointIdentifier: "com.apple.spotlight.import",
+    needsEmbeddedSwift: true,
+    displayName: "Spotlight",
+  },
+  matter: {
+    extensionPointIdentifier: "com.apple.matter.support.extension.device-setup",
+    needsEmbeddedSwift: true,
+    displayName: "Matter",
+  },
+  "quicklook-thumbnail": {
+    extensionPointIdentifier: "com.apple.quicklook.thumbnail",
+    needsEmbeddedSwift: true,
+    frameworks: ["QuickLookThumbnailing"],
+    displayName: "Quicklook Thumbnail",
+  },
+  imessage: {
+    extensionPointIdentifier: "com.apple.message-payload-provider",
+    hasNoTemplate: true,
+    displayName: "iMessage",
+  },
+  clip: {
+    productType: "com.apple.product-type.application.on-demand-install-capable",
+    needsEmbeddedSwift: true,
+    appGroupsByDefault: true,
+    displayName: "App Clip",
+    description: "Instantly open your app without installing",
+  },
+  watch: {
+    productType: "com.apple.product-type.application",
+    needsEmbeddedSwift: true,
+    displayName: "Watch",
+  },
+  "location-push": {
+    extensionPointIdentifier: "com.apple.location.push.service",
+    displayName: "Location Push",
+  },
+  "credentials-provider": {
+    extensionPointIdentifier:
+      "com.apple.authentication-services-credential-provider-ui",
+    displayName: "Credentials Provider",
+  },
+  "account-auth": {
+    extensionPointIdentifier:
+      "com.apple.authentication-services-account-authentication-modification-ui",
+    displayName: "Account Auth",
+  },
+  action: {
+    extensionPointIdentifier: "com.apple.services",
+    displayName: "Action",
+    description: "Headless action that appears in share sheets",
+  },
+  safari: {
+    extensionPointIdentifier: "com.apple.Safari.web-extension",
+    displayName: "Safari Extension",
+  },
+  "app-intent": {
+    extensionPointIdentifier: "com.apple.appintents-extension",
+    productType: "com.apple.product-type.extensionkit-extension",
+    frameworks: ["AppIntents"],
+    displayName: "App Intent",
+  },
+  "device-activity-monitor": {
+    extensionPointIdentifier: "com.apple.deviceactivity.monitor-extension",
+    frameworks: ["DeviceActivity"],
+    displayName: "Device Activity Monitor",
+  },
+  "network-packet-tunnel": {
+    extensionPointIdentifier: "com.apple.networkextension.packet-tunnel",
+    needsEmbeddedSwift: true,
+    frameworks: ["NetworkExtension"],
+    displayName: "Network Extension: Packet Tunnel Provider",
+  },
+  "network-app-proxy": {
+    extensionPointIdentifier: "com.apple.networkextension.app-proxy",
+    needsEmbeddedSwift: true,
+    frameworks: ["NetworkExtension"],
+    displayName: "Network Extension: App Proxy",
+  },
+  "network-filter-data": {
+    extensionPointIdentifier: "com.apple.networkextension.filter-data",
+    needsEmbeddedSwift: true,
+    frameworks: ["NetworkExtension"],
+    displayName: "Network Extension: Filter Data",
+  },
+  "network-dns-proxy": {
+    extensionPointIdentifier: "com.apple.networkextension.dns-proxy",
+    needsEmbeddedSwift: true,
+    frameworks: ["NetworkExtension"],
+    displayName: "Network Extension: DNS Proxy",
+  },
+  keyboard: {
+    extensionPointIdentifier: "com.apple.keyboard-service",
+    needsEmbeddedSwift: true,
+    appGroupsByDefault: true,
+    displayName: "Keyboard Extension",
+    description: "Custom system keyboard",
+  },
+  "content-blocker": {
+    extensionPointIdentifier: "com.apple.Safari.content-blocker",
+    displayName: "Content Blocker",
+    description: "Safari content blocker extension",
+  },
+} as const satisfies Record<string, TargetDefinition>;
+
+export type ExtensionType = keyof typeof TARGET_REGISTRY;
+
+// ---------------------------------------------------------------------------
+// Derived maps — kept as exports for backward compatibility. All sourced
+// from TARGET_REGISTRY so they never go out of sync.
+// ---------------------------------------------------------------------------
+
+/** Maps Apple extension point identifiers to ExtensionType values. */
+export const KNOWN_EXTENSION_POINT_IDENTIFIERS: Record<
+  string,
+  ExtensionType
+> = Object.fromEntries(
+  (
+    Object.entries(TARGET_REGISTRY) as [ExtensionType, TargetDefinition][]
+  )
+    .filter(([, def]) => def.extensionPointIdentifier)
+    .map(([type, def]) => [def.extensionPointIdentifier, type])
+) as Record<string, ExtensionType>;
+
+/** Whether app groups should sync from the main target by default. */
+export const SHOULD_USE_APP_GROUPS_BY_DEFAULT: Record<
+  ExtensionType,
+  boolean
+> = Object.fromEntries(
+  (Object.keys(TARGET_REGISTRY) as ExtensionType[]).map((type) => [
+    type,
+    getEntry(type).appGroupsByDefault ?? false,
+  ])
+) as Record<ExtensionType, boolean>;
+
+// ---------------------------------------------------------------------------
+// Helper functions — signatures unchanged for backward compatibility.
+// ---------------------------------------------------------------------------
+
+function getEntry(type: ExtensionType): TargetDefinition {
+  return TARGET_REGISTRY[type];
+}
+
+export function productTypeForType(type: ExtensionType): string {
+  return getEntry(type).productType ?? "com.apple.product-type.app-extension";
+}
+
+export function needsEmbeddedSwift(type: ExtensionType): boolean {
+  return getEntry(type).needsEmbeddedSwift ?? false;
+}
+
+export function getFrameworksForType(type: ExtensionType): string[] {
+  return [...(getEntry(type).frameworks ?? [])];
+}
+
+// ---------------------------------------------------------------------------
+// Info.plist generation — stays as a switch because each type has a unique
+// plist shape that can't be reasonably data-driven.
+// ---------------------------------------------------------------------------
 
 // TODO: Maybe we can replace `NSExtensionPrincipalClass` with the `@main` annotation that newer extensions use?
 export function getTargetInfoPlistForType(type: ExtensionType) {
-  // TODO: Use exhaustive switch to ensure external contributors don't forget to add this.
-
-  const NSExtensionPointIdentifier = Object.keys(
-    KNOWN_EXTENSION_POINT_IDENTIFIERS
-  ).find((key) => KNOWN_EXTENSION_POINT_IDENTIFIERS[key] === type);
+  const NSExtensionPointIdentifier = getEntry(type).extensionPointIdentifier;
 
   switch (type) {
     case "watch":
@@ -196,16 +330,22 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           },
         },
       };
+    case "content-blocker":
+      return {
+        NSExtension: {
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ContentBlockerRequestHandler",
+          NSExtensionPointIdentifier,
+        },
+      };
     case "notification-service":
       return {
         NSExtension: {
           NSExtensionAttributes: {
             NSExtensionActivationRule: "TRUEPREDICATE",
           },
-          // TODO: Update `NotificationService` dynamically
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).NotificationService",
-          // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
       };
@@ -227,9 +367,7 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionAttributes: {
             CSSupportedContentTypes: ["com.example.plain-text"],
           },
-          // TODO: Update `ImportExtension` dynamically
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ImportExtension",
-          // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
       };
@@ -239,10 +377,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionAttributes: {
             NSExtensionActivationRule: "TRUEPREDICATE",
           },
-          // TODO: Update `ShareViewController` dynamically
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).ShareViewController",
-          // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
       };
@@ -252,7 +388,6 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionAttributes: {
             IntentsSupported: ["INSendMessageIntent"],
           },
-          // TODO: Update `IntentViewController` dynamically
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).IntentViewController",
           NSExtensionPointIdentifier,
@@ -269,7 +404,6 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
               "INSetMessageAttributeIntent",
             ],
           },
-          // TODO: Update `IntentHandler` dynamically
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).IntentHandler",
           NSExtensionPointIdentifier,
         },
@@ -292,10 +426,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
     case "safari":
       return {
         NSExtension: {
-          // TODO: Update `SafariWebExtensionHandler` dynamically
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler",
-          // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
       };
@@ -306,10 +438,8 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             UNNotificationExtensionCategory: "myNotificationCategory",
             UNNotificationExtensionInitialContentSizeRatio: 1,
           },
-          // TODO: Update `NotificationViewController` dynamically
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).NotificationViewController",
-          // NSExtensionMainStoryboard: 'MainInterface',
           NSExtensionPointIdentifier,
         },
       };
@@ -354,74 +484,9 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
   }
 }
 
-export function productTypeForType(type: ExtensionType) {
-  switch (type) {
-    case "clip":
-      return "com.apple.product-type.application.on-demand-install-capable";
-    case "watch":
-      return "com.apple.product-type.application";
-    case "app-intent":
-      return "com.apple.product-type.extensionkit-extension";
-    default:
-      return "com.apple.product-type.app-extension";
-  }
-}
-
-export function needsEmbeddedSwift(type: ExtensionType) {
-  return [
-    "watch",
-    "spotlight",
-    "share",
-    "intent",
-    "intent-ui",
-    "bg-download",
-    "quicklook-thumbnail",
-    "matter",
-    "clip",
-    "network-packet-tunnel",
-    "network-app-proxy",
-    "network-dns-proxy",
-    "network-filter-data",
-    "keyboard",
-  ].includes(type);
-}
-
-export function getFrameworksForType(type: ExtensionType) {
-  switch (type) {
-    case "widget":
-      return [
-        // CD07060B2A2EBE2E009C1192 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-        "WidgetKit",
-        // CD07060D2A2EBE2E009C1192 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-        "SwiftUI",
-        "ActivityKit",
-        "AppIntents",
-      ];
-    case "intent":
-      return ["Intents"];
-    case "intent-ui":
-      return ["IntentsUI"];
-    case "quicklook-thumbnail":
-      return ["QuickLookThumbnailing"];
-    case "notification-content":
-      return ["UserNotifications", "UserNotificationsUI"];
-    case "app-intent":
-      return ["AppIntents"];
-    case "device-activity-monitor":
-      return ["DeviceActivity"];
-    case "action":
-      return [
-        // "UniformTypeIdentifiers"
-      ];
-    case "network-packet-tunnel":
-    case "network-app-proxy":
-    case "network-dns-proxy":
-    case "network-filter-data":
-      return ["NetworkExtension"];
-    default:
-      return [];
-  }
-}
+// ---------------------------------------------------------------------------
+// Target detection & utilities
+// ---------------------------------------------------------------------------
 
 export function isNativeTargetOfType(
   target: PBXNativeTarget,

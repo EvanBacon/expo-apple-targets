@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { TARGET_REGISTRY as TYPE_REGISTRY } from "../../src/target";
 
 /**
  * Target registry: single source of truth for all e2e build targets.
@@ -28,6 +29,11 @@ const TARGET_REGISTRY: TargetEntry[] = [
   { type: "app-intent", dir: "app-intent", target: "appintent" },
   { type: "bg-download", dir: "bg-download", target: "bgdownload" },
   { type: "clip", dir: "clip", target: "clip" },
+  {
+    type: "content-blocker",
+    dir: "content-blocker",
+    target: "contentblocker",
+  },
   {
     type: "credentials-provider",
     dir: "credentials-provider",
@@ -93,33 +99,11 @@ const TARGET_REGISTRY: TargetEntry[] = [
   { type: "widget", dir: "widget", target: "widget" },
 ];
 
-// All ExtensionType values from src/target.ts (excluding imessage which has no Swift template)
-const ALL_EXTENSION_TYPES = [
-  "widget",
-  "notification-content",
-  "notification-service",
-  "share",
-  "intent",
-  "bg-download",
-  "intent-ui",
-  "spotlight",
-  "matter",
-  "quicklook-thumbnail",
-  "clip",
-  "watch",
-  "location-push",
-  "credentials-provider",
-  "account-auth",
-  "action",
-  "safari",
-  "app-intent",
-  "device-activity-monitor",
-  "network-packet-tunnel",
-  "network-app-proxy",
-  "network-filter-data",
-  "network-dns-proxy",
-  "keyboard",
-];
+// Derived from the central TARGET_REGISTRY — no need to maintain by hand.
+// Excludes types with hasNoTemplate (e.g. imessage which has no Swift template).
+const ALL_EXTENSION_TYPES = Object.entries(TYPE_REGISTRY)
+  .filter(([, def]) => !def.hasNoTemplate)
+  .map(([type]) => type);
 
 const PROJECT_DIR_FILE = path.join(__dirname, "..", ".e2e-project-dir");
 const BUILD_TIMEOUT = 120_000; // 2 minutes per target
