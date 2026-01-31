@@ -163,7 +163,11 @@ bunx create-target app-intent
 ```
 
 ```sh
+# Initial setup or after changing expo-target.config.js
 npx expo prebuild --clean
+
+# Subsequent runs when editing Swift code only (target files live outside /ios)
+npx expo prebuild
 ```
 
 ## Platform Availability

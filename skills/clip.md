@@ -286,7 +286,11 @@ bunx create-target clip
 ```
 
 ```sh
+# Initial setup or after changing expo-target.config.js (icon, entitlements, bundle ID)
 npx expo prebuild --clean
+
+# Subsequent runs when editing Swift code only (App Clip files live outside /ios)
+npx expo prebuild
 ```
 
 ## Platform Availability

@@ -358,7 +358,11 @@ bunx create-target widget
 ```
 
 ```sh
+# Initial setup or after changing expo-target.config.js (icon, colors, entitlements)
 npx expo prebuild --clean
+
+# Subsequent runs when editing Swift code only (widget files live outside /ios)
+npx expo prebuild
 ```
 
 ## Platform Availability

@@ -206,10 +206,28 @@ bunx create-target <type>
 }
 
 # 3. Generate the native project
-npx expo prebuild --clean
+npx expo prebuild --clean    # First time or after app.json changes
+npx expo prebuild            # Subsequent runs (targets live outside /ios)
 ```
 
 The `<type>` parameter corresponds to the extension type slug shown in each skill document's title (e.g., `widget`, `share`, `clip`, `notification-service`).
+
+### When to Use `--clean`
+
+Because target source files live outside the `/ios` directory (via Continuous Native Generation), you can often run `expo prebuild` without `--clean`:
+
+- **Use `--clean`** for:
+  - Initial setup after creating a new target
+  - Changes to `app.json` or `expo-target.config.js` configuration (icon, colors, entitlements, bundle ID)
+  - Adding/removing targets
+  - Xcode project corruption or mysterious build failures
+
+- **Skip `--clean`** for:
+  - Editing Swift code in `targets/<name>/` directories
+  - Changes to existing target source files
+  - Most day-to-day development work on target implementations
+
+This approach preserves manual Xcode modifications and speeds up the prebuild process when only Swift code has changed.
 
 ## Entitlements & Capabilities Guides
 

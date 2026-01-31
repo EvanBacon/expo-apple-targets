@@ -52,7 +52,7 @@ The most important section. Include:
 - Use numbered inline comments (`// 1.`, `// 2.`) to walk through the flow.
 
 ### 8. Using with @bacons/apple-targets
-Brief -- just the three commands:
+Brief -- just the three commands with nuanced prebuild guidance:
 ```sh
 bunx create-target <type>
 ```
@@ -60,7 +60,11 @@ bunx create-target <type>
 // app.json -- show the plugin entry
 ```
 ```sh
+# Initial setup or after changing app.json config
 npx expo prebuild --clean
+
+# Subsequent runs (target Swift files live outside /ios)
+npx expo prebuild
 ```
 
 ### 9. Platform Availability (table)
