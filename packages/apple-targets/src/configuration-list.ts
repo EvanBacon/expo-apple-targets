@@ -813,6 +813,11 @@ function getConfigurationListBuildSettingsForType(
     case "classkit-context":
     case "unwanted-communication":
     case "photo-editing":
+    case "quicklook-preview":
+    case "spotlight-delegate":
+    case "virtual-conference":
+    case "shield-action":
+    case "shield-config":
       return createNotificationContentConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;

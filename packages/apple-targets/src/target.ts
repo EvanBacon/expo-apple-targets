@@ -216,6 +216,32 @@ export const TARGET_REGISTRY = {
     frameworks: ["Photos", "PhotosUI"],
     displayName: "Photo Editing",
   },
+  "quicklook-preview": {
+    extensionPointIdentifier: "com.apple.quicklook.preview",
+    needsEmbeddedSwift: true,
+    frameworks: ["QuickLook"],
+    displayName: "Quick Look Preview",
+  },
+  "spotlight-delegate": {
+    extensionPointIdentifier: "com.apple.spotlight.index",
+    frameworks: ["CoreSpotlight"],
+    displayName: "CoreSpotlight Delegate",
+  },
+  "virtual-conference": {
+    extensionPointIdentifier: "com.apple.calendar.virtualconference",
+    displayName: "Virtual Conference Provider",
+  },
+  "shield-action": {
+    extensionPointIdentifier: "com.apple.ManagedSettings.shield-action-service",
+    frameworks: ["ManagedSettings"],
+    displayName: "Shield Action",
+  },
+  "shield-config": {
+    extensionPointIdentifier:
+      "com.apple.ManagedSettingsUI.shield-configuration-service",
+    frameworks: ["ManagedSettings", "ManagedSettingsUI"],
+    displayName: "Shield Configuration",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -594,6 +620,49 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionAttributes: {
             PHSupportedMediaTypes: ["Image"],
           },
+        },
+      };
+    case "quicklook-preview":
+      return {
+        NSExtension: {
+          NSExtensionAttributes: {
+            QLSupportedContentTypes: [],
+          },
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).PreviewViewController",
+          NSExtensionPointIdentifier,
+        },
+      };
+    case "spotlight-delegate":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IndexRequestHandler",
+        },
+      };
+    case "virtual-conference":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).VirtualConferenceProvider",
+        },
+      };
+    case "shield-action":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ShieldActionExtension",
+        },
+      };
+    case "shield-config":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension",
         },
       };
     default:

@@ -28,6 +28,11 @@ const ALL_TARGET_TYPES = [
   "classkit-context",
   "unwanted-communication",
   "photo-editing",
+  "quicklook-preview",
+  "spotlight-delegate",
+  "virtual-conference",
+  "shield-action",
+  "shield-config",
 ];
 
 describe(getTemplateConfig, () => {
