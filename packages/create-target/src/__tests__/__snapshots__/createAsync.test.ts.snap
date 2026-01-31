@@ -34,6 +34,22 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for broadcast-upload 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"broadcast-upload\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for call-directory 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"call-directory\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for clip 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -59,6 +75,14 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for file-provider 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"file-provider\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for intent 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -79,6 +103,14 @@ exports[`getTemplateConfig should return a valid template for location-push 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"location-push\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for message-filter 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"message-filter\\",
   entitlements: { /* Add entitlements */ },
 });"
 `;

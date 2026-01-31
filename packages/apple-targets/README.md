@@ -309,6 +309,10 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | network-dns-proxy       | DNS Proxy Network Extension        |
 | network-filter-data     | Filter Data Network Extension      |
 | content-blocker         | Safari Content Blocker Extension   |
+| file-provider           | File Provider Extension            |
+| broadcast-upload        | Broadcast Upload Extension         |
+| call-directory          | Call Directory Extension           |
+| message-filter          | Message Filter Extension           |
 
 
 <!-- | imessage             | iMessage Extension               | -->
@@ -319,13 +323,9 @@ The following iOS extension types exist in Xcode but aren't supported yet. Contr
 
 | Extension Point Identifier | Xcode Template Name |
 | --- | --- |
-| `com.apple.fileprovider-nonui` | File Provider Extension |
 | `com.apple.fileprovider-actionsui` | File Provider UI Extension |
-| `com.apple.broadcast-services-upload` | Broadcast Upload Extension |
 | `com.apple.broadcast-services-setupui` | Broadcast Setup UI Extension |
-| `com.apple.callkit.call-directory` | Call Directory Extension |
 | `com.apple.classkit.context-provider` | ClassKit Context Provider Extension |
-| `com.apple.identitylookup.message-filter` | Message Filter Extension |
 | `com.apple.identitylookup.classification-ui` | Unwanted Communication Reporting Extension |
 | `com.apple.photo-editing` | Photo Editing Extension |
 | `com.apple.printing.discovery` | Print Service Extension |

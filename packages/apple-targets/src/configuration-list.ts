@@ -804,6 +804,10 @@ function getConfigurationListBuildSettingsForType(
     case "quicklook-thumbnail":
     case "spotlight":
     case "content-blocker":
+    case "file-provider":
+    case "broadcast-upload":
+    case "call-directory":
+    case "message-filter":
       return createNotificationContentConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;

@@ -170,6 +170,27 @@ export const TARGET_REGISTRY = {
     displayName: "Content Blocker",
     description: "Safari content blocker extension",
   },
+  "file-provider": {
+    extensionPointIdentifier: "com.apple.fileprovider-nonui",
+    frameworks: ["UniformTypeIdentifiers"],
+    appGroupsByDefault: true,
+    displayName: "File Provider",
+  },
+  "broadcast-upload": {
+    extensionPointIdentifier: "com.apple.broadcast-services-upload",
+    frameworks: ["ReplayKit"],
+    displayName: "Broadcast Upload",
+  },
+  "call-directory": {
+    extensionPointIdentifier: "com.apple.callkit.call-directory",
+    frameworks: ["CallKit"],
+    displayName: "Call Directory",
+  },
+  "message-filter": {
+    extensionPointIdentifier: "com.apple.identitylookup.message-filter",
+    frameworks: ["IdentityLookup"],
+    displayName: "Message Filter",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -472,6 +493,39 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier: "com.apple.networkextension.filter-data",
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).FilterDataProvider",
+        },
+      };
+    case "file-provider":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).FileProviderExtension",
+          NSExtensionFileProviderSupportsEnumeration: true,
+        },
+      };
+    case "broadcast-upload":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).SampleHandler",
+          RPBroadcastProcessMode: "RPBroadcastProcessModeSampleBuffer",
+        },
+      };
+    case "call-directory":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).CallDirectoryHandler",
+        },
+      };
+    case "message-filter":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).MessageFilterExtension",
         },
       };
     default:
