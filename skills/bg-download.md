@@ -171,6 +171,7 @@ npx expo prebuild --clean
 | tvOS | -- | Not supported (managed assets coming in tvOS 26). |
 | visionOS | -- | Not supported (managed assets coming in visionOS 26). |
 
+## Gotchas
 
 - **App Groups are mandatory.** The extension runs in a separate process from your app. All downloaded files must be stored in a shared App Group container. Without a correctly configured App Group, the extension cannot write files the app can read.
 - **Downloaded files are marked purgeable.** The system may delete files downloaded by the framework when the device is critically low on storage. Store files in `Library/Caches` and always verify their existence before use.
