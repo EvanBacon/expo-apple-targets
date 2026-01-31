@@ -46,7 +46,7 @@ export type XcodeSettings = {
 
 export type DeviceFamily = "phone" | "tablet";
 
-function createNotificationContentConfigurationList({
+function createDefaultConfigurationList({
   name,
   displayName,
   cwd,
@@ -818,7 +818,10 @@ function getConfigurationListBuildSettingsForType(
     case "virtual-conference":
     case "shield-action":
     case "shield-config":
-      return createNotificationContentConfigurationList(props);
+    case "print-service":
+    case "smart-card":
+    case "authentication-services":
+      return createDefaultConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;
       throw new Error(`Unhandled case: ${exhaustiveCheck}`);
