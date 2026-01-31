@@ -26,6 +26,14 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for authentication-services 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"authentication-services\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for bg-download 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -163,6 +171,14 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for print-service 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"print-service\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for quicklook-preview 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -211,6 +227,14 @@ exports[`getTemplateConfig should return a valid template for shield-config 1`] 
 module.exports = config => ({
   type: \\"shield-config\\",
   entitlements: {\\"com.apple.developer.family-controls\\":true},
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for smart-card 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"smart-card\\",
+  entitlements: { /* Add entitlements */ },
 });"
 `;
 

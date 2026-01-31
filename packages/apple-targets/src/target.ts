@@ -242,6 +242,22 @@ export const TARGET_REGISTRY = {
     frameworks: ["ManagedSettings", "ManagedSettingsUI"],
     displayName: "Shield Configuration",
   },
+  "print-service": {
+    extensionPointIdentifier: "com.apple.printing.discovery",
+    displayName: "Print Service",
+  },
+  "smart-card": {
+    extensionPointIdentifier: "com.apple.ctk-tokens",
+    frameworks: ["CryptoTokenKit"],
+    displayName: "Smart Card",
+    description: "Persistent token / smart card extension",
+  },
+  "authentication-services": {
+    extensionPointIdentifier: "com.apple.AppSSO.idp-extension",
+    frameworks: ["AuthenticationServices"],
+    displayName: "Authentication Services",
+    description: "Single sign-on extension",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -663,6 +679,30 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension",
+        },
+      };
+    case "print-service":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).PrintServiceExtension",
+        },
+      };
+    case "smart-card":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).TokenExtension",
+        },
+      };
+    case "authentication-services":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).AuthenticationExtension",
         },
       };
     default:

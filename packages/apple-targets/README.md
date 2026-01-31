@@ -323,19 +323,19 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | virtual-conference      | Virtual Conference Provider        |
 | shield-action           | Shield Action Extension            |
 | shield-config           | Shield Configuration Extension     |
+| print-service           | Print Service Extension            |
+| smart-card              | Smart Card / Persistent Token      |
+| authentication-services | Authentication Services Extension  |
 
 
 <!-- | imessage             | iMessage Extension               | -->
 
 ### Not yet supported
 
-The following iOS extension types exist in Xcode but aren't supported yet. Contributions welcome! See `docs/xcode-target-discovery.md` for details on how these were discovered.
+The following extension types exist in Xcode but aren't supported yet. Contributions welcome! See `docs/xcode-target-discovery.md` for details on how these were discovered.
 
 | Extension Point Identifier | Xcode Template Name |
 | --- | --- |
-| `com.apple.printing.discovery` | Print Service Extension |
-| `com.apple.ctk-tokens` | Smart Card / Persistent Token Extension |
-| `com.apple.AppSSO.idp-extension` | Authentication Services Extension |
 | `com.apple.tv-top-shelf` | TV Top Shelf Extension (tvOS) |
 | `com.apple.FinderSync` | Finder Sync Extension (macOS) |
 | `com.apple.email.extension` | Mail Extension (macOS) |

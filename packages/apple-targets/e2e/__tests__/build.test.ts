@@ -143,6 +143,13 @@ const TARGET_REGISTRY: TargetEntry[] = [
   },
   { type: "shield-action", dir: "shield-action", target: "shieldaction" },
   { type: "shield-config", dir: "shield-config", target: "shieldconfig" },
+  { type: "print-service", dir: "print-service", target: "printservice" },
+  { type: "smart-card", dir: "smart-card", target: "smartcard" },
+  {
+    type: "authentication-services",
+    dir: "authentication-services",
+    target: "authenticationservices",
+  },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.

@@ -33,6 +33,9 @@ const ALL_TARGET_TYPES = [
   "virtual-conference",
   "shield-action",
   "shield-config",
+  "print-service",
+  "smart-card",
+  "authentication-services",
 ];
 
 describe(getTemplateConfig, () => {
