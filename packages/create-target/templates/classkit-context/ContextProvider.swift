@@ -1,8 +1,8 @@
 import ClassKit
 
-class ContextProvider: CLSContextProvider {
+class ContextProvider: NSObject, CLSContextProvider {
 
-    override func updateDescendants(of context: CLSContext, completion: @escaping (Error?) -> Void) {
+    func updateDescendants(of context: CLSContext, completion: @escaping (Error?) -> Void) {
         // Called when ClassKit needs to update the context hierarchy.
         // Add child contexts to the given context as appropriate.
         completion(nil)

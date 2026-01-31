@@ -1,4 +1,4 @@
-import IdentityLookup
+import IdentityLookupUI
 
 class ClassificationViewController: ILClassificationUIExtensionViewController {
 
