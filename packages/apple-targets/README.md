@@ -308,9 +308,39 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | network-app-proxy       | App Proxy Network Extension        |
 | network-dns-proxy       | DNS Proxy Network Extension        |
 | network-filter-data     | Filter Data Network Extension      |
+| content-blocker         | Safari Content Blocker Extension   |
 
 
 <!-- | imessage             | iMessage Extension               | -->
+
+### Not yet supported
+
+The following iOS extension types exist in Xcode but aren't supported yet. Contributions welcome! See `docs/xcode-target-discovery.md` for details on how these were discovered.
+
+| Extension Point Identifier | Xcode Template Name |
+| --- | --- |
+| `com.apple.fileprovider-nonui` | File Provider Extension |
+| `com.apple.fileprovider-actionsui` | File Provider UI Extension |
+| `com.apple.broadcast-services-upload` | Broadcast Upload Extension |
+| `com.apple.broadcast-services-setupui` | Broadcast Setup UI Extension |
+| `com.apple.callkit.call-directory` | Call Directory Extension |
+| `com.apple.classkit.context-provider` | ClassKit Context Provider Extension |
+| `com.apple.identitylookup.message-filter` | Message Filter Extension |
+| `com.apple.identitylookup.classification-ui` | Unwanted Communication Reporting Extension |
+| `com.apple.photo-editing` | Photo Editing Extension |
+| `com.apple.printing.discovery` | Print Service Extension |
+| `com.apple.quicklook.preview` | Quick Look Preview Extension |
+| `com.apple.spotlight.index` | CoreSpotlight Delegate Extension |
+| `com.apple.ctk-tokens` | Smart Card / Persistent Token Extension |
+| `com.apple.calendar.virtualconference` | Virtual Conference Provider Extension |
+| `com.apple.AppSSO.idp-extension` | Authentication Services Extension |
+| `com.apple.ManagedSettings.shield-action-service` | Shield Action Extension |
+| `com.apple.ManagedSettingsUI.shield-configuration-service` | Shield Configuration Extension |
+| `com.apple.tv-top-shelf` | TV Top Shelf Extension (tvOS) |
+| `com.apple.FinderSync` | Finder Sync Extension (macOS) |
+| `com.apple.email.extension` | Mail Extension (macOS) |
+
+> Run `bun scripts/scan-xcode-targets.ts --diff` to regenerate this list from your local Xcode installation.
 
 ## Code Signing
 

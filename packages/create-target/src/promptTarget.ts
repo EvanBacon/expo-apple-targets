@@ -3,87 +3,24 @@ import prompts from "prompts";
 
 import { env } from "./utils/env";
 
-export const TARGETS = [
-  // Favorites
-  {
-    title: "Widget",
-    value: "widget",
-    description: "Home screen widget",
-  },
+// @ts-ignore
+import { TARGET_REGISTRY } from "@bacons/apple-targets/build/target";
 
-  // Extras (sorted alphabetically)
-  { title: "Account Auth", value: "account-auth", description: "" },
-  {
-    title: "Action",
-    value: "action",
-    description: "Headless action that appears in share sheets",
-  },
-  {
-    title: "App Clip",
-    value: "clip",
-    description: "Instantly open your app without installing",
-  },
-  { title: "App Intent", value: "app-intent", description: "" },
-  { title: "Background Download", value: "bg-download", description: "" },
-  {
-    title: "Credentials Provider",
-    value: "credentials-provider",
-    description: "",
-  },
-  {
-    title: "Device Activity Monitor",
-    value: "device-activity-monitor",
-    description: "",
-  },
-  {
-    title: "Keyboard Extension",
-    value: "keyboard",
-    description: "Custom system keyboard",
-  },
-  { title: "Location Push", value: "location-push", description: "" },
-  { title: "Matter", value: "matter", description: "" },
-  {
-    title: "Network Extension: Packet Tunnel Provider",
-    value: "network-packet-tunnel",
-    description: "",
-  },
-  {
-    title: "Network Extension: App Proxy",
-    value: "network-app-proxy",
-    description: "",
-  },
-  {
-    title: "Network Extension: DNS Proxy",
-    value: "network-dns-proxy",
-    description: "",
-  },
-  {
-    title: "Network Extension: Filter Data",
-    value: "network-filter-data",
-    description: "",
-  },
-  {
-    title: "Notification Content",
-    value: "notification-content",
-    description: "",
-  },
-  {
-    title: "Notification Service",
-    value: "notification-service",
-    description: "",
-  },
-  {
-    title: "Quicklook Thumbnail",
-    value: "quicklook-thumbnail",
-    description: "",
-  },
-  { title: "Spotlight", value: "spotlight", description: "" },
-  { title: "Safari Extension", value: "safari", description: "" },
-  { title: "Siri Intent", value: "intent", description: "" },
-  { title: "Siri Intent UI", value: "intent-ui", description: "" },
-  { title: "Share Extension", value: "share", description: "" },
-  { title: "Watch", value: "watch", description: "" },
-];
+/** Derive the CLI target list from the central registry. Widget is listed first, rest alphabetical. */
+export const TARGETS: { title: string; value: string; description: string }[] =
+  Object.entries(TARGET_REGISTRY as Record<string, { displayName: string; description?: string; hasNoTemplate?: boolean }>)
+    .filter(([, def]) => !def.hasNoTemplate)
+    .map(([value, def]) => ({
+      title: def.displayName,
+      value,
+      description: def.description ?? "",
+    }))
+    .sort((a, b) => {
+      // Widget always first
+      if (a.value === "widget") return -1;
+      if (b.value === "widget") return 1;
+      return a.title.localeCompare(b.title);
+    });
 
 export function assertValidTarget(target: any): asserts target is string {
   if (!TARGETS.some((t) => t.value === target)) {

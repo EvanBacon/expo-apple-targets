@@ -299,7 +299,7 @@ async function applyXcodeChanges(
       // @ts-expect-error
       productReference:
         appExtensionBuildFile.props.fileRef /* alphaExtension.appex */,
-      productType: productType,
+      productType: productType as any,
     });
 
     const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
