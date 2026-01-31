@@ -47,10 +47,18 @@ your-expo-app/
 ```
 
 **Key points:**
-- **Extension source files** live in `targets/<extension-name>/` and are version-controlled.
-- **Xcode project** is generated fresh on each `npx expo prebuild --clean` and links to the targets.
+- **Extension source files** live in `targets/<extension-name>/` and are version-controlled (never in `ios/`).
+- **Xcode project** is regenerated on each `npx expo prebuild --clean` and links to the `targets/` directories.
 - **Entitlements** are defined in `expo-target.config.js` and synced to `.entitlements` files during prebuild.
-- **App Groups** are automatically synced from the main app to extensions that have `appGroupsByDefault: true`.
+- **App Groups** are automatically synced from the main app (`app.json`) to extensions that have `appGroupsByDefault: true`.
+- **Never edit files in `ios/`** — the directory is regenerated on every prebuild. All customization happens in `app.json` and `targets/`.
+
+**How it works:**
+1. You create extensions with `bunx create-target <type>`, which scaffolds `targets/<name>/`.
+2. You write Swift code and configure entitlements in `expo-target.config.js`.
+3. You run `npx expo prebuild --clean`, which generates the Xcode project and links your targets.
+4. The plugin reads your `app.json` entitlements and syncs them to extensions that need them.
+5. EAS Build (or `npx expo run:ios`) uses the generated project and entitlements for signing.
 
 ## What It Does
 
@@ -155,16 +163,25 @@ targets/widgets/
   WidgetsBundle.swift      # Template Swift code
 ```
 
-The `expo-target.config.js` defines the extension type and any custom entitlements:
+The `expo-target.config.js` defines the extension configuration:
 
 ```js
 // targets/widgets/expo-target.config.js
 module.exports = {
-  type: "widget",
-  name: "Widgets",
-  // App Groups will be auto-synced from the main app
+  type: "widget",                    // Extension type (required)
+  name: "Widgets",                   // Display name for the target
+  bundleIdentifier: "...",           // Optional: override default bundle ID
+  deploymentTarget: "16.0",          // Optional: minimum iOS version
+  frameworks: ["WidgetKit"],         // Optional: additional frameworks to link
+  entitlements: {                    // Optional: custom entitlements
+    // If omitted, App Groups auto-sync from main app for widget/share/clip/bg-download
+  }
 };
 ```
+
+**For extensions with `appGroupsByDefault: true` (widget, share, clip, bg-download):**
+- Omit `entitlements["com.apple.security.application-groups"]` → auto-syncs from `app.json`
+- Define it → overrides the main app's groups
 
 ### 4. Manual Override in Extension Config (Optional)
 
@@ -334,41 +351,9 @@ When using EAS Build, the `@bacons/apple-targets` plugin automatically exports e
    - Creates or updates provisioning profiles for the main app and each extension, including the App Group entitlement.
    - Signs each target with the correct profile.
 
-4. **No manual Apple Developer Portal work required.** You do not need to manually create App Group identifiers, add them to App IDs, or regenerate provisioning profiles. EAS handles everything automatically.
+4. **No manual Apple Developer Portal work required.** You do not need to manually create App Group identifiers, add them to App IDs, or regenerate provisioning profiles. EAS handles everything automatically based on the entitlements extracted during `expo prebuild`.
 
-### Manual EAS Configuration (Optional)
-
-If you need fine-grained control or are not using `expo prebuild`, you can manually define the `appExtensions` array in `app.json`:
-
-```json
-{
-  "expo": {
-    "extra": {
-      "eas": {
-        "build": {
-          "experimental": {
-            "ios": {
-              "appExtensions": [
-                {
-                  "targetName": "widgets",
-                  "bundleIdentifier": "com.example.myapp.widgets",
-                  "entitlements": {
-                    "com.apple.security.application-groups": [
-                      "group.com.example.myapp"
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-This is typically unnecessary when using `@bacons/apple-targets`, as the plugin populates it automatically.
+The plugin automatically populates `extra.eas.build.experimental.ios.appExtensions` in your Expo config, so EAS Build knows exactly which entitlements each extension target needs.
 
 ## Verifying App Groups are Configured
 
@@ -402,8 +387,8 @@ npx expo config --type introspect | jq '.extra.eas.build.experimental.ios.appExt
 ### Common Issues
 
 **"App Group container returns nil"**
-- The entitlement is missing from the target's `.entitlements` file.
-- The provisioning profile does not include the App Group entitlement (rebuild with EAS or regenerate manually in Xcode).
+- The entitlement is missing from the target's `.entitlements` file (verify in `targets/<name>/<name>.entitlements`).
+- The provisioning profile does not include the App Group entitlement (run `npx expo prebuild --clean` and rebuild with EAS).
 - The App Group identifier in code does not match the one in the entitlements (case-sensitive).
 
 **"UserDefaults writes from the app are not visible in the extension"**
@@ -476,9 +461,13 @@ plutil -p ~/Library/Group\ Containers/group.com.example.myapp/Library/Preference
 
 - **Simulator vs. device paths differ.** On the simulator, the App Group container is at `~/Library/Developer/CoreSimulator/...`. On a physical device, it is in a sandboxed location invisible from macOS Finder. Use Xcode's Devices and Simulators window > Download Container to inspect device data.
 
-- **TestFlight and App Store builds use different provisioning profiles.** If your development build works but TestFlight does not, the TestFlight provisioning profile may be missing the App Group entitlement. Rebuild the profile in EAS or manually via the Apple Developer Portal.
+- **TestFlight and App Store builds use different provisioning profiles.** If your development build works but TestFlight does not, ensure you've run `npx expo prebuild --clean` before the EAS build so the entitlements metadata is up-to-date. EAS will provision the correct profiles based on the `appExtensions` array.
 
-- **Entitlements mismatch between targets breaks EAS Build.** If your main app has `["group.A", "group.B"]` but your widget only has `["group.A"]`, EAS provisions both groups for the main app profile and only `group.A` for the widget. This is correct behavior, but if you later add `group.B` to the widget manually, you must re-sync the EAS metadata or the build will fail.
+- **Entitlements mismatch between targets breaks EAS Build.** If your main app has `["group.A", "group.B"]` but your widget only has `["group.A"]`, EAS provisions both groups for the main app profile and only `group.A` for the widget. This is correct behavior, but if you later add `group.B` to the widget's `expo-target.config.js`, you must run `npx expo prebuild --clean` before building with EAS to re-sync the metadata.
+
+- **Version control `targets/`, ignore `ios/`.** The `targets/` directory contains your source code and should be committed to git. The `ios/` directory is generated by `expo prebuild` and should be in `.gitignore`. Never manually edit files in `ios/` — they will be overwritten on the next prebuild.
+
+- **Generated `.entitlements` files live in `targets/`.** After running `npx expo prebuild`, each extension will have a `.entitlements` file in its `targets/<name>/` directory. These are generated from your `expo-target.config.js` and should **not** be manually edited (they will be regenerated on the next prebuild).
 
 ## Example: Full Integration
 
@@ -586,14 +575,23 @@ struct MyWidget: Widget {
 }
 ```
 
-**Build and test:**
+**Setup and build:**
 ```sh
+# 1. Create the widget extension
+bunx create-target widget
+
+# 2. Add the Swift code above to targets/widgets/WidgetsBundle.swift
+
+# 3. Generate the Xcode project with extension linked
 npx expo prebuild --clean
+
+# 4. Build and run
 npx expo run:ios
-# Tap "Save Data" in the app, then add the widget to the home screen
+
+# 5. In the app, tap "Save Data", then add the widget to the home screen
 ```
 
-The widget displays "Hello from main app!" read from the shared UserDefaults.
+The widget displays "Hello from main app!" read from the shared UserDefaults. Both targets access the same App Group container because the plugin automatically synced the entitlements from `app.json`.
 
 ## Additional Resources
 
