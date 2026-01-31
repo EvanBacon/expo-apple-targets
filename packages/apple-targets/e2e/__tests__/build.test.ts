@@ -105,6 +105,27 @@ const TARGET_REGISTRY: TargetEntry[] = [
   },
   { type: "call-directory", dir: "call-directory", target: "calldirectory" },
   { type: "message-filter", dir: "message-filter", target: "messagefilter" },
+  {
+    type: "file-provider-ui",
+    dir: "file-provider-ui",
+    target: "fileproviderui",
+  },
+  {
+    type: "broadcast-setup-ui",
+    dir: "broadcast-setup-ui",
+    target: "broadcastsetupui",
+  },
+  {
+    type: "classkit-context",
+    dir: "classkit-context",
+    target: "classkitcontext",
+  },
+  {
+    type: "unwanted-communication",
+    dir: "unwanted-communication",
+    target: "unwantedcommunication",
+  },
+  { type: "photo-editing", dir: "photo-editing", target: "photoediting" },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.

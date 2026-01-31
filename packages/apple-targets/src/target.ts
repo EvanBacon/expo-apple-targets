@@ -191,6 +191,31 @@ export const TARGET_REGISTRY = {
     frameworks: ["IdentityLookup"],
     displayName: "Message Filter",
   },
+  "file-provider-ui": {
+    extensionPointIdentifier: "com.apple.fileprovider-actionsui",
+    frameworks: ["FileProviderUI"],
+    displayName: "File Provider UI",
+  },
+  "broadcast-setup-ui": {
+    extensionPointIdentifier: "com.apple.broadcast-services-setupui",
+    frameworks: ["ReplayKit"],
+    displayName: "Broadcast Setup UI",
+  },
+  "classkit-context": {
+    extensionPointIdentifier: "com.apple.classkit.context-provider",
+    frameworks: ["ClassKit"],
+    displayName: "ClassKit Context Provider",
+  },
+  "unwanted-communication": {
+    extensionPointIdentifier: "com.apple.identitylookup.classification-ui",
+    frameworks: ["IdentityLookup", "IdentityLookupUI"],
+    displayName: "Unwanted Communication Reporting",
+  },
+  "photo-editing": {
+    extensionPointIdentifier: "com.apple.photo-editing",
+    frameworks: ["Photos", "PhotosUI"],
+    displayName: "Photo Editing",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -526,6 +551,49 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).MessageFilterExtension",
+        },
+      };
+    case "file-provider-ui":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).FileProviderUIController",
+        },
+      };
+    case "broadcast-setup-ui":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).BroadcastSetupViewController",
+        },
+      };
+    case "classkit-context":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ContextProvider",
+        },
+      };
+    case "unwanted-communication":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).ClassificationViewController",
+        },
+      };
+    case "photo-editing":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).PhotoEditingViewController",
+          NSExtensionAttributes: {
+            PHSupportedMediaTypes: ["Image"],
+          },
         },
       };
     default:

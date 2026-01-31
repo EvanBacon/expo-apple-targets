@@ -808,6 +808,11 @@ function getConfigurationListBuildSettingsForType(
     case "broadcast-upload":
     case "call-directory":
     case "message-filter":
+    case "file-provider-ui":
+    case "broadcast-setup-ui":
+    case "classkit-context":
+    case "unwanted-communication":
+    case "photo-editing":
       return createNotificationContentConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;
