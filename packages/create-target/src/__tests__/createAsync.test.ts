@@ -19,6 +19,10 @@ const ALL_TARGET_TYPES = [
   "credentials-provider",
   "account-auth",
   "device-activity-monitor",
+  "file-provider",
+  "broadcast-upload",
+  "call-directory",
+  "message-filter",
 ];
 
 describe(getTemplateConfig, () => {

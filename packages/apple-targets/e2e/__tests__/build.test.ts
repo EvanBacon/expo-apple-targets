@@ -97,6 +97,14 @@ const TARGET_REGISTRY: TargetEntry[] = [
       "Watch target requires AppIcon asset catalog which is not generated without an icon config",
   },
   { type: "widget", dir: "widget", target: "widget" },
+  { type: "file-provider", dir: "file-provider", target: "fileprovider" },
+  {
+    type: "broadcast-upload",
+    dir: "broadcast-upload",
+    target: "broadcastupload",
+  },
+  { type: "call-directory", dir: "call-directory", target: "calldirectory" },
+  { type: "message-filter", dir: "message-filter", target: "messagefilter" },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.
