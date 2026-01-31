@@ -23,7 +23,7 @@
     "test": "expo-module test",
     "test:e2e": "expo-module test --config e2e/jest.config.js --runInBand",
     "watch": "bun run build --watch",
-    "prepublishOnly": "expo-module prepublishOnly"
+    "prepublishOnly": "npx expo-module prepublishOnly"
   },
   "devDependencies": {
     "@bacons/apple-targets": "*",
