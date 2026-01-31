@@ -1,6 +1,6 @@
 {
   "name": "@bacons/apple-targets",
-  "version": "3.0.7",
+  "version": "4.0.0",
   "description": "Generate Apple Targets with Expo Prebuild",
   "main": "build/ExtensionStorage.js",
   "types": "build/ExtensionStorage.d.ts",
@@ -45,6 +45,7 @@
     "debug": "^4.3.4"
   },
   "devDependencies": {
+    "expo-module-scripts": "^4.1.7",
     "@types/debug": "^4.1.7",
     "@types/glob": "^8.1.0",
     "@expo/babel-preset-cli": "^0.3.1",

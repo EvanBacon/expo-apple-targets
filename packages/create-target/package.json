@@ -1,6 +1,6 @@
 {
   "name": "create-target",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Create targets for your Expo app",
   "bin": "./build/index.js",
   "repository": {
@@ -26,6 +26,7 @@
     "prepublishOnly": "expo-module prepublishOnly"
   },
   "devDependencies": {
+    "expo-module-scripts": "^4.1.7",
     "@bacons/apple-targets": "workspace:*",
     "@tsconfig/node18": "^18.2.2",
     "@expo/config": "^12.0.13",
