@@ -1,6 +1,6 @@
 {
   "name": "create-target",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Create targets for your Expo app",
   "bin": "./build/index.js",
   "repository": {
@@ -10,7 +10,8 @@
   },
   "homepage": "https://github.com/evanbacon/expo-apple-targets",
   "files": [
-    "build"
+    "build",
+    "templates"
   ],
   "scripts": {
     "build": "ncc build ./src/index.ts -o build/",
