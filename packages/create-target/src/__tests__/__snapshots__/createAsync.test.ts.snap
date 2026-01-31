@@ -163,6 +163,14 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for quicklook-preview 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"quicklook-preview\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for quicklook-thumbnail 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -190,6 +198,22 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for shield-action 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"shield-action\\",
+  entitlements: {\\"com.apple.developer.family-controls\\":true},
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for shield-config 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"shield-config\\",
+  entitlements: {\\"com.apple.developer.family-controls\\":true},
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for spotlight 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
@@ -198,10 +222,26 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for spotlight-delegate 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"spotlight-delegate\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for unwanted-communication 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"unwanted-communication\\",
+  entitlements: { /* Add entitlements */ },
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for virtual-conference 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"virtual-conference\\",
   entitlements: { /* Add entitlements */ },
 });"
 `;

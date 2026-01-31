@@ -126,6 +126,23 @@ const TARGET_REGISTRY: TargetEntry[] = [
     target: "unwantedcommunication",
   },
   { type: "photo-editing", dir: "photo-editing", target: "photoediting" },
+  {
+    type: "quicklook-preview",
+    dir: "quicklook-preview",
+    target: "quicklookpreview",
+  },
+  {
+    type: "spotlight-delegate",
+    dir: "spotlight-delegate",
+    target: "spotlightdelegate",
+  },
+  {
+    type: "virtual-conference",
+    dir: "virtual-conference",
+    target: "virtualconference",
+  },
+  { type: "shield-action", dir: "shield-action", target: "shieldaction" },
+  { type: "shield-config", dir: "shield-config", target: "shieldconfig" },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.
