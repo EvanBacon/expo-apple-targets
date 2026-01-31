@@ -23,6 +23,11 @@ const ALL_TARGET_TYPES = [
   "broadcast-upload",
   "call-directory",
   "message-filter",
+  "file-provider-ui",
+  "broadcast-setup-ui",
+  "classkit-context",
+  "unwanted-communication",
+  "photo-editing",
 ];
 
 describe(getTemplateConfig, () => {
