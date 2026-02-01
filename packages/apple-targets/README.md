@@ -285,47 +285,50 @@ module.exports = {
 
 Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store. I haven't tested all of these and they may not work.
 
-| Type                    | Description                        |
-| ----------------------- | ---------------------------------- |
-| action                  | Share Action                       |
-| app-intent              | App Intent Extension               |
-| widget                  | Widget / Live Activity             |
-| watch                   | Watch App (with companion iOS App) |
-| clip                    | App Clip                           |
-| safari                  | Safari Extension                   |
-| share                   | Share Extension                    |
-| notification-content    | Notification Content Extension     |
-| notification-service    | Notification Service Extension     |
-| intent                  | Siri Intent Extension              |
-| intent-ui               | Siri Intent UI Extension           |
-| spotlight               | Spotlight Index Extension          |
-| bg-download             | Background Download Extension      |
-| quicklook-thumbnail     | Quick Look Thumbnail Extension     |
-| location-push           | Location Push Service Extension    |
-| credentials-provider    | Credentials Provider Extension     |
-| account-auth            | Account Authentication Extension   |
-| network-packet-tunnel   | Packet Tunnel Network Extension    |
-| network-app-proxy       | App Proxy Network Extension        |
-| network-dns-proxy       | DNS Proxy Network Extension        |
-| network-filter-data     | Filter Data Network Extension      |
-| content-blocker         | Safari Content Blocker Extension   |
-| file-provider           | File Provider Extension            |
-| broadcast-upload        | Broadcast Upload Extension         |
-| call-directory          | Call Directory Extension           |
-| message-filter          | Message Filter Extension           |
-| file-provider-ui        | File Provider UI Extension         |
-| broadcast-setup-ui      | Broadcast Setup UI Extension       |
-| classkit-context        | ClassKit Context Provider Extension|
-| unwanted-communication  | Unwanted Communication Reporting   |
-| photo-editing           | Photo Editing Extension            |
-| quicklook-preview       | Quick Look Preview Extension       |
-| spotlight-delegate      | CoreSpotlight Delegate Extension   |
-| virtual-conference      | Virtual Conference Provider        |
-| shield-action           | Shield Action Extension            |
-| shield-config           | Shield Configuration Extension     |
-| print-service           | Print Service Extension            |
-| smart-card              | Smart Card / Persistent Token      |
-| authentication-services | Authentication Services Extension  |
+| Type                      | Description                        |
+| ------------------------- | ---------------------------------- |
+| action                    | Share Action                       |
+| app-intent                | App Intent Extension               |
+| widget                    | Widget / Live Activity             |
+| watch                     | Watch App (with companion iOS App) |
+| clip                      | App Clip                           |
+| safari                    | Safari Extension                   |
+| share                     | Share Extension                    |
+| notification-content      | Notification Content Extension     |
+| notification-service      | Notification Service Extension     |
+| intent                    | Siri Intent Extension              |
+| intent-ui                 | Siri Intent UI Extension           |
+| spotlight                 | Spotlight Index Extension          |
+| bg-download               | Background Download Extension      |
+| quicklook-thumbnail       | Quick Look Thumbnail Extension     |
+| location-push             | Location Push Service Extension    |
+| credentials-provider      | Credentials Provider Extension     |
+| account-auth              | Account Authentication Extension   |
+| device-activity-monitor   | Device Activity Monitor Extension  |
+| keyboard                  | Custom Keyboard Extension          |
+| matter                    | Matter Device Setup Extension      |
+| network-packet-tunnel     | Packet Tunnel Network Extension    |
+| network-app-proxy         | App Proxy Network Extension        |
+| network-dns-proxy         | DNS Proxy Network Extension        |
+| network-filter-data       | Filter Data Network Extension      |
+| content-blocker           | Safari Content Blocker Extension   |
+| file-provider             | File Provider Extension            |
+| broadcast-upload          | Broadcast Upload Extension         |
+| call-directory            | Call Directory Extension           |
+| message-filter            | Message Filter Extension           |
+| file-provider-ui          | File Provider UI Extension         |
+| broadcast-setup-ui        | Broadcast Setup UI Extension       |
+| classkit-context          | ClassKit Context Provider Extension|
+| unwanted-communication    | Unwanted Communication Reporting   |
+| photo-editing             | Photo Editing Extension            |
+| quicklook-preview         | Quick Look Preview Extension       |
+| spotlight-delegate        | CoreSpotlight Delegate Extension   |
+| virtual-conference        | Virtual Conference Provider        |
+| shield-action             | Shield Action Extension            |
+| shield-config             | Shield Configuration Extension     |
+| print-service             | Print Service Extension            |
+| smart-card                | Smart Card / Persistent Token      |
+| authentication-services   | Authentication Services Extension  |
 
 
 <!-- | imessage             | iMessage Extension               | -->
