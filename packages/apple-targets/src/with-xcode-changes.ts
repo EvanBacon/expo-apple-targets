@@ -302,10 +302,51 @@ async function applyXcodeChanges(
       productType: productType as any,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+    // For watch-widget extensions, embed in the watchOS app target
+    // instead of the main iOS app target. getCopyBuildPhaseForTarget()
+    // throws when called on non-main targets, so we manually create
+    // the "Embed Foundation Extensions" copy phase on the watch target.
+    if (props.type === "watch-widget") {
+      const watchTarget = project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      );
+      if (watchTarget) {
+        const {
+          PBXCopyFilesBuildPhase,
+        } = require("@bacons/xcode/build/api/PBXSourcesBuildPhase");
+        let embedPhase = watchTarget.props.buildPhases.find(
+          (phase: any) =>
+            PBXCopyFilesBuildPhase.is(phase) &&
+            phase.props.name === "Embed Foundation Extensions",
+        );
+        if (!embedPhase) {
+          embedPhase = watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+            name: "Embed Foundation Extensions",
+            dstSubfolderSpec: 13,
+            dstPath: "",
+            files: [],
+          });
+        }
+        if (!embedPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          embedPhase.props.files.push(appExtensionBuildFile);
+        }
+      } else {
+        console.warn(
+          "[apple-targets] watch-widget: could not find watchOS app target, falling back to main app",
+        );
+        const copyPhase =
+          mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+        if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          copyPhase.props.files.push(appExtensionBuildFile);
+        }
+      }
+    } else {
+      const copyPhase =
+        mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -321,7 +362,17 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // For watch-widget extensions, the dependency belongs on the watchOS
+  // app target so Xcode builds the widget before the watch app.
+  const dependencyParent =
+    props.type === "watch-widget"
+      ? project.rootObject.props.targets.find(
+          (t): t is PBXNativeTarget =>
+            PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+        ) ?? mainAppTarget
+      : mainAppTarget;
+
+  dependencyParent.addDependency(targetToUpdate);
 
   const assetsDir = path.join(magicCwd, "assets");
 
