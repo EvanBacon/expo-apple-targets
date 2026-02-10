@@ -191,6 +191,7 @@ export function getTemplateConfig(target: string) {
     "safari",
     "share",
     "watch",
+    "watch-widget",
   ].includes(target);
 
   const lines = [
@@ -203,7 +204,7 @@ export function getTemplateConfig(target: string) {
     lines.push(`  icon: 'https://github.com/expo.png',`);
   }
 
-  if (target === "watch") {
+  if (target === "watch" || target === "watch-widget") {
     lines.push('  colors: { $accent: "darkcyan", },');
     lines.push('  deploymentTarget: "9.4",');
   } else if (target === "action") {

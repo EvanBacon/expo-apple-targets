@@ -100,6 +100,15 @@ export const TARGET_REGISTRY = {
     needsEmbeddedSwift: true,
     displayName: "Watch",
   },
+  "watch-widget": {
+    // extensionPointIdentifier intentionally omitted to avoid collision
+    // with "widget" in KNOWN_EXTENSION_POINT_IDENTIFIERS. The Info.plist
+    // is handled explicitly in getTargetInfoPlistForType().
+    frameworks: ["WidgetKit", "SwiftUI"],
+    appGroupsByDefault: true,
+    displayName: "Watch Widget",
+    description: "Watch face complication using WidgetKit",
+  },
   "location-push": {
     extensionPointIdentifier: "com.apple.location.push.service",
     displayName: "Location Push",
@@ -322,6 +331,12 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
   switch (type) {
     case "watch":
       return {};
+    case "watch-widget":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier: "com.apple.widgetkit-extension",
+        },
+      };
     case "action":
       return {
         NSExtension: {
@@ -738,6 +753,20 @@ export function isNativeTargetOfType(
       "com.apple.product-type.application.on-demand-install-capable"
   ) {
     return true;
+  }
+  if (
+    type === "watch-widget" &&
+    target.props.productType === "com.apple.product-type.app-extension"
+  ) {
+    const hasWatchOS =
+      "WATCHOS_DEPLOYMENT_TARGET" in
+      target.getDefaultConfiguration().props.buildSettings;
+    if (!hasWatchOS) return false;
+    const infoPlist = target.getDefaultConfiguration().getInfoPlist();
+    return (
+      infoPlist.NSExtension?.NSExtensionPointIdentifier ===
+      "com.apple.widgetkit-extension"
+    );
   }
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
