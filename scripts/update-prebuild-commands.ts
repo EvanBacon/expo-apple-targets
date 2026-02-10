@@ -14,15 +14,18 @@ const SKIP_FILES = new Set(["_template.md", "SKILL.md", "README.md"]);
 async function updateSkillFile(filePath: string): Promise<boolean> {
   const content = await readFile(filePath, "utf-8");
 
-  // Pattern 1: Simple three-line format (most common)
-  const pattern1 = /```sh\nnpx expo prebuild --clean\n```/g;
-  const replacement1 = `\`\`\`sh
-# Initial setup or after changing expo-target.config.js
+  const finalReplacement = `\`\`\`sh
+# Initial setup, or after changing expo-target.config.js, app.json, or adding/removing targets
 npx expo prebuild --clean
 
-# Subsequent runs when editing Swift code only (target files live outside /ios)
-npx expo prebuild
+# Swift files in targets/ are linked - no prebuild needed for code-only changes
 \`\`\``;
+
+  // Pattern 1a: Original simple format
+  const pattern1a = /```sh\nnpx expo prebuild --clean\n```/g;
+
+  // Pattern 1b: Incorrect format from first pass (with "Subsequent runs")
+  const pattern1b = /```sh\n# Initial setup or after changing expo-target\.config\.js\nnpx expo prebuild --clean\n\n# Subsequent runs when editing Swift code only \(target files live outside \/ios\)\nnpx expo prebuild\n```/g;
 
   // Pattern 2: With cd command before it
   const pattern2 = /```sh\ncd your-expo-app\nbunx create-target ([a-z-]+)\n```\n\n```json\n\/\/ app\.json\n{\n  "expo": {\n    "plugins": \[\["@bacons\/apple-targets"\]\]\n  }\n}\n```\n\n```sh\nnpx expo prebuild --clean\n```/g;
@@ -30,13 +33,21 @@ npx expo prebuild
   let updated = content;
   let changed = false;
 
-  // Replace pattern 1 (standalone prebuild command)
-  if (pattern1.test(content)) {
-    updated = updated.replace(pattern1, replacement1);
+  // Replace pattern 1a (original standalone prebuild command)
+  if (pattern1a.test(content)) {
+    updated = updated.replace(pattern1a, finalReplacement);
     changed = true;
   }
 
-  // Replace pattern 2 (full setup section)
+  // Replace pattern 1b (incorrect format from first pass)
+  if (pattern1b.test(updated)) {
+    updated = updated.replace(pattern1b, finalReplacement);
+    changed = true;
+  }
+
+  // Replace pattern 2 (full setup section) - also handle old incorrect format
+  const pattern2incorrect = /```sh\ncd your-expo-app\nbunx create-target ([a-z-]+)\n```\n\n```json\n\/\/ app\.json\n{\n  "expo": {\n    "plugins": \[\["@bacons\/apple-targets"\]\]\n  }\n}\n```\n\n```sh\n# Initial setup or after changing expo-target\.config\.js.*?\nnpx expo prebuild --clean\n\n# Subsequent runs when editing Swift code only.*?\nnpx expo prebuild\n```/gs;
+
   updated = updated.replace(pattern2, (match, targetType) => {
     changed = true;
     return `\`\`\`sh
@@ -53,13 +64,26 @@ bunx create-target ${targetType}
 }
 \`\`\`
 
-\`\`\`sh
-# Initial setup or after changing expo-target.config.js
-npx expo prebuild --clean
+${finalReplacement}`;
+  });
 
-# Subsequent runs when editing Swift code only (target files live outside /ios)
-npx expo prebuild
-\`\`\``;
+  updated = updated.replace(pattern2incorrect, (match, targetType) => {
+    changed = true;
+    return `\`\`\`sh
+cd your-expo-app
+bunx create-target ${targetType}
+\`\`\`
+
+\`\`\`json
+// app.json
+{
+  "expo": {
+    "plugins": [["@bacons/apple-targets"]]
+  }
+}
+\`\`\`
+
+${finalReplacement}`;
   });
 
   if (changed) {

@@ -231,11 +231,10 @@ bunx create-target quicklook-thumbnail
 ```
 
 ```sh
-# Initial setup or after changing expo-target.config.js
+# Initial setup, or after changing expo-target.config.js, app.json, or adding/removing targets
 npx expo prebuild --clean
 
-# Subsequent runs when editing Swift code only (target files live outside /ios)
-npx expo prebuild
+# Swift files in targets/ are linked - no prebuild needed for code-only changes
 ```
 
 ## Platform Availability

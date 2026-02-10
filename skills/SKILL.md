@@ -206,28 +206,32 @@ bunx create-target <type>
 }
 
 # 3. Generate the native project
-npx expo prebuild --clean    # First time or after app.json changes
-npx expo prebuild            # Subsequent runs (targets live outside /ios)
+npx expo prebuild --clean
 ```
 
 The `<type>` parameter corresponds to the extension type slug shown in each skill document's title (e.g., `widget`, `share`, `clip`, `notification-service`).
 
-### When to Use `--clean`
+### When to Run Prebuild
 
-Because target source files live outside the `/ios` directory (via Continuous Native Generation), you can often run `expo prebuild` without `--clean`:
+Because target source files live outside the `/ios` directory and are **linked** into the Xcode project (not copied), Swift code changes are automatically synchronized. You don't need to re-run prebuild when editing code.
 
-- **Use `--clean`** for:
+- **Run `prebuild --clean`** when:
   - Initial setup after creating a new target
-  - Changes to `app.json` or `expo-target.config.js` configuration (icon, colors, entitlements, bundle ID)
-  - Adding/removing targets
+  - Changing `expo-target.config.js` (icon, colors, entitlements, bundle ID, frameworks)
+  - Changing `app.json` plugin configuration
+  - Adding or removing targets
   - Xcode project corruption or mysterious build failures
 
-- **Skip `--clean`** for:
-  - Editing Swift code in `targets/<name>/` directories
-  - Changes to existing target source files
+- **Run `prebuild` (without `--clean`)** when:
+  - You need to regenerate the project but want to preserve manual Xcode modifications
+  - Updating the plugin version with minor project changes
+
+- **No prebuild needed** for:
+  - Editing Swift code in `targets/<name>/` directories — files are linked, changes appear immediately in Xcode
+  - Adding/modifying Swift files within an existing target
   - Most day-to-day development work on target implementations
 
-This approach preserves manual Xcode modifications and speeds up the prebuild process when only Swift code has changed.
+This architecture allows you to iterate on extension code without constantly regenerating the entire Xcode project, speeding up development and preserving manual project customizations.
 
 ## Entitlements & Capabilities Guides
 

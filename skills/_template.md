@@ -60,11 +60,11 @@ bunx create-target <type>
 // app.json -- show the plugin entry
 ```
 ```sh
-# Initial setup or after changing app.json config
+# Initial setup, or after changing expo-target.config.js, app.json, or adding/removing targets
 npx expo prebuild --clean
 
-# Subsequent runs (target Swift files live outside /ios)
-npx expo prebuild
+# Swift files in targets/ are automatically linked - no prebuild needed for code changes
+# Only re-run prebuild when config changes or to preserve manual Xcode modifications (omit --clean)
 ```
 
 ### 9. Platform Availability (table)
