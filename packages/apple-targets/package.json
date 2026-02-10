@@ -20,7 +20,7 @@
     "test": "jest --watch",
     "test:e2e": "jest --no-watch --config e2e/jest.config.js",
     "prepare": "expo-module prepare",
-    "prepublishOnly": "expo-module prepublishOnly",
+    "prepublishOnly": "proofread",
     "expo-module": "expo-module"
   },
   "repository": {
@@ -45,17 +45,18 @@
     "debug": "^4.3.4"
   },
   "devDependencies": {
-    "expo-module-scripts": "^4.1.7",
-    "@types/debug": "^4.1.7",
-    "@types/glob": "^8.1.0",
     "@expo/babel-preset-cli": "^0.3.1",
     "@expo/config": "^12.0.13",
     "@expo/config-plugins": "^54.0.4",
     "@expo/image-utils": "^0.8.8",
+    "@expo/npm-proofread": "^1.0.1",
     "@expo/plist": "^0.4.8",
     "@expo/prebuild-config": "^54.0.8",
+    "@types/debug": "^4.1.7",
+    "@types/glob": "^8.1.0",
     "chalk": "^4.0.0",
     "expo": "^54.0.32",
+    "expo-module-scripts": "^4.1.7",
     "jest-environment-node": "^26"
   },
   "peerDependencies": {
