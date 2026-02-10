@@ -754,13 +754,15 @@ export function isNativeTargetOfType(
   ) {
     return true;
   }
+
+  const hasWatchOS =
+    "WATCHOS_DEPLOYMENT_TARGET" in
+    target.getDefaultConfiguration().props.buildSettings;
+
   if (
     type === "watch-widget" &&
     target.props.productType === "com.apple.product-type.app-extension"
   ) {
-    const hasWatchOS =
-      "WATCHOS_DEPLOYMENT_TARGET" in
-      target.getDefaultConfiguration().props.buildSettings;
     if (!hasWatchOS) return false;
     const infoPlist = target.getDefaultConfiguration().getInfoPlist();
     return (
@@ -768,6 +770,16 @@ export function isNativeTargetOfType(
       "com.apple.widgetkit-extension"
     );
   }
+
+  // For iOS widget type, exclude watchOS targets that share the same extension point ID
+  if (
+    type === "widget" &&
+    target.props.productType === "com.apple.product-type.app-extension" &&
+    hasWatchOS
+  ) {
+    return false;
+  }
+
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }
