@@ -63,7 +63,7 @@
     },
     "packages/apple-targets": {
       "name": "@bacons/apple-targets",
-      "version": "4.0.0",
+      "version": "4.0.1",
       "dependencies": {
         "@bacons/xcode": "1.0.0-alpha.27",
         "@react-native/normalize-colors": "^0.79.2",
@@ -75,6 +75,7 @@
         "@expo/config": "^12.0.13",
         "@expo/config-plugins": "^54.0.4",
         "@expo/image-utils": "^0.8.8",
+        "@expo/npm-proofread": "^1.0.1",
         "@expo/plist": "^0.4.8",
         "@expo/prebuild-config": "^54.0.8",
         "@types/debug": "^4.1.7",
@@ -90,7 +91,7 @@
     },
     "packages/create-target": {
       "name": "create-target",
-      "version": "3.0.2",
+      "version": "3.0.4",
       "bin": "./build/index.js",
       "devDependencies": {
         "@bacons/apple-targets": "*",
