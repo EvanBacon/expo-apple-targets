@@ -31,6 +31,7 @@ type Props = Config & {
 };
 
 const DEFAULT_DEPLOYMENT_TARGET = "18.0";
+const DEFAULT_WATCHOS_DEPLOYMENT_TARGET = "11.0";
 
 const withWidget: ConfigPlugin<Props> = (config, props) => {
   LOG_QUEUE.add(() =>
@@ -331,7 +332,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         config._internal!.projectRoot,
         path.resolve(props.directory),
       ),
-    deploymentTarget: props.deploymentTarget ?? DEFAULT_DEPLOYMENT_TARGET,
+    deploymentTarget:
+      props.deploymentTarget ??
+      (props.type === "watch" || props.type === "watch-widget"
+        ? DEFAULT_WATCHOS_DEPLOYMENT_TARGET
+        : DEFAULT_DEPLOYMENT_TARGET),
     bundleId,
     icon: props.icon,
 
