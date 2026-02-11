@@ -29,6 +29,19 @@ import {
 } from "./configuration-list";
 import { warnOnce } from "./util";
 
+/**
+ * Checks if a target is a watchOS extension by inspecting its build settings.
+ * This is more agnostic than checking props.type directly, as it derives
+ * the behavior from Xcode project attributes.
+ */
+function isWatchOSExtensionTarget(target: PBXNativeTarget): boolean {
+  const buildSettings = target.getDefaultConfiguration().props.buildSettings;
+  return (
+    buildSettings.SDKROOT === "watchos" ||
+    "WATCHOS_DEPLOYMENT_TARGET" in buildSettings
+  );
+}
+
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
   props,
@@ -302,10 +315,51 @@ async function applyXcodeChanges(
       productType: productType as any,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+    // For watchOS extensions, embed in the watchOS app target instead of
+    // the main iOS app target. getCopyBuildPhaseForTarget() throws when
+    // called on non-main targets, so we manually create the
+    // "Embed Foundation Extensions" copy phase on the watch target.
+    if (isWatchOSExtensionTarget(targetToUpdate)) {
+      const watchTarget = project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      );
+      if (watchTarget) {
+        const {
+          PBXCopyFilesBuildPhase,
+        } = require("@bacons/xcode/build/api/PBXSourcesBuildPhase");
+        const existingPhase = watchTarget.props.buildPhases.find(
+          (phase: any) =>
+            PBXCopyFilesBuildPhase.is(phase) &&
+            phase.props.name === "Embed Foundation Extensions",
+        );
+        const embedPhase =
+          existingPhase ??
+          watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+            name: "Embed Foundation Extensions",
+            dstSubfolderSpec: 13,
+            dstPath: "",
+            files: [],
+          });
+        if (!embedPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          embedPhase.props.files.push(appExtensionBuildFile);
+        }
+      } else {
+        console.warn(
+          "[apple-targets] watchOS extension: could not find watchOS app target, falling back to main app",
+        );
+        const copyPhase =
+          mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+        if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          copyPhase.props.files.push(appExtensionBuildFile);
+        }
+      }
+    } else {
+      const copyPhase =
+        mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -321,7 +375,16 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // For watchOS extensions, the dependency belongs on the watchOS
+  // app target so Xcode builds the extension before the watch app.
+  const dependencyParent = isWatchOSExtensionTarget(targetToUpdate)
+    ? project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      ) ?? mainAppTarget
+    : mainAppTarget;
+
+  dependencyParent.addDependency(targetToUpdate);
 
   const assetsDir = path.join(magicCwd, "assets");
 
