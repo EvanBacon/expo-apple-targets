@@ -29,6 +29,19 @@ import {
 } from "./configuration-list";
 import { warnOnce } from "./util";
 
+/**
+ * Checks if a target is a watchOS extension by inspecting its build settings.
+ * This is more agnostic than checking props.type directly, as it derives
+ * the behavior from Xcode project attributes.
+ */
+function isWatchOSExtensionTarget(target: PBXNativeTarget): boolean {
+  const buildSettings = target.getDefaultConfiguration().props.buildSettings;
+  return (
+    buildSettings.SDKROOT === "watchos" ||
+    "WATCHOS_DEPLOYMENT_TARGET" in buildSettings
+  );
+}
+
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
   props,
@@ -302,11 +315,11 @@ async function applyXcodeChanges(
       productType: productType as any,
     });
 
-    // For watch-widget extensions, embed in the watchOS app target
-    // instead of the main iOS app target. getCopyBuildPhaseForTarget()
-    // throws when called on non-main targets, so we manually create
-    // the "Embed Foundation Extensions" copy phase on the watch target.
-    if (props.type === "watch-widget") {
+    // For watchOS extensions, embed in the watchOS app target instead of
+    // the main iOS app target. getCopyBuildPhaseForTarget() throws when
+    // called on non-main targets, so we manually create the
+    // "Embed Foundation Extensions" copy phase on the watch target.
+    if (isWatchOSExtensionTarget(targetToUpdate)) {
       const watchTarget = project.rootObject.props.targets.find(
         (t): t is PBXNativeTarget =>
           PBXNativeTarget.is(t) && t.isWatchOSTarget(),
@@ -315,25 +328,25 @@ async function applyXcodeChanges(
         const {
           PBXCopyFilesBuildPhase,
         } = require("@bacons/xcode/build/api/PBXSourcesBuildPhase");
-        let embedPhase = watchTarget.props.buildPhases.find(
+        const existingPhase = watchTarget.props.buildPhases.find(
           (phase: any) =>
             PBXCopyFilesBuildPhase.is(phase) &&
             phase.props.name === "Embed Foundation Extensions",
         );
-        if (!embedPhase) {
-          embedPhase = watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+        const embedPhase =
+          existingPhase ??
+          watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
             name: "Embed Foundation Extensions",
             dstSubfolderSpec: 13,
             dstPath: "",
             files: [],
           });
-        }
         if (!embedPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
           embedPhase.props.files.push(appExtensionBuildFile);
         }
       } else {
         console.warn(
-          "[apple-targets] watch-widget: could not find watchOS app target, falling back to main app",
+          "[apple-targets] watchOS extension: could not find watchOS app target, falling back to main app",
         );
         const copyPhase =
           mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
@@ -362,15 +375,14 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  // For watch-widget extensions, the dependency belongs on the watchOS
-  // app target so Xcode builds the widget before the watch app.
-  const dependencyParent =
-    props.type === "watch-widget"
-      ? project.rootObject.props.targets.find(
-          (t): t is PBXNativeTarget =>
-            PBXNativeTarget.is(t) && t.isWatchOSTarget(),
-        ) ?? mainAppTarget
-      : mainAppTarget;
+  // For watchOS extensions, the dependency belongs on the watchOS
+  // app target so Xcode builds the extension before the watch app.
+  const dependencyParent = isWatchOSExtensionTarget(targetToUpdate)
+    ? project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      ) ?? mainAppTarget
+    : mainAppTarget;
 
   dependencyParent.addDependency(targetToUpdate);
 
