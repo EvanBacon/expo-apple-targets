@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -54,6 +55,54 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
 
 //   return version;
 // }
+
+/**
+ * Checks if a target is a watchOS extension (e.g. watch-widget) as opposed to
+ * the main watchOS app. watchOS extensions must be embedded in the watchOS app
+ * target, not the main iOS app target.
+ */
+function isWatchOSExtension(target: PBXNativeTarget): boolean {
+  const buildSettings =
+    target.getDefaultConfiguration().props.buildSettings;
+  const isWatchOS =
+    buildSettings.SDKROOT === "watchos" ||
+    "WATCHOS_DEPLOYMENT_TARGET" in buildSettings;
+  // The main watchOS app has productType "application" — only extensions
+  // (productType "app-extension") should be embedded in the watch app.
+  return (
+    isWatchOS &&
+    target.props.productType !== "com.apple.product-type.application"
+  );
+}
+
+/**
+ * Embeds a build file in a watchOS app target by creating or reusing an
+ * "Embed Foundation Extensions" copy-files build phase.
+ */
+function embedInWatchTarget(
+  project: XcodeProject,
+  watchTarget: PBXNativeTarget,
+  buildFile: PBXBuildFile,
+): void {
+  const existingPhase = watchTarget.props.buildPhases.find(
+    (phase): phase is PBXCopyFilesBuildPhase =>
+      PBXCopyFilesBuildPhase.is(phase) &&
+      phase.props.name === "Embed Foundation Extensions",
+  ) as PBXCopyFilesBuildPhase | undefined;
+
+  const embedPhase =
+    existingPhase ??
+    watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+      name: "Embed Foundation Extensions",
+      dstSubfolderSpec: 13,
+      dstPath: "",
+      files: [],
+    });
+
+  if (!embedPhase.getBuildFile(buildFile.props.fileRef)) {
+    embedPhase.props.files.push(buildFile);
+  }
+}
 
 async function applyXcodeChanges(
   config: ExpoConfig,
@@ -302,10 +351,37 @@ async function applyXcodeChanges(
       productType: productType as any,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+    // For watchOS extensions (e.g. watch-widget), embed in the watchOS app
+    // target instead of the main iOS app. getCopyBuildPhaseForTarget() can
+    // only be called on the main target, so we manually create the embed
+    // phase on the watch target.
+    if (isWatchOSExtension(targetToUpdate)) {
+      const watchTarget = project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      );
+      if (watchTarget) {
+        embedInWatchTarget(
+          project,
+          watchTarget,
+          appExtensionBuildFile,
+        );
+      } else {
+        console.warn(
+          "[apple-targets] watchOS extension: could not find watchOS app target, falling back to main app",
+        );
+        const copyPhase =
+          mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+        if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          copyPhase.props.files.push(appExtensionBuildFile);
+        }
+      }
+    } else {
+      const copyPhase =
+        mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -321,7 +397,17 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // For watchOS extensions, add the dependency to the watchOS app target
+  // so Xcode builds the extension before the watch app.
+  if (isWatchOSExtension(targetToUpdate)) {
+    const watchTarget = project.rootObject.props.targets.find(
+      (t): t is PBXNativeTarget =>
+        PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+    );
+    (watchTarget ?? mainAppTarget).addDependency(targetToUpdate);
+  } else {
+    mainAppTarget.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 
