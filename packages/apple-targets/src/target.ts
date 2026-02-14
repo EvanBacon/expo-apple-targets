@@ -696,6 +696,14 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension",
         },
       };
+    case "device-activity-monitor":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        },
+      };
     case "print-service":
       return {
         NSExtension: {
