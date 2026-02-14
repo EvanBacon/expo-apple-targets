@@ -34,12 +34,6 @@ const DEFAULT_DEPLOYMENT_TARGET = "18.0";
 const DEFAULT_WATCHOS_DEPLOYMENT_TARGET = "11.0";
 
 const withWidget: ConfigPlugin<Props> = (config, props) => {
-  LOG_QUEUE.add(() =>
-    warnOnce(
-      chalk`\nUsing experimental Config Plugin {bold @bacons/apple-targets} that is subject to breaking changes.`,
-    ),
-  );
-
   // TODO: Magically based on the top-level folders in the `ios-widgets/` folder
 
   if (props.icon && !/https?:\/\//.test(props.icon)) {
