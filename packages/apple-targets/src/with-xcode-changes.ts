@@ -29,16 +29,37 @@ import {
 } from "./configuration-list";
 import { warnOnce } from "./util";
 
-/**
- * Checks if a target is a watchOS extension by inspecting its build settings.
- * This is more agnostic than checking props.type directly, as it derives
- * the behavior from Xcode project attributes.
- */
-function isWatchOSExtensionTarget(target: PBXNativeTarget): boolean {
+function hasWatchOSBuildSettings(target: PBXNativeTarget): boolean {
   const buildSettings = target.getDefaultConfiguration().props.buildSettings;
   return (
     buildSettings.SDKROOT === "watchos" ||
     "WATCHOS_DEPLOYMENT_TARGET" in buildSettings
+  );
+}
+
+function isWatchOSAppTarget(target: PBXNativeTarget): boolean {
+  return (
+    target.props.productType === "com.apple.product-type.application" &&
+    hasWatchOSBuildSettings(target)
+  );
+}
+
+function isWatchOSExtensionTarget(target: PBXNativeTarget): boolean {
+  return (
+    target.props.productType === "com.apple.product-type.app-extension" &&
+    hasWatchOSBuildSettings(target)
+  );
+}
+
+function findWatchOSAppTarget(
+  project: XcodeProject,
+  excludingTargetUuid?: string
+): PBXNativeTarget | undefined {
+  return project.rootObject.props.targets.find(
+    (t): t is PBXNativeTarget =>
+      PBXNativeTarget.is(t) &&
+      t.uuid !== excludingTargetUuid &&
+      isWatchOSAppTarget(t)
   );
 }
 
@@ -320,10 +341,7 @@ async function applyXcodeChanges(
     // called on non-main targets, so we manually create the
     // "Embed Foundation Extensions" copy phase on the watch target.
     if (isWatchOSExtensionTarget(targetToUpdate)) {
-      const watchTarget = project.rootObject.props.targets.find(
-        (t): t is PBXNativeTarget =>
-          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
-      );
+      const watchTarget = findWatchOSAppTarget(project, targetToUpdate.uuid);
       if (watchTarget) {
         const {
           PBXCopyFilesBuildPhase,
@@ -378,10 +396,7 @@ async function applyXcodeChanges(
   // For watchOS extensions, the dependency belongs on the watchOS
   // app target so Xcode builds the extension before the watch app.
   const dependencyParent = isWatchOSExtensionTarget(targetToUpdate)
-    ? project.rootObject.props.targets.find(
-        (t): t is PBXNativeTarget =>
-          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
-      ) ?? mainAppTarget
+    ? findWatchOSAppTarget(project, targetToUpdate.uuid) ?? mainAppTarget
     : mainAppTarget;
 
   dependencyParent.addDependency(targetToUpdate);
