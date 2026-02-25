@@ -13,6 +13,7 @@
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "jest",
+    "test:e2e": "jest --no-watch --config e2e/jest.config.js",
     "prepare": "expo-module build || true",
     "expo-module": "expo-module"
   },

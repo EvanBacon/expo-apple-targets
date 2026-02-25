@@ -22,3 +22,7 @@ jobs:
       - name: Test create-target
         run: bun run jest
         working-directory: packages/create-target
+
+      - name: Test spm
+        run: bun run jest --no-watch
+        working-directory: packages/spm
