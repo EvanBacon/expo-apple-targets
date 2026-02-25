@@ -20,6 +20,15 @@ export const withTargetsDir: ConfigPlugin<
   const { root = "./targets", match = "*" } = _props || {};
   const projectRoot = config._internal!.projectRoot;
 
+  if (!config.ios?.bundleIdentifier) {
+    const fallbackBundleId = `com.example.${config.slug}`;
+    warnOnce(
+      chalk`{yellow [bacons/apple-targets]} Expo config is missing {cyan ios.bundleIdentifier} property. Using fallback: {cyan ${fallbackBundleId}}. Add it to your app.json or app.config.js for production builds.`,
+    );
+    config.ios = config.ios || {};
+    config.ios.bundleIdentifier = fallbackBundleId;
+  }
+
   if (!appleTeamId) {
     warnOnce(
       chalk`{yellow [bacons/apple-targets]} Expo config is missing required {cyan ios.appleTeamId} property. Find this in Xcode and add to the Expo Config to correct. iOS builds may fail until this is corrected.`,
