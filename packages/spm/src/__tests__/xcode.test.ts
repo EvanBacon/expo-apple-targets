@@ -5,7 +5,7 @@ import {
   XCSwiftPackageProductDependency,
   XcodeProject,
 } from "@bacons/xcode";
-import * as xcodeParse from "@bacons/xcode/json";
+import * as xcodeParse from "@bacons/xcode/build/json";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -501,7 +501,7 @@ describe("addSwiftPackagesToXcodeProject", () => {
       expect(refs).toHaveLength(1);
       expect(XCLocalSwiftPackageReference.is(refs[0])).toBe(true);
       const localRef = refs[0] as XCLocalSwiftPackageReference;
-      expect(localRef.props.path).toBe("../LocalLib");
+      expect(localRef.props.relativePath).toBe("../LocalLib");
 
       const target = getMainTarget(project);
       const deps = target.props.packageProductDependencies ?? [];
