@@ -122,7 +122,7 @@
       "name": "@bacons/spm",
       "version": "0.0.0",
       "dependencies": {
-        "@bacons/xcode": "1.0.0-alpha.27",
+        "@bacons/xcode": "1.0.0-alpha.30",
         "@expo/config-plugins": "*",
         "debug": "^4.3.4",
         "semver": "^7.5.4",
@@ -2222,7 +2222,7 @@
 
     "@babel/preset-env/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
-    "@bacons/spm/@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.27", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-WlemTiwpwwVH8IMvg4VBsyxGUuFWUfzeWKzxhU+dRxd8MHvnX7F9PlWCf7T0ZXmtjbl39iEgQB+/Tf3wuGJbyg=="],
+    "@bacons/spm/@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.30", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-7TCdvi5VX8stO5dUpaxydhZFUs5osiZfmie/KykxIffaZvuFJtam735W2AmXxyJu0nT0ZcGY4gq5f4rabPt0Rw=="],
 
     "@bacons/xcode/@expo/plist": ["@expo/plist@0.0.18", "", { "dependencies": { "@xmldom/xmldom": "~0.7.0", "base64-js": "^1.2.3", "xmlbuilder": "^14.0.0" } }, "sha512-+48gRqUiz65R21CZ/IXa7RNBXgAI/uPSdvJqoN9x1hfL44DNbUoWHgHiEXTx7XelcATpDwNTz6sHLfy0iNqf+w=="],
 

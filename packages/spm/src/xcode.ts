@@ -9,6 +9,15 @@ import _debug from "debug";
 
 import type { ResolvedPackage, SwiftPackageRequirement } from "./types";
 
+/** Version requirement for a remote Swift package (mirrors @bacons/xcode internal type). */
+type XCSwiftPackageVersionRequirement =
+  | { kind: "upToNextMajorVersion"; minimumVersion: string }
+  | { kind: "upToNextMinorVersion"; minimumVersion: string }
+  | { kind: "versionRange"; minimumVersion: string; maximumVersion: string }
+  | { kind: "exactVersion"; version: string }
+  | { kind: "branch"; branch: string }
+  | { kind: "revision"; revision: string };
+
 const debug = _debug("spm:xcode");
 
 /**
@@ -92,7 +101,6 @@ function addLocalPackage(
 
   if (!packageRef) {
     packageRef = XCLocalSwiftPackageReference.create(project, {
-      path: pkg.path,
       relativePath: pkg.path,
     });
 
@@ -224,7 +232,7 @@ function linkProductsToTarget(
  */
 export function convertRequirementToXcodeFormat(
   req: SwiftPackageRequirement
-): Record<string, string> {
+): XCSwiftPackageVersionRequirement {
   switch (req.kind) {
     case "upToNextMajorVersion":
       return {
@@ -276,6 +284,7 @@ export function findExistingRemotePackageReference(
   return refs.find(
     (ref): ref is XCRemoteSwiftPackageReference =>
       XCRemoteSwiftPackageReference.is(ref) &&
+      ref.props.repositoryURL != null &&
       normalizeURL(ref.props.repositoryURL) === normalizeURL(url)
   );
 }

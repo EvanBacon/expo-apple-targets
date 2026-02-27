@@ -18,7 +18,7 @@
     "expo-module": "expo-module"
   },
   "dependencies": {
-    "@bacons/xcode": "1.0.0-alpha.27",
+    "@bacons/xcode": "1.0.0-alpha.30",
     "@expo/config-plugins": "*",
     "debug": "^4.3.4",
     "semver": "^7.5.4"
