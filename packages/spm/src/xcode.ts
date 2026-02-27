@@ -93,6 +93,7 @@ function addLocalPackage(
   if (!packageRef) {
     packageRef = XCLocalSwiftPackageReference.create(project, {
       path: pkg.path,
+      relativePath: pkg.path,
     });
 
     if (!project.rootObject.props.packageReferences) {
@@ -290,7 +291,7 @@ export function findExistingLocalPackageReference(
   return refs.find(
     (ref): ref is XCLocalSwiftPackageReference =>
       XCLocalSwiftPackageReference.is(ref) &&
-      ref.props.path === path
+      ref.props.relativePath === path
   );
 }
 
@@ -399,7 +400,7 @@ export function listSwiftPackagesInProject(
       });
     } else if (XCLocalSwiftPackageReference.is(ref)) {
       result.push({
-        path: ref.props.path,
+        path: ref.props.relativePath,
         isLocal: true,
         products,
       });

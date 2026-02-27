@@ -663,6 +663,7 @@ describe("findExistingLocalPackageReference", () => {
     const project = createProject();
     const ref = XCLocalSwiftPackageReference.create(project, {
       path: "../MyLocalPackage",
+      relativePath: "../MyLocalPackage",
     });
     project.rootObject.props.packageReferences = [ref];
 
@@ -677,6 +678,7 @@ describe("findExistingLocalPackageReference", () => {
     const project = createProject();
     const ref = XCLocalSwiftPackageReference.create(project, {
       path: "../MyLocalPackage",
+      relativePath: "../MyLocalPackage",
     });
     project.rootObject.props.packageReferences = [ref];
 
