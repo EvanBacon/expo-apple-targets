@@ -141,7 +141,7 @@ function createActionConfigurationList({
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
-    // @ts-expect-error
+
     LOCALIZATION_PREFERS_STRING_CATALOGS: "YES",
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
   };
@@ -185,7 +185,6 @@ function createAppIntentConfigurationList({
   bundleId,
 }: XcodeSettings): { debug: BuildSettings; release: BuildSettings } {
   const commonBuildSettings: BuildSettings = {
-    // @ts-expect-error
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
@@ -359,13 +358,16 @@ function createWatchAppConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
-  }: XcodeSettings
+    icon,
+  }: XcodeSettings,
 ): { debug: BuildSettings; release: BuildSettings } {
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
 
   const common: BuildSettings = {
-    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
+    // Only set AppIcon when an icon is provided, otherwise Xcode will fail
+    // to build because the asset catalog doesn't exist
+    ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -434,7 +436,7 @@ function createWatchWidgetConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     icon,
-  }: XcodeSettings
+  }: XcodeSettings,
 ): { debug: BuildSettings; release: BuildSettings } {
   const common: BuildSettings = {
     ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
@@ -643,7 +645,7 @@ function createAppClipConfigurationList({
 }
 
 function getOrientationBuildSettings(
-  orientation?: "default" | "portrait" | "landscape"
+  orientation?: "default" | "portrait" | "landscape",
 ) {
   // NOTE: The requiresFullScreen support is deprecated in iOS 26+
   // https://developer.apple.com/documentation/BundleResources/Information-Property-List/UIRequiresFullScreen
@@ -667,7 +669,7 @@ function getOrientationBuildSettings(
 }
 
 function getDeviceFamilyBuildSettings(
-  deviceFamilies?: DeviceFamily[]
+  deviceFamilies?: DeviceFamily[],
 ): Partial<BuildSettings> {
   if (!deviceFamilies) {
     return {
@@ -826,7 +828,7 @@ function createKeyboardConfigurationList({
 
 function getConfigurationListBuildSettingsForType(
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
 ): { debug: BuildSettings; release: BuildSettings } {
   switch (props.type) {
     case "widget":
@@ -893,11 +895,11 @@ function getConfigurationListBuildSettingsForType(
 
 export function createConfigurationListForType(
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
 ) {
   const { debug, release } = getConfigurationListBuildSettingsForType(
     project,
-    props
+    props,
   );
   return XCConfigurationList.create(project, {
     buildConfigurations: [

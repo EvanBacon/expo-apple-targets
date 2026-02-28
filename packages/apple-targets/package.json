@@ -39,7 +39,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@bacons/xcode": "1.0.0-alpha.27",
+    "@bacons/xcode": "1.0.0-alpha.31",
     "@react-native/normalize-colors": "^0.79.2",
     "glob": "^10.4.2",
     "debug": "^4.3.4"

@@ -63,9 +63,9 @@
     },
     "packages/apple-targets": {
       "name": "@bacons/apple-targets",
-      "version": "4.0.1",
+      "version": "4.0.4",
       "dependencies": {
-        "@bacons/xcode": "1.0.0-alpha.27",
+        "@bacons/xcode": "1.0.0-alpha.31",
         "@react-native/normalize-colors": "^0.79.2",
         "debug": "^4.3.4",
         "glob": "^10.4.2",
@@ -399,7 +399,7 @@
 
     "@bacons/apple-targets": ["@bacons/apple-targets@workspace:packages/apple-targets"],
 
-    "@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.27", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-WlemTiwpwwVH8IMvg4VBsyxGUuFWUfzeWKzxhU+dRxd8MHvnX7F9PlWCf7T0ZXmtjbl39iEgQB+/Tf3wuGJbyg=="],
+    "@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.31", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-ofOJ9TfUu9u+FYZDPp1wsrAPjIGCcbqqW++UbUsz6DmWe1r0QPHGebTl1npuZSLAuG2i7/ujnuPLXE+XeDVnSg=="],
 
     "@bcoe/v8-coverage": ["@bcoe/v8-coverage@0.2.3", "", {}, "sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw=="],
 
