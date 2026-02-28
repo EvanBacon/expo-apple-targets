@@ -1,11 +1,4 @@
-import type {
-  DependencyValue,
-  GlobalConfig,
-  PackageConfig,
-  PlatformVersions,
-  PluginConfig,
-  ValidPlatform,
-} from "./types";
+import type { PluginConfig, ValidPlatform } from "./types";
 import { VALID_PLATFORMS } from "./types";
 import { isValidVersionString } from "./version";
 
@@ -20,11 +13,11 @@ export class ValidationError extends Error {
 }
 
 /** Validate the entire plugin config. Throws `ValidationError` on first issue. */
-export function validatePluginConfig(input: unknown): asserts input is PluginConfig {
+export function validatePluginConfig(
+  input: unknown,
+): asserts input is PluginConfig {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
-    throw new ValidationError(
-      "Plugin config must be a non-null object"
-    );
+    throw new ValidationError("Plugin config must be a non-null object");
   }
 
   const config = input as Record<string, unknown>;
@@ -36,7 +29,7 @@ export function validatePluginConfig(input: unknown): asserts input is PluginCon
 
   if (!hasDeps) {
     throw new ValidationError(
-      "Config must have at least one of: dependencies, devDependencies, optionalDependencies"
+      "Config must have at least one of: dependencies, devDependencies, optionalDependencies",
     );
   }
 
@@ -73,10 +66,7 @@ function validateDependencies(deps: unknown, path: string): void {
 function validateDependencyValue(value: unknown, path: string): void {
   if (typeof value === "string") {
     if (!isValidVersionString(value)) {
-      throw new ValidationError(
-        `Invalid version string: "${value}"`,
-        path
-      );
+      throw new ValidationError(`Invalid version string: "${value}"`, path);
     }
     return;
   }
@@ -88,19 +78,19 @@ function validateDependencyValue(value: unknown, path: string): void {
 
   throw new ValidationError(
     "Dependency value must be a version string or config object",
-    path
+    path,
   );
 }
 
 function validatePackageConfig(
   config: Record<string, unknown>,
-  path: string
+  path: string,
 ): void {
   // Must have version, url+version, or path
   if (!config.version && !config.path) {
     throw new ValidationError(
       "Package config must have a 'version' or 'path' field",
-      path
+      path,
     );
   }
 
@@ -108,7 +98,7 @@ function validatePackageConfig(
     if (!isValidVersionString(config.version)) {
       throw new ValidationError(
         `Invalid version string: "${config.version}"`,
-        `${path}.version`
+        `${path}.version`,
       );
     }
   }
@@ -120,7 +110,7 @@ function validatePackageConfig(
     if (!isValidPackageURL(config.url)) {
       throw new ValidationError(
         `Invalid package URL: "${config.url}"`,
-        `${path}.url`
+        `${path}.url`,
       );
     }
   }
@@ -135,43 +125,37 @@ function validatePackageConfig(
     if (!Array.isArray(config.products)) {
       throw new ValidationError(
         "'products' must be an array",
-        `${path}.products`
+        `${path}.products`,
       );
     }
     if (config.products.length === 0) {
       throw new ValidationError(
         "'products' array must not be empty",
-        `${path}.products`
+        `${path}.products`,
       );
     }
     for (const product of config.products) {
       if (typeof product !== "string") {
         throw new ValidationError(
           "Each product must be a string",
-          `${path}.products`
+          `${path}.products`,
         );
       }
     }
   }
 
   if (config.platforms !== undefined) {
-    validatePlatformVersions(
-      config.platforms,
-      `${path}.platforms`
-    );
+    validatePlatformVersions(config.platforms, `${path}.platforms`);
   }
 
   if (config.binary !== undefined && typeof config.binary !== "boolean") {
-    throw new ValidationError(
-      "'binary' must be a boolean",
-      `${path}.binary`
-    );
+    throw new ValidationError("'binary' must be a boolean", `${path}.binary`);
   }
 
   if (config.optional !== undefined && typeof config.optional !== "boolean") {
     throw new ValidationError(
       "'optional' must be a boolean",
-      `${path}.optional`
+      `${path}.optional`,
     );
   }
 
@@ -179,74 +163,69 @@ function validatePackageConfig(
     if (!Array.isArray(config.targets)) {
       throw new ValidationError(
         "'targets' must be an array of target names",
-        `${path}.targets`
+        `${path}.targets`,
       );
     }
     for (const t of config.targets) {
       if (typeof t !== "string") {
         throw new ValidationError(
           "Each target must be a string",
-          `${path}.targets`
+          `${path}.targets`,
         );
       }
     }
   }
 }
 
-function validatePlatformVersions(
-  platforms: unknown,
-  path: string
-): void {
+function validatePlatformVersions(platforms: unknown, path: string): void {
   if (!platforms || typeof platforms !== "object" || Array.isArray(platforms)) {
     throw new ValidationError("'platforms' must be an object", path);
   }
 
   for (const [platform, version] of Object.entries(
-    platforms as Record<string, unknown>
+    platforms as Record<string, unknown>,
   )) {
     if (!VALID_PLATFORMS.includes(platform as ValidPlatform)) {
       throw new ValidationError(
-        `Invalid platform: "${platform}". Valid platforms: ${VALID_PLATFORMS.join(", ")}`,
-        `${path}.${platform}`
+        `Invalid platform: "${platform}". Valid platforms: ${VALID_PLATFORMS.join(
+          ", ",
+        )}`,
+        `${path}.${platform}`,
       );
     }
     if (typeof version !== "string") {
       throw new ValidationError(
         "Platform version must be a string",
-        `${path}.${platform}`
+        `${path}.${platform}`,
       );
     }
     if (!/^\d+(\.\d+){0,2}$/.test(version)) {
       throw new ValidationError(
         `Invalid platform version format: "${version}". Expected format like "16.0" or "16.0.0"`,
-        `${path}.${platform}`
+        `${path}.${platform}`,
       );
     }
   }
 }
 
 function validateOverrides(overrides: unknown, path: string): void {
-  if (
-    !overrides ||
-    typeof overrides !== "object" ||
-    Array.isArray(overrides)
-  ) {
+  if (!overrides || typeof overrides !== "object" || Array.isArray(overrides)) {
     throw new ValidationError("'overrides' must be an object", path);
   }
 
   for (const [name, version] of Object.entries(
-    overrides as Record<string, unknown>
+    overrides as Record<string, unknown>,
   )) {
     if (typeof version !== "string") {
       throw new ValidationError(
         "Override version must be a string",
-        `${path}.${name}`
+        `${path}.${name}`,
       );
     }
     if (!isValidVersionString(version)) {
       throw new ValidationError(
         `Invalid override version: "${version}"`,
-        `${path}.${name}`
+        `${path}.${name}`,
       );
     }
   }
@@ -258,12 +237,12 @@ function validateAliases(aliases: unknown, path: string): void {
   }
 
   for (const [name, url] of Object.entries(
-    aliases as Record<string, unknown>
+    aliases as Record<string, unknown>,
   )) {
     if (typeof url !== "string") {
       throw new ValidationError(
         "Alias value must be a string URL",
-        `${path}.${name}`
+        `${path}.${name}`,
       );
     }
   }
@@ -281,16 +260,13 @@ function validateGlobalConfig(config: unknown, path: string): void {
   }
 
   if (c.swift !== undefined && typeof c.swift !== "string") {
-    throw new ValidationError(
-      "'swift' must be a string",
-      `${path}.swift`
-    );
+    throw new ValidationError("'swift' must be a string", `${path}.swift`);
   }
 
   if (c.saveExact !== undefined && typeof c.saveExact !== "boolean") {
     throw new ValidationError(
       "'saveExact' must be a boolean",
-      `${path}.saveExact`
+      `${path}.saveExact`,
     );
   }
 
@@ -298,7 +274,7 @@ function validateGlobalConfig(config: unknown, path: string): void {
     if (c.savePrefix !== "^" && c.savePrefix !== "~") {
       throw new ValidationError(
         `'savePrefix' must be "^" or "~"`,
-        `${path}.savePrefix`
+        `${path}.savePrefix`,
       );
     }
   }

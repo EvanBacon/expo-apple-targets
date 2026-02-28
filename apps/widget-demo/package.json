@@ -9,6 +9,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@bacons/spm": "*",
     "@bacons/apple-targets": "*",
     "expo": "^54",
     "expo-splash-screen": "~31.0.11",

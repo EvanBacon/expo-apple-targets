@@ -55,6 +55,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@bacons/apple-targets": "*",
+        "@bacons/spm": "*",
         "expo": "^54",
         "expo-splash-screen": "~31.0.11",
         "react": "19.1.0",
