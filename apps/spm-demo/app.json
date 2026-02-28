@@ -1,0 +1,24 @@
+{
+  "platforms": ["ios"],
+  "newArchEnabled": true,
+  "ios": {
+    "supportsTablet": true,
+    "appleTeamId": "QQ57RJ5UTD",
+    "bundleIdentifier": "com.bacon.clipdemo",
+    "entitlements": {
+      "com.apple.security.application-groups": ["group.bacon.data"]
+    }
+  },
+  "plugins": [
+    "@bacons/apple-targets",
+    [
+      "@bacons/spm",
+      {
+        "dependencies": {
+          "firebase": "^11.0.0",
+          "SnapKit/SnapKit": "^5.7.0"
+        }
+      }
+    ]
+  ]
+}

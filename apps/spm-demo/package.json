@@ -1,5 +1,5 @@
 {
-  "name": "@bacons/app-widget",
+  "name": "@bacons/spm-demo",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
-    "@bacons/apple-targets": "*",
+    "@bacons/spm": "*",
     "expo": "^54",
     "expo-splash-screen": "~31.0.11",
     "react": "19.1.0",
