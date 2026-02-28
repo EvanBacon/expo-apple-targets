@@ -92,9 +92,6 @@ const TARGET_REGISTRY: TargetEntry[] = [
     dir: "watch",
     target: "watch",
     sdk: "watchsimulator",
-    skip: true,
-    skipReason:
-      "Watch target requires AppIcon asset catalog which is not generated without an icon config",
   },
   {
     type: "watch-widget",
