@@ -41,12 +41,17 @@ let pbxprojPath: string;
 let pbxprojContent: string;
 
 function getXcodebuildErrors(output: string): string {
+  // Look for error lines, warnings, and failure indicators
   const errorLines = output
     .split("\n")
-    .filter((line) => /\berror\b:/i.test(line));
-  return errorLines.length > 0
-    ? errorLines.join("\n")
-    : output.slice(-2000);
+    .filter((line) => /\b(error|fatal|failed|failure)\b:/i.test(line) ||
+                      line.includes("** BUILD FAILED **") ||
+                      line.includes("xcodebuild: error:"));
+  if (errorLines.length > 0) {
+    return errorLines.join("\n");
+  }
+  // If no specific errors found, return more context (last 5000 chars)
+  return output.slice(-5000);
 }
 
 beforeAll(() => {
@@ -115,9 +120,7 @@ describe("pbxproj structure", () => {
 });
 
 describe("xcodebuild", () => {
-  // TODO: This test is flaky in CI due to SPM resolution/build timing issues
-  // The core functionality is verified by the pbxproj structure tests above
-  it.skip(
+  it(
     "can resolve Swift packages and build the main app target",
     () => {
       const args = [
