@@ -37,6 +37,7 @@ const BUILD_TIMEOUT = 300_000; // 5 minutes (SPM resolution can be slow)
 
 let projectDir: string;
 let xcodeproj: string;
+let xcworkspace: string;
 let pbxprojPath: string;
 let pbxprojContent: string;
 
@@ -50,6 +51,8 @@ function getXcodebuildErrors(output: string): string {
     line.includes("xcodebuild: error:") ||
     line.includes("clang: error:") ||
     line.includes("ld: error:") ||
+    // Swift compiler errors
+    line.includes(".swift:") && line.includes("error:") ||
     // Also capture lines that mention "error" in common build contexts
     /^\s*(Build|Compile|Link).*error/i.test(line)
   );
@@ -66,8 +69,9 @@ function getXcodebuildErrors(output: string): string {
     return lines.slice(start, failedIndex + 5).join("\n");
   }
 
-  // If no specific errors found, return last portion of output
-  return output.slice(-8000);
+  // If no specific errors found, return last 200 lines to see what's happening
+  const lastLines = lines.slice(-200).join("\n");
+  return `No specific error found. Last 200 lines of output:\n${lastLines}`;
 }
 
 beforeAll(() => {
@@ -97,6 +101,17 @@ beforeAll(() => {
   xcodeproj = path.join(iosDir, projFiles[0]);
   pbxprojPath = path.join(xcodeproj, "project.pbxproj");
   pbxprojContent = fs.readFileSync(pbxprojPath, "utf-8");
+
+  // Find the workspace (created by pod install)
+  const workspaceFiles = fs
+    .readdirSync(iosDir)
+    .filter((f) => f.endsWith(".xcworkspace"));
+
+  if (workspaceFiles.length === 0) {
+    throw new Error(`No .xcworkspace found in ${iosDir}. Did pod install run?`);
+  }
+
+  xcworkspace = path.join(iosDir, workspaceFiles[0]);
 });
 
 describe("pbxproj structure", () => {
@@ -142,7 +157,7 @@ describe("xcodebuild", () => {
       const args = [
         "xcodebuild",
         "build",
-        `-project "${xcodeproj}"`,
+        `-workspace "${xcworkspace}"`,
         `-scheme spme2e`,
         "-sdk iphonesimulator",
         "-configuration Debug",
@@ -159,11 +174,14 @@ describe("xcodebuild", () => {
           timeout: BUILD_TIMEOUT,
           cwd: projectDir,
           stdio: ["pipe", "pipe", "pipe"],
+          maxBuffer: 50 * 1024 * 1024, // 50MB - xcodebuild output can be very large
         });
       } catch (error: any) {
-        // execSync puts combined output in error.stdout when using stdio pipes
-        const output = error.stdout || error.stderr || error.message || String(error);
-        const errors = getXcodebuildErrors(output);
+        // Combine stdout and stderr to capture full output
+        const stdout = error.stdout || "";
+        const stderr = error.stderr || "";
+        const combined = stdout + "\n" + stderr;
+        const errors = getXcodebuildErrors(combined || error.message || String(error));
         throw new Error(
           `xcodebuild failed to build main app with SPM packages:\n\n${errors}`
         );

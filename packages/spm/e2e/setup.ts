@@ -48,6 +48,13 @@ export default async function globalSetup() {
     }
   );
 
+  console.log("[spm-e2e] Running pod install...");
+  execSync("pod install", {
+    cwd: path.join(tmpDir, "ios"),
+    stdio: "inherit",
+    env: { ...process.env, CI: "1" },
+  });
+
   // Write the temp dir path for tests to read
   fs.writeFileSync(PROJECT_DIR_FILE, tmpDir, "utf-8");
   console.log(`[spm-e2e] Project prebuilt at ${tmpDir}`);
