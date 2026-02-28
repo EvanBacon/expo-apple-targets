@@ -41,17 +41,33 @@ let pbxprojPath: string;
 let pbxprojContent: string;
 
 function getXcodebuildErrors(output: string): string {
+  const lines = output.split("\n");
+
   // Look for error lines, warnings, and failure indicators
-  const errorLines = output
-    .split("\n")
-    .filter((line) => /\b(error|fatal|failed|failure)\b:/i.test(line) ||
-                      line.includes("** BUILD FAILED **") ||
-                      line.includes("xcodebuild: error:"));
+  const errorLines = lines.filter((line) =>
+    /\b(error|fatal)\b:/i.test(line) ||
+    line.includes("** BUILD FAILED **") ||
+    line.includes("xcodebuild: error:") ||
+    line.includes("clang: error:") ||
+    line.includes("ld: error:") ||
+    // Also capture lines that mention "error" in common build contexts
+    /^\s*(Build|Compile|Link).*error/i.test(line)
+  );
+
   if (errorLines.length > 0) {
     return errorLines.join("\n");
   }
-  // If no specific errors found, return more context (last 5000 chars)
-  return output.slice(-5000);
+
+  // Check if BUILD FAILED exists anywhere - if so, get context around it
+  const failedIndex = lines.findIndex(line => line.includes("** BUILD FAILED **"));
+  if (failedIndex !== -1) {
+    // Return 50 lines before BUILD FAILED to see context
+    const start = Math.max(0, failedIndex - 50);
+    return lines.slice(start, failedIndex + 5).join("\n");
+  }
+
+  // If no specific errors found, return last portion of output
+  return output.slice(-8000);
 }
 
 beforeAll(() => {
@@ -138,13 +154,15 @@ describe("xcodebuild", () => {
       const command = args.join(" ");
 
       try {
-        execSync(`${command} 2>&1`, {
+        execSync(`${command}`, {
           encoding: "utf-8",
           timeout: BUILD_TIMEOUT,
           cwd: projectDir,
+          stdio: ["pipe", "pipe", "pipe"],
         });
       } catch (error: any) {
-        const output = error.stdout ?? error.stderr ?? String(error);
+        // execSync puts combined output in error.stdout when using stdio pipes
+        const output = error.stdout || error.stderr || error.message || String(error);
         const errors = getXcodebuildErrors(output);
         throw new Error(
           `xcodebuild failed to build main app with SPM packages:\n\n${errors}`
