@@ -2,47 +2,104 @@ import _debug from "debug";
 
 const debug = _debug("spm:registry");
 
+/** Package alias with URL and optional default products. */
+interface PackageAliasInfo {
+  url: string;
+  /** Default products when none specified. Falls back to package name if omitted. */
+  products?: string[];
+}
+
 /**
- * Well-known package aliases mapping short names to GitHub URLs.
+ * Well-known package aliases mapping short names to GitHub URLs and default products.
  * These allow users to write `"firebase": "^11.0.0"` instead of the full URL.
  */
-export const PACKAGE_ALIASES: Record<string, string> = {
-  firebase:
-    "https://github.com/firebase/firebase-ios-sdk.git",
-  alamofire:
-    "https://github.com/Alamofire/Alamofire.git",
-  moya: "https://github.com/Moya/Moya.git",
-  rxswift:
-    "https://github.com/ReactiveX/RxSwift.git",
-  realm: "https://github.com/realm/realm-swift.git",
-  snapkit: "https://github.com/SnapKit/SnapKit.git",
-  kingfisher:
-    "https://github.com/onevcat/Kingfisher.git",
-  lottie:
-    "https://github.com/airbnb/lottie-ios.git",
-  "swift-argument-parser":
-    "https://github.com/apple/swift-argument-parser.git",
-  "swift-log":
-    "https://github.com/apple/swift-log.git",
-  "swift-crypto":
-    "https://github.com/apple/swift-crypto.git",
-  "swift-collections":
-    "https://github.com/apple/swift-collections.git",
-  "swift-algorithms":
-    "https://github.com/apple/swift-algorithms.git",
-  "swift-numerics":
-    "https://github.com/apple/swift-numerics.git",
-  sdwebimage:
-    "https://github.com/SDWebImage/SDWebImage.git",
-  "swift-protobuf":
-    "https://github.com/apple/swift-protobuf.git",
-  grdb: "https://github.com/groue/GRDB.swift.git",
-  nuke: "https://github.com/kean/Nuke.git",
-  "the-composable-architecture":
-    "https://github.com/pointfreeco/swift-composable-architecture.git",
-  swiftyjson:
-    "https://github.com/SwiftyJSON/SwiftyJSON.git",
+export const PACKAGE_ALIAS_REGISTRY: Record<string, PackageAliasInfo> = {
+  firebase: {
+    url: "https://github.com/firebase/firebase-ios-sdk.git",
+    products: ["FirebaseCore"],
+  },
+  alamofire: {
+    url: "https://github.com/Alamofire/Alamofire.git",
+    products: ["Alamofire"],
+  },
+  moya: {
+    url: "https://github.com/Moya/Moya.git",
+    products: ["Moya"],
+  },
+  rxswift: {
+    url: "https://github.com/ReactiveX/RxSwift.git",
+    products: ["RxSwift"],
+  },
+  realm: {
+    url: "https://github.com/realm/realm-swift.git",
+    products: ["RealmSwift"],
+  },
+  snapkit: {
+    url: "https://github.com/SnapKit/SnapKit.git",
+    products: ["SnapKit"],
+  },
+  kingfisher: {
+    url: "https://github.com/onevcat/Kingfisher.git",
+    products: ["Kingfisher"],
+  },
+  lottie: {
+    url: "https://github.com/airbnb/lottie-ios.git",
+    products: ["Lottie"],
+  },
+  "swift-argument-parser": {
+    url: "https://github.com/apple/swift-argument-parser.git",
+    products: ["ArgumentParser"],
+  },
+  "swift-log": {
+    url: "https://github.com/apple/swift-log.git",
+    products: ["Logging"],
+  },
+  "swift-crypto": {
+    url: "https://github.com/apple/swift-crypto.git",
+    products: ["Crypto"],
+  },
+  "swift-collections": {
+    url: "https://github.com/apple/swift-collections.git",
+    products: ["Collections"],
+  },
+  "swift-algorithms": {
+    url: "https://github.com/apple/swift-algorithms.git",
+    products: ["Algorithms"],
+  },
+  "swift-numerics": {
+    url: "https://github.com/apple/swift-numerics.git",
+    products: ["Numerics"],
+  },
+  sdwebimage: {
+    url: "https://github.com/SDWebImage/SDWebImage.git",
+    products: ["SDWebImage"],
+  },
+  "swift-protobuf": {
+    url: "https://github.com/apple/swift-protobuf.git",
+    products: ["SwiftProtobuf"],
+  },
+  grdb: {
+    url: "https://github.com/groue/GRDB.swift.git",
+    products: ["GRDB"],
+  },
+  nuke: {
+    url: "https://github.com/kean/Nuke.git",
+    products: ["Nuke"],
+  },
+  "the-composable-architecture": {
+    url: "https://github.com/pointfreeco/swift-composable-architecture.git",
+    products: ["ComposableArchitecture"],
+  },
+  swiftyjson: {
+    url: "https://github.com/SwiftyJSON/SwiftyJSON.git",
+    products: ["SwiftyJSON"],
+  },
 };
+
+/** Simple URL-only map for backwards compatibility. */
+export const PACKAGE_ALIASES: Record<string, string> = Object.fromEntries(
+  Object.entries(PACKAGE_ALIAS_REGISTRY).map(([key, info]) => [key, info.url])
+);
 
 /**
  * Resolve a package identifier to a full git URL.
@@ -105,6 +162,17 @@ export function extractPackageName(url: string): string {
   const withoutGit = url.replace(/\.git$/, "");
   const parts = withoutGit.split("/");
   return parts[parts.length - 1] || url;
+}
+
+/**
+ * Get the default products for a known package alias.
+ * Returns undefined if the identifier is not a known alias or has no default products.
+ */
+export function getDefaultProductsForAlias(
+  identifier: string
+): string[] | undefined {
+  const lower = identifier.toLowerCase();
+  return PACKAGE_ALIAS_REGISTRY[lower]?.products;
 }
 
 /**

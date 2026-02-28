@@ -2,7 +2,9 @@ import {
   resolvePackageURL,
   extractPackageName,
   extractProductsFromManifest,
+  getDefaultProductsForAlias,
   PACKAGE_ALIASES,
+  PACKAGE_ALIAS_REGISTRY,
 } from "../registry";
 
 describe(resolvePackageURL, () => {
@@ -247,6 +249,52 @@ describe("PACKAGE_ALIASES", () => {
   it("all aliases are valid URLs ending in .git", () => {
     for (const [key, url] of Object.entries(PACKAGE_ALIASES)) {
       expect(url).toMatch(/^https:\/\/.+\.git$/);
+    }
+  });
+});
+
+describe(getDefaultProductsForAlias, () => {
+  it("returns default products for firebase", () => {
+    expect(getDefaultProductsForAlias("firebase")).toEqual(["FirebaseCore"]);
+  });
+
+  it("returns default products for alamofire", () => {
+    expect(getDefaultProductsForAlias("alamofire")).toEqual(["Alamofire"]);
+  });
+
+  it("returns default products for lottie", () => {
+    expect(getDefaultProductsForAlias("lottie")).toEqual(["Lottie"]);
+  });
+
+  it("returns default products for swift-collections", () => {
+    expect(getDefaultProductsForAlias("swift-collections")).toEqual(["Collections"]);
+  });
+
+  it("returns default products for the-composable-architecture", () => {
+    expect(getDefaultProductsForAlias("the-composable-architecture")).toEqual(["ComposableArchitecture"]);
+  });
+
+  it("is case-insensitive", () => {
+    expect(getDefaultProductsForAlias("Firebase")).toEqual(["FirebaseCore"]);
+    expect(getDefaultProductsForAlias("ALAMOFIRE")).toEqual(["Alamofire"]);
+  });
+
+  it("returns undefined for unknown aliases", () => {
+    expect(getDefaultProductsForAlias("unknown-package")).toBeUndefined();
+  });
+});
+
+describe("PACKAGE_ALIAS_REGISTRY", () => {
+  it("all entries have a url", () => {
+    for (const [key, info] of Object.entries(PACKAGE_ALIAS_REGISTRY)) {
+      expect(info.url).toMatch(/^https:\/\/.+\.git$/);
+    }
+  });
+
+  it("all entries have products array", () => {
+    for (const [key, info] of Object.entries(PACKAGE_ALIAS_REGISTRY)) {
+      expect(Array.isArray(info.products)).toBe(true);
+      expect(info.products!.length).toBeGreaterThan(0);
     }
   });
 });

@@ -15,8 +15,8 @@ describe(resolvePackage, () => {
           },
         })
       );
-      // Products default to the package name extracted from URL
-      expect(result.products).toEqual(["firebase-ios-sdk"]);
+      // Products default to the alias default products
+      expect(result.products).toEqual(["FirebaseCore"]);
     });
 
     it("resolves a tilde version", () => {

@@ -19,7 +19,7 @@ import type {
 } from "./types";
 import { validatePluginConfig } from "./validation";
 import { parseVersionString } from "./version";
-import { resolvePackageURL, extractPackageName } from "./registry";
+import { resolvePackageURL, extractPackageName, getDefaultProductsForAlias } from "./registry";
 import { addSwiftPackagesToXcodeProject } from "./xcode";
 
 const debug = _debug("spm:plugin");
@@ -119,9 +119,11 @@ export function resolvePackage(
     );
   }
 
-  // Determine products: explicit, or derive from package name
+  // Determine products: explicit config > alias defaults > derive from package name
   const products =
-    config.products ?? [extractPackageName(url)];
+    config.products ??
+    getDefaultProductsForAlias(identifier) ??
+    [extractPackageName(url)];
 
   return {
     identifier,
@@ -255,7 +257,7 @@ export default createRunOncePlugin(
 export { withSwiftPackageManager };
 export { parseVersionString, requirementToString, isValidVersionString, normalizeVersionString } from "./version";
 export { validatePluginConfig, validateAndNormalizeConfig, ValidationError } from "./validation";
-export { resolvePackageURL, extractPackageName, extractProductsFromManifest, PACKAGE_ALIASES } from "./registry";
+export { resolvePackageURL, extractPackageName, extractProductsFromManifest, getDefaultProductsForAlias, PACKAGE_ALIASES, PACKAGE_ALIAS_REGISTRY } from "./registry";
 export {
   addSwiftPackagesToXcodeProject,
   removeSwiftPackageFromXcodeProject,
