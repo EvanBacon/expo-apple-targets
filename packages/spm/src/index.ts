@@ -186,10 +186,8 @@ const withSwiftPackageManager: ConfigPlugin<PluginConfig> = (
 
   debug("Processing SPM config: %O", pluginConfig);
 
-  // Register the base mod
-  config = withXcodeProjectBaseMod(config);
-
   // Apply the Xcode project modifications
+  // NOTE: The base mod provider must be registered AFTER the mods that use it
   config = withXcodeProjectMod(config, async (config) => {
     const project = config.modResults;
 
@@ -238,6 +236,9 @@ const withSwiftPackageManager: ConfigPlugin<PluginConfig> = (
 
     return config;
   });
+
+  // Register the base mod provider (must be AFTER the mods that use it)
+  config = withXcodeProjectBaseMod(config);
 
   return config;
 };
