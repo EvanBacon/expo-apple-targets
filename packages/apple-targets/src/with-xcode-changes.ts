@@ -99,8 +99,7 @@ async function applyXcodeChanges(
   const productName = props.productName;
 
   let targetToUpdate: PBXNativeTarget | undefined =
-    targets.find((target) => target.props.productName === productName) ??
-    targets[0];
+    targets.find((target) => target.props.productName === productName);
 
   if (targetToUpdate) {
     warnOnce(
