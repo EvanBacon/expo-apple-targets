@@ -231,16 +231,32 @@ export function convertRequirementToXcodeFormat(
 }
 
 /**
+ * Normalize a repository URL for comparison.
+ * - Removes trailing .git suffix
+ * - Lowercases for case-insensitive matching
+ */
+function normalizeRepoUrl(url: string): string {
+  return url.replace(/\.git$/, "").toLowerCase();
+}
+
+/**
  * Find an existing remote package reference by repository URL.
+ * Matches URLs case-insensitively and ignores .git suffix differences.
  */
 export function findExistingRemotePackageReference(
   project: XcodeProject,
   url: string
 ): XCRemoteSwiftPackageReference | undefined {
-  // Use the new helper method
-  const ref = project.rootObject.getPackageReference(url);
-  if (ref && XCRemoteSwiftPackageReference.is(ref)) {
-    return ref;
+  const refs = project.rootObject.props.packageReferences ?? [];
+  const normalizedUrl = normalizeRepoUrl(url);
+
+  for (const ref of refs) {
+    if (
+      XCRemoteSwiftPackageReference.is(ref) &&
+      normalizeRepoUrl(ref.props.repositoryURL ?? "") === normalizedUrl
+    ) {
+      return ref;
+    }
   }
   return undefined;
 }
