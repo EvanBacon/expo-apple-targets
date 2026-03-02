@@ -74,6 +74,7 @@
       "version": "1.0.0",
       "dependencies": {
         "@bacons/apple-targets": "*",
+        "@bacons/spm": "*",
         "expo": "^54",
         "expo-splash-screen": "~31.0.11",
         "react": "19.1.0",
@@ -141,7 +142,7 @@
       "name": "@bacons/spm",
       "version": "0.0.0",
       "dependencies": {
-        "@bacons/xcode": "1.0.0-alpha.30",
+        "@bacons/xcode": "1.0.0-alpha.33",
         "@expo/config-plugins": "*",
         "debug": "^4.3.4",
         "semver": "^7.5.4",
@@ -2259,7 +2260,7 @@
 
     "@babel/preset-env/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
-    "@bacons/spm/@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.30", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-7TCdvi5VX8stO5dUpaxydhZFUs5osiZfmie/KykxIffaZvuFJtam735W2AmXxyJu0nT0ZcGY4gq5f4rabPt0Rw=="],
+    "@bacons/spm/@bacons/xcode": ["@bacons/xcode@1.0.0-alpha.33", "", { "dependencies": { "@expo/plist": "^0.0.18", "debug": "^4.3.4", "uuid": "^8.3.2" } }, "sha512-+vwXK3mLnW8NOYSHNpCa7sAYR7qWmIHM3xBbBkLailN81F1CdSVsJBH1TAnTMHb+rDEh5ehsZ8AQRNVxvhWR/Q=="],
 
     "@bacons/spm-demo/@types/jest": ["@types/jest@29.5.14", "", { "dependencies": { "expect": "^29.0.0", "pretty-format": "^29.0.0" } }, "sha512-ZN+4sdnLUbo8EVvVc2ao0GFW6oVrQRPn4K2lglySj7APvSrgzxHiNNK99us4WDMi57xxA2yggblIAMNhXOotLQ=="],
 

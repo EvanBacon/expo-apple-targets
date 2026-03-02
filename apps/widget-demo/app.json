@@ -9,5 +9,16 @@
       "com.apple.security.application-groups": ["group.bacon.data"]
     }
   },
-  "plugins": ["@bacons/apple-targets"]
+  "plugins": [
+    "@bacons/apple-targets",
+    [
+      "@bacons/spm",
+      {
+        "dependencies": {
+          "firebase": "^11.0.0",
+          "SnapKit/SnapKit": "^5.7.0"
+        }
+      }
+    ]
+  ]
 }

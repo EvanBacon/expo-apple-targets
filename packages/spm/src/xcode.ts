@@ -54,30 +54,20 @@ function addRemotePackage(
 
   debug("Adding remote package: %s (%s)", pkg.identifier, pkg.url);
 
-  // Check for existing package reference
-  let packageRef = findExistingRemotePackageReference(project, pkg.url);
+  const requirement = convertRequirementToXcodeFormat(pkg.requirement);
 
-  if (!packageRef) {
-    const requirement = convertRequirementToXcodeFormat(pkg.requirement);
-    packageRef = XCRemoteSwiftPackageReference.create(project, {
-      repositoryURL: pkg.url,
-      requirement,
-    });
+  // Use the new helper method - handles deduplication internally
+  const packageRef = project.rootObject.addRemoteSwiftPackage({
+    repositoryURL: pkg.url,
+    requirement,
+  });
 
-    // Add to project-level package references
-    if (!project.rootObject.props.packageReferences) {
-      project.rootObject.props.packageReferences = [];
-    }
-    project.rootObject.props.packageReferences.push(packageRef);
-    debug("Created new package reference for: %s", pkg.url);
-  } else {
-    debug("Found existing package reference for: %s", pkg.url);
-  }
+  debug("Package reference ready for: %s", pkg.url);
 
   // Link products to target(s)
   const targets = resolveTargets(project, pkg.targets, targetName);
   for (const target of targets) {
-    linkProductsToTarget(project, target, pkg.products, packageRef);
+    linkProductsToTarget(target, pkg.products, packageRef);
   }
 }
 
@@ -97,25 +87,16 @@ function addLocalPackage(
 
   debug("Adding local package: %s (%s)", pkg.identifier, pkg.path);
 
-  let packageRef = findExistingLocalPackageReference(project, pkg.path);
+  // Use the new helper method - handles deduplication internally
+  const packageRef = project.rootObject.addLocalSwiftPackage({
+    relativePath: pkg.path,
+  });
 
-  if (!packageRef) {
-    packageRef = XCLocalSwiftPackageReference.create(project, {
-      relativePath: pkg.path,
-    });
-
-    if (!project.rootObject.props.packageReferences) {
-      project.rootObject.props.packageReferences = [];
-    }
-    project.rootObject.props.packageReferences.push(packageRef);
-    debug("Created new local package reference for: %s", pkg.path);
-  } else {
-    debug("Found existing local package reference for: %s", pkg.path);
-  }
+  debug("Local package reference ready for: %s", pkg.path);
 
   const targets = resolveTargets(project, pkg.targets, targetName);
   for (const target of targets) {
-    linkProductsToTarget(project, target, pkg.products, packageRef);
+    linkProductsToTarget(target, pkg.products, packageRef);
   }
 }
 
@@ -175,55 +156,31 @@ function resolveTargets(
 
 /**
  * Link specific product names from a package to a target.
+ * Uses the new addSwiftPackageProduct helper which handles:
+ * - Creating product dependency
+ * - Adding to target's packageProductDependencies
+ * - Creating build file with productRef
+ * - Adding to frameworks build phase
  */
 function linkProductsToTarget(
-  project: XcodeProject,
   target: PBXNativeTarget,
   products: string[],
   packageRef:
     | XCRemoteSwiftPackageReference
     | XCLocalSwiftPackageReference
 ): void {
-  if (!target.props.packageProductDependencies) {
-    target.props.packageProductDependencies = [];
-  }
-
   for (const productName of products) {
-    // Check for existing product dependency
-    const existing = findExistingProductDependency(
-      target,
+    // Use the new helper method - handles deduplication and full wiring
+    target.addSwiftPackageProduct({
       productName,
-      packageRef
-    );
-
-    if (existing) {
-      debug(
-        "Product dependency already exists: %s on %s",
-        productName,
-        target.props.name
-      );
-      continue;
-    }
-
-    const productDep = XCSwiftPackageProductDependency.create(project, {
       package: packageRef,
-      productName,
     });
 
-    target.props.packageProductDependencies.push(productDep);
     debug(
       "Linked product %s to target %s",
       productName,
       target.props.name
     );
-
-    // Also add to the frameworks build phase
-    const frameworksPhase = target.getFrameworksBuildPhase();
-    const { PBXBuildFile } = require("@bacons/xcode");
-    const buildFile = PBXBuildFile.create(project, {
-      productRef: productDep,
-    });
-    frameworksPhase.props.files.push(buildFile);
   }
 }
 
@@ -280,13 +237,12 @@ export function findExistingRemotePackageReference(
   project: XcodeProject,
   url: string
 ): XCRemoteSwiftPackageReference | undefined {
-  const refs = project.rootObject.props.packageReferences ?? [];
-  return refs.find(
-    (ref): ref is XCRemoteSwiftPackageReference =>
-      XCRemoteSwiftPackageReference.is(ref) &&
-      ref.props.repositoryURL != null &&
-      normalizeURL(ref.props.repositoryURL) === normalizeURL(url)
-  );
+  // Use the new helper method
+  const ref = project.rootObject.getPackageReference(url);
+  if (ref && XCRemoteSwiftPackageReference.is(ref)) {
+    return ref;
+  }
+  return undefined;
 }
 
 /**
@@ -296,12 +252,12 @@ export function findExistingLocalPackageReference(
   project: XcodeProject,
   path: string
 ): XCLocalSwiftPackageReference | undefined {
-  const refs = project.rootObject.props.packageReferences ?? [];
-  return refs.find(
-    (ref): ref is XCLocalSwiftPackageReference =>
-      XCLocalSwiftPackageReference.is(ref) &&
-      ref.props.relativePath === path
-  );
+  // Use the new helper method
+  const ref = project.rootObject.getPackageReference(path);
+  if (ref && XCLocalSwiftPackageReference.is(ref)) {
+    return ref;
+  }
+  return undefined;
 }
 
 /**
@@ -337,19 +293,24 @@ export function removeSwiftPackageFromXcodeProject(
   // Remove product dependencies from all targets
   for (const target of project.rootObject.props.targets) {
     if (!PBXNativeTarget.is(target)) continue;
-    if (!target.props.packageProductDependencies) continue;
 
-    target.props.packageProductDependencies =
-      target.props.packageProductDependencies.filter((dep) => {
-        if (
-          XCSwiftPackageProductDependency.is(dep) &&
-          dep.props.package === packageRef
-        ) {
+    // Use the new helper to get all package product dependencies
+    const deps = target.getSwiftPackageProductDependencies?.() ??
+      target.props.packageProductDependencies ?? [];
+
+    for (const dep of deps) {
+      if (
+        XCSwiftPackageProductDependency.is(dep) &&
+        dep.props.package === packageRef
+      ) {
+        // Use the new helper if available, otherwise manual cleanup
+        if (target.removeSwiftPackageProduct) {
+          target.removeSwiftPackageProduct(dep);
+        } else {
           dep.removeFromProject();
-          return false;
         }
-        return true;
-      });
+      }
+    }
   }
 
   // Remove package reference from project
@@ -417,9 +378,4 @@ export function listSwiftPackagesInProject(
   }
 
   return result;
-}
-
-/** Normalize a URL for comparison (strip trailing .git, lowercase). */
-function normalizeURL(url: string): string {
-  return url.replace(/\.git$/, "").toLowerCase();
 }
