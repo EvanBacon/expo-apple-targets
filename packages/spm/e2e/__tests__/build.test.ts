@@ -10,7 +10,7 @@ import path from "path";
  *  1. expo prebuild generates correct XCRemoteSwiftPackageReference entries
  *  2. xcodebuild can resolve and build with the packages
  */
-interface PackageEntry {
+interface RemotePackageEntry {
   /** Human-readable name for test output */
   name: string;
   /** Repository URL — must match what's in app.json */
@@ -19,7 +19,16 @@ interface PackageEntry {
   products: string[];
 }
 
-const PACKAGE_REGISTRY: PackageEntry[] = [
+interface LocalPackageEntry {
+  /** Human-readable name for test output */
+  name: string;
+  /** Relative path to the local package */
+  path: string;
+  /** Product names that should appear in packageProductDependencies */
+  products: string[];
+}
+
+const REMOTE_PACKAGE_REGISTRY: RemotePackageEntry[] = [
   {
     name: "swift-algorithms",
     url: "https://github.com/apple/swift-algorithms.git",
@@ -29,6 +38,14 @@ const PACKAGE_REGISTRY: PackageEntry[] = [
     name: "swift-collections",
     url: "https://github.com/apple/swift-collections.git",
     products: ["Collections"],
+  },
+];
+
+const LOCAL_PACKAGE_REGISTRY: LocalPackageEntry[] = [
+  {
+    name: "LocalTestPackage",
+    path: "../LocalTestPackage",
+    products: ["LocalTestPackage"],
   },
 ];
 
@@ -123,19 +140,6 @@ describe("pbxproj structure", () => {
     expect(pbxprojContent).toContain("XCSwiftPackageProductDependency");
   });
 
-  for (const pkg of PACKAGE_REGISTRY) {
-    it(`has package reference for ${pkg.name}`, () => {
-      expect(pbxprojContent).toContain(pkg.url);
-    });
-
-    for (const product of pkg.products) {
-      it(`has product dependency for ${product}`, () => {
-        // Product name appears in XCSwiftPackageProductDependency section
-        expect(pbxprojContent).toContain(`productName = ${product}`);
-      });
-    }
-  }
-
   it("has packageReferences on the project object", () => {
     expect(pbxprojContent).toMatch(/packageReferences\s*=\s*\(/);
   });
@@ -148,6 +152,41 @@ describe("pbxproj structure", () => {
     // The fixture uses ^1.2.0 which maps to upToNextMajorVersion
     expect(pbxprojContent).toContain("upToNextMajorVersion");
   });
+});
+
+describe("remote packages", () => {
+  for (const pkg of REMOTE_PACKAGE_REGISTRY) {
+    it(`has package reference for ${pkg.name}`, () => {
+      expect(pbxprojContent).toContain(pkg.url);
+    });
+
+    for (const product of pkg.products) {
+      it(`has product dependency for ${product}`, () => {
+        // Product name appears in XCSwiftPackageProductDependency section
+        expect(pbxprojContent).toContain(`productName = ${product}`);
+      });
+    }
+  }
+});
+
+describe("local packages", () => {
+  it("contains XCLocalSwiftPackageReference entries", () => {
+    expect(pbxprojContent).toContain("XCLocalSwiftPackageReference");
+  });
+
+  for (const pkg of LOCAL_PACKAGE_REGISTRY) {
+    it(`has local package reference for ${pkg.name}`, () => {
+      // Local packages use relativePath in the pbxproj
+      // pbxproj format doesn't quote simple paths
+      expect(pbxprojContent).toContain(`relativePath = ${pkg.path}`);
+    });
+
+    for (const product of pkg.products) {
+      it(`has product dependency for ${product}`, () => {
+        expect(pbxprojContent).toContain(`productName = ${product}`);
+      });
+    }
+  }
 });
 
 describe("xcodebuild", () => {

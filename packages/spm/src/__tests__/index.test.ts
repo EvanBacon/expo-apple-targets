@@ -65,6 +65,27 @@ describe(resolvePackage, () => {
       expect(result.path).toBe("../my-lib");
       expect(result.products).toEqual(["my-lib"]);
     });
+
+    it("resolves relative path shorthand (../)", () => {
+      const result = resolvePackage("LocalSPM", "../spm/local-pkg");
+      expect(result.isLocal).toBe(true);
+      expect(result.path).toBe("../spm/local-pkg");
+      expect(result.products).toEqual(["LocalSPM"]);
+    });
+
+    it("resolves relative path shorthand (./)", () => {
+      const result = resolvePackage("MyPackage", "./packages/my-pkg");
+      expect(result.isLocal).toBe(true);
+      expect(result.path).toBe("./packages/my-pkg");
+      expect(result.products).toEqual(["MyPackage"]);
+    });
+
+    it("resolves absolute path shorthand", () => {
+      const result = resolvePackage("AbsPackage", "/Users/me/packages/abs-pkg");
+      expect(result.isLocal).toBe(true);
+      expect(result.path).toBe("/Users/me/packages/abs-pkg");
+      expect(result.products).toEqual(["AbsPackage"]);
+    });
   });
 
   describe("full URL identifiers", () => {

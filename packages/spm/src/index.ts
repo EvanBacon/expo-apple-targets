@@ -80,6 +80,13 @@ const withXcodeProjectBaseMod = createRunOncePlugin(
 );
 
 /**
+ * Check if a string looks like a local file path.
+ */
+function isLocalPath(value: string): boolean {
+  return value.startsWith("./") || value.startsWith("../") || value.startsWith("/");
+}
+
+/**
  * Resolve a single package identifier + dependency value into a ResolvedPackage.
  */
 export function resolvePackage(
@@ -87,9 +94,14 @@ export function resolvePackage(
   value: DependencyValue,
   aliases?: Record<string, string>
 ): ResolvedPackage {
-  // Normalize: string value becomes a version config
+  // Handle shorthand: "LocalSPM": "../path/to/package"
+  // Detect local paths and convert to path config
   const config: PackageConfig =
-    typeof value === "string" ? { version: value } : value;
+    typeof value === "string"
+      ? isLocalPath(value)
+        ? { path: value }
+        : { version: value }
+      : value;
 
   const version = config.version ?? "latest";
   const parsed = parseVersionString(version);

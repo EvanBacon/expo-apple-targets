@@ -22,6 +22,10 @@
               "version": "^1.1.0",
               "url": "https://github.com/apple/swift-collections.git",
               "products": ["Collections"]
+            },
+            "LocalTestPackage": {
+              "path": "../LocalTestPackage",
+              "products": ["LocalTestPackage"]
             }
           }
         }

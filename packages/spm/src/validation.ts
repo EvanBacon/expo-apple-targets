@@ -63,8 +63,16 @@ function validateDependencies(deps: unknown, path: string): void {
   }
 }
 
+function isLocalPath(value: string): boolean {
+  return value.startsWith("./") || value.startsWith("../") || value.startsWith("/");
+}
+
 function validateDependencyValue(value: unknown, path: string): void {
   if (typeof value === "string") {
+    // Allow local paths as shorthand: "LocalSPM": "../path/to/package"
+    if (isLocalPath(value)) {
+      return;
+    }
     if (!isValidVersionString(value)) {
       throw new ValidationError(`Invalid version string: "${value}"`, path);
     }

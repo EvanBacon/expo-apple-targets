@@ -16,7 +16,8 @@
       {
         "dependencies": {
           "firebase": "^11.0.0",
-          "SnapKit/SnapKit": "^5.7.0"
+          "SnapKit/SnapKit": "^5.7.0",
+          "LocalSPM": "../spm/local-pkg"
         }
       }
     ]

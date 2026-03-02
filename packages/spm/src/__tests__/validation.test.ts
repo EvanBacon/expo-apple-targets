@@ -135,6 +135,36 @@ describe(validatePluginConfig, () => {
       ).not.toThrow();
     });
 
+    it("accepts local path shorthand with ../", () => {
+      expect(() =>
+        validatePluginConfig({
+          dependencies: {
+            LocalSPM: "../spm/local-pkg",
+          },
+        })
+      ).not.toThrow();
+    });
+
+    it("accepts local path shorthand with ./", () => {
+      expect(() =>
+        validatePluginConfig({
+          dependencies: {
+            LocalSPM: "./packages/my-pkg",
+          },
+        })
+      ).not.toThrow();
+    });
+
+    it("accepts local path shorthand with absolute path", () => {
+      expect(() =>
+        validatePluginConfig({
+          dependencies: {
+            LocalSPM: "/Users/me/packages/my-pkg",
+          },
+        })
+      ).not.toThrow();
+    });
+
     it("accepts config with targets", () => {
       expect(() =>
         validatePluginConfig({

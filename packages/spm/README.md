@@ -48,6 +48,7 @@ Use familiar NPM-style version strings:
 | `develop` | Branch | Use a branch name |
 | `commit:abc123` | Revision | Specific commit hash |
 | `file:../local-pkg` | Local | Local package path |
+| `../local-pkg` | Local | Local path shorthand |
 
 ## Package Resolution
 
@@ -204,12 +205,24 @@ Define shortcuts for frequently used packages:
 
 ### Local Package Development
 
+Use the path shorthand for local packages — products default to the package name:
+
+```json
+{
+  "dependencies": {
+    "MySwiftLib": "../MySwiftLib"
+  }
+}
+```
+
+Or use the full config for custom products:
+
 ```json
 {
   "dependencies": {
     "my-swift-lib": {
       "path": "../MySwiftLib",
-      "products": ["MySwiftLib"]
+      "products": ["MySwiftLib", "MySwiftLibCore"]
     }
   }
 }

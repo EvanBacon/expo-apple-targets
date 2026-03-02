@@ -14,6 +14,12 @@ export default async function globalSetup() {
   const fixturePath = path.join(__dirname, "fixture");
   fs.cpSync(fixturePath, tmpDir, { recursive: true });
 
+  // The LocalTestPackage is in the fixture and will be copied to tmpDir/LocalTestPackage.
+  // The path "../LocalTestPackage" in app.json is relative to the ios/ directory,
+  // so from ios/, "../LocalTestPackage" resolves to tmpDir/LocalTestPackage which is correct.
+  console.log(`[spm-e2e] LocalTestPackage available at ${path.join(tmpDir, "LocalTestPackage")}`);
+
+
   // Rewrite package.json so the file: link uses an absolute path
   // (the fixture uses file:../../ which breaks when copied to a temp dir)
   const pkgJsonPath = path.join(tmpDir, "package.json");
