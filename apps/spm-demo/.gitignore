@@ -17,3 +17,5 @@ web-build/
 .metro-health-check*
 
 /spm/**.build
+
+/ios
