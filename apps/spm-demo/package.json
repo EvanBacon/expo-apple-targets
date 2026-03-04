@@ -1,12 +1,13 @@
 {
-  "name": "@bacons/app-widget",
+  "name": "@bacons/spm-demo",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "ios:clean": "expo prebuild -p ios --clean && expo run:ios",
     "nprebuild": "expo prebuild --template ../../packages/apple-targets/prebuild-blank.tgz -p ios",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "test": "jest"
   },
   "dependencies": {
     "@bacons/apple-targets": "*",
@@ -15,6 +16,13 @@
     "expo-splash-screen": "~31.0.11",
     "react": "19.1.0",
     "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.0"
   },
   "private": true
 }

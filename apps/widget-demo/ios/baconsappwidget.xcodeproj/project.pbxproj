@@ -1,30 +1,34 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	objectVersion = 54;
 	classes = {
 	};
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		52EF15C8C922DC657B4AB41B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FB0742DB289A9E952AFA5F2F /* PrivacyInfo.xcprivacy */; };
+		66694164321D456A3B5AE356 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F127C0E819AE55486E37D8 /* ExpoModulesProvider.swift */; };
+		9CDF7ED736E1788A7DEEE4EA /* libPods-baconsappwidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D046C5AE2708C70EF0988B3 /* libPods-baconsappwidget.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		DBA5B5B976CA0884B4FBB6B8 /* libPods-baconsappwidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 		XX12B55A1EDABF083C3B51XX /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */; };
 		XX1A6800511A685AB346D2XX /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XXA12889081EB894481655XX /* AppIntents.framework */; };
+		XX3335275D2E5CA9C5184DXX /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = XX7A8FC661F2C8C9076911XX /* FirebaseCore */; };
 		XX3C562DEF346B45594832XX /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XXCAF23C3FC41F82140FA1XX /* ActivityKit.framework */; };
 		XX6357A9A9DEDF49BD6081XX /* My Widget 😄.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = XXBF185C77F1BAFCE93861XX /* My Widget 😄.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		XX644FB514CBB910764AA4XX /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = XXEA35527E3E730FA6DBEEXX /* SnapKit */; };
 		XX6A44985675A04437B8C4XX /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		XXA64E64FBB5E0BCCD0762XX /* PBXContainerItemProxy */ = {
+		XX5CEC91B0781FF05162DFXX /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = XX219ADAAD1592813AB03DXX;
+			remoteGlobalIDString = XX8673E892DC6D4E60A1FEXX;
 			remoteInfo = "My Widget 😄";
 		};
 /* End PBXContainerItemProxy section */
@@ -47,13 +51,16 @@
 		13B07F961A680F5B00A75B9A /* baconsappwidget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; fileEncoding = 4; includeInIndex = 0; path = baconsappwidget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = baconsappwidget/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = Info.plist; path = baconsappwidget/Info.plist; sourceTree = "<group>"; };
-		388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
-		964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; fileEncoding = 4; };
+		7D046C5AE2708C70EF0988B3 /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		80F127C0E819AE55486E37D8 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-baconsappwidget/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = baconsappwidget/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-baconsappwidget.a"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = 4; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = baconsappwidget/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* baconsappwidget-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "baconsappwidget-Bridging-Header.h"; path = "baconsappwidget/baconsappwidget-Bridging-Header.h"; sourceTree = "<group>"; };
+		F394A620E418D0D58C2AC6F1 /* Pods-baconsappwidget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.release.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.release.xcconfig"; sourceTree = "<group>"; };
+		F532D43C98E99B8EDDD80671 /* Pods-baconsappwidget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-baconsappwidget.debug.xcconfig"; path = "Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget.debug.xcconfig"; sourceTree = "<group>"; };
+		FB0742DB289A9E952AFA5F2F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = baconsappwidget/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		XXA12889081EB894481655XX /* AppIntents.framework */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = undefined; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
@@ -62,32 +69,32 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		XX2A9D198C094CECB67FE3XX /* Exceptions for "widget" folder in "My Widget 😄" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				"expo-target.config.js",
+			);
+			target = XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */;
+		};
+		XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				_shared/intents.swift,
 			);
 			target = 13B07F861A680F5B00A75B9A /* baconsappwidget */;
 		};
-		XX5D8C69AEC31EB74E6A81XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-				"expo-target.config.js",
-			);
-			target = XX219ADAAD1592813AB03DXX /* My Widget 😄 */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		XX5334B7CC062E958C75C1XX /* widget */ = {
+		XX2080125B71C933391F34XX /* widget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				XX5D8C69AEC31EB74E6A81XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				XX2A9D198C094CECB67FE3XX /* Exceptions for "widget" folder in "My Widget 😄" target */,
+				XX3C49F596644F1073CB7FXX /* Exceptions for "widget" folder in "baconsappwidget" target */,
 			);
-			explicitFileTypes = {};
+			explicitFileTypes = {
+			};
 			explicitFolders = (
 			);
 			path = widget;
@@ -100,7 +107,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBA5B5B976CA0884B4FBB6B8 /* libPods-baconsappwidget.a in Frameworks */,
+				XX3335275D2E5CA9C5184DXX /* FirebaseCore in Frameworks */,
+				XX644FB514CBB910764AA4XX /* SnapKit in Frameworks */,
+				9CDF7ED736E1788A7DEEE4EA /* libPods-baconsappwidget.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,16 +127,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		079820807E7289CC3D342C56 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */,
-				964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* baconsappwidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +136,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
+				FB0742DB289A9E952AFA5F2F /* PrivacyInfo.xcprivacy */,
 			);
 			name = baconsappwidget;
 			sourceTree = "<group>";
@@ -144,11 +144,12 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				XX470101BAEB8E0BBC8B0DXX /* WidgetKit.framework */,
 				XX4DFF38D47332D6BF0183XX /* SwiftUI.framework */,
 				XXCAF23C3FC41F82140FA1XX /* ActivityKit.framework */,
 				XXA12889081EB894481655XX /* AppIntents.framework */,
-				DC2FA3A795FAA2AFC79BA2C1 /* libPods-baconsappwidget.a */,
+				7D046C5AE2708C70EF0988B3 /* libPods-baconsappwidget.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -168,7 +169,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				079820807E7289CC3D342C56 /* Pods */,
+				C721BFF8B7E1E160A6E1E6C6 /* Pods */,
+				FC40FE9BCE8A9B5CA4018F53 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -193,12 +195,38 @@
 			path = baconsappwidget/Supporting;
 			sourceTree = "<group>";
 		};
+		C721BFF8B7E1E160A6E1E6C6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F532D43C98E99B8EDDD80671 /* Pods-baconsappwidget.debug.xcconfig */,
+				F394A620E418D0D58C2AC6F1 /* Pods-baconsappwidget.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		E142F26E4C308075087D5DDB /* baconsappwidget */ = {
+			isa = PBXGroup;
+			children = (
+				80F127C0E819AE55486E37D8 /* ExpoModulesProvider.swift */,
+			);
+			name = baconsappwidget;
+			sourceTree = "<group>";
+		};
+		FC40FE9BCE8A9B5CA4018F53 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				E142F26E4C308075087D5DDB /* baconsappwidget */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		XX3E41C1850246162C0061XX /* expo:targets */ = {
 			isa = PBXGroup;
 			children = (
-				XX5334B7CC062E958C75C1XX /* widget */,
+				XX2080125B71C933391F34XX /* widget */,
 			);
-			name = expo:targets;
+			name = "expo:targets";
 			path = ../targets;
 			sourceTree = "<group>";
 		};
@@ -210,22 +238,30 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "baconsappwidget" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
+				0620BC802EBC48C1C66B308B /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
 				XX72A8CFBF0FBA13A79902XX /* Embed Foundation Extensions */,
+				8045F3DC117EBFF088AD3E89 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				XX8A929EB0D10D043F0ABEXX /* PBXTargetDependency */,
+				XX7113A9368EBA1A0D46A2XX /* PBXTargetDependency */,
 			);
 			name = baconsappwidget;
+			packageProductDependencies = (
+				XX7A8FC661F2C8C9076911XX /* FirebaseCore */,
+				XXEA35527E3E730FA6DBEEXX /* SnapKit */,
+			);
 			productName = baconsappwidget;
 			productReference = 13B07F961A680F5B00A75B9A /* baconsappwidget.app */;
 			productType = "com.apple.product-type.application";
 		};
-		XX219ADAAD1592813AB03DXX /* My Widget 😄 */ = {
+		XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */;
 			buildPhases = (
@@ -238,7 +274,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				XX5334B7CC062E958C75C1XX /* widget */,
+				XX2080125B71C933391F34XX /* widget */,
 			);
 			name = "My Widget 😄";
 			productName = MyWidget;
@@ -256,7 +292,7 @@
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
 					};
-					XX219ADAAD1592813AB03DXX = {
+					XX8673E892DC6D4E60A1FEXX = {
 						CreatedOnToolsVersion = 14.3;
 						DevelopmentTeam = QQ57RJ5UTD;
 						ProvisioningStyle = Automatic;
@@ -272,12 +308,16 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				XX14506F678746E71C4785XX /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				XXC10BC0729D667D2AFEB0XX /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* baconsappwidget */,
-				XX219ADAAD1592813AB03DXX /* My Widget 😄 */,
+				XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */,
 			);
 		};
 /* End PBXProject section */
@@ -290,6 +330,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+				52EF15C8C922DC657B4AB41B /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +344,51 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+			);
+			name = "Bundle React Native code and images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n\n";
+		};
+		0620BC802EBC48C1C66B308B /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/baconsappwidget/baconsappwidget.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-baconsappwidget/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-baconsappwidget/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-baconsappwidget/expo-configure-project.sh\"\n";
+		};
 		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,6 +411,54 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact/React-cxxreact_privacy.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-cxxreact_privacy.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8045F3DC117EBFF088AD3E89 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-baconsappwidget/Pods-baconsappwidget-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -333,6 +467,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
+				66694164321D456A3B5AE356 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,17 +481,17 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		XX8A929EB0D10D043F0ABEXX /* PBXTargetDependency */ = {
+		XX7113A9368EBA1A0D46A2XX /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = XX219ADAAD1592813AB03DXX /* My Widget 😄 */;
-			targetProxy = XXA64E64FBB5E0BCCD0762XX /* PBXContainerItemProxy */;
+			target = XX8673E892DC6D4E60A1FEXX /* My Widget 😄 */;
+			targetProxy = XX5CEC91B0781FF05162DFXX /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 388CB8C8C562BD1A604C1A9F /* Pods-baconsappwidget.debug.xcconfig */;
+			baseConfigurationReference = F532D43C98E99B8EDDD80671 /* Pods-baconsappwidget.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -380,6 +515,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo;
 				PRODUCT_NAME = baconsappwidget;
 				SWIFT_OBJC_BRIDGING_HEADER = "baconsappwidget/baconsappwidget-Bridging-Header.h";
@@ -392,7 +528,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 964100AB10C1B42725D51284 /* Pods-baconsappwidget.release.xcconfig */;
+			baseConfigurationReference = F394A620E418D0D58C2AC6F1 /* Pods-baconsappwidget.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -411,6 +547,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo;
 				PRODUCT_NAME = baconsappwidget;
 				SWIFT_OBJC_BRIDGING_HEADER = "baconsappwidget/baconsappwidget-Bridging-Header.h";
@@ -472,10 +609,14 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
+				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/.bun/react-native@0.81.5+707342df57474be6/node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -524,16 +665,20 @@
 					/usr/lib/swift,
 					"$(inherited)",
 				);
-				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
+				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/.bun/react-native@0.81.5+707342df57474be6/node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		XX2638145AAD3C31E3D763XX /* Release */ = {
+		XX837C8E6452C22280907DXX /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -545,51 +690,9 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../targets/widget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "My Widget 😄";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		XX837C8E6452C22280907DXX /* Debug */ = {
-			isa = XCBuildConfiguration;
-			name = Debug;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ../targets/widget/Info.plist;
@@ -604,6 +707,7 @@
 				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -612,17 +716,15 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 			};
+			name = Debug;
 		};
 		XXAA503238DFC7747BDB83XX /* Release */ = {
 			isa = XCBuildConfiguration;
-			name = Release;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = $accent;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = $widgetBackground;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -630,10 +732,12 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ../targets/widget/Info.plist;
@@ -647,17 +751,17 @@
 				);
 				MARKETING_VERSION = 1.0.0;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bacon.clipdemo.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				CODE_SIGN_ENTITLEMENTS = ../targets/widget/generated.entitlements;
-				DEVELOPMENT_TEAM = QQ57RJ5UTD;
 			};
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -682,14 +786,46 @@
 		};
 		XXE5F70535C26F7655FB0EXX /* Build configuration list for PBXNativeTarget "My Widget 😄" */ = {
 			isa = XCConfigurationList;
-			defaultConfigurationIsVisible = 0;
 			buildConfigurations = (
 				XX837C8E6452C22280907DXX /* Debug */,
 				XXAA503238DFC7747BDB83XX /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		XX14506F678746E71C4785XX /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+		XXC10BC0729D667D2AFEB0XX /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		XX7A8FC661F2C8C9076911XX /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = XX14506F678746E71C4785XX /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		XXEA35527E3E730FA6DBEEXX /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = XXC10BC0729D667D2AFEB0XX /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

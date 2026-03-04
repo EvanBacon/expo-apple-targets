@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "spme2e",
+    "slug": "spme2e",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "com.test.spm.e2e",
+      "appleTeamId": "XXXXXXXXXX"
+    },
+    "platforms": ["ios"],
+    "plugins": [
+      [
+        "@bacons/spm",
+        {
+          "dependencies": {
+            "swift-algorithms": {
+              "version": "^1.2.0",
+              "url": "https://github.com/apple/swift-algorithms.git",
+              "products": ["Algorithms"]
+            },
+            "swift-collections": {
+              "version": "^1.1.0",
+              "url": "https://github.com/apple/swift-collections.git",
+              "products": ["Collections"]
+            },
+            "LocalTestPackage": {
+              "path": "../LocalTestPackage",
+              "products": ["LocalTestPackage"]
+            }
+          }
+        }
+      ]
+    ]
+  }
+}
