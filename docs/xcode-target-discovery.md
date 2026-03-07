@@ -4,7 +4,7 @@ How to programmatically discover all Apple extension/target types from a local X
 
 ## Data Sources Inside Xcode.app
 
-### 1. XCSpec Files (Product Type Definitions)
+### 1. XCSpec Files (Product Type & Build Setting Definitions)
 
 **Location:**
 ```
@@ -19,6 +19,8 @@ How to programmatically discover all Apple extension/target types from a local X
 | `DarwinProductTypes.xcspec` | iOS/watchOS/tvOS/visionOS product types |
 | `ProductTypes.xcspec` | Generic types (frameworks, libraries, tools) |
 | `macOSProductTypes.xcspec` | macOS-specific product types |
+| `macOSNativeBuildSystem.xcspec` | Build settings definitions (name, type, default, category) |
+| `macOSCoreBuildSystem.xcspec` | Core build settings definitions |
 
 **Format:** Binary plist arrays. Each entry has:
 - `Identifier` — e.g. `com.apple.product-type.app-extension`
@@ -37,6 +39,23 @@ How to programmatically discover all Apple extension/target types from a local X
 | `com.apple.product-type.application.on-demand-install-capable` | App Clip |
 | `com.apple.product-type.extensionkit-extension` | ExtensionKit Extension (e.g. App Intents) |
 | `com.apple.product-type.application.watchapp2-container` | Watch-Only App Stub |
+
+**Build settings format** (in `macOSNativeBuildSystem.xcspec`):
+```
+{   Name = "REGISTER_APP_GROUPS";
+    Type = Boolean;
+    DefaultValue = NO;
+    Category = "Code Signing";
+    Description = "Register app groups in profiles.";
+},
+```
+
+**Relevant build settings for extensions:**
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `REGISTER_APP_GROUPS` | Boolean | NO | Register app groups in profiles. Required for extensions to access app group containers at runtime. |
+
+> **Note:** `REGISTER_APP_GROUPS = YES` must be set on extension targets that use app groups. Without this setting, extensions may build successfully but fail to access shared app group containers at runtime. See [Stack Overflow #79792338](https://stackoverflow.com/questions/79792338/) for details on this silent configuration issue.
 
 ### 2. Extension Template Directories
 
