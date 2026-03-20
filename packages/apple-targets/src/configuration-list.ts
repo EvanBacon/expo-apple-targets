@@ -916,3 +916,21 @@ export function createConfigurationListForType(
     defaultConfigurationName: "Release",
   });
 }
+
+export function updateConfigurationListForType(
+  project: XcodeProject,
+  configList: XCConfigurationList,
+  props: XcodeSettings,
+) {
+  const { debug, release } = getConfigurationListBuildSettingsForType(
+    project,
+    props,
+  );
+  for (const config of configList.props.buildConfigurations) {
+    if (config.props.name === "Debug") {
+      config.props.buildSettings = debug;
+    } else if (config.props.name === "Release") {
+      config.props.buildSettings = release;
+    }
+  }
+}

@@ -27,6 +27,7 @@ import assert from "assert";
 import {
   XcodeSettings,
   createConfigurationListForType,
+  updateConfigurationListForType,
 } from "./configuration-list";
 import { warnOnce } from "./util";
 
@@ -70,7 +71,7 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
 //   return version;
 // }
 
-async function applyXcodeChanges(
+export async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
   props: XcodeSettings,
@@ -262,26 +263,12 @@ async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
-    // Remove existing build phases
-    targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
-      (config) => {
-        config.getReferrers().forEach((ref) => {
-          ref.removeReference(config.uuid);
-        });
-        config.removeFromProject();
-      },
+    // Update existing build configurations in place to preserve UUIDs
+    updateConfigurationListForType(
+      project,
+      targetToUpdate.props.buildConfigurationList,
+      props,
     );
-    // Remove existing build configuration list
-    targetToUpdate.props.buildConfigurationList
-      .getReferrers()
-      .forEach((ref) => {
-        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
-      });
-    targetToUpdate.props.buildConfigurationList.removeFromProject();
-
-    // Create new build phases
-    targetToUpdate.props.buildConfigurationList =
-      createConfigurationListForType(project, props);
   } else {
     const productType = productTypeForType(props.type);
     const isExtension = productType === "com.apple.product-type.app-extension";
@@ -473,7 +460,9 @@ async function applyXcodeChanges(
         target: mainAppTarget,
       });
     exceptionSet.props.membershipExceptions = sharedAssets.sort();
-    syncRootGroup.props.exceptions.push(exceptionSet);
+    if (!existingExceptionSet) {
+      syncRootGroup.props.exceptions.push(exceptionSet);
+    }
   } else {
     // Remove the exception set if there are no shared assets.
     existingExceptionSet?.removeFromProject();
