@@ -72,9 +72,11 @@ module.exports = {
   entitlements: {
     // Serialized entitlements. Useful for configuring with environment variables.
   },
-  // Generates xcassets for the target.
+  // Generates xcassets for the target. Supports images (imageset) and SF Symbol template SVGs (symbolset).
   images: {
     thing: "../assets/thing.png",
+    // SF Symbol SVGs are automatically detected and generated as symbolsets.
+    mySymbol: "./my-symbol.svg",
   },
 
   // The iOS version fot the target. Defaults to 18.0
@@ -120,6 +122,37 @@ There are certain values that are shared across targets. We use a predefined con
 | ------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `$accent`           | `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`     | Sets the global accent color, in widgets this is used for the tint color of buttons when editing the widget. |
 | `$widgetBackground` | `ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME` | Sets the background color of the widget.                                                                     |
+
+## SF Symbols
+
+SVG files passed to `images` are automatically inspected to determine if they are [SF Symbol templates](https://developer.apple.com/sf-symbols/). When detected, the SVG is generated as a `.symbolset` in `Assets.xcassets` instead of a regular `.imageset`. This works for both local file paths and URLs.
+
+```js
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
+module.exports = {
+  type: "widget",
+  images: {
+    // SF Symbol template SVGs are auto-detected:
+    expo: "./expo.sfsymbol.svg",
+    // URLs work too:
+    remote: "https://example.com/my-symbol.svg",
+    // Regular images still work as expected:
+    photo: "./photo.png",
+  },
+};
+```
+
+In Swift, use the symbol name as a custom symbol image:
+
+```swift
+Image("expo")
+```
+
+You can create custom SF Symbol SVGs easily using:
+
+```sh
+bun create symbol /path/to/icon.svg
+```
 
 ## CocoaPods
 
@@ -210,8 +243,10 @@ module.exports = {
     },
   },
   // Optional: Add images that can be used in SwiftUI.
+  // SF Symbol SVGs are automatically detected and generated as symbolsets.
   images: {
     valleys: "../../valleys.png",
+    myIcon: "./my-icon.sfsymbol.svg",
   },
   // Optional: Add entitlements to the target, this one can be used to share data between the widget and the app.
   entitlements: {
@@ -527,7 +562,7 @@ Changes in your app’s state may affect control displays. You can request a rel
 ExtensionStorage.reloadControls();
 ```
 
-Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
+Custom images can be used but they must be SF Symbols. You can create them with `bun create symbol /path/to/icon.svg` or the [SF Symbols app](https://developer.apple.com/sf-symbols/). Add the SVG to your target's `images` config and it will be automatically detected and generated as a `.symbolset` (see [SF Symbols](#sf-symbols)).
 
 You can do a lot of things with Control Widgets like launching a custom UI instead of opening the app. This plugin should allow for most of these things to work.
 
