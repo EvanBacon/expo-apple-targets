@@ -7,7 +7,13 @@ import chalk from "chalk";
 
 import { withIosColorset } from "./colorset/with-ios-colorset";
 import { Config, Entitlements } from "./config";
-import { withImageAsset } from "./icon/with-image-asset";
+import { writeContentsJsonAsync } from "@expo/prebuild-config/build/plugins/icons/AssetContents";
+
+import {
+  withImageAsset,
+  generateResizedImageAsync,
+} from "./icon/with-image-asset";
+import { isSFSymbolContent } from "./symbolset/with-ios-symbolset";
 import { withIosIcon } from "./icon/with-ios-icon";
 import {
   getFrameworksForType,
@@ -361,11 +367,89 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (props.images) {
     Object.entries(props.images).forEach(([name, image]) => {
-      withImageAsset(config, {
-        image,
-        name,
-        cwd: props.directory,
-      });
+      if (typeof image === "string" && image.endsWith(".svg")) {
+        const imageSrc = image;
+        // SVGs might be SF Symbol templates — detection requires reading
+        // the content (and possibly fetching a URL), so defer to an async mod.
+        withDangerousMod(config, [
+          "ios",
+          async (config) => {
+            const isUrl = /^https?:\/\//.test(imageSrc);
+            let svgContent: string;
+            let svgFilename: string;
+
+            if (isUrl) {
+              const res = await fetch(imageSrc);
+              svgContent = await res.text();
+              const urlPath = new URL(imageSrc).pathname;
+              svgFilename = path.basename(urlPath) || `${name}.svg`;
+            } else {
+              const resolvedPath = path.join(props.directory, imageSrc);
+              svgContent = await fs.promises.readFile(resolvedPath, "utf-8");
+              svgFilename = path.basename(resolvedPath);
+            }
+
+            const projectRoot = config.modRequest.projectRoot;
+
+            if (isSFSymbolContent(svgContent)) {
+              const symbolsetDir = path.join(
+                projectRoot,
+                props.directory,
+                `Assets.xcassets/${name}.symbolset`
+              );
+
+              await fs.promises.mkdir(symbolsetDir, { recursive: true });
+              await fs.promises.writeFile(
+                path.join(symbolsetDir, svgFilename),
+                svgContent
+              );
+              await fs.promises.writeFile(
+                path.join(symbolsetDir, "Contents.json"),
+                JSON.stringify(
+                  {
+                    info: { author: "expo", version: 1 },
+                    symbols: [{ filename: svgFilename, idiom: "universal" }],
+                  },
+                  null,
+                  2
+                )
+              );
+            } else {
+              // Not an SF Symbol — generate a normal imageset inline.
+              const iosNamedProjectRoot = path.join(
+                projectRoot,
+                props.directory,
+              );
+              const imgPath = `Assets.xcassets/${name}.imageset`;
+              await fs.promises.mkdir(
+                path.join(iosNamedProjectRoot, imgPath),
+                { recursive: true },
+              );
+
+              await writeContentsJsonAsync(
+                path.join(iosNamedProjectRoot, imgPath),
+                {
+                  images: await generateResizedImageAsync(
+                    { "1x": isUrl ? imageSrc : path.join(props.directory, imageSrc), "2x": undefined, "3x": undefined },
+                    name,
+                    projectRoot,
+                    iosNamedProjectRoot,
+                    path.join(props.directory, "gen-image", name),
+                  ),
+                },
+              );
+            }
+
+            return config;
+          },
+        ]);
+      } else {
+        withImageAsset(config, {
+          image,
+          name,
+          cwd: props.directory,
+        });
+      }
     });
   }
 
