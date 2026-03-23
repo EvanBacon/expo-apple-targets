@@ -8,6 +8,10 @@ import chalk from "chalk";
 import { withIosColorset } from "./colorset/with-ios-colorset";
 import { Config, Entitlements } from "./config";
 import { withImageAsset } from "./icon/with-image-asset";
+import {
+  isSFSymbolContent,
+  withIosSymbolset,
+} from "./symbolset/with-ios-symbolset";
 import { withIosIcon } from "./icon/with-ios-icon";
 import {
   getFrameworksForType,
@@ -361,6 +365,20 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   if (props.images) {
     Object.entries(props.images).forEach(([name, image]) => {
+      // For string image paths that point to local SVG files, check if
+      // the SVG is an SF Symbol template and route to symbolset instead.
+      if (typeof image === "string" && !image.match(/^https?:\/\//)) {
+        const resolvedPath = path.join(props.directory, image);
+        if (isSFSymbolSVG(resolvedPath)) {
+          withIosSymbolset(config, {
+            symbolPath: resolvedPath,
+            name,
+            cwd: props.directory,
+          });
+          return;
+        }
+      }
+
       withImageAsset(config, {
         image,
         name,
