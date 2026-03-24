@@ -27,7 +27,6 @@ import assert from "assert";
 import {
   XcodeSettings,
   createConfigurationListForType,
-  updateConfigurationListForType,
 } from "./configuration-list";
 import { warnOnce } from "./util";
 
@@ -263,12 +262,26 @@ export async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
-    // Update existing build configurations in place to preserve UUIDs
-    updateConfigurationListForType(
-      project,
-      targetToUpdate.props.buildConfigurationList,
-      props,
+    // Remove existing build configurations
+    targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
+      (config) => {
+        config.getReferrers().forEach((ref) => {
+          ref.removeReference(config.uuid);
+        });
+        config.removeFromProject();
+      },
     );
+    // Remove existing build configuration list
+    targetToUpdate.props.buildConfigurationList
+      .getReferrers()
+      .forEach((ref) => {
+        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
+      });
+    targetToUpdate.props.buildConfigurationList.removeFromProject();
+
+    // Recreate build configuration list
+    targetToUpdate.props.buildConfigurationList =
+      createConfigurationListForType(project, props);
   } else {
     const productType = productTypeForType(props.type);
     const isExtension = productType === "com.apple.product-type.app-extension";
