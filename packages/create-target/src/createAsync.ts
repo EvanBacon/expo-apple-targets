@@ -7,7 +7,6 @@ import plist from "@expo/plist";
 import { normalizeStaticPlugin } from "@expo/config-plugins/build/utils/plugin-resolver";
 import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
 import resolveFrom from "resolve-from";
-import { copy, remove } from "fs-extra";
 import {
   assertValidTarget,
   confirmAsync,
@@ -130,7 +129,7 @@ export async function createAsync(
       }
 
       // Remove all files in the target directory
-      await remove(targetDir);
+      await fs.promises.rm(targetDir, { recursive: true, force: true });
     }
   }
 
@@ -142,7 +141,7 @@ export async function createAsync(
 
   if (fs.existsSync(targetTemplate)) {
     // Deeply copy all files from the template directory to the target directory
-    await copy(targetTemplate, targetDir);
+    await fs.promises.cp(targetTemplate, targetDir, { recursive: true });
   }
 
   Log.log(chalk`Writing {cyan expo-target.config.js} file`);
