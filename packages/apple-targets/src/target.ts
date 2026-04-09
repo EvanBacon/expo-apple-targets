@@ -143,6 +143,12 @@ export const TARGET_REGISTRY = {
     frameworks: ["DeviceActivity"],
     displayName: "Device Activity Monitor",
   },
+  "device-activity-report": {
+    extensionPointIdentifier: "com.apple.deviceactivity.report-extension",
+    frameworks: ["DeviceActivity", "SwiftUI"],
+    appGroupsByDefault: true,
+    displayName: "Device Activity Report",
+  },
   "network-packet-tunnel": {
     extensionPointIdentifier: "com.apple.networkextension.packet-tunnel",
     needsEmbeddedSwift: true,
@@ -702,6 +708,12 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        },
+      };
+    case "device-activity-report":
+      return {
+        EXAppExtensionAttributes: {
+          EXExtensionPointIdentifier: NSExtensionPointIdentifier,
         },
       };
     case "print-service":
