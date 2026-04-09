@@ -5,6 +5,5 @@
     "bundleIdentifier": "com.bacon.clipdemo"
   },
   "plugins": ["@bacons/apple-targets"],
-  "platforms": ["ios"],
-  "newArchEnabled": true
+  "platforms": ["ios"]
 }

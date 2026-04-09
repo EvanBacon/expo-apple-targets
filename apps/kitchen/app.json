@@ -10,7 +10,6 @@
     "resizeMode": "contain",
     "backgroundColor": "#ffffff"
   },
-  "newArchEnabled": true,
   "ios": {
     "supportsTablet": true,
     "appleTeamId": "QQ57RJ5UTD",
