@@ -9,6 +9,7 @@ import {
   PBXShellScriptBuildPhase,
   XcodeProject,
 } from "@bacons/xcode";
+import plist from "@expo/plist";
 import type { ExpoConfig } from "expo/config";
 import type { ConfigPlugin } from "expo/config-plugins";
 import fs from "fs";
@@ -167,17 +168,40 @@ async function applyXcodeChanges(
       cwd: magicCwd,
     });
 
+    let hasAppGroups = false;
+
     if (entitlements.length > 0) {
       target.setBuildSetting(
         "CODE_SIGN_ENTITLEMENTS",
         props.cwd + "/" + entitlements[0],
       );
+
+      // Check if entitlements contain app groups
+      try {
+        const entitlementsPath = path.join(magicCwd, entitlements[0]);
+        const content = plist.parse(fs.readFileSync(entitlementsPath, "utf8"));
+        const appGroups = content["com.apple.security.application-groups"];
+        hasAppGroups = Array.isArray(appGroups) && appGroups.length > 0;
+      } catch {
+        // If we can't read/parse, assume no app groups
+      }
     } else {
       target.removeBuildSetting("CODE_SIGN_ENTITLEMENTS");
     }
 
+    // Set REGISTER_APP_GROUPS if app groups are configured.
+    // This build setting is required for extensions to properly access app group containers.
+    // Without it, extensions may fail to access shared data even with matching entitlements.
+    // See: https://stackoverflow.com/questions/79792338
+    if (hasAppGroups) {
+      // @ts-expect-error - REGISTER_APP_GROUPS is a valid Xcode build setting not in types yet
+      target.setBuildSetting("REGISTER_APP_GROUPS", "YES");
+    } else {
+      // @ts-expect-error - REGISTER_APP_GROUPS is a valid Xcode build setting not in types yet
+      target.removeBuildSetting("REGISTER_APP_GROUPS");
+    }
+
     return entitlements;
-    // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
   }
 
   function syncMarketingVersions() {
