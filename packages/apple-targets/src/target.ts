@@ -141,6 +141,7 @@ export const TARGET_REGISTRY = {
   "device-activity-monitor": {
     extensionPointIdentifier: "com.apple.deviceactivity.monitor-extension",
     frameworks: ["DeviceActivity"],
+    appGroupsByDefault: true,
     displayName: "Device Activity Monitor",
   },
   "device-activity-report": {
@@ -249,12 +250,14 @@ export const TARGET_REGISTRY = {
   "shield-action": {
     extensionPointIdentifier: "com.apple.ManagedSettings.shield-action-service",
     frameworks: ["ManagedSettings"],
+    appGroupsByDefault: true,
     displayName: "Shield Action",
   },
   "shield-config": {
     extensionPointIdentifier:
       "com.apple.ManagedSettingsUI.shield-configuration-service",
     frameworks: ["ManagedSettings", "ManagedSettingsUI"],
+    appGroupsByDefault: true,
     displayName: "Shield Configuration",
   },
   "print-service": {
