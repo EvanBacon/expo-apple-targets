@@ -141,7 +141,14 @@ export const TARGET_REGISTRY = {
   "device-activity-monitor": {
     extensionPointIdentifier: "com.apple.deviceactivity.monitor-extension",
     frameworks: ["DeviceActivity"],
+    appGroupsByDefault: true,
     displayName: "Device Activity Monitor",
+  },
+  "device-activity-report": {
+    extensionPointIdentifier: "com.apple.deviceactivity.report-extension",
+    frameworks: ["DeviceActivity", "SwiftUI"],
+    appGroupsByDefault: true,
+    displayName: "Device Activity Report",
   },
   "network-packet-tunnel": {
     extensionPointIdentifier: "com.apple.networkextension.packet-tunnel",
@@ -243,12 +250,14 @@ export const TARGET_REGISTRY = {
   "shield-action": {
     extensionPointIdentifier: "com.apple.ManagedSettings.shield-action-service",
     frameworks: ["ManagedSettings"],
+    appGroupsByDefault: true,
     displayName: "Shield Action",
   },
   "shield-config": {
     extensionPointIdentifier:
       "com.apple.ManagedSettingsUI.shield-configuration-service",
     frameworks: ["ManagedSettings", "ManagedSettingsUI"],
+    appGroupsByDefault: true,
     displayName: "Shield Configuration",
   },
   "print-service": {
@@ -702,6 +711,12 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        },
+      };
+    case "device-activity-report":
+      return {
+        EXAppExtensionAttributes: {
+          EXExtensionPointIdentifier: NSExtensionPointIdentifier,
         },
       };
     case "print-service":

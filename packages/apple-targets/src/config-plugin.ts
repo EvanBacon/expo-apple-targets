@@ -1,6 +1,7 @@
 import { ConfigPlugin } from "expo/config-plugins";
 import { globSync } from "glob";
 import path from "path";
+import fs from "fs";
 import chalk from "chalk";
 
 import type { Config, ConfigFunction } from "./config";
@@ -14,10 +15,19 @@ export const withTargetsDir: ConfigPlugin<
     appleTeamId?: string;
     match?: string;
     root?: string;
+    /**
+     * Array of npm package names or paths that ship apple targets.
+     * The plugin will search for `targets/* /expo-target.config.@(json|js)` in each location.
+     * - Package names (e.g. "expo-screen-time") are resolved via require.resolve
+     * - Paths starting with "." or "/" are resolved relative to project root
+     * @example ["expo-screen-time"] - npm package
+     * @example ["./node_modules/expo-screen-time", "../my-library"] - paths
+     */
+    libraryTargets?: string[];
   } | void
 > = (config, _props) => {
   let { appleTeamId = config?.ios?.appleTeamId } = _props || {};
-  const { root = "./targets", match = "*" } = _props || {};
+  const { root = "./targets", match = "*", libraryTargets = [] } = _props || {};
   const projectRoot = config._internal!.projectRoot;
 
   if (!config.ios?.bundleIdentifier) {
@@ -35,11 +45,55 @@ export const withTargetsDir: ConfigPlugin<
     );
   }
 
+  // Find targets in the user's project
   const targets = globSync(`${root}/${match}/expo-target.config.@(json|js)`, {
-    // const targets = globSync(`./targets/action/expo-target.config.@(json|js)`, {
     cwd: projectRoot,
     absolute: true,
   });
+
+  // Find targets shipped by npm packages (libraries)
+  const libraryTargetPaths = libraryTargets.flatMap((pkgNameOrPath) => {
+    let pkgDir: string;
+
+    // Check if it's a path (starts with . or /)
+    if (pkgNameOrPath.startsWith(".") || pkgNameOrPath.startsWith("/")) {
+      pkgDir = path.resolve(projectRoot, pkgNameOrPath);
+      if (!fs.existsSync(pkgDir)) {
+        warnOnce(
+          chalk`{yellow [bacons/apple-targets]} Library path does not exist: {cyan ${pkgDir}}`
+        );
+        return [];
+      }
+    } else {
+      // It's a package name - resolve via require.resolve
+      try {
+        const pkgJsonPath = require.resolve(`${pkgNameOrPath}/package.json`, {
+          paths: [projectRoot],
+        });
+        pkgDir = path.dirname(pkgJsonPath);
+      } catch (error) {
+        warnOnce(
+          chalk`{yellow [bacons/apple-targets]} Could not find library targets for package {cyan ${pkgNameOrPath}}: ${error}`
+        );
+        return [];
+      }
+    }
+
+    const targets = globSync(`targets/*/expo-target.config.@(json|js)`, {
+      cwd: pkgDir,
+      absolute: true,
+    });
+
+    if (targets.length === 0) {
+      warnOnce(
+        chalk`{yellow [bacons/apple-targets]} No targets found in {cyan ${pkgDir}/targets/}`
+      );
+    }
+
+    return targets;
+  });
+
+  targets.push(...libraryTargetPaths);
 
   targets.forEach((configPath) => {
     const targetConfig = require(configPath);
@@ -47,6 +101,11 @@ export const withTargetsDir: ConfigPlugin<
     // If it's a function, evaluate it
     if (typeof targetConfig === "function") {
       evaluatedTargetConfigObject = targetConfig(config);
+
+      // Allow config functions to return null/undefined to skip the target
+      if (evaluatedTargetConfigObject === null || evaluatedTargetConfigObject === undefined) {
+        return; // Skip this target
+      }
 
       if (typeof evaluatedTargetConfigObject !== "object") {
         throw new Error(
