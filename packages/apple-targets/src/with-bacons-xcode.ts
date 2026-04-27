@@ -1,13 +1,18 @@
 import { XcodeProject } from "@bacons/xcode";
 import * as xcodeParse from "@bacons/xcode/json";
 import {
-  BaseMods,
   ConfigPlugin,
   createRunOncePlugin,
   IOSConfig,
   Mod,
   withMod,
 } from "expo/config-plugins";
+// BaseMods.withGeneratedBaseMods and BaseMods.provider were moved to standalone
+// exports in @expo/config-plugins SDK 54
+import {
+  provider,
+  withGeneratedBaseMods,
+} from "@expo/config-plugins/build/plugins/createBaseMod";
 import fs from "fs";
 
 const customModName = "xcodeProjectBeta2";
@@ -24,13 +29,13 @@ export const withXcodeProjectBeta: ConfigPlugin<Mod<XcodeProject>> = (
 };
 
 const withXcodeProjectBetaBaseModInternal: ConfigPlugin = (config) => {
-  return BaseMods.withGeneratedBaseMods(config, {
+  return withGeneratedBaseMods(config, {
     platform: "ios",
     saveToInternal: true,
     skipEmptyMod: false,
     providers: {
       // Append a custom rule to supply AppDelegate header data to mods on `mods.ios.AppClipInfoPlist`
-      [customModName]: BaseMods.provider<XcodeProject>({
+      [customModName]: provider<XcodeProject>({
         isIntrospective: false,
         // isIntrospective: true,
         async getFilePath({ modRequest, _internal }) {
