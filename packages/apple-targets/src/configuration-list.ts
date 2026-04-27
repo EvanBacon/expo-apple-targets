@@ -886,6 +886,8 @@ function getConfigurationListBuildSettingsForType(
     case "print-service":
     case "smart-card":
     case "authentication-services":
+    case "wallet":
+    case "wallet-ui":
       return createDefaultConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;
