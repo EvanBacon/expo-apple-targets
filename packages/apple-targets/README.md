@@ -362,6 +362,8 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | print-service             | Print Service Extension            |
 | smart-card                | Smart Card / Persistent Token      |
 | authentication-services   | Authentication Services Extension  |
+| wallet                    | Wallet Provisioning (Non-UI)       |
+| wallet-ui                 | Wallet Provisioning UI             |
 
 
 <!-- | imessage             | iMessage Extension               | -->

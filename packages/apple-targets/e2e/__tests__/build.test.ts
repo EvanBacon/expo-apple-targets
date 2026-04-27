@@ -153,6 +153,8 @@ const TARGET_REGISTRY: TargetEntry[] = [
     dir: "authentication-services",
     target: "authenticationservices",
   },
+  { type: "wallet", dir: "wallet", target: "wallet" },
+  { type: "wallet-ui", dir: "wallet-ui", target: "walletui" },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.
