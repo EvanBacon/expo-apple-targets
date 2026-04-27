@@ -8,6 +8,10 @@ on:
       - "packages/apple-targets/**"
       - "packages/create-target/templates/**"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   e2e:
     runs-on: macos-15
