@@ -71,7 +71,7 @@ export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
 //   return version;
 // }
 
-async function applyXcodeChanges(
+export async function applyXcodeChanges(
   config: ExpoConfig,
   project: XcodeProject,
   props: XcodeSettings,
@@ -286,7 +286,7 @@ async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
-    // Remove existing build phases
+    // Remove existing build configurations
     targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
       (config) => {
         config.getReferrers().forEach((ref) => {
@@ -303,7 +303,7 @@ async function applyXcodeChanges(
       });
     targetToUpdate.props.buildConfigurationList.removeFromProject();
 
-    // Create new build phases
+    // Recreate build configuration list
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
   } else {
@@ -497,7 +497,9 @@ async function applyXcodeChanges(
         target: mainAppTarget,
       });
     exceptionSet.props.membershipExceptions = sharedAssets.sort();
-    syncRootGroup.props.exceptions.push(exceptionSet);
+    if (!existingExceptionSet) {
+      syncRootGroup.props.exceptions.push(exceptionSet);
+    }
   } else {
     // Remove the exception set if there are no shared assets.
     existingExceptionSet?.removeFromProject();

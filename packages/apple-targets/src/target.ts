@@ -788,6 +788,16 @@ export function isNativeTargetOfType(
     return false;
   }
 
+  // ExtensionKit extensions (e.g. app-intent) use a different product type
+  // and don't have NSExtensionPointIdentifier in Info.plist, so match by
+  // product type directly.
+  if (
+    target.props.productType ===
+    "com.apple.product-type.extensionkit-extension"
+  ) {
+    return productTypeForType(type) === target.props.productType;
+  }
+
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }
