@@ -21,6 +21,7 @@ import {
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
 import { withEASTargets } from "./with-eas-credentials";
+import { withXcodeProjectBeta } from "./with-bacons-xcode";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
   getSanitizedBundleIdentifier,
@@ -288,17 +289,6 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         }
       });
 
-      if (props.infoPlist) {
-        const infoPlistPath = path.join(targetDirAbsolutePath, "Info.plist");
-        const existing = plist.parse(
-          fs.readFileSync(infoPlistPath, "utf8"),
-        ) as Record<string, any>;
-        fs.writeFileSync(
-          infoPlistPath,
-          plist.build({ ...existing, ...props.infoPlist }),
-        );
-      }
-
       return config;
     },
   ]);
@@ -369,6 +359,53 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       // Assume App Clips are used for React Native.
       props.type === "clip",
   });
+
+  // When the user provides `infoPlist`, write a merged copy into the prebuild
+  // `ios/` folder and point INFOPLIST_FILE at it, so the source Info.plist in
+  // the repo stays untouched.
+  if (props.infoPlist) {
+    const generatedInfoPlistDir = path.join(
+      config._internal!.projectRoot,
+      "ios",
+      productName,
+    );
+    const generatedInfoPlistPath = path.join(
+      generatedInfoPlistDir,
+      "Info.plist",
+    );
+    const sourceInfoPlistPath = path.join(targetDirAbsolutePath, "Info.plist");
+
+    withDangerousMod(config, [
+      "ios",
+      async (modConfig) => {
+        const base = fs.existsSync(sourceInfoPlistPath)
+          ? (plist.parse(
+              fs.readFileSync(sourceInfoPlistPath, "utf8"),
+            ) as Record<string, any>)
+          : (getTargetInfoPlistForType(props.type) as Record<string, any>);
+
+        fs.mkdirSync(generatedInfoPlistDir, { recursive: true });
+        fs.writeFileSync(
+          generatedInfoPlistPath,
+          plist.build({ ...base, ...props.infoPlist }),
+        );
+        return modConfig;
+      },
+    ]);
+
+    withXcodeProjectBeta(config, async (modConfig) => {
+      const target = modConfig.modResults.rootObject.props.targets.find(
+        (t) => t.props.productName === productName,
+      );
+      if (target) {
+        target.setBuildSetting(
+          "INFOPLIST_FILE",
+          `${productName}/Info.plist`,
+        );
+      }
+      return modConfig;
+    });
+  }
 
   config = withEASTargets(config, {
     targetName: productName,
