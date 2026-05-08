@@ -66,6 +66,7 @@
       "version": "4.0.7",
       "dependencies": {
         "@bacons/xcode": "1.0.0-alpha.32",
+        "@expo/require-utils": "^55.0.4",
         "@react-native/normalize-colors": "^0.79.2",
         "debug": "^4.3.4",
         "glob": "^10.4.2",
