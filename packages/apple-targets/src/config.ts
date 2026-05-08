@@ -1,3 +1,5 @@
+import { PlistValue } from "@expo/plist";
+
 import { ExtensionType } from "./target";
 
 // Shape based on tailwind
@@ -141,6 +143,9 @@ export type Config = {
 
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
+
+  /** Optional entries merged into the target's `Info.plist`. Existing keys are overwritten. */
+  infoPlist?: Record<string, PlistValue>;
 };
 
 export type ConfigFunction = (

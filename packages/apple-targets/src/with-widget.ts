@@ -288,6 +288,17 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         }
       });
 
+      if (props.infoPlist) {
+        const infoPlistPath = path.join(targetDirAbsolutePath, "Info.plist");
+        const existing = plist.parse(
+          fs.readFileSync(infoPlistPath, "utf8"),
+        ) as Record<string, any>;
+        fs.writeFileSync(
+          infoPlistPath,
+          plist.build({ ...existing, ...props.infoPlist }),
+        );
+      }
+
       return config;
     },
   ]);
