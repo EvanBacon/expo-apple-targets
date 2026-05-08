@@ -124,6 +124,7 @@
     "@bacons/xcode": "1.0.0-alpha.32",
     "@expo/image-utils": "^0.11.5",
     "@expo/prebuild-config": "~57.0.16",
+    "@expo/require-utils": "^57.0.5",
     "@react-native/normalize-colors": "0.86.3",
     "glob": "^10.4.2",
     "debug": "^4.3.4"
