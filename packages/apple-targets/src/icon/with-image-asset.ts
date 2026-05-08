@@ -1,11 +1,11 @@
 import { ConfigPlugin, withDangerousMod } from "expo/config-plugins";
 import { generateImageAsync } from "@expo/image-utils";
-import {
+import type {
   ContentsJson,
   ContentsJsonImageIdiom,
   ContentsJsonImage,
-  writeContentsJsonAsync,
-} from "@expo/prebuild-config/build/plugins/icons/AssetContents";
+} from "./assetContents";
+import { writeContentsJsonAsync } from "./assetContents";
 import * as fs from "fs";
 import path, { join } from "path";
 
