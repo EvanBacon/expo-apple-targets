@@ -220,32 +220,42 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     entitlementsJson = applyDefaultEntitlements(entitlementsJson);
   }
 
-  // If the user defined entitlements, then overwrite any existing entitlements file
+  // If the user defined entitlements in the config, generate a
+  // `generated.entitlements` file inside the prebuild `ios/` folder so the
+  // target's source directory stays clean of derived artifacts. The
+  // matching `CODE_SIGN_ENTITLEMENTS` override is wired up in
+  // `configureTargetWithEntitlements` (with-xcode-changes.ts).
   if (entitlementsJson) {
     withDangerousMod(config, [
       "ios",
       async (config) => {
-        const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
-        const entitlementsFilePath =
-          entitlementsFiles[0] ??
-          // Use the name `generated` to help indicate that this file should be in sync with the config
-          path.join(targetDirAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
+        const generatedEntitlementsDir = path.join(
+          config.modRequest.projectRoot,
+          "ios",
+          productName,
+        );
+        const generatedEntitlementsPath = path.join(
+          generatedEntitlementsDir,
+          "generated.entitlements",
+        );
 
         if (entitlementsFiles[0]) {
-          const relativeName = path.relative(
-            targetDirAbsolutePath,
-            entitlementsFiles[0],
+          // A hand-written *.entitlements file in the source target folder
+          // is no longer used when entitlements come from the config — leave
+          // the file untouched but tell the user it's being ignored.
+          console.log(
+            `[${targetDirName}] Ignoring ${path.relative(
+              targetDirAbsolutePath,
+              entitlementsFiles[0],
+            )}; entitlements come from expo-target.config and are written to ios/${productName}/generated.entitlements. Safe to delete from source.`,
           );
-          if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
-            console.log(
-              `[${targetDirName}] Replacing ${path.relative(
-                targetDirAbsolutePath,
-                entitlementsFiles[0],
-              )} with entitlements JSON from config`,
-            );
-          }
         }
-        fs.writeFileSync(entitlementsFilePath, plist.build(entitlementsJson));
+
+        fs.mkdirSync(generatedEntitlementsDir, { recursive: true });
+        fs.writeFileSync(
+          generatedEntitlementsPath,
+          plist.build(entitlementsJson),
+        );
         return config;
       },
     ]);

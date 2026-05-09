@@ -27,7 +27,9 @@ Any files in a top-level `target/{name}/assets` directory will be linked as reso
 
 ### Entitlements
 
-If the `expo-target.config` file defines an `entitlements: {}` object, then a `generated.entitlements` will be added. Avoid using this file directly, and instead update the `expo-target.config.js` file. If the `entitlements` object is not defined, you can manually add any top-level `*.entitlements` file to the target directory—re-running `npx expo prebuild` will link this file to the target as the entitlements file. Only one top-level `*.entitlements` file is supported per target.
+If the `expo-target.config` file defines an `entitlements: {}` object, a `generated.entitlements` file is written into the prebuild output at `ios/<productName>/generated.entitlements` (not into the target's source folder), and `CODE_SIGN_ENTITLEMENTS` is pointed at it. The source target directory is left untouched, so it can stay clean of derived artifacts in git. Update the `expo-target.config` to change entitlements — never edit the generated file directly, it is overwritten on every `npx expo prebuild`.
+
+If the `entitlements` object is not defined in the config, you can manually add a single top-level `*.entitlements` file to the target source directory — re-running `npx expo prebuild` will link that file to the target. Only one top-level `*.entitlements` file is supported per target. If both a config-driven `entitlements` block AND a hand-written `*.entitlements` file are present, the config wins and the hand-written file is ignored (you'll see a log line and can delete it).
 
 Some targets have special entitlements behavior:
 

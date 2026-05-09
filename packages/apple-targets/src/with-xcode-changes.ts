@@ -163,23 +163,44 @@ async function applyXcodeChanges(
   }
 
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
-    const entitlements = globSync("*.entitlements", {
-      absolute: false,
-      cwd: magicCwd,
-    });
+    // Prefer a generated entitlements file under `ios/<productName>/` (written
+    // by `with-widget.ts` when entitlements are defined in the config). Fall
+    // back to a hand-written `*.entitlements` file in the source target
+    // directory if no generated one exists.
+    const generatedEntitlementsAbsolutePath = path.join(
+      config._internal!.projectRoot,
+      "ios",
+      props.productName,
+      "generated.entitlements",
+    );
+
+    let entitlementsAbsolutePath: string | null = null;
+    let codeSignEntitlements: string | null = null;
+
+    if (fs.existsSync(generatedEntitlementsAbsolutePath)) {
+      entitlementsAbsolutePath = generatedEntitlementsAbsolutePath;
+      codeSignEntitlements = `${props.productName}/generated.entitlements`;
+    } else {
+      const sourceEntitlements = globSync("*.entitlements", {
+        absolute: false,
+        cwd: magicCwd,
+      });
+      if (sourceEntitlements.length > 0) {
+        entitlementsAbsolutePath = path.join(magicCwd, sourceEntitlements[0]);
+        codeSignEntitlements = props.cwd + "/" + sourceEntitlements[0];
+      }
+    }
 
     let hasAppGroups = false;
 
-    if (entitlements.length > 0) {
-      target.setBuildSetting(
-        "CODE_SIGN_ENTITLEMENTS",
-        props.cwd + "/" + entitlements[0],
-      );
+    if (codeSignEntitlements && entitlementsAbsolutePath) {
+      target.setBuildSetting("CODE_SIGN_ENTITLEMENTS", codeSignEntitlements);
 
       // Check if entitlements contain app groups
       try {
-        const entitlementsPath = path.join(magicCwd, entitlements[0]);
-        const content = plist.parse(fs.readFileSync(entitlementsPath, "utf8"));
+        const content = plist.parse(
+          fs.readFileSync(entitlementsAbsolutePath, "utf8"),
+        );
         const appGroups = content["com.apple.security.application-groups"];
         hasAppGroups = Array.isArray(appGroups) && appGroups.length > 0;
       } catch {
@@ -201,7 +222,9 @@ async function applyXcodeChanges(
       target.removeBuildSetting("REGISTER_APP_GROUPS");
     }
 
-    return entitlements;
+    return entitlementsAbsolutePath
+      ? [path.basename(entitlementsAbsolutePath)]
+      : [];
   }
 
   function syncMarketingVersions() {
