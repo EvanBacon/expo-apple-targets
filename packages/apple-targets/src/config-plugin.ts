@@ -22,11 +22,35 @@ const TARGET_CONFIG_EXTENSIONS = [
   "json",
 ] as const;
 
+// `@expo/require-utils` rewrites a TypeScript config's filename to its JS
+// equivalent (`.ts` → `.js`, `.mts` → `.mjs`, `.cts` → `.cjs`) before compiling
+// it via `Module._compile`, and registers BOTH the real path and that virtual
+// path in `require.cache`. Tools like `@expo/fingerprint` snapshot `require.cache`
+// to discover loaded plugin sources and then try to read them from disk — the
+// virtual path doesn't exist, causing `ENOENT: ... expo-target.config.js` during
+// `eas build`. Mirror the loader's mapping so we can drop the virtual entry.
+const TS_TO_JS_EXTENSION: Record<string, string> = {
+  ".ts": ".js",
+  ".mts": ".mjs",
+  ".cts": ".cjs",
+};
+
 function loadTargetConfig(configPath: string): unknown {
   if (configPath.endsWith(".json")) {
     return require(configPath);
   }
   const mod = loadModuleSync(configPath);
+
+  const ext = path.extname(configPath);
+  const virtualExt = TS_TO_JS_EXTENSION[ext];
+  if (virtualExt) {
+    const virtualPath =
+      configPath.slice(0, configPath.length - ext.length) + virtualExt;
+    if (require.cache[virtualPath]) {
+      delete require.cache[virtualPath];
+    }
+  }
+
   // Unwrap an ESM default export (e.g. `export default { ... }`).
   if (
     mod &&
