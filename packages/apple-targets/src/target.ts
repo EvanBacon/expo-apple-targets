@@ -267,6 +267,23 @@ export const TARGET_REGISTRY = {
     displayName: "Authentication Services",
     description: "Single sign-on extension",
   },
+  wallet: {
+    extensionPointIdentifier: "com.apple.PassKit.issuer-provisioning",
+    frameworks: ["PassKit"],
+    appGroupsByDefault: true,
+    displayName: "Apple Wallet (Non-UI)",
+    description:
+      "In-App Provisioning Extension (Non-UI) for adding payment passes to Apple Wallet",
+  },
+  "wallet-ui": {
+    extensionPointIdentifier:
+      "com.apple.PassKit.issuer-provisioning.authorization",
+    frameworks: ["PassKit", "UIKit"],
+    appGroupsByDefault: true,
+    displayName: "Apple Wallet (UI)",
+    description:
+      "In-App Provisioning Authorization UI Extension for Apple Wallet",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -726,6 +743,22 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).AuthenticationExtension",
+        },
+      };
+    case "wallet":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IssuerProvisioningHandler",
+        },
+      };
+    case "wallet-ui":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IssuerProvisioningAuthorizationViewController",
         },
       };
     default:
