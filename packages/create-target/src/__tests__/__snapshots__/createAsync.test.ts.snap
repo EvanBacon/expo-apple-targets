@@ -270,6 +270,22 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for wallet 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"wallet\\",
+  entitlements: {\\"com.apple.developer.payment-pass-provisioning\\":true},
+});"
+`;
+
+exports[`getTemplateConfig should return a valid template for wallet-ui 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"wallet-ui\\",
+  entitlements: {\\"com.apple.developer.payment-pass-provisioning\\":true},
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for watch 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({

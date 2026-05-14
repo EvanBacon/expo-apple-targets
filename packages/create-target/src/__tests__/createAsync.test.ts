@@ -37,6 +37,8 @@ const ALL_TARGET_TYPES = [
   "print-service",
   "smart-card",
   "authentication-services",
+  "wallet",
+  "wallet-ui",
 ];
 
 describe(getTemplateConfig, () => {
