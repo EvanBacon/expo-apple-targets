@@ -5,6 +5,7 @@ const ALL_TARGET_TYPES = [
   "app-intent",
   "widget",
   "watch",
+  "watch-widget",
   "clip",
   "safari",
   "share",
@@ -36,6 +37,8 @@ const ALL_TARGET_TYPES = [
   "print-service",
   "smart-card",
   "authentication-services",
+  "wallet",
+  "wallet-ui",
 ];
 
 describe(getTemplateConfig, () => {

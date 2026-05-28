@@ -141,7 +141,7 @@ function createActionConfigurationList({
     SWIFT_EMIT_LOC_STRINGS: "YES",
     SWIFT_VERSION: "5.0",
     TARGETED_DEVICE_FAMILY: "1,2",
-    // @ts-expect-error
+
     LOCALIZATION_PREFERS_STRING_CATALOGS: "YES",
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
   };
@@ -185,7 +185,6 @@ function createAppIntentConfigurationList({
   bundleId,
 }: XcodeSettings): { debug: BuildSettings; release: BuildSettings } {
   const commonBuildSettings: BuildSettings = {
-    // @ts-expect-error
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "YES",
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
@@ -359,13 +358,16 @@ function createWatchAppConfigurationList(
     deploymentTarget,
     currentProjectVersion,
     hasAccentColor,
-  }: XcodeSettings
+    icon,
+  }: XcodeSettings,
 ): { debug: BuildSettings; release: BuildSettings } {
   const mainAppTarget = getMainAppTarget(project).getDefaultConfiguration();
   // NOTE: No base Info.plist needed.
 
   const common: BuildSettings = {
-    ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon",
+    // Only set AppIcon when an icon is provided, otherwise Xcode will fail
+    // to build because the asset catalog doesn't exist
+    ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
     CLANG_ANALYZER_NONNULL: "YES",
     CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
     CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
@@ -424,6 +426,67 @@ function createWatchAppConfigurationList(
     },
   };
 }
+function createWatchWidgetConfigurationList(
+  project: XcodeProject,
+  {
+    name,
+    displayName,
+    cwd,
+    bundleId,
+    deploymentTarget,
+    currentProjectVersion,
+    icon,
+  }: XcodeSettings,
+): { debug: BuildSettings; release: BuildSettings } {
+  const common: BuildSettings = {
+    ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "$accent",
+    ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: "$widgetBackground",
+    ...(icon && { ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon" }),
+    CLANG_ANALYZER_NONNULL: "YES",
+    CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION: "YES_AGGRESSIVE",
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20",
+    CLANG_ENABLE_OBJC_WEAK: "YES",
+    CLANG_WARN_DOCUMENTATION_COMMENTS: "YES",
+    CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: "YES",
+    CLANG_WARN_UNGUARDED_AVAILABILITY: "YES_AGGRESSIVE",
+    CODE_SIGN_STYLE: "Automatic",
+    CURRENT_PROJECT_VERSION: currentProjectVersion,
+    GCC_C_LANGUAGE_STANDARD: "gnu11",
+    GENERATE_INFOPLIST_FILE: "YES",
+    INFOPLIST_FILE: cwd + "/Info.plist",
+    INFOPLIST_KEY_CFBundleDisplayName: displayName ?? name,
+    INFOPLIST_KEY_NSHumanReadableCopyright: "",
+    LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/Frameworks"],
+    MARKETING_VERSION: "1.0",
+    MTL_FAST_MATH: "YES",
+    PRODUCT_BUNDLE_IDENTIFIER: bundleId,
+    PRODUCT_NAME: "$(TARGET_NAME)",
+    SDKROOT: "watchos",
+    SKIP_INSTALL: "YES",
+    SWIFT_EMIT_LOC_STRINGS: "YES",
+    SWIFT_VERSION: "5.0",
+    TARGETED_DEVICE_FAMILY: "4",
+    WATCHOS_DEPLOYMENT_TARGET: deploymentTarget ?? "9.4",
+  };
+
+  return {
+    debug: {
+      ...common,
+      DEBUG_INFORMATION_FORMAT: "dwarf",
+      MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE",
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG",
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone",
+    },
+    release: {
+      ...common,
+      COPY_PHASE_STRIP: "NO",
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym",
+      SWIFT_COMPILATION_MODE: "wholemodule",
+      SWIFT_OPTIMIZATION_LEVEL: "-O",
+    },
+  };
+}
+
 function createSafariConfigurationList({
   name,
   displayName,
@@ -582,7 +645,7 @@ function createAppClipConfigurationList({
 }
 
 function getOrientationBuildSettings(
-  orientation?: "default" | "portrait" | "landscape"
+  orientation?: "default" | "portrait" | "landscape",
 ) {
   // NOTE: The requiresFullScreen support is deprecated in iOS 26+
   // https://developer.apple.com/documentation/BundleResources/Information-Property-List/UIRequiresFullScreen
@@ -606,7 +669,7 @@ function getOrientationBuildSettings(
 }
 
 function getDeviceFamilyBuildSettings(
-  deviceFamilies?: DeviceFamily[]
+  deviceFamilies?: DeviceFamily[],
 ): Partial<BuildSettings> {
   if (!deviceFamilies) {
     return {
@@ -765,7 +828,7 @@ function createKeyboardConfigurationList({
 
 function getConfigurationListBuildSettingsForType(
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
 ): { debug: BuildSettings; release: BuildSettings } {
   switch (props.type) {
     case "widget":
@@ -784,6 +847,8 @@ function getConfigurationListBuildSettingsForType(
       return createAppClipConfigurationList(props);
     case "watch":
       return createWatchAppConfigurationList(project, props);
+    case "watch-widget":
+      return createWatchWidgetConfigurationList(project, props);
     case "app-intent":
       return createAppIntentConfigurationList(props);
     case "notification-content":
@@ -821,6 +886,8 @@ function getConfigurationListBuildSettingsForType(
     case "print-service":
     case "smart-card":
     case "authentication-services":
+    case "wallet":
+    case "wallet-ui":
       return createDefaultConfigurationList(props);
     default:
       const exhaustiveCheck: never = props.type;
@@ -830,11 +897,11 @@ function getConfigurationListBuildSettingsForType(
 
 export function createConfigurationListForType(
   project: XcodeProject,
-  props: XcodeSettings
+  props: XcodeSettings,
 ) {
   const { debug, release } = getConfigurationListBuildSettingsForType(
     project,
-    props
+    props,
   );
   return XCConfigurationList.create(project, {
     buildConfigurations: [

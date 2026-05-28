@@ -92,9 +92,12 @@ const TARGET_REGISTRY: TargetEntry[] = [
     dir: "watch",
     target: "watch",
     sdk: "watchsimulator",
-    skip: true,
-    skipReason:
-      "Watch target requires AppIcon asset catalog which is not generated without an icon config",
+  },
+  {
+    type: "watch-widget",
+    dir: "watch-widget",
+    target: "watchwidget",
+    sdk: "watchsimulator",
   },
   { type: "widget", dir: "widget", target: "widget" },
   { type: "file-provider", dir: "file-provider", target: "fileprovider" },
@@ -150,6 +153,8 @@ const TARGET_REGISTRY: TargetEntry[] = [
     dir: "authentication-services",
     target: "authenticationservices",
   },
+  { type: "wallet", dir: "wallet", target: "wallet" },
+  { type: "wallet-ui", dir: "wallet-ui", target: "walletui" },
 ];
 
 // Derived from the central TARGET_REGISTRY — no need to maintain by hand.
@@ -208,6 +213,44 @@ describe("xcodebuild targets", () => {
       (t) => !registeredTypes.has(t)
     );
     expect(missingTypes).toEqual([]);
+  });
+
+  // Verify watch app embedding uses correct destination path.
+  // Apple requires watch apps to be in a "Watch" subdirectory.
+  // App Store validation fails with:
+  // "Invalid directory. The bundle ... is not contained in a correctly named directory. It should be under Watch."
+  it("watch app embedded in Watch/ subdirectory (App Store requirement)", () => {
+    const pbxprojPath = path.join(xcodeproj, "project.pbxproj");
+    const pbxprojContent = fs.readFileSync(pbxprojPath, "utf-8");
+
+    // Find "Embed Watch Content" build phase block.
+    // Format:
+    //   UUID /* Embed Watch Content */ = {
+    //     isa = PBXCopyFilesBuildPhase;
+    //     ...
+    //     dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+    //     dstSubfolderSpec = 16;
+    //     ...
+    //     name = "Embed Watch Content";
+    //     ...
+    //   };
+    const embedWatchBlockMatch = pbxprojContent.match(
+      /\/\* Embed Watch Content \*\/ = \{[\s\S]*?name = "Embed Watch Content";[\s\S]*?\};/
+    );
+
+    expect(embedWatchBlockMatch).not.toBeNull();
+
+    const block = embedWatchBlockMatch![0];
+
+    // Verify dstPath is correct for App Store submission
+    const dstPathMatch = block.match(/dstPath = "([^"]+)"/);
+    expect(dstPathMatch).not.toBeNull();
+    expect(dstPathMatch![1]).toBe("$(CONTENTS_FOLDER_PATH)/Watch");
+
+    // Verify dstSubfolderSpec is 16 (Products Directory)
+    const dstSubfolderMatch = block.match(/dstSubfolderSpec = (\d+)/);
+    expect(dstSubfolderMatch).not.toBeNull();
+    expect(dstSubfolderMatch![1]).toBe("16");
   });
 
   // Meta-test: verify xcodebuild can list the project targets

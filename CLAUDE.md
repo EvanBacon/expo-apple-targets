@@ -95,7 +95,7 @@ All extension type metadata lives in a single `TARGET_REGISTRY` object. Everythi
 ### Adding a new target type
 
 1. **Add an entry to `TARGET_REGISTRY`** in `packages/apple-targets/src/target.ts`. This is the only required code change — the `ExtensionType` union, extension point ID map, CLI target list, and e2e coverage check all derive automatically. Fields:
-   - `extensionPointIdentifier` — the Apple `NSExtensionPointIdentifier` string (omit for app clips / watch apps)
+   - `extensionPointIdentifier` — the Apple `NSExtensionPointIdentifier` string (omit for app clips / watch apps / types that share IDs with other types)
    - `productType` — defaults to `com.apple.product-type.app-extension` if omitted
    - `needsEmbeddedSwift` — set `true` if the extension needs `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES`
    - `frameworks` — system frameworks to link (e.g. `["WidgetKit", "SwiftUI"]`)
@@ -105,15 +105,25 @@ All extension type metadata lives in a single `TARGET_REGISTRY` object. Everythi
 
 2. **Add a case to `getTargetInfoPlistForType()`** in `src/target.ts` if the extension needs custom Info.plist content (most do — only widget and bg-download use the default). The switch is not exhaustive so new types fall through to a default `{ NSExtension: { NSExtensionPointIdentifier } }`.
 
-3. **Add a case to `getConfigurationListBuildSettingsForType()`** in `src/configuration-list.ts`. This switch IS exhaustive (`never` check) — TypeScript will error if a new type is missing. Most types can fall through to `createNotificationContentConfigurationList()`.
+3. **Add a case to `getConfigurationListBuildSettingsForType()`** in `src/configuration-list.ts`. This switch IS exhaustive (`never` check) — TypeScript will error if a new type is missing. Most types can fall through to `createDefaultConfigurationList()`.
 
-4. **Create Swift template files** in `packages/create-target/templates/<type>/`. These are the source-of-truth files that get copied both by `create-target` CLI and e2e test setup.
+4. **Update `isNativeTargetOfType()`** in `src/target.ts` if the new type shares an `extensionPointIdentifier` with another type (e.g. `watch-widget` shares `com.apple.widgetkit-extension` with `widget`). Add logic to disambiguate based on build settings like `WATCHOS_DEPLOYMENT_TARGET`.
 
-5. **Create e2e fixture config** at `packages/apple-targets/e2e/fixture/targets/<type>/expo-target.config.json` with `{ "type": "<type>" }`.
+5. **Create Swift template files** in `packages/create-target/templates/<type>/`. These are the source-of-truth files that get copied both by `create-target` CLI and e2e test setup.
 
-6. **Add an entry to `TARGET_REGISTRY`** (the e2e one) in `e2e/__tests__/build.test.ts` with `type`, `dir`, `target` (hyphens stripped), and optionally `sdk`/`skip`.
+6. **Create e2e fixture config** at `packages/apple-targets/e2e/fixture/targets/<type>/expo-target.config.json` with `{ "type": "<type>" }`.
 
-7. **Run `bunx expo-module build`** in `packages/apple-targets/` so that `create-target` picks up the updated build output.
+7. **Add an entry to `TARGET_REGISTRY`** (the e2e one) in `e2e/__tests__/build.test.ts` with `type`, `dir`, `target` (hyphens stripped), and optionally `sdk`/`skip`.
+
+8. **Update documentation**:
+   - Add the new type to the "Supported types" table in `README.md` (the root README is symlinked to `packages/apple-targets/README.md`)
+   - Keep the table alphabetically sorted within logical groupings (widgets together, network extensions together, etc.)
+
+9. **Run `bunx expo-module build`** in `packages/apple-targets/` so that `create-target` picks up the updated build output.
+
+10. **Run tests** to verify everything works:
+    - `bun test` — unit tests
+    - `bun test:e2e --testNamePattern="<type>"` — e2e build test for the new type
 
 ### Discovering new extension types from Xcode
 

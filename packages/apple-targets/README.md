@@ -1,9 +1,6 @@
 # Apple Targets
 
-> [!WARNING]
-> This is an experimental Config Plugin not part of any official Expo workflow.
-
-An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
+An Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
 
 <img width="1728" height="963" alt="targets" src="https://github.com/user-attachments/assets/aedaafa0-1ef0-403c-a797-9f4c82cdb9f1" />
 
@@ -87,9 +84,11 @@ module.exports = {
   entitlements: {
     // Serialized entitlements. Useful for configuring with environment variables.
   },
-  // Generates xcassets for the target.
+  // Generates xcassets for the target. Supports images (imageset) and SF Symbol template SVGs (symbolset).
   images: {
     thing: "../assets/thing.png",
+    // SF Symbol SVGs are automatically detected and generated as symbolsets.
+    mySymbol: "./my-symbol.svg",
   },
 
   // The iOS version fot the target. Defaults to 18.0
@@ -135,6 +134,37 @@ There are certain values that are shared across targets. We use a predefined con
 | ------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `$accent`           | `ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME`     | Sets the global accent color, in widgets this is used for the tint color of buttons when editing the widget. |
 | `$widgetBackground` | `ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME` | Sets the background color of the widget.                                                                     |
+
+## SF Symbols
+
+SVG files passed to `images` are automatically inspected to determine if they are [SF Symbol templates](https://developer.apple.com/sf-symbols/). When detected, the SVG is generated as a `.symbolset` in `Assets.xcassets` instead of a regular `.imageset`. This works for both local file paths and URLs.
+
+```js
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
+module.exports = {
+  type: "widget",
+  images: {
+    // SF Symbol template SVGs are auto-detected:
+    expo: "./expo.sfsymbol.svg",
+    // URLs work too:
+    remote: "https://example.com/my-symbol.svg",
+    // Regular images still work as expected:
+    photo: "./photo.png",
+  },
+};
+```
+
+In Swift, use the symbol name as a custom symbol image:
+
+```swift
+Image("expo")
+```
+
+You can create custom SF Symbol SVGs easily using:
+
+```sh
+bun create symbol /path/to/icon.svg
+```
 
 ## CocoaPods
 
@@ -225,8 +255,10 @@ module.exports = {
     },
   },
   // Optional: Add images that can be used in SwiftUI.
+  // SF Symbol SVGs are automatically detected and generated as symbolsets.
   images: {
     valleys: "../../valleys.png",
+    myIcon: "./my-icon.sfsymbol.svg",
   },
   // Optional: Add entitlements to the target, this one can be used to share data between the widget and the app.
   entitlements: {
@@ -297,47 +329,53 @@ module.exports = {
 
 Ideally, this would be generated automatically based on a fully qualified Xcode project, but for now it's a manual process. The currently supported types are based on static analysis of the most commonly used targets in the iOS App Store. I haven't tested all of these and they may not work.
 
-| Type                    | Description                        |
-| ----------------------- | ---------------------------------- |
-| action                  | Share Action                       |
-| app-intent              | App Intent Extension               |
-| widget                  | Widget / Live Activity             |
-| watch                   | Watch App (with companion iOS App) |
-| clip                    | App Clip                           |
-| safari                  | Safari Extension                   |
-| share                   | Share Extension                    |
-| notification-content    | Notification Content Extension     |
-| notification-service    | Notification Service Extension     |
-| intent                  | Siri Intent Extension              |
-| intent-ui               | Siri Intent UI Extension           |
-| spotlight               | Spotlight Index Extension          |
-| bg-download             | Background Download Extension      |
-| quicklook-thumbnail     | Quick Look Thumbnail Extension     |
-| location-push           | Location Push Service Extension    |
-| credentials-provider    | Credentials Provider Extension     |
-| account-auth            | Account Authentication Extension   |
-| network-packet-tunnel   | Packet Tunnel Network Extension    |
-| network-app-proxy       | App Proxy Network Extension        |
-| network-dns-proxy       | DNS Proxy Network Extension        |
-| network-filter-data     | Filter Data Network Extension      |
-| content-blocker         | Safari Content Blocker Extension   |
-| file-provider           | File Provider Extension            |
-| broadcast-upload        | Broadcast Upload Extension         |
-| call-directory          | Call Directory Extension           |
-| message-filter          | Message Filter Extension           |
-| file-provider-ui        | File Provider UI Extension         |
-| broadcast-setup-ui      | Broadcast Setup UI Extension       |
-| classkit-context        | ClassKit Context Provider Extension|
-| unwanted-communication  | Unwanted Communication Reporting   |
-| photo-editing           | Photo Editing Extension            |
-| quicklook-preview       | Quick Look Preview Extension       |
-| spotlight-delegate      | CoreSpotlight Delegate Extension   |
-| virtual-conference      | Virtual Conference Provider        |
-| shield-action           | Shield Action Extension            |
-| shield-config           | Shield Configuration Extension     |
-| print-service           | Print Service Extension            |
-| smart-card              | Smart Card / Persistent Token      |
-| authentication-services | Authentication Services Extension  |
+| Type                      | Description                        |
+| ------------------------- | ---------------------------------- |
+| action                    | Share Action                       |
+| app-intent                | App Intent Extension               |
+| widget                    | Widget / Live Activity             |
+| watch                     | Watch App (with companion iOS App) |
+| watch-widget              | Watch Face Complication            |
+| clip                      | App Clip                           |
+| safari                    | Safari Extension                   |
+| share                     | Share Extension                    |
+| notification-content      | Notification Content Extension     |
+| notification-service      | Notification Service Extension     |
+| intent                    | Siri Intent Extension              |
+| intent-ui                 | Siri Intent UI Extension           |
+| spotlight                 | Spotlight Index Extension          |
+| bg-download               | Background Download Extension      |
+| quicklook-thumbnail       | Quick Look Thumbnail Extension     |
+| location-push             | Location Push Service Extension    |
+| credentials-provider      | Credentials Provider Extension     |
+| account-auth              | Account Authentication Extension   |
+| device-activity-monitor   | Device Activity Monitor Extension  |
+| keyboard                  | Custom Keyboard Extension          |
+| matter                    | Matter Device Setup Extension      |
+| network-packet-tunnel     | Packet Tunnel Network Extension    |
+| network-app-proxy         | App Proxy Network Extension        |
+| network-dns-proxy         | DNS Proxy Network Extension        |
+| network-filter-data       | Filter Data Network Extension      |
+| content-blocker           | Safari Content Blocker Extension   |
+| file-provider             | File Provider Extension            |
+| broadcast-upload          | Broadcast Upload Extension         |
+| call-directory            | Call Directory Extension           |
+| message-filter            | Message Filter Extension           |
+| file-provider-ui          | File Provider UI Extension         |
+| broadcast-setup-ui        | Broadcast Setup UI Extension       |
+| classkit-context          | ClassKit Context Provider Extension|
+| unwanted-communication    | Unwanted Communication Reporting   |
+| photo-editing             | Photo Editing Extension            |
+| quicklook-preview         | Quick Look Preview Extension       |
+| spotlight-delegate        | CoreSpotlight Delegate Extension   |
+| virtual-conference        | Virtual Conference Provider        |
+| shield-action             | Shield Action Extension            |
+| shield-config             | Shield Configuration Extension     |
+| print-service             | Print Service Extension            |
+| smart-card                | Smart Card / Persistent Token      |
+| authentication-services   | Authentication Services Extension  |
+| wallet                    | Wallet Provisioning (Non-UI)       |
+| wallet-ui                 | Wallet Provisioning UI             |
 
 
 <!-- | imessage             | iMessage Extension               | -->
@@ -538,7 +576,7 @@ Changes in your app’s state may affect control displays. You can request a rel
 ExtensionStorage.reloadControls();
 ```
 
-Custom images can be used but they must be SF Symbols, you can use a tool like [Create Custom Symbols](https://github.com/jaywcjlove/create-custom-symbols) to do this. Then simply add to the Assets.xcassets folder and reference it in the `Label`.
+Custom images can be used but they must be SF Symbols. You can create them with `bun create symbol /path/to/icon.svg` or the [SF Symbols app](https://developer.apple.com/sf-symbols/). Add the SVG to your target's `images` config and it will be automatically detected and generated as a `.symbolset` (see [SF Symbols](#sf-symbols)).
 
 You can do a lot of things with Control Widgets like launching a custom UI instead of opening the app. This plugin should allow for most of these things to work.
 

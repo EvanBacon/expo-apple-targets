@@ -100,6 +100,15 @@ export const TARGET_REGISTRY = {
     needsEmbeddedSwift: true,
     displayName: "Watch",
   },
+  "watch-widget": {
+    // extensionPointIdentifier intentionally omitted to avoid collision
+    // with "widget" in KNOWN_EXTENSION_POINT_IDENTIFIERS. The Info.plist
+    // is handled explicitly in getTargetInfoPlistForType().
+    frameworks: ["WidgetKit", "SwiftUI"],
+    appGroupsByDefault: true,
+    displayName: "Watch Widget",
+    description: "Watch face complication using WidgetKit",
+  },
   "location-push": {
     extensionPointIdentifier: "com.apple.location.push.service",
     displayName: "Location Push",
@@ -258,6 +267,23 @@ export const TARGET_REGISTRY = {
     displayName: "Authentication Services",
     description: "Single sign-on extension",
   },
+  wallet: {
+    extensionPointIdentifier: "com.apple.PassKit.issuer-provisioning",
+    frameworks: ["PassKit"],
+    appGroupsByDefault: true,
+    displayName: "Apple Wallet (Non-UI)",
+    description:
+      "In-App Provisioning Extension (Non-UI) for adding payment passes to Apple Wallet",
+  },
+  "wallet-ui": {
+    extensionPointIdentifier:
+      "com.apple.PassKit.issuer-provisioning.authorization",
+    frameworks: ["PassKit", "UIKit"],
+    appGroupsByDefault: true,
+    displayName: "Apple Wallet (UI)",
+    description:
+      "In-App Provisioning Authorization UI Extension for Apple Wallet",
+  },
 } as const satisfies Record<string, TargetDefinition>;
 
 export type ExtensionType = keyof typeof TARGET_REGISTRY;
@@ -322,6 +348,12 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
   switch (type) {
     case "watch":
       return {};
+    case "watch-widget":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier: "com.apple.widgetkit-extension",
+        },
+      };
     case "action":
       return {
         NSExtension: {
@@ -681,6 +713,14 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
             "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension",
         },
       };
+    case "device-activity-monitor":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension",
+        },
+      };
     case "print-service":
       return {
         NSExtension: {
@@ -703,6 +743,22 @@ export function getTargetInfoPlistForType(type: ExtensionType) {
           NSExtensionPointIdentifier,
           NSExtensionPrincipalClass:
             "$(PRODUCT_MODULE_NAME).AuthenticationExtension",
+        },
+      };
+    case "wallet":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IssuerProvisioningHandler",
+        },
+      };
+    case "wallet-ui":
+      return {
+        NSExtension: {
+          NSExtensionPointIdentifier,
+          NSExtensionPrincipalClass:
+            "$(PRODUCT_MODULE_NAME).IssuerProvisioningAuthorizationViewController",
         },
       };
     default:
@@ -739,6 +795,32 @@ export function isNativeTargetOfType(
   ) {
     return true;
   }
+
+  const hasWatchOS =
+    "WATCHOS_DEPLOYMENT_TARGET" in
+    target.getDefaultConfiguration().props.buildSettings;
+
+  if (
+    type === "watch-widget" &&
+    target.props.productType === "com.apple.product-type.app-extension"
+  ) {
+    if (!hasWatchOS) return false;
+    const infoPlist = target.getDefaultConfiguration().getInfoPlist();
+    return (
+      infoPlist.NSExtension?.NSExtensionPointIdentifier ===
+      "com.apple.widgetkit-extension"
+    );
+  }
+
+  // For iOS widget type, exclude watchOS targets that share the same extension point ID
+  if (
+    type === "widget" &&
+    target.props.productType === "com.apple.product-type.app-extension" &&
+    hasWatchOS
+  ) {
+    return false;
+  }
+
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }

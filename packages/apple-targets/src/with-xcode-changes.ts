@@ -1,5 +1,6 @@
 import {
   PBXBuildFile,
+  PBXCopyFilesBuildPhase,
   PBXFileReference,
   PBXFileSystemSynchronizedBuildFileExceptionSet,
   PBXFileSystemSynchronizedRootGroup,
@@ -8,6 +9,7 @@ import {
   PBXShellScriptBuildPhase,
   XcodeProject,
 } from "@bacons/xcode";
+import plist from "@expo/plist";
 import type { ExpoConfig } from "expo/config";
 import type { ConfigPlugin } from "expo/config-plugins";
 import fs from "fs";
@@ -28,6 +30,20 @@ import {
   createConfigurationListForType,
 } from "./configuration-list";
 import { warnOnce } from "./util";
+
+/**
+ * Checks if a target is a watchOS extension (NOT a watch app) by inspecting
+ * its build settings and product type. This includes modern WidgetKit-based
+ * watch widgets which use app-extension product type with WATCHOS_DEPLOYMENT_TARGET.
+ */
+function isWatchOSExtensionTarget(target: PBXNativeTarget): boolean {
+  const buildSettings = target.getDefaultConfiguration().props.buildSettings;
+  const isWatchOS =
+    buildSettings.SDKROOT === "watchos" ||
+    "WATCHOS_DEPLOYMENT_TARGET" in buildSettings;
+  // Watch apps are detected by isWatchOSTarget() - extensions are watchOS but NOT watch apps
+  return isWatchOS && !target.isWatchOSTarget();
+}
 
 export const withXcodeChanges: ConfigPlugin<XcodeSettings> = (
   config,
@@ -152,17 +168,40 @@ async function applyXcodeChanges(
       cwd: magicCwd,
     });
 
+    let hasAppGroups = false;
+
     if (entitlements.length > 0) {
       target.setBuildSetting(
         "CODE_SIGN_ENTITLEMENTS",
         props.cwd + "/" + entitlements[0],
       );
+
+      // Check if entitlements contain app groups
+      try {
+        const entitlementsPath = path.join(magicCwd, entitlements[0]);
+        const content = plist.parse(fs.readFileSync(entitlementsPath, "utf8"));
+        const appGroups = content["com.apple.security.application-groups"];
+        hasAppGroups = Array.isArray(appGroups) && appGroups.length > 0;
+      } catch {
+        // If we can't read/parse, assume no app groups
+      }
     } else {
       target.removeBuildSetting("CODE_SIGN_ENTITLEMENTS");
     }
 
+    // Set REGISTER_APP_GROUPS if app groups are configured.
+    // This build setting is required for extensions to properly access app group containers.
+    // Without it, extensions may fail to access shared data even with matching entitlements.
+    // See: https://stackoverflow.com/questions/79792338
+    if (hasAppGroups) {
+      // @ts-expect-error - REGISTER_APP_GROUPS is a valid Xcode build setting not in types yet
+      target.setBuildSetting("REGISTER_APP_GROUPS", "YES");
+    } else {
+      // @ts-expect-error - REGISTER_APP_GROUPS is a valid Xcode build setting not in types yet
+      target.removeBuildSetting("REGISTER_APP_GROUPS");
+    }
+
     return entitlements;
-    // CODE_SIGN_ENTITLEMENTS = MattermostShare/MattermostShare.entitlements;
   }
 
   function syncMarketingVersions() {
@@ -272,12 +311,20 @@ async function applyXcodeChanges(
     const isExtension = productType === "com.apple.product-type.app-extension";
     const isExtensionKit =
       productType === "com.apple.product-type.extensionkit-extension";
+    const isApplication = productType === "com.apple.product-type.application";
+
+    // Determine the correct file type for the product reference
+    const explicitFileType = isExtensionKit
+      ? "wrapper.extensionkit-extension"
+      : isExtension
+        ? "wrapper.app-extension"
+        : isApplication
+          ? "wrapper.application"
+          : "wrapper.app-extension";
 
     const appExtensionBuildFile = PBXBuildFile.create(project, {
       fileRef: PBXFileReference.create(project, {
-        explicitFileType: isExtensionKit
-          ? "wrapper.extensionkit-extension"
-          : "wrapper.app-extension",
+        explicitFileType: explicitFileType as any,
         includeInIndex: 0,
         path: props.name + (isExtension ? ".appex" : ".app"),
         sourceTree: "BUILT_PRODUCTS_DIR",
@@ -302,10 +349,48 @@ async function applyXcodeChanges(
       productType: productType as any,
     });
 
-    const copyPhase = mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
-
-    if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
-      copyPhase.props.files.push(appExtensionBuildFile);
+    // For watchOS extensions (like watch-widget), embed in the watchOS app target
+    // instead of the main iOS app target.
+    if (isWatchOSExtensionTarget(targetToUpdate)) {
+      const watchTarget = project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      );
+      if (watchTarget) {
+        const existingPhase = watchTarget.props.buildPhases.find(
+          (phase) =>
+            PBXCopyFilesBuildPhase.is(phase) &&
+            phase.props.name === "Embed Foundation Extensions",
+        );
+        const embedPhase =
+          existingPhase ??
+          watchTarget.createBuildPhase(PBXCopyFilesBuildPhase, {
+            name: "Embed Foundation Extensions",
+            dstSubfolderSpec: 13,
+            dstPath: "",
+            files: [],
+          });
+        if (!embedPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          embedPhase.props.files.push(appExtensionBuildFile);
+        }
+      } else {
+        console.warn(
+          "[apple-targets] watchOS extension: could not find watchOS app target, falling back to main app",
+        );
+        const copyPhase =
+          mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+        if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+          copyPhase.props.files.push(appExtensionBuildFile);
+        }
+      }
+    } else {
+      // For watch apps, getCopyBuildPhaseForTarget returns "Embed Watch Content".
+      // For regular extensions, it returns "Embed Foundation Extensions".
+      const copyPhase =
+        mainAppTarget.getCopyBuildPhaseForTarget(targetToUpdate);
+      if (!copyPhase.getBuildFile(appExtensionBuildFile.props.fileRef)) {
+        copyPhase.props.files.push(appExtensionBuildFile);
+      }
     }
   }
 
@@ -321,7 +406,17 @@ async function applyXcodeChanges(
 
   configureJsExport(targetToUpdate);
 
-  mainAppTarget.addDependency(targetToUpdate);
+  // For watchOS extensions, the dependency belongs on the watchOS
+  // app target so Xcode builds the extension before the watch app.
+  // For watch apps, the dependency belongs on the main iOS app.
+  const dependencyParent = isWatchOSExtensionTarget(targetToUpdate)
+    ? project.rootObject.props.targets.find(
+        (t): t is PBXNativeTarget =>
+          PBXNativeTarget.is(t) && t.isWatchOSTarget(),
+      ) ?? mainAppTarget
+    : mainAppTarget;
+
+  dependencyParent.addDependency(targetToUpdate);
 
   const assetsDir = path.join(magicCwd, "assets");
 

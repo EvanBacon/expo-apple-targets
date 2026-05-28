@@ -16,6 +16,8 @@ import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
+import { KNOWN_EXTENSION_POINT_IDENTIFIERS } from "../packages/apple-targets/src/target";
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -31,6 +33,8 @@ interface ExtensionTemplate {
   extensionPointIdentifiers: string[];
   /** Platform this template belongs to */
   platform: string;
+  /** Template category, e.g. "Application Extension", "System Extension", "Application" */
+  category: string;
   /** Product types this extension can be hosted by */
   allowableProductTypes: string[];
 }
@@ -92,13 +96,16 @@ function extractExtensionPointIds(obj: any): string[] {
       ids.push(value);
     } else if (key === "EXExtensionPointIdentifier" && typeof value === "string") {
       ids.push(value);
-    } else if (typeof value === "string" && value.includes("NSExtensionPointIdentifier")) {
+    } else if (
+      typeof value === "string" &&
+      (value.includes("NSExtensionPointIdentifier") ||
+        value.includes("EXExtensionPointIdentifier"))
+    ) {
       // XML fragment in Definitions — extract the identifier
       const match = value.match(
         /<key>NSExtensionPointIdentifier<\/key>\s*<string>([^<]+)<\/string>/
       );
       if (match) ids.push(match[1]);
-      // Also check EXExtensionPointIdentifier
       const exMatch = value.match(
         /<key>EXExtensionPointIdentifier<\/key>\s*<string>([^<]+)<\/string>/
       );
@@ -171,50 +178,61 @@ const PLATFORM_MAP: Record<string, string> = {
   "XROS.platform": "visionOS",
 };
 
+/**
+ * Template categories worth walking for target discovery. Skips Base
+ * (abstract scaffolding), Framework & Library, Test, Executable, Other.
+ * macOS is the only platform with System Extension.
+ */
+const TEMPLATE_CATEGORIES = [
+  "Application Extension",
+  "Application",
+  "System Extension",
+];
+
 async function scanTemplates(xcodePath: string): Promise<ExtensionTemplate[]> {
-  const platformsDir = join(
-    xcodePath,
-    "Contents/Developer/Platforms"
-  );
+  const platformsDir = join(xcodePath, "Contents/Developer/Platforms");
 
   const templates: ExtensionTemplate[] = [];
 
   for (const [platformDir, osLabel] of Object.entries(PLATFORM_MAP)) {
-    const extDir = join(
-      platformsDir,
-      platformDir,
-      "Developer/Library/Xcode/Templates/Project Templates",
-      osLabel,
-      "Application Extension"
-    );
+    for (const category of TEMPLATE_CATEGORIES) {
+      const extDir = join(
+        platformsDir,
+        platformDir,
+        "Developer/Library/Xcode/Templates/Project Templates",
+        osLabel,
+        category
+      );
 
-    if (!existsSync(extDir)) continue;
+      if (!existsSync(extDir)) continue;
 
-    const entries = await readdir(extDir, { withFileTypes: true });
-    const xctemplates = entries
-      .filter((e) => e.isDirectory() && e.name.endsWith(".xctemplate"))
-      .map((e) => e.name);
+      const entries = await readdir(extDir, { withFileTypes: true });
+      const xctemplates = entries
+        .filter((e) => e.isDirectory() && e.name.endsWith(".xctemplate"))
+        .map((e) => e.name);
 
-    for (const tmplDir of xctemplates) {
-      const plistPath = join(extDir, tmplDir, "TemplateInfo.plist");
-      if (!existsSync(plistPath)) continue;
+      for (const tmplDir of xctemplates) {
+        const plistPath = join(extDir, tmplDir, "TemplateInfo.plist");
+        if (!existsSync(plistPath)) continue;
 
-      try {
-        const plist = await plistToJson(plistPath);
-        const name = tmplDir.replace(".xctemplate", "");
-        const extPointIds = extractExtensionPointIds(plist);
+        try {
+          const plist = await plistToJson(plistPath);
+          const name = tmplDir.replace(".xctemplate", "");
+          const extPointIds = extractExtensionPointIds(plist);
 
-        templates.push({
-          name,
-          identifier: plist.Identifier || "",
-          description: plist.Description || "",
-          extensionPointIdentifiers: extPointIds,
-          platform: osLabel,
-          allowableProductTypes:
-            plist.AssociatedTargetSpecification?.AllowableProductTypes || [],
-        });
-      } catch (e) {
-        console.error(`Warning: Failed to parse ${tmplDir}: ${e}`);
+          templates.push({
+            name,
+            identifier: plist.Identifier || "",
+            description: plist.Description || "",
+            extensionPointIdentifiers: extPointIds,
+            platform: osLabel,
+            category,
+            allowableProductTypes:
+              plist.AssociatedTargetSpecification?.AllowableProductTypes || [],
+          });
+        } catch (e) {
+          console.error(`Warning: Failed to parse ${tmplDir}: ${e}`);
+        }
       }
     }
   }
@@ -226,33 +244,9 @@ async function scanTemplates(xcodePath: string): Promise<ExtensionTemplate[]> {
 // Diff against project ExtensionType
 // ---------------------------------------------------------------------------
 
-/** Known extension point IDs from the project's KNOWN_EXTENSION_POINT_IDENTIFIERS */
-const PROJECT_KNOWN_IDS = new Set([
-  "com.apple.message-payload-provider",
-  "com.apple.widgetkit-extension",
-  "com.apple.usernotifications.content-extension",
-  "com.apple.share-services",
-  "com.apple.usernotifications.service",
-  "com.apple.spotlight.import",
-  "com.apple.intents-service",
-  "com.apple.intents-ui-service",
-  "com.apple.Safari.web-extension",
-  "com.apple.background-asset-downloader-extension",
-  "com.apple.matter.support.extension.device-setup",
-  "com.apple.quicklook.thumbnail",
-  "com.apple.location.push.service",
-  "com.apple.authentication-services-credential-provider-ui",
-  "com.apple.authentication-services-account-authentication-modification-ui",
-  "com.apple.services",
-  "com.apple.appintents-extension",
-  "com.apple.deviceactivity.monitor-extension",
-  "com.apple.networkextension.packet-tunnel",
-  "com.apple.networkextension.app-proxy",
-  "com.apple.networkextension.dns-proxy",
-  "com.apple.networkextension.filter-data",
-  "com.apple.keyboard-service",
-  "com.apple.Safari.content-blocker",
-]);
+const PROJECT_KNOWN_IDS = new Set(
+  Object.keys(KNOWN_EXTENSION_POINT_IDENTIFIERS)
+);
 
 function diffWithProject(templates: ExtensionTemplate[]) {
   // Collect all unique extension point IDs from iOS templates
@@ -321,18 +315,24 @@ async function main() {
     console.log(`    ${pt.name}`);
   }
 
-  // Templates by platform
+  // Templates grouped by platform, then category
   console.log(`\n=== Extension Templates (${templates.length} total) ===\n`);
   const byPlatform = Object.groupBy(templates, (t) => t.platform);
   for (const [platform, platTemplates] of Object.entries(byPlatform)) {
     if (!platTemplates) continue;
     console.log(`--- ${platform} (${platTemplates.length}) ---`);
-    for (const t of platTemplates.sort((a, b) => a.name.localeCompare(b.name))) {
-      const ids = t.extensionPointIdentifiers.length
-        ? t.extensionPointIdentifiers.join(", ")
-        : "(no extension point ID)";
-      console.log(`  ${t.name}`);
-      console.log(`    ${ids}`);
+    const byCategory = Object.groupBy(platTemplates, (t) => t.category);
+    for (const category of TEMPLATE_CATEGORIES) {
+      const catTemplates = byCategory[category];
+      if (!catTemplates?.length) continue;
+      console.log(`  [${category}]`);
+      for (const t of catTemplates.sort((a, b) => a.name.localeCompare(b.name))) {
+        const ids = t.extensionPointIdentifiers.length
+          ? t.extensionPointIdentifiers.join(", ")
+          : "(no extension point ID)";
+        console.log(`    ${t.name}`);
+        console.log(`      ${ids}`);
+      }
     }
     console.log();
   }
