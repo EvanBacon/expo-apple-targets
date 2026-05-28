@@ -1,7 +1,7 @@
 # Apple Targets
 
 > [!WARNING]
-> This is an experimental Config Plugin not part of any official Expo workflow. Automated testing of targets is seemingly impossible meaning unexpected regressions can occur between versions.
+> This is an experimental Config Plugin not part of any official Expo workflow.
 
 An experimental Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
 
@@ -43,6 +43,18 @@ Any changes you make outside of the `expo:targets` directory in Xcode are subjec
 If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
 
 You can use the custom Prebuild template `--template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
+
+## 🤖 AI agent skills
+
+This repo ships an [agent skill](https://github.com/vercel-labs/skills) that teaches AI coding agents (Claude Code, Cursor, Codex, etc.) how to build, configure, and debug every supported Apple extension and target type with this plugin. It includes a per-target reference doc with Apple docs, runtime behavior, production-ready Swift, platform support, and gotchas.
+
+Install it into your agent with [`npx skills`](https://github.com/vercel-labs/skills):
+
+```sh
+npx skills add EvanBacon/expo-apple-targets
+```
+
+The CLI auto-detects your installed agents and copies the skill into their skills directory (e.g. `.claude/skills/`), where it loads automatically when you ask the agent to add an Apple extension. See [docs/skills.md](../../docs/skills.md) for details, updating, and removing.
 
 ## Target config
 

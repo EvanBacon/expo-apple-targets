@@ -121,6 +121,7 @@ Run `bun scripts/scan-xcode-targets.ts --diff` to compare the locally installed 
 
 ## Research & Documentation
 
+- `docs/skills.md` — The `apple-targets` agent skill (`skills/apple-targets/`): what it contains and how to install it into AI coding agents with `npx skills`
 - `docs/xcode-target-discovery.md` — How Xcode stores target/extension type definitions (xcspec files, template plists, extension point identifiers, platform template directories)
 - `scripts/scan-xcode-targets.ts` — Bun script that scans Xcode.app to enumerate all product types and extension templates. Run with `--diff` to compare against `TARGET_REGISTRY`.
 

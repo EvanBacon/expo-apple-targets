@@ -1,3 +1,8 @@
+---
+name: apple-targets
+description: Build, configure, and debug native Apple extension and target types (widgets, App Clips, share extensions, watchOS apps, Safari extensions, notification extensions, VPN/network extensions, and 40+ more) in an Expo app using the @bacons/apple-targets config plugin. Use when a user wants to add home screen presence, share sheets, custom keyboards, Siri/App Intents, push notification handling, AutoFill/passkeys, Screen Time controls, or any other Apple app extension to a React Native / Expo project.
+---
+
 # Apple Extension Target Skills Reference
 
 This directory contains comprehensive skill documents for all supported Apple extension and target types. Each skill document provides everything an AI agent needs to understand, implement, and troubleshoot a specific Apple extension type, including:
@@ -8,6 +13,16 @@ This directory contains comprehensive skill documents for all supported Apple ex
 - Production-ready Swift code examples
 - Platform availability and version requirements
 - Common gotchas and debugging tips
+
+## Installing This Skill
+
+Install this skill into your coding agent (Claude Code, Cursor, Codex, etc.) with [`npx skills`](https://github.com/vercel-labs/skills):
+
+```sh
+npx skills add EvanBacon/expo-apple-targets/tree/main/skills/apple-targets
+```
+
+The CLI auto-detects which agents you have installed and copies `SKILL.md` (plus the supporting reference docs in this directory) into the agent's skills directory (e.g. `.claude/skills/` or `.agents/skills/`). Once installed, the agent loads this guidance automatically whenever you ask it to build an Apple extension or target.
 
 ## How to Use These Skills
 
