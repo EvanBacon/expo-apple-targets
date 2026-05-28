@@ -17,6 +17,7 @@ import { globSync } from "glob";
 import path from "path";
 
 import {
+  TARGET_GENERATED_DIR,
   getMainAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
@@ -163,13 +164,15 @@ async function applyXcodeChanges(
   }
 
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
-    // Prefer a generated entitlements file under `ios/<productName>/` (written
-    // by `with-widget.ts` when entitlements are defined in the config). Fall
-    // back to a hand-written `*.entitlements` file in the source target
-    // directory if no generated one exists.
+    // Prefer a generated entitlements file under
+    // `ios/<TARGET_GENERATED_DIR>/<productName>/` (written by `with-widget.ts`
+    // when entitlements are defined in the config). Fall back to a hand-written
+    // `*.entitlements` file in the source target directory if no generated one
+    // exists.
     const generatedEntitlementsAbsolutePath = path.join(
       config._internal!.projectRoot,
       "ios",
+      TARGET_GENERATED_DIR,
       props.productName,
       "generated.entitlements",
     );
@@ -179,7 +182,8 @@ async function applyXcodeChanges(
 
     if (fs.existsSync(generatedEntitlementsAbsolutePath)) {
       entitlementsAbsolutePath = generatedEntitlementsAbsolutePath;
-      codeSignEntitlements = `${props.productName}/generated.entitlements`;
+      // CODE_SIGN_ENTITLEMENTS is resolved relative to the `ios/` project root.
+      codeSignEntitlements = `${TARGET_GENERATED_DIR}/${props.productName}/generated.entitlements`;
     } else {
       const sourceEntitlements = globSync("*.entitlements", {
         absolute: false,

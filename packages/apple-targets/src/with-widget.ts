@@ -16,6 +16,7 @@ import {
 import { isSFSymbolContent } from "./symbolset/with-ios-symbolset";
 import { withIosIcon } from "./icon/with-ios-icon";
 import {
+  TARGET_GENERATED_DIR,
   getFrameworksForType,
   getTargetInfoPlistForType,
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
@@ -222,8 +223,10 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   // If the user defined entitlements in the config, generate a
   // `generated.entitlements` file inside the prebuild `ios/` folder so the
-  // target's source directory stays clean of derived artifacts. The
-  // matching `CODE_SIGN_ENTITLEMENTS` override is wired up in
+  // target's source directory stays clean of derived artifacts. The file is
+  // written under `ios/<TARGET_GENERATED_DIR>/<productName>/` to make it obvious
+  // the contents are generated and should not be edited by hand. The matching
+  // `CODE_SIGN_ENTITLEMENTS` override is wired up in
   // `configureTargetWithEntitlements` (with-xcode-changes.ts).
   if (entitlementsJson) {
     withDangerousMod(config, [
@@ -232,23 +235,41 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
         const generatedEntitlementsDir = path.join(
           config.modRequest.projectRoot,
           "ios",
+          TARGET_GENERATED_DIR,
           productName,
         );
         const generatedEntitlementsPath = path.join(
           generatedEntitlementsDir,
           "generated.entitlements",
         );
+        const generatedRelativePath = `ios/${TARGET_GENERATED_DIR}/${productName}/generated.entitlements`;
 
         if (entitlementsFiles[0]) {
-          // A hand-written *.entitlements file in the source target folder
-          // is no longer used when entitlements come from the config — leave
-          // the file untouched but tell the user it's being ignored.
-          console.log(
-            `[${targetDirName}] Ignoring ${path.relative(
-              targetDirAbsolutePath,
-              entitlementsFiles[0],
-            )}; entitlements come from expo-target.config and are written to ios/${productName}/generated.entitlements. Safe to delete from source.`,
+          const relativeName = path.relative(
+            targetDirAbsolutePath,
+            entitlementsFiles[0],
           );
+
+          if (
+            path.basename(entitlementsFiles[0]) === "generated.entitlements"
+          ) {
+            // A `generated.entitlements` file in the source target folder was
+            // written by an older version of this plugin. The generated file
+            // now lives under `ios/` so the source copy is a stale, derived
+            // artifact — warn the user to delete it so it isn't committed or
+            // mistaken for a hand-authored file.
+            warnOnce(
+              chalk`{yellow [${targetDirName}]} Found a stale {bold ${relativeName}} in the target source folder. Because {bold expo-target.config} defines an {bold entitlements} object, entitlements are now generated into {bold ${generatedRelativePath}}. Delete the source ${relativeName} to complete the migration.`,
+            );
+          } else {
+            // A hand-written *.entitlements file in the source target folder
+            // is no longer used when entitlements come from the config — leave
+            // the file untouched but tell the user why it's being ignored and
+            // what their options are.
+            console.log(
+              chalk`[${targetDirName}] Ignoring {bold ${relativeName}} because {bold expo-target.config} defines an {bold entitlements} object; entitlements are generated into {bold ${generatedRelativePath}}. To hand-manage the entitlements file instead, remove the {bold entitlements} object from {bold expo-target.config}. Otherwise the source ${relativeName} is unused and safe to delete.`,
+            );
+          }
         }
 
         fs.mkdirSync(generatedEntitlementsDir, { recursive: true });
