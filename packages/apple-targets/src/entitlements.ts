@@ -14,7 +14,7 @@ export const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
 
 /**
  * Absolute path to the directory that holds a target's generated entitlements,
- * e.g. `<projectRoot>/ios/target:generated/<productName>/`.
+ * e.g. `<projectRoot>/ios/.targets/<productName>/`.
  */
 export function getGeneratedEntitlementsDir(
   projectRoot: string,
@@ -25,7 +25,7 @@ export function getGeneratedEntitlementsDir(
 
 /**
  * Absolute path to a target's generated entitlements file, e.g.
- * `<projectRoot>/ios/target:generated/<productName>/generated.entitlements`.
+ * `<projectRoot>/ios/.targets/<productName>/generated.entitlements`.
  */
 export function getGeneratedEntitlementsPath(
   projectRoot: string,
@@ -40,7 +40,7 @@ export function getGeneratedEntitlementsPath(
 /**
  * Value for the `CODE_SIGN_ENTITLEMENTS` build setting pointing at a generated
  * entitlements file. The path is resolved by Xcode relative to the `ios/`
- * project root, e.g. `target:generated/<productName>/generated.entitlements`.
+ * project root, e.g. `.targets/<productName>/generated.entitlements`.
  */
 export function getGeneratedEntitlementsCodeSignPath(
   productName: string,
@@ -89,10 +89,12 @@ export function classifySourceEntitlementsFile(
 }
 
 /**
- * Message thrown when a target has BOTH a `generated.entitlements` file in its
+ * Warning shown when a target has BOTH a `generated.entitlements` file in its
  * source folder (written by an older version of this plugin) AND an
  * `entitlements` object in `expo-target.config`. The two are an ambiguous,
- * conflicting source of truth, so prebuild stops until the user resolves it.
+ * conflicting source of truth. This is non-fatal — the config object wins and
+ * the file is generated under `ios/` — but the user should remove one of the
+ * two to resolve the ambiguity.
  *
  * @param entitlementsFileRelativePath project-root-relative path to the source
  *   `generated.entitlements` file, e.g. `targets/clip/generated.entitlements`.

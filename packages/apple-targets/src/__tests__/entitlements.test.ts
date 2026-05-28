@@ -48,15 +48,15 @@ afterEach(() => {
 });
 
 describe("generated entitlements paths", () => {
-  it("always nests generated files under ios/target:generated/<productName>", () => {
+  it("always nests generated files under ios/.targets/<productName>", () => {
     expect(getGeneratedEntitlementsDir(projectRoot, PRODUCT_NAME)).toBe(
-      path.join(projectRoot, "ios", "target:generated", PRODUCT_NAME),
+      path.join(projectRoot, "ios", ".targets", PRODUCT_NAME),
     );
     expect(getGeneratedEntitlementsPath(projectRoot, PRODUCT_NAME)).toBe(
       path.join(
         projectRoot,
         "ios",
-        "target:generated",
+        ".targets",
         PRODUCT_NAME,
         "generated.entitlements",
       ),
@@ -67,7 +67,7 @@ describe("generated entitlements paths", () => {
     // Xcode resolves CODE_SIGN_ENTITLEMENTS relative to the ios/ project root,
     // so this must NOT be absolute and must use forward slashes.
     expect(getGeneratedEntitlementsCodeSignPath(PRODUCT_NAME)).toBe(
-      "target:generated/mywidget/generated.entitlements",
+      ".targets/mywidget/generated.entitlements",
     );
   });
 });
@@ -78,7 +78,7 @@ describe("Case 1: entitlements defined in expo-target.config", () => {
     "com.apple.developer.foo": true,
   };
 
-  it("writes the generated file under target:generated with the exact config contents", () => {
+  it("writes the generated file under .targets with the exact config contents", () => {
     const written = writeGeneratedEntitlements(
       projectRoot,
       PRODUCT_NAME,
@@ -134,7 +134,7 @@ describe("Case 1: entitlements defined in expo-target.config", () => {
       }),
     ).toEqual({
       absolutePath: getGeneratedEntitlementsPath(projectRoot, PRODUCT_NAME),
-      codeSignEntitlements: "target:generated/mywidget/generated.entitlements",
+      codeSignEntitlements: ".targets/mywidget/generated.entitlements",
     });
   });
 });
@@ -185,7 +185,7 @@ describe("precedence is deterministic", () => {
     });
 
     expect(resolved?.codeSignEntitlements).toBe(
-      "target:generated/mywidget/generated.entitlements",
+      ".targets/mywidget/generated.entitlements",
     );
   });
 });
