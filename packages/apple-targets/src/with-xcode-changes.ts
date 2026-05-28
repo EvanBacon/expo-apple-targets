@@ -17,12 +17,12 @@ import { globSync } from "glob";
 import path from "path";
 
 import {
-  TARGET_GENERATED_DIR,
   getMainAppTarget,
   isNativeTargetOfType,
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
+import { resolveEntitlementsForCodeSign } from "./entitlements";
 import { withXcodeProjectBeta } from "./with-bacons-xcode";
 import assert from "assert";
 
@@ -169,31 +169,14 @@ async function applyXcodeChanges(
     // when entitlements are defined in the config). Fall back to a hand-written
     // `*.entitlements` file in the source target directory if no generated one
     // exists.
-    const generatedEntitlementsAbsolutePath = path.join(
-      config._internal!.projectRoot,
-      "ios",
-      TARGET_GENERATED_DIR,
-      props.productName,
-      "generated.entitlements",
-    );
+    const resolved = resolveEntitlementsForCodeSign({
+      projectRoot: config._internal!.projectRoot,
+      productName: props.productName,
+      cwd: props.cwd,
+    });
 
-    let entitlementsAbsolutePath: string | null = null;
-    let codeSignEntitlements: string | null = null;
-
-    if (fs.existsSync(generatedEntitlementsAbsolutePath)) {
-      entitlementsAbsolutePath = generatedEntitlementsAbsolutePath;
-      // CODE_SIGN_ENTITLEMENTS is resolved relative to the `ios/` project root.
-      codeSignEntitlements = `${TARGET_GENERATED_DIR}/${props.productName}/generated.entitlements`;
-    } else {
-      const sourceEntitlements = globSync("*.entitlements", {
-        absolute: false,
-        cwd: magicCwd,
-      });
-      if (sourceEntitlements.length > 0) {
-        entitlementsAbsolutePath = path.join(magicCwd, sourceEntitlements[0]);
-        codeSignEntitlements = props.cwd + "/" + sourceEntitlements[0];
-      }
-    }
+    const entitlementsAbsolutePath = resolved?.absolutePath ?? null;
+    const codeSignEntitlements = resolved?.codeSignEntitlements ?? null;
 
     let hasAppGroups = false;
 
