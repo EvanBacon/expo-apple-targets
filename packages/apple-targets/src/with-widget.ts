@@ -20,6 +20,12 @@ import {
   getTargetInfoPlistForType,
   SHOULD_USE_APP_GROUPS_BY_DEFAULT,
 } from "./target";
+import {
+  classifySourceEntitlementsFile,
+  getEntitlementsConflictMessage,
+  getGeneratedEntitlementsCodeSignPath,
+  writeGeneratedEntitlements,
+} from "./entitlements";
 import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
@@ -220,32 +226,61 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     entitlementsJson = applyDefaultEntitlements(entitlementsJson);
   }
 
-  // If the user defined entitlements, then overwrite any existing entitlements file
+  // If the user defined entitlements in the config, generate a
+  // `generated.entitlements` file inside the prebuild `ios/` folder so the
+  // target's source directory stays clean of derived artifacts. The file is
+  // written under `ios/<TARGET_GENERATED_DIR>/<productName>/` to make it obvious
+  // the contents are generated and should not be edited by hand. The matching
+  // `CODE_SIGN_ENTITLEMENTS` override is wired up in
+  // `configureTargetWithEntitlements` (with-xcode-changes.ts).
   if (entitlementsJson) {
+    const definedEntitlements = entitlementsJson;
     withDangerousMod(config, [
       "ios",
       async (config) => {
-        const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
-        const entitlementsFilePath =
-          entitlementsFiles[0] ??
-          // Use the name `generated` to help indicate that this file should be in sync with the config
-          path.join(targetDirAbsolutePath, GENERATED_ENTITLEMENTS_FILE_NAME);
-
         if (entitlementsFiles[0]) {
-          const relativeName = path.relative(
-            targetDirAbsolutePath,
-            entitlementsFiles[0],
-          );
-          if (relativeName !== GENERATED_ENTITLEMENTS_FILE_NAME) {
+          const projectRoot = config.modRequest.projectRoot;
+
+          if (
+            classifySourceEntitlementsFile(entitlementsFiles[0]) ===
+            "stale-generated"
+          ) {
+            // A leftover `generated.entitlements` in the source folder (written
+            // by an older version of this plugin) plus an `entitlements` object
+            // in the config is an ambiguous, conflicting source of truth. This
+            // is non-fatal — the config wins and the file is generated under
+            // `ios/` — but warn loudly (in red) so the user removes one of the
+            // two and resolves the ambiguity.
+            warnOnce(
+              chalk.red(
+                `[${targetDirName}] ${getEntitlementsConflictMessage(
+                  path.relative(projectRoot, entitlementsFiles[0]),
+                  path.relative(projectRoot, props.configPath),
+                )}`,
+              ),
+            );
+          } else {
+            // A hand-written *.entitlements file in the source folder is no
+            // longer used when entitlements come from the config — leave it
+            // untouched but tell the user why it's ignored and their options.
+            const relativeName = path.relative(
+              targetDirAbsolutePath,
+              entitlementsFiles[0],
+            );
+            const generatedRelativePath = `ios/${getGeneratedEntitlementsCodeSignPath(
+              productName,
+            )}`;
             console.log(
-              `[${targetDirName}] Replacing ${path.relative(
-                targetDirAbsolutePath,
-                entitlementsFiles[0],
-              )} with entitlements JSON from config`,
+              chalk`[${targetDirName}] Ignoring {bold ${relativeName}} because {bold expo-target.config} defines an {bold entitlements} object; entitlements are generated into {bold ${generatedRelativePath}}. To hand-manage the entitlements file instead, remove the {bold entitlements} object from {bold expo-target.config}. Otherwise the source ${relativeName} is unused and safe to delete.`,
             );
           }
         }
-        fs.writeFileSync(entitlementsFilePath, plist.build(entitlementsJson));
+
+        writeGeneratedEntitlements(
+          config.modRequest.projectRoot,
+          productName,
+          definedEntitlements,
+        );
         return config;
       },
     ]);

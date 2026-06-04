@@ -22,6 +22,7 @@ import {
   needsEmbeddedSwift,
   productTypeForType,
 } from "./target";
+import { resolveEntitlementsForCodeSign } from "./entitlements";
 import { withXcodeProjectBeta } from "./with-bacons-xcode";
 import assert from "assert";
 
@@ -163,23 +164,30 @@ async function applyXcodeChanges(
   }
 
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
-    const entitlements = globSync("*.entitlements", {
-      absolute: false,
-      cwd: magicCwd,
+    // Prefer a generated entitlements file under
+    // `ios/<TARGET_GENERATED_DIR>/<productName>/` (written by `with-widget.ts`
+    // when entitlements are defined in the config). Fall back to a hand-written
+    // `*.entitlements` file in the source target directory if no generated one
+    // exists.
+    const resolved = resolveEntitlementsForCodeSign({
+      projectRoot: config._internal!.projectRoot,
+      productName: props.productName,
+      cwd: props.cwd,
     });
+
+    const entitlementsAbsolutePath = resolved?.absolutePath ?? null;
+    const codeSignEntitlements = resolved?.codeSignEntitlements ?? null;
 
     let hasAppGroups = false;
 
-    if (entitlements.length > 0) {
-      target.setBuildSetting(
-        "CODE_SIGN_ENTITLEMENTS",
-        props.cwd + "/" + entitlements[0],
-      );
+    if (codeSignEntitlements && entitlementsAbsolutePath) {
+      target.setBuildSetting("CODE_SIGN_ENTITLEMENTS", codeSignEntitlements);
 
       // Check if entitlements contain app groups
       try {
-        const entitlementsPath = path.join(magicCwd, entitlements[0]);
-        const content = plist.parse(fs.readFileSync(entitlementsPath, "utf8"));
+        const content = plist.parse(
+          fs.readFileSync(entitlementsAbsolutePath, "utf8"),
+        );
         const appGroups = content["com.apple.security.application-groups"];
         hasAppGroups = Array.isArray(appGroups) && appGroups.length > 0;
       } catch {
@@ -201,7 +209,9 @@ async function applyXcodeChanges(
       target.removeBuildSetting("REGISTER_APP_GROUPS");
     }
 
-    return entitlements;
+    return entitlementsAbsolutePath
+      ? [path.basename(entitlementsAbsolutePath)]
+      : [];
   }
 
   function syncMarketingVersions() {
