@@ -100,9 +100,13 @@ async function applyXcodeChanges(
 
   const productName = props.productName;
 
-  let targetToUpdate: PBXNativeTarget | undefined =
-    targets.find((target) => target.props.productName === productName) ??
-    targets[0];
+  // Only update a target whose product name matches. Falling back to the
+  // first target of the same type would destructively rewrite an unrelated
+  // target (e.g. another widget owned by a different config plugin) when the
+  // product name doesn't match.
+  let targetToUpdate: PBXNativeTarget | undefined = targets.find(
+    (target) => target.props.productName === productName,
+  );
 
   if (targetToUpdate) {
     warnOnce(
@@ -296,26 +300,28 @@ async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
-    // Remove existing build phases
-    targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
-      (config) => {
+    // Create and assign the new configuration list FIRST —
+    // createConfigurationListForType() calls getMainAppTarget(), which
+    // iterates all targets and reads their build configurations. Removing the
+    // old list before that traversal leaves this target with a dangling
+    // configuration list and crashes (e.g. for watch targets).
+    const oldConfigList = targetToUpdate.props.buildConfigurationList;
+    targetToUpdate.props.buildConfigurationList =
+      createConfigurationListForType(project, props);
+
+    // Now clean up the old configuration list.
+    if (oldConfigList) {
+      oldConfigList.props.buildConfigurations.forEach((config) => {
         config.getReferrers().forEach((ref) => {
           ref.removeReference(config.uuid);
         });
         config.removeFromProject();
-      },
-    );
-    // Remove existing build configuration list
-    targetToUpdate.props.buildConfigurationList
-      .getReferrers()
-      .forEach((ref) => {
-        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
       });
-    targetToUpdate.props.buildConfigurationList.removeFromProject();
-
-    // Create new build phases
-    targetToUpdate.props.buildConfigurationList =
-      createConfigurationListForType(project, props);
+      oldConfigList.getReferrers().forEach((ref) => {
+        ref.removeReference(oldConfigList.uuid);
+      });
+      oldConfigList.removeFromProject();
+    }
   } else {
     const productType = productTypeForType(props.type);
     const isExtension = productType === "com.apple.product-type.app-extension";
@@ -426,7 +432,14 @@ async function applyXcodeChanges(
       ) ?? mainAppTarget
     : mainAppTarget;
 
-  dependencyParent.addDependency(targetToUpdate);
+  // Avoid accumulating duplicate PBXTargetDependency entries when prebuild is
+  // re-run over an existing project.
+  const hasDependency = dependencyParent.props.dependencies?.some(
+    (dep) => dep.props.target === targetToUpdate,
+  );
+  if (!hasDependency) {
+    dependencyParent.addDependency(targetToUpdate);
+  }
 
   const assetsDir = path.join(magicCwd, "assets");
 
@@ -507,7 +520,11 @@ async function applyXcodeChanges(
         target: mainAppTarget,
       });
     exceptionSet.props.membershipExceptions = sharedAssets.sort();
-    syncRootGroup.props.exceptions.push(exceptionSet);
+    // Only push newly created exception sets — re-pushing an existing one
+    // duplicates it in the exceptions array on every prebuild run.
+    if (!existingExceptionSet) {
+      syncRootGroup.props.exceptions.push(exceptionSet);
+    }
   } else {
     // Remove the exception set if there are no shared assets.
     existingExceptionSet?.removeFromProject();
