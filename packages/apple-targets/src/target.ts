@@ -805,6 +805,20 @@ export function isNativeTargetOfType(
     return true;
   }
 
+  // ExtensionKit extensions (app-intent) use a distinct product type and
+  // declare EXAppExtensionAttributes rather than NSExtension in their
+  // Info.plist, so neither the app-extension productType check nor the
+  // NSExtensionPointIdentifier lookup below can ever match them. Without
+  // this branch, every non-clean prebuild appends a duplicate target.
+  // Callers disambiguate multiple matches by productName.
+  if (
+    type === "app-intent" &&
+    target.props.productType ===
+      "com.apple.product-type.extensionkit-extension"
+  ) {
+    return true;
+  }
+
   const hasWatchOS =
     "WATCHOS_DEPLOYMENT_TARGET" in
     target.getDefaultConfiguration().props.buildSettings;
