@@ -1,3 +1,5 @@
+import { PlistValue } from "@expo/plist";
+
 import { ExtensionType } from "./target";
 
 // Shape based on tailwind
@@ -141,6 +143,19 @@ export type Config = {
 
   /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
   exportJs?: boolean;
+
+  /**
+   * Optional entries merged into the target's `Info.plist` during prebuild.
+   *
+   * The source `Info.plist` in the target's source directory is left
+   * untouched. A merged copy is written to `ios/<productName>/Info.plist`
+   * and `INFOPLIST_FILE` is overridden to point at it, so these entries
+   * only appear in the generated `ios/` folder.
+   *
+   * Existing keys from the source plist are overwritten; unknown keys are
+   * preserved.
+   */
+  infoPlist?: Record<string, PlistValue>;
 };
 
 export type ConfigFunction = (
