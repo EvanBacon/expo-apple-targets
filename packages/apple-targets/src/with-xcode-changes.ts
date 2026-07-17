@@ -316,24 +316,23 @@ async function applyXcodeChanges(
   }
 
   if (targetToUpdate) {
-    // Remove existing build phases
-    targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
-      (config) => {
-        config.getReferrers().forEach((ref) => {
-          ref.removeReference(config.uuid);
-        });
-        config.removeFromProject();
-      },
-    );
-    // Remove existing build configuration list
-    targetToUpdate.props.buildConfigurationList
-      .getReferrers()
-      .forEach((ref) => {
-        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
-      });
-    targetToUpdate.props.buildConfigurationList.removeFromProject();
+    // Hold a local ref — `removeReference` on the target sets
+    // `target.props.buildConfigurationList = undefined`, so re-reading the
+    // property after clearing referrers would throw.
+    const existingConfigurationList =
+      targetToUpdate.props.buildConfigurationList;
 
-    // Create new build phases
+    if (existingConfigurationList) {
+      // Copy before iterating: removeFromProject mutates the array.
+      [...existingConfigurationList.props.buildConfigurations].forEach(
+        (config) => {
+          config.removeFromProject();
+        },
+      );
+      existingConfigurationList.removeFromProject();
+    }
+
+    // Create new build configuration list
     targetToUpdate.props.buildConfigurationList =
       createConfigurationListForType(project, props);
   } else {
