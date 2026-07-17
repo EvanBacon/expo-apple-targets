@@ -8,4 +8,25 @@ module.exports = (config) => ({
   entitlements: {
     /* Add entitlements */
   },
+  infoPlist: {
+    CFBundleName: "$(PRODUCT_NAME)",
+    CFBundleIdentifier: "$(PRODUCT_BUNDLE_IDENTIFIER)",
+    CFBundleVersion: "$(CURRENT_PROJECT_VERSION)",
+    CFBundleExecutable: "$(EXECUTABLE_NAME)",
+    CFBundlePackageType: "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
+    CFBundleShortVersionString: "$(MARKETING_VERSION)",
+    
+    UIApplicationSupportsIndirectInputEvents: true,
+    NSAppClip: {
+      NSAppClipRequestEphemeralUserNotification: false,
+      NSAppClipRequestLocationConfirmation: false,
+    },
+    NSAppTransportSecurity: {
+      NSAllowsArbitraryLoads: false,
+      NSAllowsLocalNetworking: true,
+    },
+    UILaunchStoryboardName: "SplashScreen",
+    UIUserInterfaceStyle: "Automatic",
+    UIViewControllerBasedStatusBarAppearance: false,
+  },
 });

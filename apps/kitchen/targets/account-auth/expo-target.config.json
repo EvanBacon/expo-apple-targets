@@ -1,3 +1,13 @@
 {
-    "type": "account-auth"
+  "type": "account-auth",
+  "infoPlist": {
+    "NSExtension": {
+      "NSExtensionPointIdentifier": "com.apple.authentication-services-account-authentication-modification-ui",
+      "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).AccountAuthViewController",
+      "NSExtensionAttributes": {
+        "ASAccountAuthenticationModificationSupportsStrongPasswordChange": true,
+        "ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple": true
+      }
+    }
+  }
 }

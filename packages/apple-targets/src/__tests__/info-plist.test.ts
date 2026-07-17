@@ -134,6 +134,7 @@ describe("Case 1: infoPlist defined in expo-target.config", () => {
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -154,6 +155,7 @@ describe("Case 2: hand-written Info.plist file in the source folder", () => {
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -166,6 +168,7 @@ describe("Case 2: hand-written Info.plist file in the source folder", () => {
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toBeNull();
@@ -181,6 +184,7 @@ describe("precedence is deterministic", () => {
 
     const resolved = resolveInfoPlistForBuild({
       projectRoot,
+      targetDirName: TARGET_DIR_NAME,
       cwd: TARGET_CWD,
     });
 

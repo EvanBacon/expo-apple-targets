@@ -129,18 +129,20 @@ export interface ResolvedEntitlements {
  *    folder is used.
  * 3. If neither exists, returns `null` and the caller removes the setting.
  *
- * The generated folder is keyed by the target directory name (basename of
- * `cwd`), e.g. `widget` for `../targets/widget`.
+ * @param targetDirName Source target folder basename from `getTargetDirName`
+ *   (e.g. `widget` for `targets/widget/`). Keys the generated path under
+ *   `ios/.targets/`.
  */
 export function resolveEntitlementsForCodeSign({
   projectRoot,
+  targetDirName,
   cwd,
 }: {
   projectRoot: string;
+  targetDirName: string;
   /** The target's source folder relative to `ios/` (i.e. `props.cwd`). */
   cwd: string;
 }): ResolvedEntitlements | null {
-  const targetDirName = path.basename(cwd);
   const generatedAbsolutePath = getGeneratedEntitlementsPath(
     projectRoot,
     targetDirName,

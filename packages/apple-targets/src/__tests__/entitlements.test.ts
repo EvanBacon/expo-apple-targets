@@ -144,6 +144,7 @@ describe("Case 1: entitlements defined in expo-target.config", () => {
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -160,6 +161,7 @@ describe("Case 2: hand-written *.entitlements file in the source folder", () => 
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -177,6 +179,7 @@ describe("Case 2: hand-written *.entitlements file in the source folder", () => 
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toBeNull();
@@ -192,6 +195,7 @@ describe("precedence is deterministic", () => {
 
     const resolved = resolveEntitlementsForCodeSign({
       projectRoot,
+      targetDirName: TARGET_DIR_NAME,
       cwd: TARGET_CWD,
     });
 

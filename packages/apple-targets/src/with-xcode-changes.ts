@@ -172,6 +172,7 @@ async function applyXcodeChanges(
     // in the source target directory if no generated one exists.
     const resolved = resolveEntitlementsForCodeSign({
       projectRoot: config._internal!.projectRoot,
+      targetDirName: props.targetDirName,
       cwd: props.cwd,
     });
 
@@ -222,6 +223,7 @@ async function applyXcodeChanges(
     // source target directory if no generated one exists.
     const resolved = resolveInfoPlistForBuild({
       projectRoot: config._internal!.projectRoot,
+      targetDirName: props.targetDirName,
       cwd: props.cwd,
     });
 

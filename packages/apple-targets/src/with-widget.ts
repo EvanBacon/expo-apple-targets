@@ -35,6 +35,7 @@ import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
   getSanitizedBundleIdentifier,
+  getTargetDirName,
   LOG_QUEUE,
   logOnce,
   sanitizeNameForNonDisplayUse,
@@ -57,8 +58,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     props.icon = path.join(props.directory, props.icon);
   }
 
-  // This value should be used for the target name and other internal uses.
-  const targetDirName = path.basename(path.dirname(props.configPath));
+  // Basename of the source target folder (e.g. `widget` for `targets/widget/`).
+  // Single derivation — reused for logs, generated paths under ios/.targets/, etc.
+  const targetDirName = getTargetDirName(props.configPath);
 
   // Sanitized for general usage. This name just needs to resemble the input value since it shouldn't be used for user-facing values such as the home screen or app store.
   const productName =
@@ -406,6 +408,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   withXcodeChanges(config, {
     productName,
+    targetDirName,
     configPath: props.configPath,
     name: targetDisplayName,
     displayName: props.displayName,

@@ -107,18 +107,20 @@ export interface ResolvedInfoPlist {
  *    is used (the default path used by configuration lists).
  * 3. If neither exists, returns `null` and the caller leaves the default.
  *
- * The generated folder is keyed by the target directory name (basename of
- * `cwd`), e.g. `widget` for `../targets/widget`.
+ * @param targetDirName Source target folder basename from `getTargetDirName`
+ *   (e.g. `widget` for `targets/widget/`). Keys the generated path under
+ *   `ios/.targets/`.
  */
 export function resolveInfoPlistForBuild({
   projectRoot,
+  targetDirName,
   cwd,
 }: {
   projectRoot: string;
+  targetDirName: string;
   /** The target's source folder relative to `ios/` (i.e. `props.cwd`). */
   cwd: string;
 }): ResolvedInfoPlist | null {
-  const targetDirName = path.basename(cwd);
   const generatedAbsolutePath = getGeneratedInfoPlistPath(
     projectRoot,
     targetDirName,

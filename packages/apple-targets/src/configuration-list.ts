@@ -12,6 +12,11 @@ export type XcodeSettings = {
   displayName?: string;
   /** Name used for internal purposes. This has more strict rules and should be generated. */
   productName: string;
+  /**
+   * Basename of the target source directory (e.g. `widget` for `targets/widget/`).
+   * Used as the folder key under `ios/.targets/`. See `getTargetDirName`.
+   */
+  targetDirName: string;
   /** Directory relative to the project root, (i.e. outside of the `ios` directory) where the widget code should live. */
   cwd: string;
 
