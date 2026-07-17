@@ -83,9 +83,9 @@
 			exceptions = (
 				XX69D583B02A8659D2B594XX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-				XX3C49F596644F1073CB7FXX /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
-			explicitFileTypes = {};
+			explicitFileTypes = {
+			};
 			explicitFolders = (
 			);
 			sourceTree = "<group>";
@@ -582,7 +582,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../targets/widget/Info.plist;
+				INFOPLIST_FILE = .targets/ExpoAgent/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Expo Agent";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -627,7 +627,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ../targets/widget/Info.plist;
+				INFOPLIST_FILE = .targets/ExpoAgent/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Expo Agent";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;

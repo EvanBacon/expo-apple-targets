@@ -26,7 +26,11 @@ import {
   getGeneratedEntitlementsCodeSignPath,
   writeGeneratedEntitlements,
 } from "./entitlements";
-import { mergeInfoPlist, writeGeneratedInfoPlist } from "./info-plist";
+import {
+  getInfoPlistConflictMessage,
+  mergeInfoPlist,
+  writeGeneratedInfoPlist,
+} from "./info-plist";
 import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
@@ -337,6 +341,21 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
           targetDirAbsolutePath,
           "Info.plist",
         );
+
+        if (fs.existsSync(sourceInfoPlistPath)) {
+          // Dual source of truth: a hand-written Info.plist plus an
+          // `infoPlist` object in the config. Non-fatal — keys are merged
+          // (config overwrites) into ios/.targets/ — but warn loudly (in red)
+          // so the user picks one approach.
+          warnOnce(
+            chalk.red(
+              `[${targetDirName}] ${getInfoPlistConflictMessage(
+                path.relative(projectRoot, sourceInfoPlistPath),
+                path.relative(projectRoot, props.configPath),
+              )}`,
+            ),
+          );
+        }
 
         const base = fs.existsSync(sourceInfoPlistPath)
           ? (plist.parse(

@@ -7,6 +7,7 @@ import {
   getGeneratedInfoPlistBuildSettingPath,
   getGeneratedInfoPlistDir,
   getGeneratedInfoPlistPath,
+  getInfoPlistConflictMessage,
   mergeInfoPlist,
   resolveInfoPlistForBuild,
   writeGeneratedInfoPlist,
@@ -207,5 +208,18 @@ describe("mergeInfoPlist", () => {
     const overlay = { B: 2 };
     mergeInfoPlist(base, overlay);
     expect(base).toEqual({ A: 1 });
+  });
+});
+
+describe("conflict message (both a source Info.plist and a config object)", () => {
+  it("names both sources and offers the two ways to resolve the conflict", () => {
+    expect(
+      getInfoPlistConflictMessage(
+        "targets/widget/Info.plist",
+        "targets/widget/expo-target.config.js",
+      ),
+    ).toBe(
+      "Found both targets/widget/Info.plist and an infoPlist object in targets/widget/expo-target.config.js. Keys are merged (config overwrites source) into the generated Info.plist under ios/.targets/. Either delete the source Info.plist to use only the config, or remove the infoPlist object to hand-manage the file.",
+    );
   });
 });

@@ -68,6 +68,24 @@ export function writeGeneratedInfoPlist(
   return file;
 }
 
+/**
+ * Warning shown when a target has BOTH a source `Info.plist` and an
+ * `infoPlist` object in `expo-target.config`. The two are an ambiguous dual
+ * source of truth: keys are merged (config overwrites) into the generated
+ * file under `ios/`, but the user should pick one approach.
+ *
+ * @param infoPlistFileRelativePath project-root-relative path to the source
+ *   `Info.plist`, e.g. `targets/widget/Info.plist`.
+ * @param configRelativePath project-root-relative path to the target config,
+ *   e.g. `targets/widget/expo-target.config.js`.
+ */
+export function getInfoPlistConflictMessage(
+  infoPlistFileRelativePath: string,
+  configRelativePath: string,
+): string {
+  return `Found both ${infoPlistFileRelativePath} and an infoPlist object in ${configRelativePath}. Keys are merged (config overwrites source) into the generated Info.plist under ios/.targets/. Either delete the source Info.plist to use only the config, or remove the infoPlist object to hand-manage the file.`;
+}
+
 export interface ResolvedInfoPlist {
   /** Absolute path to the Info.plist file on disk. */
   absolutePath: string;

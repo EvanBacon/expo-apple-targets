@@ -9,6 +9,11 @@ module.exports = (config) => ({
   images: {
     expo: "./expo.sfsymbol.svg",
   },  
+  infoPlist: {
+    NSExtension: {
+      NSExtensionPointIdentifier: "com.apple.widgetkit-extension",
+    }
+  },
   colors: {
     $accent: "steelblue",
     $widgetBackground: "dodgerblue",

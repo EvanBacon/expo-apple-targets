@@ -58,6 +58,8 @@ Merge rules:
 
 If the `infoPlist` object is not defined in the config, Xcode uses the source `targets/<name>/Info.plist` as before (`INFOPLIST_FILE` points at it). The plugin still creates a default type-specific `Info.plist` on first prebuild if one does not exist.
 
+If both a source `Info.plist` **and** an `infoPlist` object are present, the plugin warns in red (dual source of truth). Keys are still merged into the generated file (config overwrites), but you should pick one approach: delete the source file to use only the config, or remove the `infoPlist` object to hand-manage the file.
+
 ```js
 /** @type {import('@bacons/apple-targets/app.plugin').Config} */
 module.exports = {
