@@ -19,6 +19,13 @@ jobs:
 
       - run: bun install --ignore-scripts
 
+      # create-target imports `@bacons/apple-targets/build/target` for type
+      # Info.plist defaults in expo-target.config templates. `build/` is
+      # gitignored and prepare scripts are skipped above, so compile first.
+      - name: Build apple-targets
+        run: bun run build
+        working-directory: packages/apple-targets
+
       - name: Test apple-targets
         run: bun run jest --no-watch
         working-directory: packages/apple-targets
