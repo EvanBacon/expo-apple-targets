@@ -129,9 +129,9 @@ export type Config = {
    *
    * The source `Info.plist` in the target's source directory is left
    * untouched. A merged copy is written to
-   * `ios/.targets/<productName>/Info.plist` and `INFOPLIST_FILE` is
-   * overridden to point at it, so these entries only appear in the generated
-   * `ios/` folder.
+   * `ios/.targets/<targetDirName>/Info.plist` (keyed by the source target
+   * directory basename) and `INFOPLIST_FILE` is overridden to point at it, so
+   * these entries only appear in the generated `ios/` folder.
    *
    * Existing keys from the source plist are overwritten; unknown keys
    * (including manually-edited entries in a checked-in `Info.plist`) are

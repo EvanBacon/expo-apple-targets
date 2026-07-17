@@ -234,10 +234,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   // If the user defined entitlements in the config, generate a
   // `generated.entitlements` file inside the prebuild `ios/` folder so the
   // target's source directory stays clean of derived artifacts. The file is
-  // written under `ios/<TARGET_GENERATED_DIR>/<productName>/` to make it obvious
-  // the contents are generated and should not be edited by hand. The matching
-  // `CODE_SIGN_ENTITLEMENTS` override is wired up in
-  // `configureTargetWithEntitlements` (with-xcode-changes.ts).
+  // written under `ios/<TARGET_GENERATED_DIR>/<targetDirName>/` to make it
+  // obvious the contents are generated and should not be edited by hand. The
+  // folder name matches the source target directory (not the config `name`) so
+  // it stays filesystem-safe. The matching `CODE_SIGN_ENTITLEMENTS` override is
+  // wired up in `configureTargetWithEntitlements` (with-xcode-changes.ts).
   if (entitlementsJson) {
     const definedEntitlements = entitlementsJson;
     withDangerousMod(config, [
@@ -273,7 +274,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
               entitlementsFiles[0],
             );
             const generatedRelativePath = `ios/${getGeneratedEntitlementsCodeSignPath(
-              productName,
+              targetDirName,
             )}`;
             console.log(
               chalk`[${targetDirName}] Ignoring {bold ${relativeName}} because {bold expo-target.config} defines an {bold entitlements} object; entitlements are generated into {bold ${generatedRelativePath}}. To hand-manage the entitlements file instead, remove the {bold entitlements} object from {bold expo-target.config}. Otherwise the source ${relativeName} is unused and safe to delete.`,
@@ -283,7 +284,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
         writeGeneratedEntitlements(
           config.modRequest.projectRoot,
-          productName,
+          targetDirName,
           definedEntitlements,
         );
         return config;
@@ -365,7 +366,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
         writeGeneratedInfoPlist(
           projectRoot,
-          productName,
+          targetDirName,
           mergeInfoPlist(base, props.infoPlist as Record<string, unknown>),
         );
       }

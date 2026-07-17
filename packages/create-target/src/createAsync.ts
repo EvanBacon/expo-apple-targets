@@ -208,7 +208,7 @@ export function getTemplateConfig(target: string) {
   }
 
   // Type defaults live in `infoPlist` so prebuild writes
-  // `ios/.targets/<productName>/Info.plist` instead of a git-tracked
+  // `ios/.targets/<targetDirName>/Info.plist` instead of a git-tracked
   // source Info.plist. Users can still add a hand-written Info.plist later
   // as a merge base if they prefer.
   const infoPlist = getTargetInfoPlistForType(target as any);

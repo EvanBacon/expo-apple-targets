@@ -166,13 +166,12 @@ async function applyXcodeChanges(
 
   function configureTargetWithEntitlements(target: PBXNativeTarget) {
     // Prefer a generated entitlements file under
-    // `ios/<TARGET_GENERATED_DIR>/<productName>/` (written by `with-widget.ts`
-    // when entitlements are defined in the config). Fall back to a hand-written
-    // `*.entitlements` file in the source target directory if no generated one
-    // exists.
+    // `ios/<TARGET_GENERATED_DIR>/<targetDirName>/` (written by `with-widget.ts`
+    // when entitlements are defined in the config; folder matches the source
+    // target directory name). Fall back to a hand-written `*.entitlements` file
+    // in the source target directory if no generated one exists.
     const resolved = resolveEntitlementsForCodeSign({
       projectRoot: config._internal!.projectRoot,
-      productName: props.productName,
       cwd: props.cwd,
     });
 
@@ -217,12 +216,12 @@ async function applyXcodeChanges(
 
   function configureTargetWithInfoPlist(target: PBXNativeTarget) {
     // Prefer a generated Info.plist under
-    // `ios/<TARGET_GENERATED_DIR>/<productName>/` (written by `with-widget.ts`
-    // when `infoPlist` is defined in the config). Fall back to the hand-written
-    // `Info.plist` in the source target directory if no generated one exists.
+    // `ios/<TARGET_GENERATED_DIR>/<targetDirName>/` (written by `with-widget.ts`
+    // when `infoPlist` is defined in the config; folder matches the source
+    // target directory name). Fall back to the hand-written `Info.plist` in the
+    // source target directory if no generated one exists.
     const resolved = resolveInfoPlistForBuild({
       projectRoot: config._internal!.projectRoot,
-      productName: props.productName,
       cwd: props.cwd,
     });
 

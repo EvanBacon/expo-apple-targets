@@ -6,7 +6,7 @@ import { TARGET_GENERATED_DIR } from "./target";
 
 /**
  * File name used for Info.plist generated from the `infoPlist` object in
- * `expo-target.config`. Lives under `ios/.targets/<productName>/` so the
+ * `expo-target.config`. Lives under `ios/.targets/<targetDirName>/` so the
  * location (not a filename prefix) signals that the file is derived and should
  * not be hand-edited.
  */
@@ -14,25 +14,29 @@ export const GENERATED_INFO_PLIST_FILE_NAME = "Info.plist";
 
 /**
  * Absolute path to the directory that holds a target's generated Info.plist,
- * e.g. `<projectRoot>/ios/.targets/<productName>/`.
+ * e.g. `<projectRoot>/ios/.targets/<targetDirName>/`.
+ *
+ * The folder name is the target's source directory basename (e.g. `widget` for
+ * `targets/widget/`), not the config `name` / Xcode product name — so it stays
+ * filesystem-safe and mirrors the source layout.
  */
 export function getGeneratedInfoPlistDir(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
 ): string {
-  return path.join(projectRoot, "ios", TARGET_GENERATED_DIR, productName);
+  return path.join(projectRoot, "ios", TARGET_GENERATED_DIR, targetDirName);
 }
 
 /**
  * Absolute path to a target's generated Info.plist file, e.g.
- * `<projectRoot>/ios/.targets/<productName>/Info.plist`.
+ * `<projectRoot>/ios/.targets/<targetDirName>/Info.plist`.
  */
 export function getGeneratedInfoPlistPath(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
 ): string {
   return path.join(
-    getGeneratedInfoPlistDir(projectRoot, productName),
+    getGeneratedInfoPlistDir(projectRoot, targetDirName),
     GENERATED_INFO_PLIST_FILE_NAME,
   );
 }
@@ -40,12 +44,12 @@ export function getGeneratedInfoPlistPath(
 /**
  * Value for the `INFOPLIST_FILE` build setting pointing at a generated
  * Info.plist. The path is resolved by Xcode relative to the `ios/` project
- * root, e.g. `.targets/<productName>/Info.plist`.
+ * root, e.g. `.targets/<targetDirName>/Info.plist`.
  */
 export function getGeneratedInfoPlistBuildSettingPath(
-  productName: string,
+  targetDirName: string,
 ): string {
-  return `${TARGET_GENERATED_DIR}/${productName}/${GENERATED_INFO_PLIST_FILE_NAME}`;
+  return `${TARGET_GENERATED_DIR}/${targetDirName}/${GENERATED_INFO_PLIST_FILE_NAME}`;
 }
 
 /**
@@ -58,11 +62,11 @@ export function getGeneratedInfoPlistBuildSettingPath(
  */
 export function writeGeneratedInfoPlist(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
   contents: Record<string, unknown>,
 ): string {
-  const dir = getGeneratedInfoPlistDir(projectRoot, productName);
-  const file = getGeneratedInfoPlistPath(projectRoot, productName);
+  const dir = getGeneratedInfoPlistDir(projectRoot, targetDirName);
+  const file = getGeneratedInfoPlistPath(projectRoot, targetDirName);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(file, plist.build(contents));
   return file;
@@ -102,26 +106,28 @@ export interface ResolvedInfoPlist {
  * 2. Otherwise, the hand-written `Info.plist` in the target's source folder
  *    is used (the default path used by configuration lists).
  * 3. If neither exists, returns `null` and the caller leaves the default.
+ *
+ * The generated folder is keyed by the target directory name (basename of
+ * `cwd`), e.g. `widget` for `../targets/widget`.
  */
 export function resolveInfoPlistForBuild({
   projectRoot,
-  productName,
   cwd,
 }: {
   projectRoot: string;
-  productName: string;
   /** The target's source folder relative to `ios/` (i.e. `props.cwd`). */
   cwd: string;
 }): ResolvedInfoPlist | null {
+  const targetDirName = path.basename(cwd);
   const generatedAbsolutePath = getGeneratedInfoPlistPath(
     projectRoot,
-    productName,
+    targetDirName,
   );
 
   if (fs.existsSync(generatedAbsolutePath)) {
     return {
       absolutePath: generatedAbsolutePath,
-      infoPlistFile: getGeneratedInfoPlistBuildSettingPath(productName),
+      infoPlistFile: getGeneratedInfoPlistBuildSettingPath(targetDirName),
     };
   }
 

@@ -14,25 +14,29 @@ export const GENERATED_ENTITLEMENTS_FILE_NAME = "generated.entitlements";
 
 /**
  * Absolute path to the directory that holds a target's generated entitlements,
- * e.g. `<projectRoot>/ios/.targets/<productName>/`.
+ * e.g. `<projectRoot>/ios/.targets/<targetDirName>/`.
+ *
+ * The folder name is the target's source directory basename (e.g. `widget` for
+ * `targets/widget/`), not the config `name` / Xcode product name — so it stays
+ * filesystem-safe and mirrors the source layout.
  */
 export function getGeneratedEntitlementsDir(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
 ): string {
-  return path.join(projectRoot, "ios", TARGET_GENERATED_DIR, productName);
+  return path.join(projectRoot, "ios", TARGET_GENERATED_DIR, targetDirName);
 }
 
 /**
  * Absolute path to a target's generated entitlements file, e.g.
- * `<projectRoot>/ios/.targets/<productName>/generated.entitlements`.
+ * `<projectRoot>/ios/.targets/<targetDirName>/generated.entitlements`.
  */
 export function getGeneratedEntitlementsPath(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
 ): string {
   return path.join(
-    getGeneratedEntitlementsDir(projectRoot, productName),
+    getGeneratedEntitlementsDir(projectRoot, targetDirName),
     GENERATED_ENTITLEMENTS_FILE_NAME,
   );
 }
@@ -40,12 +44,12 @@ export function getGeneratedEntitlementsPath(
 /**
  * Value for the `CODE_SIGN_ENTITLEMENTS` build setting pointing at a generated
  * entitlements file. The path is resolved by Xcode relative to the `ios/`
- * project root, e.g. `.targets/<productName>/generated.entitlements`.
+ * project root, e.g. `.targets/<targetDirName>/generated.entitlements`.
  */
 export function getGeneratedEntitlementsCodeSignPath(
-  productName: string,
+  targetDirName: string,
 ): string {
-  return `${TARGET_GENERATED_DIR}/${productName}/${GENERATED_ENTITLEMENTS_FILE_NAME}`;
+  return `${TARGET_GENERATED_DIR}/${targetDirName}/${GENERATED_ENTITLEMENTS_FILE_NAME}`;
 }
 
 /**
@@ -58,11 +62,11 @@ export function getGeneratedEntitlementsCodeSignPath(
  */
 export function writeGeneratedEntitlements(
   projectRoot: string,
-  productName: string,
+  targetDirName: string,
   entitlements: Entitlements,
 ): string {
-  const dir = getGeneratedEntitlementsDir(projectRoot, productName);
-  const file = getGeneratedEntitlementsPath(projectRoot, productName);
+  const dir = getGeneratedEntitlementsDir(projectRoot, targetDirName);
+  const file = getGeneratedEntitlementsPath(projectRoot, targetDirName);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(file, plist.build(entitlements));
   return file;
@@ -124,26 +128,29 @@ export interface ResolvedEntitlements {
  * 2. Otherwise, a hand-written `*.entitlements` file in the target's source
  *    folder is used.
  * 3. If neither exists, returns `null` and the caller removes the setting.
+ *
+ * The generated folder is keyed by the target directory name (basename of
+ * `cwd`), e.g. `widget` for `../targets/widget`.
  */
 export function resolveEntitlementsForCodeSign({
   projectRoot,
-  productName,
   cwd,
 }: {
   projectRoot: string;
-  productName: string;
   /** The target's source folder relative to `ios/` (i.e. `props.cwd`). */
   cwd: string;
 }): ResolvedEntitlements | null {
+  const targetDirName = path.basename(cwd);
   const generatedAbsolutePath = getGeneratedEntitlementsPath(
     projectRoot,
-    productName,
+    targetDirName,
   );
 
   if (fs.existsSync(generatedAbsolutePath)) {
     return {
       absolutePath: generatedAbsolutePath,
-      codeSignEntitlements: getGeneratedEntitlementsCodeSignPath(productName),
+      codeSignEntitlements:
+        getGeneratedEntitlementsCodeSignPath(targetDirName),
     };
   }
 

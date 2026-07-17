@@ -13,9 +13,11 @@ import {
   writeGeneratedInfoPlist,
 } from "../info-plist";
 
-const PRODUCT_NAME = "mywidget";
+// Matches the basename of TARGET_CWD — generated folders key off the source
+// target directory name, not the config `name` / Xcode product name.
+const TARGET_DIR_NAME = "widget";
 // The target's source folder, relative to `ios/`, as passed via `props.cwd`.
-const TARGET_CWD = "../targets/widget";
+const TARGET_CWD = `../targets/${TARGET_DIR_NAME}`;
 
 function makeProjectRoot(): string {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "apple-targets-infoplist-"));
@@ -46,20 +48,29 @@ afterEach(() => {
 });
 
 describe("generated Info.plist paths", () => {
-  it("always nests generated files under ios/.targets/<productName>/Info.plist", () => {
-    expect(getGeneratedInfoPlistDir(projectRoot, PRODUCT_NAME)).toBe(
-      path.join(projectRoot, "ios", ".targets", PRODUCT_NAME),
+  it("always nests generated files under ios/.targets/<targetDirName>/Info.plist", () => {
+    expect(getGeneratedInfoPlistDir(projectRoot, TARGET_DIR_NAME)).toBe(
+      path.join(projectRoot, "ios", ".targets", TARGET_DIR_NAME),
     );
-    expect(getGeneratedInfoPlistPath(projectRoot, PRODUCT_NAME)).toBe(
-      path.join(projectRoot, "ios", ".targets", PRODUCT_NAME, "Info.plist"),
+    expect(getGeneratedInfoPlistPath(projectRoot, TARGET_DIR_NAME)).toBe(
+      path.join(projectRoot, "ios", ".targets", TARGET_DIR_NAME, "Info.plist"),
     );
   });
 
   it("produces an ios-relative INFOPLIST_FILE value", () => {
     // Xcode resolves INFOPLIST_FILE relative to the ios/ project root,
     // so this must NOT be absolute and must use forward slashes.
-    expect(getGeneratedInfoPlistBuildSettingPath(PRODUCT_NAME)).toBe(
-      ".targets/mywidget/Info.plist",
+    expect(getGeneratedInfoPlistBuildSettingPath(TARGET_DIR_NAME)).toBe(
+      ".targets/widget/Info.plist",
+    );
+  });
+
+  it("keys the folder by directory name, not a sanitized product/display name", () => {
+    expect(getGeneratedInfoPlistBuildSettingPath("widget")).toBe(
+      ".targets/widget/Info.plist",
+    );
+    expect(getGeneratedInfoPlistBuildSettingPath("widget")).not.toBe(
+      ".targets/ExpoAgent/Info.plist",
     );
   });
 });
@@ -73,11 +84,13 @@ describe("Case 1: infoPlist defined in expo-target.config", () => {
   it("writes the generated file under .targets with the exact merged contents", () => {
     const written = writeGeneratedInfoPlist(
       projectRoot,
-      PRODUCT_NAME,
+      TARGET_DIR_NAME,
       infoPlist,
     );
 
-    expect(written).toBe(getGeneratedInfoPlistPath(projectRoot, PRODUCT_NAME));
+    expect(written).toBe(
+      getGeneratedInfoPlistPath(projectRoot, TARGET_DIR_NAME),
+    );
     expect(fs.existsSync(written)).toBe(true);
     // Round-trip through plist to assert content rather than formatting.
     expect(plist.parse(fs.readFileSync(written, "utf8"))).toEqual(infoPlist);
@@ -85,48 +98,47 @@ describe("Case 1: infoPlist defined in expo-target.config", () => {
 
   it("creates intermediate directories that do not yet exist", () => {
     expect(
-      fs.existsSync(getGeneratedInfoPlistDir(projectRoot, PRODUCT_NAME)),
+      fs.existsSync(getGeneratedInfoPlistDir(projectRoot, TARGET_DIR_NAME)),
     ).toBe(false);
 
-    writeGeneratedInfoPlist(projectRoot, PRODUCT_NAME, infoPlist);
+    writeGeneratedInfoPlist(projectRoot, TARGET_DIR_NAME, infoPlist);
 
     expect(
-      fs.existsSync(getGeneratedInfoPlistDir(projectRoot, PRODUCT_NAME)),
+      fs.existsSync(getGeneratedInfoPlistDir(projectRoot, TARGET_DIR_NAME)),
     ).toBe(true);
   });
 
   it("never writes into the target's source folder", () => {
-    writeGeneratedInfoPlist(projectRoot, PRODUCT_NAME, infoPlist);
+    writeGeneratedInfoPlist(projectRoot, TARGET_DIR_NAME, infoPlist);
 
     const sourceDir = path.join(projectRoot, "ios", TARGET_CWD);
     expect(fs.existsSync(sourceDir)).toBe(false);
   });
 
   it("is idempotent — re-running overwrites in place with the latest contents", () => {
-    writeGeneratedInfoPlist(projectRoot, PRODUCT_NAME, {
+    writeGeneratedInfoPlist(projectRoot, TARGET_DIR_NAME, {
       MyBackendURL: "https://old.example.com",
     });
     const written = writeGeneratedInfoPlist(
       projectRoot,
-      PRODUCT_NAME,
+      TARGET_DIR_NAME,
       infoPlist,
     );
 
     expect(plist.parse(fs.readFileSync(written, "utf8"))).toEqual(infoPlist);
   });
 
-  it("resolves INFOPLIST_FILE to the generated file", () => {
-    writeGeneratedInfoPlist(projectRoot, PRODUCT_NAME, infoPlist);
+  it("resolves INFOPLIST_FILE to the generated file using the cwd basename", () => {
+    writeGeneratedInfoPlist(projectRoot, TARGET_DIR_NAME, infoPlist);
 
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
-        productName: PRODUCT_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
-      absolutePath: getGeneratedInfoPlistPath(projectRoot, PRODUCT_NAME),
-      infoPlistFile: ".targets/mywidget/Info.plist",
+      absolutePath: getGeneratedInfoPlistPath(projectRoot, TARGET_DIR_NAME),
+      infoPlistFile: ".targets/widget/Info.plist",
     });
   });
 });
@@ -142,7 +154,6 @@ describe("Case 2: hand-written Info.plist file in the source folder", () => {
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
-        productName: PRODUCT_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -155,7 +166,6 @@ describe("Case 2: hand-written Info.plist file in the source folder", () => {
     expect(
       resolveInfoPlistForBuild({
         projectRoot,
-        productName: PRODUCT_NAME,
         cwd: TARGET_CWD,
       }),
     ).toBeNull();
@@ -165,17 +175,16 @@ describe("Case 2: hand-written Info.plist file in the source folder", () => {
 describe("precedence is deterministic", () => {
   it("prefers the generated file even when a source file also exists", () => {
     writeSourceInfoPlist(projectRoot);
-    writeGeneratedInfoPlist(projectRoot, PRODUCT_NAME, {
+    writeGeneratedInfoPlist(projectRoot, TARGET_DIR_NAME, {
       MyBackendURL: "https://example.com",
     });
 
     const resolved = resolveInfoPlistForBuild({
       projectRoot,
-      productName: PRODUCT_NAME,
       cwd: TARGET_CWD,
     });
 
-    expect(resolved?.infoPlistFile).toBe(".targets/mywidget/Info.plist");
+    expect(resolved?.infoPlistFile).toBe(".targets/widget/Info.plist");
   });
 });
 

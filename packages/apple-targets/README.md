@@ -19,7 +19,7 @@ An Expo Config Plugin that generates native Apple Targets like Widgets or App Cl
 
 The root `/targets` folder is magic, each sub-directory should have a `expo-target.config.js` file that defines the target settings. When you run `npx expo prebuild --clean`, the plugin will generate the Xcode project and link the target files to the project.
 
-`npx create-target` scaffolds targets with type-default keys in the config `infoPlist` field (written to `ios/.targets/<productName>/Info.plist` on prebuild) rather than a checked-in source `Info.plist`. If neither `infoPlist` nor a source `Info.plist` is present, the plugin still creates a default type-specific source `Info.plist` on first prebuild.
+`npx create-target` scaffolds targets with type-default keys in the config `infoPlist` field (written to `ios/.targets/<targetDirName>/Info.plist` on prebuild, where `<targetDirName>` is the source folder basename such as `widget` for `targets/widget/`) rather than a checked-in source `Info.plist`. If neither `infoPlist` nor a source `Info.plist` is present, the plugin still creates a default type-specific source `Info.plist` on first prebuild.
 
 The Config Plugin will link the subfolder (e.g. `targets/widget`) to Xcode, and all files inside of it will be part of the target. This means you can develop the target inside the `expo:targets` folder and the changes will be saved outside of the generated `ios` directory.
 
@@ -29,7 +29,7 @@ Any files in a top-level `target/{name}/assets` directory will be linked as reso
 
 ### Entitlements
 
-If the `expo-target.config` file defines an `entitlements: {}` object, a `generated.entitlements` file is written into the prebuild output at `ios/.targets/<productName>/generated.entitlements` (not into the target's source folder), and `CODE_SIGN_ENTITLEMENTS` is pointed at it. The `.targets` directory makes it obvious the files within are derived and should not be edited by hand. The source target directory is left untouched, so it can stay clean of derived artifacts in git. Update the `expo-target.config` to change entitlements — never edit the generated file directly, it is overwritten on every `npx expo prebuild`. To hand-manage an entitlements file instead, remove the `entitlements` object from `expo-target.config` and add a `*.entitlements` file to the target's source folder.
+If the `expo-target.config` file defines an `entitlements: {}` object, a `generated.entitlements` file is written into the prebuild output at `ios/.targets/<targetDirName>/generated.entitlements` (not into the target's source folder), and `CODE_SIGN_ENTITLEMENTS` is pointed at it. The folder under `.targets/` is named after the source target directory (e.g. `targets/widget` → `ios/.targets/widget/`), not the config `name` field, so it stays filesystem-safe and matches the source layout. The `.targets` directory makes it obvious the files within are derived and should not be edited by hand. The source target directory is left untouched, so it can stay clean of derived artifacts in git. Update the `expo-target.config` to change entitlements — never edit the generated file directly, it is overwritten on every `npx expo prebuild`. To hand-manage an entitlements file instead, remove the `entitlements` object from `expo-target.config` and add a `*.entitlements` file to the target's source folder.
 
 If the `entitlements` object is not defined in the config, you can manually add a single top-level `*.entitlements` file to the target source directory — re-running `npx expo prebuild` will link that file to the target. Only one top-level `*.entitlements` file is supported per target. If both a config-driven `entitlements` block AND a hand-written `*.entitlements` file are present, the config wins and the hand-written file is ignored (you'll see a log line and can delete it).
 
@@ -45,7 +45,7 @@ Some targets have special entitlements behavior:
 If the `expo-target.config` file defines an `infoPlist: {}` object, those keys are **merged** into the target's Info.plist during prebuild:
 
 1. The source `targets/<name>/Info.plist` is left untouched (it remains the merge base, so hand-edited keys you didn't put in the config are preserved).
-2. A merged copy is written to `ios/.targets/<productName>/Info.plist`.
+2. A merged copy is written to `ios/.targets/<targetDirName>/Info.plist` (same directory-name keying as entitlements).
 3. `INFOPLIST_FILE` is pointed at the generated file so Xcode reads the merged result.
 
 Like entitlements, the `.targets` directory holds only derived artifacts that should not be edited by hand. Update `expo-target.config` (or the source `Info.plist` for structural keys) — never edit the copy under `ios/.targets/` directly; it is overwritten on every `npx expo prebuild`.
@@ -65,7 +65,7 @@ If both a source `Info.plist` **and** an `infoPlist` object are present, the plu
 module.exports = {
   type: "widget",
   infoPlist: {
-    // Merged into ios/.targets/<productName>/Info.plist
+    // Merged into ios/.targets/<targetDirName>/Info.plist
     MyBackendURL: process.env.BACKEND_URL,
     NSSupportsLiveActivities: true,
   },
@@ -121,10 +121,10 @@ module.exports = {
   ],
   entitlements: {
     // Serialized entitlements. Useful for configuring with environment variables.
-    // Written to ios/.targets/<productName>/generated.entitlements.
+    // Written to ios/.targets/<targetDirName>/generated.entitlements.
   },
   // Optional keys merged into the target's Info.plist during prebuild.
-  // Written to ios/.targets/<productName>/Info.plist (source Info.plist stays clean).
+  // Written to ios/.targets/<targetDirName>/Info.plist (source Info.plist stays clean).
   infoPlist: {
     MyBackendURL: process.env.BACKEND_URL,
   },
