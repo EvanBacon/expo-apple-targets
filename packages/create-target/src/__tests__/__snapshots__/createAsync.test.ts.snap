@@ -4,6 +4,16 @@ exports[`getTemplateConfig should return a valid template for account-auth 1`] =
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"account-auth\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.authentication-services-account-authentication-modification-ui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).AccountAuthViewController\\",
+      \\"NSExtensionAttributes\\": {
+        \\"ASAccountAuthenticationModificationSupportsStrongPasswordChange\\": true,
+        \\"ASAccountAuthenticationModificationSupportsUpgradeToSignInWithApple\\": true
+      }
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -14,6 +24,27 @@ module.exports = config => ({
   type: \\"action\\",
   icon: 'https://github.com/expo.png',
   colors: { TouchBarBezel: \\"#000000\\", },
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"NSExtensionActivationRule\\": {
+          \\"NSExtensionActivationSupportsFileWithMaxCount\\": 0,
+          \\"NSExtensionActivationSupportsImageWithMaxCount\\": 0,
+          \\"NSExtensionActivationSupportsMovieWithMaxCount\\": 0,
+          \\"NSExtensionActivationSupportsText\\": false,
+          \\"NSExtensionActivationSupportsWebURLWithMaxCount\\": 1
+        },
+        \\"NSExtensionJavaScriptPreprocessingFile\\": \\"assets/index\\",
+        \\"NSExtensionServiceAllowsFinderPreviewItem\\": true,
+        \\"NSExtensionServiceAllowsTouchBarItem\\": true,
+        \\"NSExtensionServiceFinderPreviewIconName\\": \\"NSActionTemplate\\",
+        \\"NSExtensionServiceTouchBarBezelColorName\\": \\"TouchBarBezel\\",
+        \\"NSExtensionServiceTouchBarIconName\\": \\"NSActionTemplate\\"
+      },
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.services\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ActionRequestHandler\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -22,6 +53,11 @@ exports[`getTemplateConfig should return a valid template for app-intent 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"app-intent\\",
+  infoPlist: {
+    \\"EXAppExtensionAttributes\\": {
+      \\"EXExtensionPointIdentifier\\": \\"com.apple.appintents-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -30,6 +66,12 @@ exports[`getTemplateConfig should return a valid template for authentication-ser
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"authentication-services\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.AppSSO.idp-extension\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).AuthenticationExtension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -38,6 +80,11 @@ exports[`getTemplateConfig should return a valid template for bg-download 1`] = 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"bg-download\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.background-asset-downloader-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -46,6 +93,12 @@ exports[`getTemplateConfig should return a valid template for broadcast-setup-ui
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"broadcast-setup-ui\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.broadcast-services-setupui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).BroadcastSetupViewController\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -54,6 +107,13 @@ exports[`getTemplateConfig should return a valid template for broadcast-upload 1
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"broadcast-upload\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.broadcast-services-upload\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).SampleHandler\\",
+      \\"RPBroadcastProcessMode\\": \\"RPBroadcastProcessModeSampleBuffer\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -62,6 +122,12 @@ exports[`getTemplateConfig should return a valid template for call-directory 1`]
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"call-directory\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.callkit.call-directory\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).CallDirectoryHandler\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -70,6 +136,12 @@ exports[`getTemplateConfig should return a valid template for classkit-context 1
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"classkit-context\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.classkit.context-provider\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ContextProvider\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -79,6 +151,26 @@ exports[`getTemplateConfig should return a valid template for clip 1`] = `
 module.exports = config => ({
   type: \\"clip\\",
   icon: 'https://github.com/expo.png',
+  infoPlist: {
+    \\"CFBundleName\\": \\"$(PRODUCT_NAME)\\",
+    \\"CFBundleIdentifier\\": \\"$(PRODUCT_BUNDLE_IDENTIFIER)\\",
+    \\"CFBundleVersion\\": \\"$(CURRENT_PROJECT_VERSION)\\",
+    \\"CFBundleExecutable\\": \\"$(EXECUTABLE_NAME)\\",
+    \\"CFBundlePackageType\\": \\"$(PRODUCT_BUNDLE_PACKAGE_TYPE)\\",
+    \\"CFBundleShortVersionString\\": \\"$(MARKETING_VERSION)\\",
+    \\"UIApplicationSupportsIndirectInputEvents\\": true,
+    \\"NSAppClip\\": {
+      \\"NSAppClipRequestEphemeralUserNotification\\": false,
+      \\"NSAppClipRequestLocationConfirmation\\": false
+    },
+    \\"NSAppTransportSecurity\\": {
+      \\"NSAllowsArbitraryLoads\\": false,
+      \\"NSAllowsLocalNetworking\\": true
+    },
+    \\"UILaunchStoryboardName\\": \\"SplashScreen\\",
+    \\"UIUserInterfaceStyle\\": \\"Automatic\\",
+    \\"UIViewControllerBasedStatusBarAppearance\\": false
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -87,6 +179,12 @@ exports[`getTemplateConfig should return a valid template for credentials-provid
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"credentials-provider\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.authentication-services-credential-provider-ui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).CredentialProviderViewController\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.authentication-services.autofill-credential-provider\\":true},
 });"
 `;
@@ -95,6 +193,12 @@ exports[`getTemplateConfig should return a valid template for device-activity-mo
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"device-activity-monitor\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.deviceactivity.monitor-extension\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.family-controls\\":true},
 });"
 `;
@@ -103,6 +207,13 @@ exports[`getTemplateConfig should return a valid template for file-provider 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"file-provider\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.fileprovider-nonui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).FileProviderExtension\\",
+      \\"NSExtensionFileProviderSupportsEnumeration\\": true
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -111,6 +222,12 @@ exports[`getTemplateConfig should return a valid template for file-provider-ui 1
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"file-provider-ui\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.fileprovider-actionsui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).FileProviderUIController\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -119,6 +236,20 @@ exports[`getTemplateConfig should return a valid template for intent 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"intent\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"IntentsRestrictedWhileLocked\\": [],
+        \\"IntentsSupported\\": [
+          \\"INSendMessageIntent\\",
+          \\"INSearchForMessagesIntent\\",
+          \\"INSetMessageAttributeIntent\\"
+        ]
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).IntentHandler\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.intents-service\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -127,6 +258,17 @@ exports[`getTemplateConfig should return a valid template for intent-ui 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"intent-ui\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"IntentsSupported\\": [
+          \\"INSendMessageIntent\\"
+        ]
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).IntentViewController\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.intents-ui-service\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -135,6 +277,12 @@ exports[`getTemplateConfig should return a valid template for location-push 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"location-push\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).LocationPushService\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.location.push.service\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -143,6 +291,12 @@ exports[`getTemplateConfig should return a valid template for message-filter 1`]
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"message-filter\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.identitylookup.message-filter\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).MessageFilterExtension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -151,6 +305,16 @@ exports[`getTemplateConfig should return a valid template for notification-conte
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"notification-content\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"UNNotificationExtensionCategory\\": \\"myNotificationCategory\\",
+        \\"UNNotificationExtensionInitialContentSizeRatio\\": 1
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).NotificationViewController\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.usernotifications.content-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -159,6 +323,15 @@ exports[`getTemplateConfig should return a valid template for notification-servi
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"notification-service\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"NSExtensionActivationRule\\": \\"TRUEPREDICATE\\"
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).NotificationService\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.usernotifications.service\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -167,6 +340,17 @@ exports[`getTemplateConfig should return a valid template for photo-editing 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"photo-editing\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.photo-editing\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).PhotoEditingViewController\\",
+      \\"NSExtensionAttributes\\": {
+        \\"PHSupportedMediaTypes\\": [
+          \\"Image\\"
+        ]
+      }
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -175,6 +359,12 @@ exports[`getTemplateConfig should return a valid template for print-service 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"print-service\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.printing.discovery\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).PrintServiceExtension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -183,6 +373,15 @@ exports[`getTemplateConfig should return a valid template for quicklook-preview 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"quicklook-preview\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"QLSupportedContentTypes\\": []
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).PreviewViewController\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.quicklook.preview\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -191,6 +390,16 @@ exports[`getTemplateConfig should return a valid template for quicklook-thumbnai
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"quicklook-thumbnail\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"QLSupportedContentTypes\\": [],
+        \\"QLThumbnailMinimumDimension\\": 0
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ThumbnailProvider\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.quicklook.thumbnail\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -200,6 +409,12 @@ exports[`getTemplateConfig should return a valid template for safari 1`] = `
 module.exports = config => ({
   type: \\"safari\\",
   icon: 'https://github.com/expo.png',
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).SafariWebExtensionHandler\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.Safari.web-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -210,6 +425,15 @@ module.exports = config => ({
   type: \\"share\\",
   icon: 'https://github.com/expo.png',
   \\"frameworks\\": [\\"UIKit\\", \\"Social\\", \\"MobileCoreServices\\", \\"UniformTypeIdentifiers\\"],
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"NSExtensionActivationRule\\": \\"TRUEPREDICATE\\"
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ShareViewController\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.share-services\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -218,6 +442,12 @@ exports[`getTemplateConfig should return a valid template for shield-action 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"shield-action\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.ManagedSettings.shield-action-service\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ShieldActionExtension\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.family-controls\\":true},
 });"
 `;
@@ -226,6 +456,12 @@ exports[`getTemplateConfig should return a valid template for shield-config 1`] 
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"shield-config\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.ManagedSettingsUI.shield-configuration-service\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.family-controls\\":true},
 });"
 `;
@@ -234,6 +470,12 @@ exports[`getTemplateConfig should return a valid template for smart-card 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"smart-card\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.ctk-tokens\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).TokenExtension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -242,6 +484,18 @@ exports[`getTemplateConfig should return a valid template for spotlight 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"spotlight\\",
+  infoPlist: {
+    \\"CSExtensionLabel\\": \\"myImporter\\",
+    \\"NSExtension\\": {
+      \\"NSExtensionAttributes\\": {
+        \\"CSSupportedContentTypes\\": [
+          \\"com.example.plain-text\\"
+        ]
+      },
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ImportExtension\\",
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.spotlight.import\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -250,6 +504,12 @@ exports[`getTemplateConfig should return a valid template for spotlight-delegate
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"spotlight-delegate\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.spotlight.index\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).IndexRequestHandler\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -258,6 +518,12 @@ exports[`getTemplateConfig should return a valid template for unwanted-communica
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"unwanted-communication\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.identitylookup.classification-ui\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).ClassificationViewController\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -266,6 +532,12 @@ exports[`getTemplateConfig should return a valid template for virtual-conference
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"virtual-conference\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.calendar.virtualconference\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).VirtualConferenceProvider\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -274,6 +546,12 @@ exports[`getTemplateConfig should return a valid template for wallet 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"wallet\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.PassKit.issuer-provisioning\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).IssuerProvisioningHandler\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.payment-pass-provisioning\\":true},
 });"
 `;
@@ -282,6 +560,12 @@ exports[`getTemplateConfig should return a valid template for wallet-ui 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({
   type: \\"wallet-ui\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.PassKit.issuer-provisioning.authorization\\",
+      \\"NSExtensionPrincipalClass\\": \\"$(PRODUCT_MODULE_NAME).IssuerProvisioningAuthorizationViewController\\"
+    }
+  },
   entitlements: {\\"com.apple.developer.payment-pass-provisioning\\":true},
 });"
 `;
@@ -293,6 +577,7 @@ module.exports = config => ({
   icon: 'https://github.com/expo.png',
   colors: { $accent: \\"darkcyan\\", },
   deploymentTarget: \\"9.4\\",
+  infoPlist: {},
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -304,6 +589,11 @@ module.exports = config => ({
   icon: 'https://github.com/expo.png',
   colors: { $accent: \\"darkcyan\\", },
   deploymentTarget: \\"9.4\\",
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.widgetkit-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;
@@ -313,6 +603,11 @@ exports[`getTemplateConfig should return a valid template for widget 1`] = `
 module.exports = config => ({
   type: \\"widget\\",
   icon: 'https://github.com/expo.png',
+  infoPlist: {
+    \\"NSExtension\\": {
+      \\"NSExtensionPointIdentifier\\": \\"com.apple.widgetkit-extension\\"
+    }
+  },
   entitlements: { /* Add entitlements */ },
 });"
 `;

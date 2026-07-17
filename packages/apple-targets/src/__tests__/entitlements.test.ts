@@ -14,9 +14,11 @@ import {
   writeGeneratedEntitlements,
 } from "../entitlements";
 
-const PRODUCT_NAME = "mywidget";
+// Matches the basename of TARGET_CWD — generated folders key off the source
+// target directory name, not the config `name` / Xcode product name.
+const TARGET_DIR_NAME = "widget";
 // The target's source folder, relative to `ios/`, as passed via `props.cwd`.
-const TARGET_CWD = "../targets/widget";
+const TARGET_CWD = `../targets/${TARGET_DIR_NAME}`;
 
 function makeProjectRoot(): string {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "apple-targets-ent-"));
@@ -48,16 +50,16 @@ afterEach(() => {
 });
 
 describe("generated entitlements paths", () => {
-  it("always nests generated files under ios/.targets/<productName>", () => {
-    expect(getGeneratedEntitlementsDir(projectRoot, PRODUCT_NAME)).toBe(
-      path.join(projectRoot, "ios", ".targets", PRODUCT_NAME),
+  it("always nests generated files under ios/.targets/<targetDirName>", () => {
+    expect(getGeneratedEntitlementsDir(projectRoot, TARGET_DIR_NAME)).toBe(
+      path.join(projectRoot, "ios", ".targets", TARGET_DIR_NAME),
     );
-    expect(getGeneratedEntitlementsPath(projectRoot, PRODUCT_NAME)).toBe(
+    expect(getGeneratedEntitlementsPath(projectRoot, TARGET_DIR_NAME)).toBe(
       path.join(
         projectRoot,
         "ios",
         ".targets",
-        PRODUCT_NAME,
+        TARGET_DIR_NAME,
         "generated.entitlements",
       ),
     );
@@ -66,8 +68,19 @@ describe("generated entitlements paths", () => {
   it("produces an ios-relative CODE_SIGN_ENTITLEMENTS value", () => {
     // Xcode resolves CODE_SIGN_ENTITLEMENTS relative to the ios/ project root,
     // so this must NOT be absolute and must use forward slashes.
-    expect(getGeneratedEntitlementsCodeSignPath(PRODUCT_NAME)).toBe(
-      ".targets/mywidget/generated.entitlements",
+    expect(getGeneratedEntitlementsCodeSignPath(TARGET_DIR_NAME)).toBe(
+      ".targets/widget/generated.entitlements",
+    );
+  });
+
+  it("keys the folder by directory name, not a sanitized product/display name", () => {
+    // config `name: "Expo Agent"` would sanitize to ExpoAgent for productName;
+    // the generated path must still be the source folder basename.
+    expect(getGeneratedEntitlementsCodeSignPath("widget")).toBe(
+      ".targets/widget/generated.entitlements",
+    );
+    expect(getGeneratedEntitlementsCodeSignPath("widget")).not.toBe(
+      ".targets/ExpoAgent/generated.entitlements",
     );
   });
 });
@@ -81,11 +94,13 @@ describe("Case 1: entitlements defined in expo-target.config", () => {
   it("writes the generated file under .targets with the exact config contents", () => {
     const written = writeGeneratedEntitlements(
       projectRoot,
-      PRODUCT_NAME,
+      TARGET_DIR_NAME,
       entitlements,
     );
 
-    expect(written).toBe(getGeneratedEntitlementsPath(projectRoot, PRODUCT_NAME));
+    expect(written).toBe(
+      getGeneratedEntitlementsPath(projectRoot, TARGET_DIR_NAME),
+    );
     expect(fs.existsSync(written)).toBe(true);
     // Round-trip through plist to assert content rather than formatting.
     expect(plist.parse(fs.readFileSync(written, "utf8"))).toEqual(entitlements);
@@ -93,48 +108,48 @@ describe("Case 1: entitlements defined in expo-target.config", () => {
 
   it("creates intermediate directories that do not yet exist", () => {
     expect(
-      fs.existsSync(getGeneratedEntitlementsDir(projectRoot, PRODUCT_NAME)),
+      fs.existsSync(getGeneratedEntitlementsDir(projectRoot, TARGET_DIR_NAME)),
     ).toBe(false);
 
-    writeGeneratedEntitlements(projectRoot, PRODUCT_NAME, entitlements);
+    writeGeneratedEntitlements(projectRoot, TARGET_DIR_NAME, entitlements);
 
     expect(
-      fs.existsSync(getGeneratedEntitlementsDir(projectRoot, PRODUCT_NAME)),
+      fs.existsSync(getGeneratedEntitlementsDir(projectRoot, TARGET_DIR_NAME)),
     ).toBe(true);
   });
 
   it("never writes into the target's source folder", () => {
-    writeGeneratedEntitlements(projectRoot, PRODUCT_NAME, entitlements);
+    writeGeneratedEntitlements(projectRoot, TARGET_DIR_NAME, entitlements);
 
     const sourceDir = path.join(projectRoot, "ios", TARGET_CWD);
     expect(fs.existsSync(sourceDir)).toBe(false);
   });
 
   it("is idempotent — re-running overwrites in place with the latest contents", () => {
-    writeGeneratedEntitlements(projectRoot, PRODUCT_NAME, {
+    writeGeneratedEntitlements(projectRoot, TARGET_DIR_NAME, {
       "com.apple.developer.foo": false,
     });
     const written = writeGeneratedEntitlements(
       projectRoot,
-      PRODUCT_NAME,
+      TARGET_DIR_NAME,
       entitlements,
     );
 
     expect(plist.parse(fs.readFileSync(written, "utf8"))).toEqual(entitlements);
   });
 
-  it("resolves CODE_SIGN_ENTITLEMENTS to the generated file", () => {
-    writeGeneratedEntitlements(projectRoot, PRODUCT_NAME, entitlements);
+  it("resolves CODE_SIGN_ENTITLEMENTS to the generated file using the cwd basename", () => {
+    writeGeneratedEntitlements(projectRoot, TARGET_DIR_NAME, entitlements);
 
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
-        productName: PRODUCT_NAME,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
-      absolutePath: getGeneratedEntitlementsPath(projectRoot, PRODUCT_NAME),
-      codeSignEntitlements: ".targets/mywidget/generated.entitlements",
+      absolutePath: getGeneratedEntitlementsPath(projectRoot, TARGET_DIR_NAME),
+      codeSignEntitlements: ".targets/widget/generated.entitlements",
     });
   });
 });
@@ -146,7 +161,7 @@ describe("Case 2: hand-written *.entitlements file in the source folder", () => 
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
-        productName: PRODUCT_NAME,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toEqual({
@@ -164,7 +179,7 @@ describe("Case 2: hand-written *.entitlements file in the source folder", () => 
     expect(
       resolveEntitlementsForCodeSign({
         projectRoot,
-        productName: PRODUCT_NAME,
+        targetDirName: TARGET_DIR_NAME,
         cwd: TARGET_CWD,
       }),
     ).toBeNull();
@@ -174,18 +189,18 @@ describe("Case 2: hand-written *.entitlements file in the source folder", () => 
 describe("precedence is deterministic", () => {
   it("prefers the generated file even when a source file also exists", () => {
     writeSourceEntitlements(projectRoot, "widget.entitlements");
-    writeGeneratedEntitlements(projectRoot, PRODUCT_NAME, {
+    writeGeneratedEntitlements(projectRoot, TARGET_DIR_NAME, {
       "com.apple.developer.foo": true,
     });
 
     const resolved = resolveEntitlementsForCodeSign({
       projectRoot,
-      productName: PRODUCT_NAME,
+      targetDirName: TARGET_DIR_NAME,
       cwd: TARGET_CWD,
     });
 
     expect(resolved?.codeSignEntitlements).toBe(
-      ".targets/mywidget/generated.entitlements",
+      ".targets/widget/generated.entitlements",
     );
   });
 });

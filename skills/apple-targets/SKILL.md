@@ -232,7 +232,7 @@ Because target source files live outside the `/ios` directory and are **linked**
 
 - **Run `prebuild --clean`** when:
   - Initial setup after creating a new target
-  - Changing `expo-target.config.js` (icon, colors, entitlements, bundle ID, frameworks)
+  - Changing `expo-target.config.js` (icon, colors, entitlements, infoPlist, bundle ID, frameworks)
   - Changing `app.json` plugin configuration
   - Adding or removing targets
   - Xcode project corruption or mysterious build failures

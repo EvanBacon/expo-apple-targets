@@ -290,10 +290,12 @@ export type ExtensionType = keyof typeof TARGET_REGISTRY;
 
 /**
  * Directory under `ios/` where this plugin writes derived target files (e.g.
- * `generated.entitlements`) during prebuild. The leading-dot `.targets` name
- * makes it obvious on disk that the contents are generated and should not be
- * edited by hand, while avoiding a colon in the path (which is risky for Xcode
- * build-setting paths). Files live at `ios/<TARGET_GENERATED_DIR>/<productName>/`.
+ * `generated.entitlements`, `Info.plist`) during prebuild. The
+ * leading-dot `.targets` name makes it obvious on disk that the contents are
+ * generated and should not be edited by hand, while avoiding a colon in the
+ * path (which is risky for Xcode build-setting paths). Files live at
+ * `ios/<TARGET_GENERATED_DIR>/<targetDirName>/`, keyed by the source target
+ * directory basename (e.g. `widget` for `targets/widget/`).
  */
 export const TARGET_GENERATED_DIR = ".targets";
 

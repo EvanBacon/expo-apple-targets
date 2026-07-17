@@ -26,10 +26,16 @@ import {
   getGeneratedEntitlementsCodeSignPath,
   writeGeneratedEntitlements,
 } from "./entitlements";
+import {
+  getInfoPlistConflictMessage,
+  mergeInfoPlist,
+  writeGeneratedInfoPlist,
+} from "./info-plist";
 import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
   getSanitizedBundleIdentifier,
+  getTargetDirName,
   LOG_QUEUE,
   logOnce,
   sanitizeNameForNonDisplayUse,
@@ -52,8 +58,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     props.icon = path.join(props.directory, props.icon);
   }
 
-  // This value should be used for the target name and other internal uses.
-  const targetDirName = path.basename(path.dirname(props.configPath));
+  // Basename of the source target folder (e.g. `widget` for `targets/widget/`).
+  // Single derivation — reused for logs, generated paths under ios/.targets/, etc.
+  const targetDirName = getTargetDirName(props.configPath);
 
   // Sanitized for general usage. This name just needs to resemble the input value since it shouldn't be used for user-facing values such as the home screen or app store.
   const productName =
@@ -229,10 +236,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
   // If the user defined entitlements in the config, generate a
   // `generated.entitlements` file inside the prebuild `ios/` folder so the
   // target's source directory stays clean of derived artifacts. The file is
-  // written under `ios/<TARGET_GENERATED_DIR>/<productName>/` to make it obvious
-  // the contents are generated and should not be edited by hand. The matching
-  // `CODE_SIGN_ENTITLEMENTS` override is wired up in
-  // `configureTargetWithEntitlements` (with-xcode-changes.ts).
+  // written under `ios/<TARGET_GENERATED_DIR>/<targetDirName>/` to make it
+  // obvious the contents are generated and should not be edited by hand. The
+  // folder name matches the source target directory (not the config `name`) so
+  // it stays filesystem-safe. The matching `CODE_SIGN_ENTITLEMENTS` override is
+  // wired up in `configureTargetWithEntitlements` (with-xcode-changes.ts).
   if (entitlementsJson) {
     const definedEntitlements = entitlementsJson;
     withDangerousMod(config, [
@@ -268,7 +276,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
               entitlementsFiles[0],
             );
             const generatedRelativePath = `ios/${getGeneratedEntitlementsCodeSignPath(
-              productName,
+              targetDirName,
             )}`;
             console.log(
               chalk`[${targetDirName}] Ignoring {bold ${relativeName}} because {bold expo-target.config} defines an {bold entitlements} object; entitlements are generated into {bold ${generatedRelativePath}}. To hand-manage the entitlements file instead, remove the {bold entitlements} object from {bold expo-target.config}. Otherwise the source ${relativeName} is unused and safe to delete.`,
@@ -278,7 +286,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
         writeGeneratedEntitlements(
           config.modRequest.projectRoot,
-          productName,
+          targetDirName,
           definedEntitlements,
         );
         return config;
@@ -290,7 +298,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       : undefined;
   }
 
-  // Ensure the entry file exists
+  // Ensure the entry file exists. When `infoPlist` is set in the config, also
+  // write a merged `Info.plist` under `ios/<TARGET_GENERATED_DIR>/` so the
+  // source Info.plist stays clean of derived artifacts. The matching
+  // `INFOPLIST_FILE` override is wired up in `configureTargetWithInfoPlist`
+  // (with-xcode-changes.ts).
   withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -298,9 +310,19 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
       fs.mkdirSync(targetDirAbsolutePath, { recursive: true });
 
-      const files: [string, string][] = [
-        ["Info.plist", plist.build(getTargetInfoPlistForType(props.type))],
-      ];
+      // Only seed a source Info.plist when the user is not driving keys from
+      // `infoPlist` in expo-target.config. When `infoPlist` is set, the merged
+      // result is written under ios/.targets/ and there is no need for a
+      // git-tracked source file unless the user adds one later as a merge base.
+      if (!props.infoPlist) {
+        const infoPlistPath = path.join(targetDirAbsolutePath, "Info.plist");
+        if (!fs.existsSync(infoPlistPath)) {
+          fs.writeFileSync(
+            infoPlistPath,
+            plist.build(getTargetInfoPlistForType(props.type)),
+          );
+        }
+      }
 
       // if (props.type === "widget") {
       //   files.push(
@@ -316,12 +338,40 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       //   );
       // }
 
-      files.forEach(([filename, content]) => {
-        const filePath = path.join(targetDirAbsolutePath, filename);
-        if (!fs.existsSync(filePath)) {
-          fs.writeFileSync(filePath, content);
+      if (props.infoPlist) {
+        const projectRoot = config.modRequest.projectRoot;
+        const sourceInfoPlistPath = path.join(
+          targetDirAbsolutePath,
+          "Info.plist",
+        );
+
+        if (fs.existsSync(sourceInfoPlistPath)) {
+          // Dual source of truth: a hand-written Info.plist plus an
+          // `infoPlist` object in the config. Non-fatal — keys are merged
+          // (config overwrites) into ios/.targets/ — but warn loudly (in red)
+          // so the user picks one approach.
+          warnOnce(
+            chalk.red(
+              `[${targetDirName}] ${getInfoPlistConflictMessage(
+                path.relative(projectRoot, sourceInfoPlistPath),
+                path.relative(projectRoot, props.configPath),
+              )}`,
+            ),
+          );
         }
-      });
+
+        const base = fs.existsSync(sourceInfoPlistPath)
+          ? (plist.parse(
+              fs.readFileSync(sourceInfoPlistPath, "utf8"),
+            ) as Record<string, unknown>)
+          : (getTargetInfoPlistForType(props.type) as Record<string, unknown>);
+
+        writeGeneratedInfoPlist(
+          projectRoot,
+          targetDirName,
+          mergeInfoPlist(base, props.infoPlist as Record<string, unknown>),
+        );
+      }
 
       return config;
     },
@@ -358,6 +408,7 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
   withXcodeChanges(config, {
     productName,
+    targetDirName,
     configPath: props.configPath,
     name: targetDisplayName,
     displayName: props.displayName,

@@ -1,3 +1,5 @@
+import path from "path";
+
 function memoize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = new Map<string, any>();
   return ((...args: any[]) => {
@@ -9,6 +11,18 @@ function memoize<T extends (...args: any[]) => any>(fn: T): T {
     cache.set(key, result);
     return result;
   }) as T;
+}
+
+/**
+ * Basename of a target's source directory.
+ *
+ * Derived from the target config path, e.g. `targets/widget/expo-target.config.js`
+ * → `widget`. This is the single source of truth for the folder name under
+ * `ios/.targets/` (generated entitlements / Info.plist) and should be preferred
+ * over re-deriving from `cwd` or the config `name` field.
+ */
+export function getTargetDirName(configPath: string): string {
+  return path.basename(path.dirname(configPath));
 }
 
 export const warnOnce = memoize(console.warn);
