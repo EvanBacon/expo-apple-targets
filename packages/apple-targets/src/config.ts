@@ -1,3 +1,5 @@
+import { PlistValue } from "@expo/plist";
+
 import { ExtensionType } from "./target";
 
 // Shape based on tailwind
@@ -121,6 +123,21 @@ export type Config = {
 
   /** Optional entitlements to add to the target. */
   entitlements?: Entitlements;
+
+  /**
+   * Optional entries merged into the target's `Info.plist` during prebuild.
+   *
+   * The source `Info.plist` in the target's source directory is left
+   * untouched. A merged copy is written to
+   * `ios/.targets/<productName>/Info.plist` and `INFOPLIST_FILE` is
+   * overridden to point at it, so these entries only appear in the generated
+   * `ios/` folder.
+   *
+   * Existing keys from the source plist are overwritten; unknown keys
+   * (including manually-edited entries in a checked-in `Info.plist`) are
+   * preserved.
+   */
+  infoPlist?: Record<string, PlistValue>;
 
   /**
    * Additional colors to generate in the `Assets.xcassets`. These will be available as `UIColor`s in the native source.

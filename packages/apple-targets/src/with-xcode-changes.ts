@@ -23,6 +23,7 @@ import {
   productTypeForType,
 } from "./target";
 import { resolveEntitlementsForCodeSign } from "./entitlements";
+import { resolveInfoPlistForBuild } from "./info-plist";
 import { withXcodeProjectBeta } from "./with-bacons-xcode";
 import assert from "assert";
 
@@ -212,6 +213,25 @@ async function applyXcodeChanges(
     return entitlementsAbsolutePath
       ? [path.basename(entitlementsAbsolutePath)]
       : [];
+  }
+
+  function configureTargetWithInfoPlist(target: PBXNativeTarget) {
+    // Prefer a generated Info.plist under
+    // `ios/<TARGET_GENERATED_DIR>/<productName>/` (written by `with-widget.ts`
+    // when `infoPlist` is defined in the config). Fall back to the hand-written
+    // `Info.plist` in the source target directory if no generated one exists.
+    const resolved = resolveInfoPlistForBuild({
+      projectRoot: config._internal!.projectRoot,
+      productName: props.productName,
+      cwd: props.cwd,
+    });
+
+    if (resolved) {
+      target.setBuildSetting("INFOPLIST_FILE", resolved.infoPlistFile);
+    }
+    // When neither exists, leave the default from createConfigurationListForType
+    // (`cwd + "/Info.plist"`) in place — the withDangerousMod will create the
+    // source file on the first prebuild.
   }
 
   function syncMarketingVersions() {
@@ -407,6 +427,8 @@ async function applyXcodeChanges(
   configureTargetWithKnownSettings(targetToUpdate);
 
   configureTargetWithEntitlements(targetToUpdate);
+
+  configureTargetWithInfoPlist(targetToUpdate);
 
   configureTargetWithPreview(targetToUpdate);
 

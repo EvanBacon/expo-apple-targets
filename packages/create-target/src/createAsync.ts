@@ -2,7 +2,6 @@
 import chalk from "chalk";
 import fs from "fs";
 import path from "path";
-import plist from "@expo/plist";
 
 import { normalizeStaticPlugin } from "@expo/config-plugins/build/utils/plugin-resolver";
 import { ExpoConfig, getConfig, modifyConfigAsync } from "@expo/config";
@@ -150,12 +149,6 @@ export async function createAsync(
     getTemplateConfig(resolvedTarget),
   );
 
-  Log.log(chalk`Writing {cyan Info.plist} file`);
-  await fs.promises.writeFile(
-    path.join(targetDir, "Info.plist"),
-    plist.build(getTargetInfoPlistForType(resolvedTarget as any)),
-  );
-
   Log.log(
     chalk`Target created! Run {cyan npx expo prebuild -p ios} to fully generate the target. Develop native code in Xcode.`,
   );
@@ -214,6 +207,13 @@ export function getTemplateConfig(target: string) {
     );
   }
 
+  // Type defaults live in `infoPlist` so prebuild writes
+  // `ios/.targets/<productName>/Info.plist` instead of a git-tracked
+  // source Info.plist. Users can still add a hand-written Info.plist later
+  // as a merge base if they prefer.
+  const infoPlist = getTargetInfoPlistForType(target as any);
+  lines.push(`  infoPlist: ${formatObjectLiteral(infoPlist)},`);
+
   if (RECOMMENDED_ENTITLEMENTS[target]) {
     lines.push(
       `  entitlements: ${JSON.stringify(RECOMMENDED_ENTITLEMENTS[target])},`,
@@ -225,6 +225,11 @@ export function getTemplateConfig(target: string) {
   lines.push(`});`);
 
   return lines.join("\n");
+}
+
+/** Pretty-print a JSON-serializable value as a JS object literal for the config file. */
+function formatObjectLiteral(value: unknown): string {
+  return JSON.stringify(value, null, 2).replace(/\n/g, "\n  ");
 }
 
 const vendorTemplatePath = path.resolve(__dirname, "../templates");

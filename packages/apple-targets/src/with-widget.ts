@@ -26,6 +26,7 @@ import {
   getGeneratedEntitlementsCodeSignPath,
   writeGeneratedEntitlements,
 } from "./entitlements";
+import { mergeInfoPlist, writeGeneratedInfoPlist } from "./info-plist";
 import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
@@ -290,7 +291,11 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       : undefined;
   }
 
-  // Ensure the entry file exists
+  // Ensure the entry file exists. When `infoPlist` is set in the config, also
+  // write a merged `Info.plist` under `ios/<TARGET_GENERATED_DIR>/` so the
+  // source Info.plist stays clean of derived artifacts. The matching
+  // `INFOPLIST_FILE` override is wired up in `configureTargetWithInfoPlist`
+  // (with-xcode-changes.ts).
   withDangerousMod(config, [
     "ios",
     async (config) => {
@@ -298,9 +303,19 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
 
       fs.mkdirSync(targetDirAbsolutePath, { recursive: true });
 
-      const files: [string, string][] = [
-        ["Info.plist", plist.build(getTargetInfoPlistForType(props.type))],
-      ];
+      // Only seed a source Info.plist when the user is not driving keys from
+      // `infoPlist` in expo-target.config. When `infoPlist` is set, the merged
+      // result is written under ios/.targets/ and there is no need for a
+      // git-tracked source file unless the user adds one later as a merge base.
+      if (!props.infoPlist) {
+        const infoPlistPath = path.join(targetDirAbsolutePath, "Info.plist");
+        if (!fs.existsSync(infoPlistPath)) {
+          fs.writeFileSync(
+            infoPlistPath,
+            plist.build(getTargetInfoPlistForType(props.type)),
+          );
+        }
+      }
 
       // if (props.type === "widget") {
       //   files.push(
@@ -316,12 +331,25 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
       //   );
       // }
 
-      files.forEach(([filename, content]) => {
-        const filePath = path.join(targetDirAbsolutePath, filename);
-        if (!fs.existsSync(filePath)) {
-          fs.writeFileSync(filePath, content);
-        }
-      });
+      if (props.infoPlist) {
+        const projectRoot = config.modRequest.projectRoot;
+        const sourceInfoPlistPath = path.join(
+          targetDirAbsolutePath,
+          "Info.plist",
+        );
+
+        const base = fs.existsSync(sourceInfoPlistPath)
+          ? (plist.parse(
+              fs.readFileSync(sourceInfoPlistPath, "utf8"),
+            ) as Record<string, unknown>)
+          : (getTargetInfoPlistForType(props.type) as Record<string, unknown>);
+
+        writeGeneratedInfoPlist(
+          projectRoot,
+          productName,
+          mergeInfoPlist(base, props.infoPlist as Record<string, unknown>),
+        );
+      }
 
       return config;
     },

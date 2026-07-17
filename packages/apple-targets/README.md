@@ -17,11 +17,13 @@ An Expo Config Plugin that generates native Apple Targets like Widgets or App Cl
 
 ### How it works
 
-The root `/targets` folder is magic, each sub-directory should have a `expo-target.config.js` file that defines the target settings. When you run `npx expo prebuild --clean`, the plugin will generate the Xcode project and link the target files to the project. The plugin will also generate an `Info.plist` file if one doesn't exist.
+The root `/targets` folder is magic, each sub-directory should have a `expo-target.config.js` file that defines the target settings. When you run `npx expo prebuild --clean`, the plugin will generate the Xcode project and link the target files to the project.
+
+`npx create-target` scaffolds targets with type-default keys in the config `infoPlist` field (written to `ios/.targets/<productName>/Info.plist` on prebuild) rather than a checked-in source `Info.plist`. If neither `infoPlist` nor a source `Info.plist` is present, the plugin still creates a default type-specific source `Info.plist` on first prebuild.
 
 The Config Plugin will link the subfolder (e.g. `targets/widget`) to Xcode, and all files inside of it will be part of the target. This means you can develop the target inside the `expo:targets` folder and the changes will be saved outside of the generated `ios` directory.
 
-The root `Info.plist` file in each target directory is not managed and can be freely modified.
+A root `Info.plist` file in a target directory is not managed and can be freely modified (see [Info.plist](#infoplist) for how it interacts with the config `infoPlist` field).
 
 Any files in a top-level `target/{name}/assets` directory will be linked as resources of the target. This rule was added to support Safari Extensions.
 
@@ -31,14 +33,46 @@ If the `expo-target.config` file defines an `entitlements: {}` object, a `genera
 
 If the `entitlements` object is not defined in the config, you can manually add a single top-level `*.entitlements` file to the target source directory — re-running `npx expo prebuild` will link that file to the target. Only one top-level `*.entitlements` file is supported per target. If both a config-driven `entitlements` block AND a hand-written `*.entitlements` file are present, the config wins and the hand-written file is ignored (you'll see a log line and can delete it).
 
+If a leftover `generated.entitlements` file exists in the target's source folder (written by an older version of this plugin) **and** the config defines an `entitlements` object, the plugin warns in red and continues with the config. Delete the stale source file or remove the config object to clear the ambiguity.
+
 Some targets have special entitlements behavior:
 
 - App Clips (`clip`) automatically set the required `com.apple.developer.parent-application-identifiers` to `$(AppIdentifierPrefix)${config.ios.bundleIdentifier}`
 - Targets that can utilize App Groups will automatically mirror the `ios.entitlements['com.apple.security.application-groups']` array from the `app.json` if it's defined. This can be overwritten by specifying an `entitlements['com.apple.security.application-groups']` array in the `expo-target.config.js` file.
 
+### Info.plist
+
+If the `expo-target.config` file defines an `infoPlist: {}` object, those keys are **merged** into the target's Info.plist during prebuild:
+
+1. The source `targets/<name>/Info.plist` is left untouched (it remains the merge base, so hand-edited keys you didn't put in the config are preserved).
+2. A merged copy is written to `ios/.targets/<productName>/Info.plist`.
+3. `INFOPLIST_FILE` is pointed at the generated file so Xcode reads the merged result.
+
+Like entitlements, the `.targets` directory holds only derived artifacts that should not be edited by hand. Update `expo-target.config` (or the source `Info.plist` for structural keys) — never edit the copy under `ios/.targets/` directly; it is overwritten on every `npx expo prebuild`.
+
+Merge rules:
+
+- Keys present in `infoPlist` **overwrite** matching keys from the source `Info.plist`.
+- Keys only present in the source `Info.plist` are **preserved**.
+- Useful for injecting environment-specific values (API URLs, feature flags) without dirtying the git-tracked source plist.
+
+If the `infoPlist` object is not defined in the config, Xcode uses the source `targets/<name>/Info.plist` as before (`INFOPLIST_FILE` points at it). The plugin still creates a default type-specific `Info.plist` on first prebuild if one does not exist.
+
+```js
+/** @type {import('@bacons/apple-targets/app.plugin').Config} */
+module.exports = {
+  type: "widget",
+  infoPlist: {
+    // Merged into ios/.targets/<productName>/Info.plist
+    MyBackendURL: process.env.BACKEND_URL,
+    NSSupportsLiveActivities: true,
+  },
+};
+```
+
 ### Development
 
-Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the Info.plist or the `expo-target.config.js` file.
+Any changes you make outside of the `expo:targets` directory in Xcode are subject to being overwritten by the next `npx expo prebuild --clean`. Check to see if the settings you want to toggle are available in the source `Info.plist`, the `infoPlist` / `entitlements` fields of `expo-target.config.js`, or elsewhere in that config. Never edit files under `ios/.targets/` — they are regenerated on every prebuild.
 If you modify the `expo-target.config.js` or your root `app.json`, you will need to re-run `npx expo prebuild --clean` to sync the changes.
 
 You can use the custom Prebuild template `--template ./node_modules/@bacons/apple-targets/prebuild-blank.tgz` to create a build without React Native, this can make development a bit faster since there's less to compile. This is an advanced technique for development **NOT PRODUCTION** and is not intended to be used with third-party Config Plugins.
@@ -85,6 +119,12 @@ module.exports = {
   ],
   entitlements: {
     // Serialized entitlements. Useful for configuring with environment variables.
+    // Written to ios/.targets/<productName>/generated.entitlements.
+  },
+  // Optional keys merged into the target's Info.plist during prebuild.
+  // Written to ios/.targets/<productName>/Info.plist (source Info.plist stays clean).
+  infoPlist: {
+    MyBackendURL: process.env.BACKEND_URL,
   },
   // Generates xcassets for the target. Supports images (imageset) and SF Symbol template SVGs (symbolset).
   images: {
