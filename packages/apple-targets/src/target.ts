@@ -830,6 +830,34 @@ export function isNativeTargetOfType(
     return false;
   }
 
+  // ExtensionKit extensions (e.g. App Intents) declare
+  // `EXAppExtensionAttributes.EXExtensionPointIdentifier` in their Info.plist
+  // instead of `NSExtension.NSExtensionPointIdentifier`. Without this branch
+  // they can never be matched, so re-running prebuild creates a duplicate
+  // target on every run.
+  if (
+    target.props.productType ===
+    "com.apple.product-type.extensionkit-extension"
+  ) {
+    if (
+      productTypeForType(type) !==
+      "com.apple.product-type.extensionkit-extension"
+    ) {
+      return false;
+    }
+    const infoPlist = target.getDefaultConfiguration().getInfoPlist();
+    const identifier = (
+      infoPlist.EXAppExtensionAttributes as
+        | { EXExtensionPointIdentifier?: string }
+        | undefined
+    )?.EXExtensionPointIdentifier;
+    if (identifier) {
+      return KNOWN_EXTENSION_POINT_IDENTIFIERS[identifier] === type;
+    }
+    // Fall back to name matching when no extension point identifier is set.
+    return target.props.productName === type;
+  }
+
   if (target.props.productType !== "com.apple.product-type.app-extension") {
     return false;
   }
