@@ -57,7 +57,7 @@ The CLI auto-detects your installed agents and copies the skill into their skill
 
 ## Target config
 
-The target config can be a `expo-target.config.js`, or `expo-target.config.json` file.
+The target config can be `expo-target.config.json`, `expo-target.config.js` (CommonJS or ESM), `expo-target.config.cjs`, `expo-target.config.mjs`, or `expo-target.config.ts` (also `.cts` / `.mts`). TypeScript and ESM files are evaluated through the same loader Expo uses for `app.config.ts`. If multiple files exist in the same target directory, the highest-priority one wins (`ts` → `mts` → `cts` → `mjs` → `js` → `cjs` → `json`) and the others are ignored with a warning.
 
 This file can have the following properties:
 

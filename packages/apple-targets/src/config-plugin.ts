@@ -1,4 +1,5 @@
 import { ConfigPlugin } from "expo/config-plugins";
+import { loadModuleSync } from "@expo/require-utils";
 import { globSync } from "glob";
 import path from "path";
 import chalk from "chalk";
@@ -8,6 +9,59 @@ import { withPodTargetExtension } from "./with-pod-target-extension";
 import withWidget from "./with-widget";
 import { withXcodeProjectBetaBaseMod } from "./with-bacons-xcode";
 import { warnOnce } from "./util";
+
+// Highest-to-lowest priority. Used both for globbing and for the deterministic
+// pick when multiple config files exist in the same target directory.
+const TARGET_CONFIG_EXTENSIONS = [
+  "ts",
+  "mts",
+  "cts",
+  "mjs",
+  "js",
+  "cjs",
+  "json",
+] as const;
+
+// `@expo/require-utils` rewrites a TypeScript config's filename to its JS
+// equivalent (`.ts` → `.js`, `.mts` → `.mjs`, `.cts` → `.cjs`) before compiling
+// it via `Module._compile`, and registers BOTH the real path and that virtual
+// path in `require.cache`. Tools like `@expo/fingerprint` snapshot `require.cache`
+// to discover loaded plugin sources and then try to read them from disk — the
+// virtual path doesn't exist, causing `ENOENT: ... expo-target.config.js` during
+// `eas build`. Mirror the loader's mapping so we can drop the virtual entry.
+const TS_TO_JS_EXTENSION: Record<string, string> = {
+  ".ts": ".js",
+  ".mts": ".mjs",
+  ".cts": ".cjs",
+};
+
+function loadTargetConfig(configPath: string): unknown {
+  if (configPath.endsWith(".json")) {
+    return require(configPath);
+  }
+  const mod = loadModuleSync(configPath);
+
+  const ext = path.extname(configPath);
+  const virtualExt = TS_TO_JS_EXTENSION[ext];
+  if (virtualExt) {
+    const virtualPath =
+      configPath.slice(0, configPath.length - ext.length) + virtualExt;
+    if (require.cache[virtualPath]) {
+      delete require.cache[virtualPath];
+    }
+  }
+
+  // Unwrap an ESM default export (e.g. `export default { ... }`).
+  if (
+    mod &&
+    typeof mod === "object" &&
+    (mod as { __esModule?: boolean }).__esModule &&
+    "default" in mod
+  ) {
+    return (mod as { default: unknown }).default;
+  }
+  return mod;
+}
 
 export const withTargetsDir: ConfigPlugin<
   {
@@ -35,31 +89,71 @@ export const withTargetsDir: ConfigPlugin<
     );
   }
 
-  const targets = globSync(`${root}/${match}/expo-target.config.@(json|js)`, {
-    // const targets = globSync(`./targets/action/expo-target.config.@(json|js)`, {
-    cwd: projectRoot,
-    absolute: true,
-  });
+  const targets = globSync(
+    `${root}/${match}/expo-target.config.@(${TARGET_CONFIG_EXTENSIONS.join("|")})`,
+    {
+      cwd: projectRoot,
+      absolute: true,
+    },
+  );
 
-  targets.forEach((configPath) => {
-    const targetConfig = require(configPath);
-    let evaluatedTargetConfigObject = targetConfig;
+  // Multiple config files in the same target directory would silently register
+  // the target twice — pick the highest-priority extension and warn.
+  const configsByDirectory = new Map<string, string[]>();
+  for (const configPath of targets) {
+    const dir = path.dirname(configPath);
+    const list = configsByDirectory.get(dir);
+    if (list) list.push(configPath);
+    else configsByDirectory.set(dir, [configPath]);
+  }
+
+  const resolvedTargets: string[] = [];
+  for (const [dir, configs] of configsByDirectory) {
+    const sorted = [...configs].sort(
+      (a, b) =>
+        TARGET_CONFIG_EXTENSIONS.indexOf(
+          path.extname(a).slice(1) as (typeof TARGET_CONFIG_EXTENSIONS)[number],
+        ) -
+        TARGET_CONFIG_EXTENSIONS.indexOf(
+          path.extname(b).slice(1) as (typeof TARGET_CONFIG_EXTENSIONS)[number],
+        ),
+    );
+    if (sorted.length > 1) {
+      const ignored = sorted
+        .slice(1)
+        .map((p) => path.basename(p))
+        .join(", ");
+      warnOnce(
+        chalk`{yellow [bacons/apple-targets]} Multiple {cyan expo-target.config} files in {cyan ${path.relative(projectRoot, dir)}}. Using {cyan ${path.basename(sorted[0])}} and ignoring: {cyan ${ignored}}`,
+      );
+    }
+    resolvedTargets.push(sorted[0]);
+  }
+
+  resolvedTargets.forEach((configPath) => {
+    const targetConfig = loadTargetConfig(configPath);
+    let evaluatedTargetConfigObject: unknown = targetConfig;
     // If it's a function, evaluate it
     if (typeof targetConfig === "function") {
-      evaluatedTargetConfigObject = targetConfig(config);
+      evaluatedTargetConfigObject = (targetConfig as ConfigFunction)(config);
 
-      if (typeof evaluatedTargetConfigObject !== "object") {
+      if (
+        !evaluatedTargetConfigObject ||
+        typeof evaluatedTargetConfigObject !== "object"
+      ) {
         throw new Error(
           `Expected target config function to return an object, but got ${typeof evaluatedTargetConfigObject}`,
         );
       }
-    } else if (typeof targetConfig !== "object") {
+    } else if (!targetConfig || typeof targetConfig !== "object") {
       throw new Error(
         `Expected target config to be an object or function that returns an object, but got ${typeof targetConfig}`,
       );
     }
 
-    if (!evaluatedTargetConfigObject.type) {
+    const resolvedConfig = evaluatedTargetConfigObject as Config;
+
+    if (!resolvedConfig.type) {
       throw new Error(
         `Expected target config to have a 'type' property denoting the type of target it is, e.g. 'widget'`,
       );
@@ -67,7 +161,7 @@ export const withTargetsDir: ConfigPlugin<
 
     config = withWidget(config, {
       appleTeamId,
-      ...evaluatedTargetConfigObject,
+      ...resolvedConfig,
       directory: path.relative(projectRoot, path.dirname(configPath)),
       configPath,
     });
