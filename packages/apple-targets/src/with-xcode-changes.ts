@@ -297,7 +297,9 @@ async function applyXcodeChanges(
 
   if (targetToUpdate) {
     // Remove existing build phases
-    targetToUpdate.props.buildConfigurationList.props.buildConfigurations.forEach(
+    const existingConfigurationList =
+      targetToUpdate.props.buildConfigurationList;
+    [...existingConfigurationList.props.buildConfigurations].forEach(
       (config) => {
         config.getReferrers().forEach((ref) => {
           ref.removeReference(config.uuid);
@@ -306,12 +308,10 @@ async function applyXcodeChanges(
       },
     );
     // Remove existing build configuration list
-    targetToUpdate.props.buildConfigurationList
-      .getReferrers()
-      .forEach((ref) => {
-        ref.removeReference(targetToUpdate!.props.buildConfigurationList.uuid);
-      });
-    targetToUpdate.props.buildConfigurationList.removeFromProject();
+    existingConfigurationList.getReferrers().forEach((ref) => {
+      ref.removeReference(existingConfigurationList.uuid);
+    });
+    existingConfigurationList.removeFromProject();
 
     // Create new build phases
     targetToUpdate.props.buildConfigurationList =
