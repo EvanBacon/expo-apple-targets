@@ -67,15 +67,23 @@ public class ExtensionStorageModule: Module {
                     let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
                     let jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted])
                     return String(data: jsonData, encoding: .utf8)
-                } catch {                    
+                } catch {
                     return nil
                 }
             }
-            
+
             if let value = userDefaults?.object(forKey: key) {
                 return String(describing: value)
             }
             return nil
+        }
+
+        Function("getSharedContainerURL") { (group: String?) -> String? in
+            guard let group = group else {
+                return nil
+            }
+            let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group)
+            return containerURL?.path
         }
     }
 }

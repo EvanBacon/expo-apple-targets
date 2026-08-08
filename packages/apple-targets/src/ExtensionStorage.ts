@@ -15,6 +15,7 @@ type NativeModule = {
     suite?: string
   ): boolean;
   get(key: string, suite?: string): string | null;
+  getSharedContainerURL(appGroup: string): string | null;
 };
 
 // @ts-expect-error
@@ -29,6 +30,7 @@ const nativeModule: NativeModule = ExtensionStorageModule ?? {
   setArray() {},
   get() {},
   remove() {},
+  getSharedContainerURL() { return null; },
 };
 
 const originalSetObject = nativeModule.setObject;
@@ -54,7 +56,15 @@ export class ExtensionStorage {
     nativeModule.reloadControls(name);
   }
 
+  static getSharedContainerURL(appGroup: string): string | null {
+    return nativeModule.getSharedContainerURL(appGroup);
+  }
+
   constructor(private readonly appGroup: string) {}
+
+  getContainerURL(): string | null {
+    return nativeModule.getSharedContainerURL(this.appGroup);
+  }
 
   set(
     key: string,
