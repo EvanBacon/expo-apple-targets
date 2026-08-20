@@ -99,6 +99,14 @@ module.exports = config => ({
 });"
 `;
 
+exports[`getTemplateConfig should return a valid template for device-activity-report 1`] = `
+"/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
+module.exports = config => ({
+  type: \\"device-activity-report\\",
+  entitlements: {\\"com.apple.developer.family-controls\\":true},
+});"
+`;
+
 exports[`getTemplateConfig should return a valid template for file-provider 1`] = `
 "/** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = config => ({

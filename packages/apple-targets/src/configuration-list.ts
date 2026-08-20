@@ -858,6 +858,7 @@ function getConfigurationListBuildSettingsForType(
     case "bg-download":
     case "credentials-provider":
     case "device-activity-monitor":
+    case "device-activity-report":
     case "intent":
     case "intent-ui":
     case "location-push":

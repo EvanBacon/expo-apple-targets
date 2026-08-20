@@ -352,6 +352,7 @@ Ideally, this would be generated automatically based on a fully qualified Xcode 
 | credentials-provider      | Credentials Provider Extension     |
 | account-auth              | Account Authentication Extension   |
 | device-activity-monitor   | Device Activity Monitor Extension  |
+| device-activity-report    | Device Activity Report Extension   |
 | keyboard                  | Custom Keyboard Extension          |
 | matter                    | Matter Device Setup Extension      |
 | network-packet-tunnel     | Packet Tunnel Network Extension    |

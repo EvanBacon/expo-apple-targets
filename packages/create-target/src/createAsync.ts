@@ -257,6 +257,9 @@ const RECOMMENDED_ENTITLEMENTS: Record<Partial<ExtensionType>, any> = {
   "device-activity-monitor": {
     "com.apple.developer.family-controls": true,
   },
+  "device-activity-report": {
+    "com.apple.developer.family-controls": true,
+  },
   wallet: {
     "com.apple.developer.payment-pass-provisioning": true,
   },
