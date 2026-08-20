@@ -151,6 +151,7 @@ The project's `ExtensionType` in `packages/apple-targets/src/target.ts` maps to 
 | `network-dns-proxy` | `com.apple.networkextension.dns-proxy` | app-extension |
 | `network-filter-data` | `com.apple.networkextension.filter-data` | app-extension |
 | `app-intent` | `com.apple.appintents-extension` | extensionkit-extension |
+| `device-activity-report` | `com.apple.deviceactivityui.report-extension` | extensionkit-extension |
 | `clip` | _(none — uses NSAppClip)_ | application.on-demand-install-capable |
 | `watch` | _(none — standalone app)_ | application |
 

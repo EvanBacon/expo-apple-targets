@@ -20,6 +20,7 @@ const ALL_TARGET_TYPES = [
   "credentials-provider",
   "account-auth",
   "device-activity-monitor",
+  "device-activity-report",
   "file-provider",
   "broadcast-upload",
   "call-directory",
