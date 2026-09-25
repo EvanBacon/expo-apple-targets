@@ -150,10 +150,11 @@ export function resolveEntitlementsForCodeSign({
   const sourceCwd = path.join(projectRoot, "ios", cwd);
   const sourceEntitlements = findSourceEntitlementsFiles(sourceCwd);
 
-  if (sourceEntitlements.length > 0) {
+  const [sourceEntitlementsFile] = sourceEntitlements;
+  if (sourceEntitlementsFile) {
     return {
-      absolutePath: path.join(sourceCwd, sourceEntitlements[0]),
-      codeSignEntitlements: `${cwd}/${sourceEntitlements[0]}`,
+      absolutePath: path.join(sourceCwd, sourceEntitlementsFile),
+      codeSignEntitlements: `${cwd}/${sourceEntitlementsFile}`,
     };
   }
 

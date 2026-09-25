@@ -11,20 +11,20 @@
     "packages/*"
   ],
   "resolutions": {
-    "expo": "^55",
+    "expo": "^57",
     "fs-extra": "^9.1.0",
     "jest-watch-typeahead": "2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@types/react": "~19.2.10",
+    "@babel/core": "^7.26.0",
+    "@types/react": "~19.2.2",
     "eslint": "^9.26.0",
     "prettier": "^2.2.1",
     "ts-node": "^10.0.0",
-    "typescript": "~5.3.3",
-    "expo-module-scripts": "^4.1.7",
-    "@types/jest": "^26",
-    "jest": "^26.6.3",
-    "ts-jest": "~29.0.4"
+    "typescript": "~6.0.3",
+    "expo-module-scripts": "^56.0.3",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "~29.4.7"
   }
 }

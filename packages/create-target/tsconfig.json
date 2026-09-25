@@ -11,12 +11,14 @@
     "noImplicitReturns": true,
     "downlevelIteration": true,
     "outDir": "build",
+    "rootDir": "./src",
     "module": "commonjs",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "declaration": false,
-    "composite": false
+    "composite": false,
+    "ignoreDeprecations": "6.0"
   }
 }
