@@ -1,5 +1,13 @@
 name: E2E Build Tests
 
+# Each matrix shard prebuilds the full fixture, then xcodebuilds only its
+# group (CODE_SIGNING_ALLOWED=NO, simulator SDKs). That checks the target
+# compiles. It does not sign, provision, or exercise entitlements that
+# require an Apple developer account or a device.
+#
+# Shards live in packages/apple-targets/e2e/target-groups.ts. `imessage` is
+# not built: it has no Swift template. Live Activities compile inside `widget`.
+
 on:
   push:
     branches: [main]
@@ -7,15 +15,24 @@ on:
     paths:
       - "packages/apple-targets/**"
       - "packages/create-target/templates/**"
+      - ".github/workflows/e2e.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  e2e:
+  xcodebuild:
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        group:
+          - widgets-clips-watch
+          - intents-network-screen-time
+          - sharing-files-media
+          - system-services
     steps:
       - uses: actions/checkout@v4
 
@@ -30,10 +47,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/apple-targets/e2e/fixture/**') }}
+          key: deriveddata-${{ runner.os }}-${{ matrix.group }}-${{ hashFiles('packages/apple-targets/e2e/fixture/**', 'packages/create-target/templates/**') }}
           restore-keys: |
+            deriveddata-${{ runner.os }}-${{ matrix.group }}-
             deriveddata-${{ runner.os }}-
 
-      - name: Run E2E build tests
+      - name: Build ${{ matrix.group }}
         run: bun run test:e2e
         working-directory: packages/apple-targets
+        env:
+          E2E_TARGET_GROUP: ${{ matrix.group }}
