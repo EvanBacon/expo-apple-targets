@@ -9,4 +9,22 @@ module.exports = {
   displayName: "e2e",
   roots: ["."],
   globalSetup: "./setup.ts",
+  // globalSetup is loaded through Jest's transform pipeline. Without this,
+  // babel-jest parses setup.ts as JS and dies on the type annotations.
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        isolatedModules: true,
+        tsconfig: {
+          compilerOptions: {
+            esModuleInterop: true,
+            module: "commonjs",
+            target: "es2019",
+            skipLibCheck: true,
+          },
+        },
+      },
+    ],
+  },
 };
