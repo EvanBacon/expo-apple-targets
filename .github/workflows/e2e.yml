@@ -40,8 +40,11 @@ jobs:
 
       - run: bun install --ignore-scripts
 
-      - name: Build packages
-        run: bun run prepare
+      # expo-module-scripts 56 makes `expo-module prepare` a no-op, so the
+      # root `prepare` script never emits build/config-plugin.js.
+      - name: Build apple-targets
+        run: bun run build
+        working-directory: packages/apple-targets
 
       - name: Cache DerivedData
         uses: actions/cache@v4

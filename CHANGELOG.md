@@ -32,6 +32,7 @@ Not published yet. Lives on draft PR #210 until e2e `xcodebuild` is green and a 
 
 - Narrow source-entitlements lookup so a missing file does not index `undefined`.
 - e2e Jest `globalSetup` passed a nested `{ compilerOptions }` object to ts-jest. TypeScript 6 rejects that as `TS5023`, so the macOS shards died before `xcodebuild`. The transform options are now a flat compiler-options map.
+- macOS e2e ran the root `prepare` script, which does not compile `@bacons/apple-targets` under `expo-module-scripts` 56 (`expo-module prepare` is a no-op). Prebuild then failed with `Cannot find module './build/config-plugin'`. The workflow builds that package explicitly.
 
 ## [5.0.0] - 2026
 
