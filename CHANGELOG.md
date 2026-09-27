@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- GitHub Actions workflows to publish `@bacons/apple-targets` and `create-target` to npm (`publish.yml` beta on main / manual dispatch; `publish-stable.yml` manual dispatch on main only).
+- GitHub Actions workflows to publish `@bacons/apple-targets` and `create-target` to npm (`publish.yml` beta on main / manual dispatch; `publish-stable.yml` manual dispatch on main only). Both require the `NPM_TOKEN` repository secret before the first publish.
 - Keep a Changelog file (requested in #128).
 
 ## [6.0.0] - 2026-09-26
@@ -31,6 +31,7 @@ Not published yet. Lives on draft PR #210 until e2e `xcodebuild` is green and a 
 ### Fixed
 
 - Narrow source-entitlements lookup so a missing file does not index `undefined`.
+- e2e Jest `globalSetup` passed a nested `{ compilerOptions }` object to ts-jest. TypeScript 6 rejects that as `TS5023`, so the macOS shards died before `xcodebuild`. The transform options are now a flat compiler-options map.
 
 ## [5.0.0] - 2026
 

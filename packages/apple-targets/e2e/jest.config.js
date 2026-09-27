@@ -17,12 +17,10 @@ module.exports = {
       {
         isolatedModules: true,
         tsconfig: {
-          compilerOptions: {
-            esModuleInterop: true,
-            module: "commonjs",
-            target: "es2019",
-            skipLibCheck: true,
-          },
+          esModuleInterop: true,
+          module: "commonjs",
+          target: "es2019",
+          skipLibCheck: true,
         },
       },
     ],
