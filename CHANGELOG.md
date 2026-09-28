@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0] - 2026-09-26
 
-Not published yet. Lives on draft PR #210 until e2e `xcodebuild` is green and a Mac verification pass is done.
+Not published yet. CI e2e is green on `8c23014` (Ubuntu `test` plus all four `xcodebuild` shards). Mac verification (`pod install` and the demo apps) is still required before merge or publish. Draft PR #210.
 
 ### Added
 
