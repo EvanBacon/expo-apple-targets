@@ -219,7 +219,7 @@ target "target_dir_name" do
 end
 ```
 
-The name of the target must match the name of the target directory.
+The CocoaPods target name is the directory name with non-alphanumeric characters removed, matching the Xcode target (`targets/clip` → `clip`, `targets/app-clip` → `appclip`).
 
 ## `_shared`
 
@@ -230,6 +230,8 @@ You can additionally add a `_shared` directory inside of the root `targets/_shar
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
+
+App Clips default `exportJs` to true only when the target directory contains `pods.rb`. That file is what makes CocoaPods set `PODS_ROOT` on the clip. Expo's bundle script reads `NODE_BINARY` from `$PODS_ROOT/../.xcode.env`. A native clip with no `pods.rb` does not get the script; otherwise `run:ios` fails with an empty `NODE_BINARY`. Set `exportJs: true` yourself for any other target that links React Native.
 
 To detect which target is being built, you can read the bundle identifier using `expo-application`.
 
