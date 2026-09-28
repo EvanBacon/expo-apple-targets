@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0] - 2026-09-26
 
-Not published yet. CI e2e is green on `8c23014` (Ubuntu `test` plus all four `xcodebuild` shards). Mac verification (`pod install` and the demo apps) is still required before merge or publish. Draft PR #210.
+Not published yet. CI e2e is green on `8c23014` (Ubuntu `test` plus all four `xcodebuild` shards). Mac verification of the demo apps passed on `166512a`, including kitchen prebuild and `run:ios` on the iPhone 17 Pro simulator (widget, Live Activities, and app-clip-demo passed earlier). Signed entitlements and on-device behavior are still outside CI. Draft PR #210.
 
 ### Added
 
