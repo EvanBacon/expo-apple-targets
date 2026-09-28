@@ -31,6 +31,7 @@ Not published yet. CI e2e is green on `8c23014` (Ubuntu `test` plus all four `xc
 ### Fixed
 
 - Narrow source-entitlements lookup so a missing file does not index `undefined`.
+- Kitchen prebuild on SDK 57 threw `val.hasOwnProperty is not a function` for targets that ship a handwritten `*.entitlements` file. `@expo/plist` returns null-prototype objects, and those were stored on `extra.eas.build.experimental.ios.appExtensions`. They are now cloned into plain objects before they are attached to the Expo config.
 - e2e Jest `globalSetup` passed a nested `{ compilerOptions }` object to ts-jest. TypeScript 6 rejects that as `TS5023`, so the macOS shards died before `xcodebuild`. The transform options are now a flat compiler-options map.
 - macOS e2e ran the root `prepare` script, which does not compile `@bacons/apple-targets` under `expo-module-scripts` 56 (`expo-module prepare` is a no-op). Prebuild then failed with `Cannot find module './build/config-plugin'`. The workflow builds that package explicitly.
 

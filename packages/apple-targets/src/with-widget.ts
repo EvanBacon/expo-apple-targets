@@ -22,6 +22,7 @@ import {
 } from "./target";
 import {
   classifySourceEntitlementsFile,
+  clonePlistAsPlainObject,
   getEntitlementsConflictMessage,
   getGeneratedEntitlementsCodeSignPath,
   writeGeneratedEntitlements,
@@ -286,7 +287,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     ]);
   } else {
     entitlementsJson = entitlementsFiles[0]
-      ? plist.parse(fs.readFileSync(entitlementsFiles[0], "utf8"))
+      ? clonePlistAsPlainObject(
+          plist.parse(fs.readFileSync(entitlementsFiles[0], "utf8")),
+        )
       : undefined;
   }
 

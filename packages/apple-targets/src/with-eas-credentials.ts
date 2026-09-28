@@ -3,6 +3,7 @@ import type { ExpoConfig } from "expo/config";
 import type { ConfigPlugin } from "expo/config-plugins";
 
 import { Entitlements } from "./config";
+import { clonePlistAsPlainObject } from "./entitlements";
 import { getAuxiliaryTargets, getMainAppTarget } from "./target";
 import { withXcodeProjectBeta } from "./with-bacons-xcode";
 
@@ -62,7 +63,9 @@ export const withEASTargets: ConfigPlugin<{
   const settings: EASAppExtension = {
     bundleIdentifier,
     targetName,
-    entitlements,
+    // Handwritten `*.entitlements` files are parsed by `@expo/plist` into
+    // null-prototype objects. Clone before they land on serializable config.
+    entitlements: clonePlistAsPlainObject(entitlements),
   };
   if (existingIndex > -1) {
     debug(
@@ -167,7 +170,7 @@ export function getEASCredentialsForXcodeProject(
       targetName,
       bundleIdentifier: config.props.buildSettings?.PRODUCT_BUNDLE_IDENTIFIER,
       parentBundleIdentifier,
-      entitlements,
+      entitlements: clonePlistAsPlainObject(entitlements),
     };
   });
 }
