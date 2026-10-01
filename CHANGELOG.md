@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - GitHub Actions workflows to publish `@bacons/apple-targets` and `create-target` to npm (`publish.yml` beta on main / manual dispatch; `publish-stable.yml` manual dispatch on main only). Both require the `NPM_TOKEN` repository secret before the first publish.
 - Keep a Changelog file (requested in #128).
+- README section listing which target types each macOS e2e shard compiles, and what CI cannot sign or run on device.
+
+### Changed
+
+- Reconfirmed draft #210 on 2026-10-01. CI on `73e1db3` is green (Ubuntu `test` and all four `xcodebuild` shards, Actions runs 36742955839 / 36742955823). Left the pin at `expo@~57.0.25` rather than jumping to SDK 58 (released 2026-09-29) or regenerating the lockfile for the `57.0.26` patch. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line.
 
 ## [6.0.0] - 2026-09-26
 

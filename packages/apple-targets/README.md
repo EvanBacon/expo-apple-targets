@@ -675,6 +675,19 @@ Launch App Clips from Test Flight to test deep linking. It doesn't seem like the
 
 You can generate codes using the CLI tool [download here](https://developer.apple.com/download/all/?q=%22app%20clip%22).
 
+## CI coverage
+
+GitHub Actions compiles every templated target type. Ubuntu `test` runs unit tests and prebuilds the e2e fixture. macOS `e2e` (`macos-26`) shards `xcodebuild` with `CODE_SIGNING_ALLOWED=NO`:
+
+| Shard | Types |
+| --- | --- |
+| widgets-clips-watch | widget (includes Live Activities), clip, watch, watch-widget |
+| intents-network-screen-time | app-intent, intent, intent-ui, keyboard, safari, content-blocker, network extensions, device-activity-monitor, shield-action, shield-config |
+| sharing-files-media | share, action, notification content/service, broadcast, photo-editing, Quick Look, file provider, Spotlight, call-directory, message-filter, unwanted-communication |
+| system-services | account-auth, bg-download, credentials-provider, location-push, matter, classkit-context, virtual-conference, print-service, smart-card, authentication-services, wallet, wallet-ui |
+
+Not verified in CI: `imessage` (no Swift template), signed entitlements (Family Controls, Wallet provisioning, Network Extension, App Groups, push), on-device Live Activity / watch behavior, and demo-app `pod install` + `run:ios` (those were checked on a Mac for widget-demo, live-activities-demo, app-clip-demo, and kitchen, not in Actions).
+
 ## Publishing
 
 npm publishes run from GitHub Actions on `main` only, and they need the `NPM_TOKEN` repository secret (npm automation token with publish access) before the first publish after this lands. Without it, the workflows fail on purpose.
