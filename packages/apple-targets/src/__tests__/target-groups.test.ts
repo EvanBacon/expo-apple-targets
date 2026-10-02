@@ -54,4 +54,17 @@ describe("e2e target groups", () => {
     expect(liveActivity).toContain("ActivityConfiguration");
     expect(bundle).toContain("WidgetLiveActivity()");
   });
+
+  it("lists exactly the TARGET_GROUPS shards in the macOS e2e workflow", () => {
+    const workflow = fs.readFileSync(
+      path.join(__dirname, "../../../../.github/workflows/e2e.yml"),
+      "utf8"
+    );
+    const names = Object.keys(TARGET_GROUPS);
+    const listed = [...workflow.matchAll(/^\s+- ([a-z0-9-]+)$/gm)]
+      .map((match) => match[1])
+      .filter((name) => names.includes(name));
+
+    expect(listed).toEqual(names);
+  });
 });
