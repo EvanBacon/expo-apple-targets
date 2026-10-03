@@ -6,6 +6,21 @@ import { Entitlements } from "./config";
 import { TARGET_GENERATED_DIR } from "./target";
 
 /**
+ * `@expo/plist` parses `<dict>` nodes as `Object.create(null)`, so the result
+ * has no `hasOwnProperty`. SDK 57 `@expo/config` walks serializable config with
+ * `val.hasOwnProperty(property)` and throws if a null-prototype object is left
+ * on `extra.eas.build.experimental.ios.appExtensions`. Entitlements are JSON-like
+ * (strings, booleans, numbers, arrays, dicts), so a JSON round-trip yields a
+ * deep clone whose objects use `Object.prototype`.
+ */
+export function clonePlistAsPlainObject<T>(value: T): T {
+  if (value == null || typeof value !== "object") {
+    return value;
+  }
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+/**
  * File name used for entitlements generated from the `entitlements` object in
  * `expo-target.config`. The `generated` prefix signals the file is derived and
  * should not be hand-edited.
@@ -150,10 +165,11 @@ export function resolveEntitlementsForCodeSign({
   const sourceCwd = path.join(projectRoot, "ios", cwd);
   const sourceEntitlements = findSourceEntitlementsFiles(sourceCwd);
 
-  if (sourceEntitlements.length > 0) {
+  const [sourceEntitlementsFile] = sourceEntitlements;
+  if (sourceEntitlementsFile) {
     return {
-      absolutePath: path.join(sourceCwd, sourceEntitlements[0]),
-      codeSignEntitlements: `${cwd}/${sourceEntitlements[0]}`,
+      absolutePath: path.join(sourceCwd, sourceEntitlementsFile),
+      codeSignEntitlements: `${cwd}/${sourceEntitlementsFile}`,
     };
   }
 

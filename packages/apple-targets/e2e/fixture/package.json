@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "expo": "~55.0.0",
-    "react": "19.2.0",
-    "react-native": "0.83.4",
+    "expo": "~57.0.25",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
     "@bacons/apple-targets": "file:../../"
   }
 }
