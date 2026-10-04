@@ -16,9 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-10-04: reconfirmed draft #210. Head `c3f72c4` CI is green (Ubuntu `test` run 37136357057 and all four `xcodebuild` shards in run 37136357009). npm `expo@57.0.26` is still the `latest` / `sdk-57` tag and already satisfies `expo@~57.0.25`, so the pin was not bumped. SDK 58 (`expo@58.0.3`, `next` tag) stays out of scope. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered, and the Actions secrets API still cannot be read from this account (403).
 - 2026-10-03: closed #190 as a duplicate of #205 (ESM / TypeScript `expo-target.config`). #205 stays open and still needs a rebase onto this SDK 57 branch before it can land.
 - Reconfirmed draft #210 on 2026-10-03. Head `faf0606` CI was green (Ubuntu `test` run 37033228909 and all four `xcodebuild` shards in run 37033229207). npm `expo@57.0.26` is the current SDK 57 patch and already satisfies `expo@~57.0.25`, so the pin was not bumped and the lockfile was not regenerated. SDK 58 (`expo@58.0.2`, `next` tag) stays out of scope. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered.
 - Reconfirmed draft #210 on 2026-10-02. CI on `f338615` was green (Ubuntu `test` and all four `xcodebuild` shards, Actions runs 36895948825 / 36895948813). Left the pin at `expo@~57.0.25` rather than jumping to SDK 58 or regenerating the lockfile for a 57 patch. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered, and the Actions secrets API still cannot be read from this account (403).
+
+### Fixed
+
+- Documented a CI gap: `device-activity-report` is not a template in this repo yet (open PR #208). The e2e matrix compiles `device-activity-monitor`, `shield-action`, and `shield-config`, but not a report extension. Do not treat Screen Time coverage as complete until #208 lands and gets a shard entry.
 
 ## [6.0.0] - 2026-09-26
 
