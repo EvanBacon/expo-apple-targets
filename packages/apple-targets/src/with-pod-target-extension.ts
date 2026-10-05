@@ -1,9 +1,11 @@
 import { ConfigPlugin, withPodfile } from "expo/config-plugins";
 
-// TODO: This won't always match the correct target name. Need to pull the same algo in.
+// A custom `name` in expo-target.config can still diverge from the directory.
 const extension = `# apple-targets-extension-loader -- Dynamic loading of target configurations
 Dir.glob(File.join(__dir__, '..', 'targets', '**', 'pods.rb')).each do |target_file|
-  target_name = File.basename(File.dirname(target_file))
+  # Match the Xcode product name from sanitizeNameForNonDisplayUse
+  # (targets/app-clip -> appclip, targets/clip -> clip).
+  target_name = File.basename(File.dirname(target_file)).gsub(/[\W_]+/, "")
   target target_name do
     # Create a new binding with access to necessary methods and variables
     target_binding = binding

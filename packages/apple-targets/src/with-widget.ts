@@ -22,10 +22,12 @@ import {
 } from "./target";
 import {
   classifySourceEntitlementsFile,
+  clonePlistAsPlainObject,
   getEntitlementsConflictMessage,
   getGeneratedEntitlementsCodeSignPath,
   writeGeneratedEntitlements,
 } from "./entitlements";
+import { resolveExportJs } from "./export-js";
 import { withEASTargets } from "./with-eas-credentials";
 import { withXcodeChanges } from "./with-xcode-changes";
 import {
@@ -286,7 +288,9 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     ]);
   } else {
     entitlementsJson = entitlementsFiles[0]
-      ? plist.parse(fs.readFileSync(entitlementsFiles[0], "utf8"))
+      ? clonePlistAsPlainObject(
+          plist.parse(fs.readFileSync(entitlementsFiles[0], "utf8")),
+        )
       : undefined;
   }
 
@@ -388,10 +392,13 @@ const withWidget: ConfigPlugin<Props> = (config, props) => {
     teamId: props.appleTeamId,
 
     colors: props.colors,
-    exportJs:
-      props.exportJs ??
-      // Assume App Clips are used for React Native.
-      props.type === "clip",
+    // Native clips have no CocoaPods target, so they must not inherit the
+    // RN bundle script (it needs PODS_ROOT to find NODE_BINARY).
+    exportJs: resolveExportJs({
+      type: props.type,
+      exportJs: props.exportJs,
+      targetDirectory: targetDirAbsolutePath,
+    }),
   });
 
   config = withEASTargets(config, {

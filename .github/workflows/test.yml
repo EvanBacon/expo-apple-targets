@@ -26,3 +26,13 @@ jobs:
       - name: Test create-target
         run: bun run jest
         working-directory: packages/create-target
+
+      - name: Build apple-targets
+        run: bun run build
+        working-directory: packages/apple-targets
+
+      # Generates the iOS project for every fixture target. Compilation is the
+      # macOS matrix in e2e.yml; this step fails the PR when prebuild itself breaks.
+      - name: Prebuild e2e fixture
+        run: bun -e 'import setup from "./e2e/setup.ts"; await setup();'
+        working-directory: packages/apple-targets

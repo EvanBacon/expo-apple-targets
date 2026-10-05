@@ -1,12 +1,12 @@
 # Apple Targets
 
-An Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
+An Expo Config Plugin that generates native Apple Targets like Widgets or App Clips, and links them outside the `/ios` directory. Release notes are in [CHANGELOG.md](../../CHANGELOG.md). You can open Xcode and develop the targets inside the virtual `expo:targets` folder and the changes will be saved outside of the `ios` directory. This pattern enables building things that fall outside of the scope of React Native while still obtaining all the benefits of [Continuous Native Generation](https://docs.expo.dev/workflow/continuous-native-generation/).
 
 <img width="1728" height="963" alt="targets" src="https://github.com/user-attachments/assets/aedaafa0-1ef0-403c-a797-9f4c82cdb9f1" />
 
 ## 🚀 How to use
 
-> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 16 (macOS 15 Sequoia), and Expo SDK +53.
+> This plugin requires at least CocoaPods 1.16.2 (ruby 3.2.0), Xcode 26.4, and Expo SDK 57.
 
 1. Run `npx create-target` in your Expo project to generate an Apple target.
 2. Select a target to generate, I recommend starting with a `widget` (e.g. `npx create-target widget`). This will generate the required widget files in the root `/targets` directory, install `@bacons/apple-targets`, and add the Expo Config Plugin to your project.
@@ -57,7 +57,7 @@ The CLI auto-detects your installed agents and copies the skill into their skill
 
 ## Target config
 
-The target config can be a `expo-target.config.js`, or `expo-target.config.json` file.
+The target config can be `expo-target.config.json`, `expo-target.config.js` (CommonJS or ESM), `expo-target.config.cjs`, `expo-target.config.mjs`, or `expo-target.config.ts` (also `.cts` / `.mts`). TypeScript and ESM files are evaluated through the same loader Expo uses for `app.config.ts`. If multiple files exist in the same target directory, the highest-priority one wins (`ts` → `mts` → `cts` → `mjs` → `js` → `cjs` → `json`) and the others are ignored with a warning.
 
 This file can have the following properties:
 
@@ -94,7 +94,7 @@ module.exports = {
   },
 
   // The iOS version fot the target. Defaults to 18.0
-  deploymentTarget: "15.1",
+  deploymentTarget: "16.4",
 
   // Optional bundle identifier for the target. Will default to a sanitized version of the root project bundle id + target name.
   // If the specified bundle identifier is prefixed with a dot (.), the bundle identifier will be appended to the main app's bundle identifier.
@@ -219,7 +219,7 @@ target "target_dir_name" do
 end
 ```
 
-The name of the target must match the name of the target directory.
+The CocoaPods target name is the directory name with non-alphanumeric characters removed, matching the Xcode target (`targets/clip` → `clip`, `targets/app-clip` → `appclip`).
 
 ## `_shared`
 
@@ -230,6 +230,8 @@ You can additionally add a `_shared` directory inside of the root `targets/_shar
 ## `exportJs`
 
 The `exportJs` option should be used when the target uses React Native (App Clip, Share extension). It works by linking the main target's `Bundle React Native code and images` build phase to the target. This will ensure that production builds (`Release`) bundle the main JS entry file with Metro, and embed the bundle/assets for offline use.
+
+App Clips default `exportJs` to true only when the target directory contains `pods.rb`. That file is what makes CocoaPods set `PODS_ROOT` on the clip. Expo's bundle script reads `NODE_BINARY` from `$PODS_ROOT/../.xcode.env`. A native clip with no `pods.rb` does not get the script; otherwise `run:ios` fails with an empty `NODE_BINARY`. Set `exportJs: true` yourself for any other target that links React Native.
 
 To detect which target is being built, you can read the bundle identifier using `expo-application`.
 
@@ -672,3 +674,25 @@ You also need a `1800x1200` image for the App Store Connect image preview, so ma
 Launch App Clips from Test Flight to test deep linking. It doesn't seem like there's any reasonable way to test launching from your website in development. I got this to work once by setting up a local experience in my app's "Settings > Developer" screen, then installing the app, opening the website, deleting the app, then installing the App Clip without the app. You'll mostly need to go with God on this one.
 
 You can generate codes using the CLI tool [download here](https://developer.apple.com/download/all/?q=%22app%20clip%22).
+
+## CI coverage
+
+GitHub Actions compiles every templated target type. Ubuntu `test` runs unit tests and prebuilds the e2e fixture. macOS `e2e` (`macos-26`) shards `xcodebuild` with `CODE_SIGNING_ALLOWED=NO`:
+
+| Shard | Types |
+| --- | --- |
+| widgets-clips-watch | widget (includes Live Activities), clip, watch, watch-widget |
+| intents-network-screen-time | app-intent, intent, intent-ui, keyboard, safari, content-blocker, network extensions, device-activity-monitor, shield-action, shield-config |
+| sharing-files-media | share, action, notification content/service, broadcast, photo-editing, Quick Look, file provider, Spotlight, call-directory, message-filter, unwanted-communication |
+| system-services | account-auth, bg-download, credentials-provider, location-push, matter, classkit-context, virtual-conference, print-service, smart-card, authentication-services, wallet, wallet-ui |
+
+Not verified in CI: `imessage` (no Swift template), signed entitlements (Family Controls, Wallet provisioning, Network Extension, App Groups, push), on-device Live Activity / watch behavior, and demo-app `pod install` + `run:ios` (those were checked on a Mac for widget-demo, live-activities-demo, app-clip-demo, and kitchen, not in Actions).
+
+## Publishing
+
+npm publishes run from GitHub Actions on `main` only, and they need the `NPM_TOKEN` repository secret (npm automation token with publish access) before the first publish after this lands. Without it, the workflows fail on purpose.
+
+- **Beta** (`.github/workflows/publish.yml`): pushes to `main` that touch `packages/apple-targets` or `packages/create-target`, or a manual run. Publishes a `beta` dist-tag.
+- **Stable** (`.github/workflows/publish-stable.yml`): manual dispatch from `main` only. Publishes the `latest` dist-tag and tries to commit the version bump.
+
+See [CHANGELOG.md](../../CHANGELOG.md) for what is in each release.
