@@ -124,10 +124,10 @@ export const withTargetsDir: ConfigPlugin<
         .map((p) => path.basename(p))
         .join(", ");
       warnOnce(
-        chalk`{yellow [bacons/apple-targets]} Multiple {cyan expo-target.config} files in {cyan ${path.relative(projectRoot, dir)}}. Using {cyan ${path.basename(sorted[0])}} and ignoring: {cyan ${ignored}}`,
+        chalk`{yellow [bacons/apple-targets]} Multiple {cyan expo-target.config} files in {cyan ${path.relative(projectRoot, dir)}}. Using {cyan ${path.basename(sorted[0]!)}} and ignoring: {cyan ${ignored}}`,
       );
     }
-    resolvedTargets.push(sorted[0]);
+    resolvedTargets.push(sorted[0]!);
   }
 
   resolvedTargets.forEach((configPath) => {
