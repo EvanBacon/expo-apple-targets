@@ -51,6 +51,8 @@ jobs:
       - name: Setup bun
         if: steps.changes.outputs.apple == 'true' || steps.changes.outputs.create == 'true'
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
 
       - name: Setup Node.js
         if: steps.changes.outputs.apple == 'true' || steps.changes.outputs.create == 'true'
