@@ -8,5 +8,15 @@
       "com.apple.security.application-groups": ["group.bacon.data"]
     }
   },
-  "plugins": ["@bacons/apple-targets"]
+  "plugins": [
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "enableSceneSupport": true
+        }
+      }
+    ],
+    "@bacons/apple-targets"
+  ]
 }
