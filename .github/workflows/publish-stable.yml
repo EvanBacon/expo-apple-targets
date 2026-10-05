@@ -51,21 +51,17 @@ jobs:
           cd packages/apple-targets
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.'));
-          ")
-          echo "Bumped @bacons/apple-targets stable: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
+          echo "Publish @bacons/apple-targets stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
+            const version = process.argv[1];
             const p = JSON.parse(fs.readFileSync('package.json'));
-            p.version = '$NEW';
-            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
-          "
+            if (p.version !== version) {
+              p.version = version;
+              fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+            }
+          " "$NEW"
           bun run build
           npm publish --access public --tag latest --provenance
 
@@ -81,21 +77,17 @@ jobs:
           cd packages/create-target
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.'));
-          ")
-          echo "Bumped create-target stable: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
+          echo "Publish create-target stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
+            const version = process.argv[1];
             const p = JSON.parse(fs.readFileSync('package.json'));
-            p.version = '$NEW';
-            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
-          "
+            if (p.version !== version) {
+              p.version = version;
+              fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+            }
+          " "$NEW"
           bun run build:prod
           npm publish --access public --tag latest --provenance
 

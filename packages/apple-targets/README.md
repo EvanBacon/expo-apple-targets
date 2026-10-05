@@ -693,6 +693,8 @@ Not verified in CI: `imessage` (no Swift template), signed entitlements (Family 
 npm publishes run from GitHub Actions on `main` only, and they need the `NPM_TOKEN` repository secret (npm automation token with publish access) before the first publish after this lands. Without it, the workflows fail on purpose.
 
 - **Beta** (`.github/workflows/publish.yml`): pushes to `main` that touch `packages/apple-targets` or `packages/create-target`, or a manual run. Publishes a `beta` dist-tag.
-- **Stable** (`.github/workflows/publish-stable.yml`): manual dispatch from `main` only. Publishes the `latest` dist-tag and tries to commit the version bump.
+- **Stable** (`.github/workflows/publish-stable.yml`): manual dispatch from `main` only. Publishes the `latest` dist-tag and commits `package.json` when the version string changed.
+
+Both workflows publish the `package.json` version as-is when it is strictly newer than npm `dist-tags.latest` (a missing latest counts as `0.0.0`). Otherwise they bump the patch of whichever version is higher. Beta appends `-beta.<run_number>.<run_attempt>` to that base. The first `@bacons/apple-targets` publish from `6.0.0` stays `6.0.0`, not `6.0.1`.
 
 See [CHANGELOG.md](../../CHANGELOG.md) for what is in each release.

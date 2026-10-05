@@ -38,7 +38,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - run: bun install --ignore-scripts
+      - run: bun install --frozen-lockfile --ignore-scripts
 
       # expo-module-scripts 56 makes `expo-module prepare` a no-op, so the
       # root `prepare` script never emits build/config-plugin.js.

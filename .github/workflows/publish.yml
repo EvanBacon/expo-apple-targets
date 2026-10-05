@@ -7,6 +7,7 @@ on:
       - "packages/apple-targets/**"
       - "packages/create-target/**"
       - ".github/workflows/publish.yml"
+      - ".github/scripts/next-publish-version.mjs"
   workflow_dispatch: {}
 
 permissions:
@@ -75,15 +76,8 @@ jobs:
           cd packages/apple-targets
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
-          ")
-          echo "Bumped @bacons/apple-targets: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED" "beta.${{ github.run_number }}.${{ github.run_attempt }}")
+          echo "Publish @bacons/apple-targets beta: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
             const p = JSON.parse(fs.readFileSync('package.json'));
@@ -106,15 +100,8 @@ jobs:
           cd packages/create-target
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
-          ")
-          echo "Bumped create-target: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED" "beta.${{ github.run_number }}.${{ github.run_attempt }}")
+          echo "Publish create-target beta: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
             const p = JSON.parse(fs.readFileSync('package.json'));
