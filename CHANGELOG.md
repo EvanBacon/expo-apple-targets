@@ -13,9 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keep a Changelog file (requested in #128).
 - README section listing which target types each macOS e2e shard compiles, and what CI cannot sign or run on device.
 - Unit test that the macOS e2e workflow matrix lists exactly the `TARGET_GROUPS` shard names, so a new group cannot ship without a matching CI job.
+- `launch.yml`: macOS job that prebuilds widget-demo, asserts the host `UIApplicationSceneManifest` points at `EXExpoAppSceneDelegate`, installs the unsigned simulator build, and fails if the process is gone after 12 seconds. This is the SDK 57 launch gate. It still does not sign entitlements or cover a physical device, kitchen, or the other demos.
 
 ### Changed
 
+- 2026-10-06: added the widget-demo simulator launch job on draft #210. Prior Mac Mini launch failure (no scene manifest) is addressed by `enableSceneSupport` on the demos; this job is the re-verify. Not merged. Did not re-email about `NPM_TOKEN` (notes on 2026-09-29 and 2026-10-01 are still unanswered).
 - 2026-10-05: the e2e fixture install no longer floats `@typescript-eslint/*`. `eslint-config-universe@15.2.0` (via `expo-module-scripts`, a devDependency of the `file:` plugin) depends on `^8.59.0`, and Bun 1.4.2 resolved that to `8.71.1` while npm did not yet have `@typescript-eslint/visitor-keys` and `@typescript-eslint/typescript-estree` at that version (`package exists`, no matching version). The fixture now overrides those packages to `8.70.1` (the root lockfile pin) and commits `e2e/fixture/bun.lock`. `e2e/setup.ts` retargets the `file:` link inside that lockfile and runs `bun install --frozen-lockfile`.
 - 2026-10-05: regenerated `bun.lock` with Bun 1.4.2 (`bun install --ignore-scripts`) so `bun install --frozen-lockfile --ignore-scripts` matches GitHub Actions. Workflows pin `oven-sh/setup-bun` to `1.4.2` and keep `--frozen-lockfile`.
 - 2026-10-05: publish workflows no longer always `patch++`. If `package.json` is strictly newer than npm `dist-tags.latest` (a missing latest counts as `0.0.0`), that local version is published with no extra bump, so the first `@bacons/apple-targets` stable release stays **6.0.0** and the beta tag is `6.0.0-beta.<run>.<attempt>`. When local is less than or equal to published, they still bump the patch of the higher version. Stable still writes the chosen version back into `package.json` and commits only when it changed. `NPM_TOKEN` stays fail-closed. Ubuntu `test` and macOS e2e now install with `bun install --frozen-lockfile`.
@@ -38,7 +40,7 @@ Not published yet. Draft PR #210 (`cursor/sdk-57-upgrade-f2df`).
 
 CI on head `7cf8866` (2026-09-29): Ubuntu `test` and all four macOS `xcodebuild` shards green (Actions runs 36596562357 / 36596562287).
 
-Mac verification of the demo apps passed on `166512a`, including kitchen prebuild and `run:ios` on the iPhone 17 Pro simulator (widget, Live Activities, and app-clip-demo passed earlier). A later Mac Mini check on `79bba71` built and installed those demos but failed at launch (see Unreleased). That failure matches a blank Expo 57 app under Xcode 27 / iOS 27, and the demos now opt into `enableSceneSupport`. Launch re-verify on a real Mac is still a merge gate. Signed entitlements and on-device behavior are still outside CI. This release stays **6.0.0** and is not published yet.
+Mac verification of the demo apps passed on `166512a`, including kitchen prebuild and `run:ios` on the iPhone 17 Pro simulator (widget, Live Activities, and app-clip-demo passed earlier). A later Mac Mini check on `79bba71` built and installed those demos but failed at launch (see Unreleased). That failure matches a blank Expo 57 app under Xcode 27 / iOS 27, and the demos now opt into `enableSceneSupport`. Launch re-verify is the new `launch.yml` job (widget-demo only). Signed entitlements and on-device behavior are still outside CI. This release stays **6.0.0** and is not published yet.
 
 ### Added
 
