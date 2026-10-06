@@ -1,0 +1,85 @@
+name: Simulator launch
+
+# Merge gate for the SDK 57 draft: Xcode 27 / iOS 27 rejects a host with no
+# UIApplicationSceneManifest. e2e.yml only xcodebuilds with signing off.
+# This job prebuilds widget-demo (enableSceneSupport: true), asserts the host
+# plist, installs the simulator build, and checks the process is still up.
+# It does not exercise signed entitlements or a physical device.
+
+on:
+  pull_request:
+    paths:
+      - "apps/widget-demo/**"
+      - "packages/apple-targets/**"
+      - "packages/create-target/templates/**"
+      - ".github/workflows/launch.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  launch-widget-demo:
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build apple-targets
+        working-directory: packages/apple-targets
+        run: bun run build
+
+      - name: Prebuild widget-demo
+        working-directory: apps/widget-demo
+        env:
+          EXPO_NO_TELEMETRY: "1"
+        run: bunx expo prebuild -p ios --clean --non-interactive
+
+      - name: Assert host UIApplicationSceneManifest
+        working-directory: apps/widget-demo
+        run: |
+          set -euo pipefail
+          PLIST=$(find ios -name Info.plist -not -path '*/Pods/*' -not -path '*/.targets/*' -not -path '*Extension*' | head -1)
+          echo "Host plist: $PLIST"
+          plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST"
+          plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST" | grep -q EXExpoAppSceneDelegate
+
+      - name: Boot simulator, install, and launch
+        working-directory: apps/widget-demo
+        run: |
+          set -euo pipefail
+          DEVICE=$(xcrun simctl list devices available | grep -E 'iPhone' | head -1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          echo "Simulator $DEVICE"
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b
+          WS=$(find ios -maxdepth 2 -name '*.xcworkspace' | head -1)
+          SCHEME=$(basename "$WS" .xcworkspace)
+          echo "Workspace $WS scheme $SCHEME"
+          xcodebuild \
+            -workspace "$WS" \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -destination "id=$DEVICE" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+          APP=$(find "$RUNNER_TEMP/DerivedData" -name '*.app' -path '*Debug-iphonesimulator*' ! -path '*Widget*' | head -1)
+          echo "App $APP"
+          BID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          echo "Bundle $BID"
+          xcrun simctl install "$DEVICE" "$APP"
+          xcrun simctl launch --terminate-running-process "$DEVICE" "$BID"
+          sleep 12
+          if ! xcrun simctl spawn "$DEVICE" launchctl list | grep -q "$BID"; then
+            echo "Host process $BID is not running after launch"
+            xcrun simctl spawn "$DEVICE" log show --last 2m --style compact | tail -n 80 || true
+            exit 1
+          fi
+          echo "Host $BID still running"
