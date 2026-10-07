@@ -2,14 +2,14 @@ name: Simulator launch
 
 # Merge gate for the SDK 57 draft: Xcode 27 / iOS 27 rejects a host with no
 # UIApplicationSceneManifest. e2e.yml only xcodebuilds with signing off.
-# This job prebuilds widget-demo (enableSceneSupport: true), asserts the host
+# This job prebuilds each demo (enableSceneSupport: true), asserts the host
 # plist, installs the simulator build, and checks the process is still up.
 # It does not exercise signed entitlements or a physical device.
 
 on:
   pull_request:
     paths:
-      - "apps/widget-demo/**"
+      - "apps/**"
       - "packages/apple-targets/**"
       - "packages/create-target/templates/**"
       - ".github/workflows/launch.yml"
@@ -20,9 +20,18 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  launch-widget-demo:
+  launch-demo:
+    name: launch (${{ matrix.demo }})
     runs-on: macos-26
     timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        demo:
+          - widget-demo
+          - live-activities-demo
+          - app-clip-demo
+          - kitchen
     steps:
       - uses: actions/checkout@v4
 
@@ -36,23 +45,24 @@ jobs:
         working-directory: packages/apple-targets
         run: bun run build
 
-      - name: Prebuild widget-demo
-        working-directory: apps/widget-demo
+      - name: Prebuild ${{ matrix.demo }}
+        working-directory: apps/${{ matrix.demo }}
         env:
           EXPO_NO_TELEMETRY: "1"
         run: bunx expo prebuild -p ios --clean --non-interactive
 
       - name: Assert host UIApplicationSceneManifest
-        working-directory: apps/widget-demo
+        working-directory: apps/${{ matrix.demo }}
         run: |
           set -euo pipefail
-          PLIST=$(find ios -name Info.plist -not -path '*/Pods/*' -not -path '*/.targets/*' -not -path '*Extension*' | head -1)
+          PLIST=$(find ios -name Info.plist -not -path '*/Pods/*' -not -path '*/.targets/*' -not -path '*Extension*' -not -path '*Widget*' -not -path '*Clip*' | head -1)
           echo "Host plist: $PLIST"
+          test -n "$PLIST"
           plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST"
           plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST" | grep -q EXExpoAppSceneDelegate
 
       - name: Boot simulator, install, and launch
-        working-directory: apps/widget-demo
+        working-directory: apps/${{ matrix.demo }}
         run: |
           set -euo pipefail
           DEVICE=$(xcrun simctl list devices available | grep -E 'iPhone' | head -1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
@@ -70,8 +80,12 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/DerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             build
-          APP=$(find "$RUNNER_TEMP/DerivedData" -name '*.app' -path '*Debug-iphonesimulator*' ! -path '*Widget*' | head -1)
+          APP=$(find "$RUNNER_TEMP/DerivedData/Build/Products" -maxdepth 3 -name "${SCHEME}.app" -path '*Debug-iphonesimulator*' | head -1)
+          if [ -z "$APP" ]; then
+            APP=$(find "$RUNNER_TEMP/DerivedData" -name '*.app' -path '*Debug-iphonesimulator*' ! -path '*Widget*' ! -path '*Extension*' ! -path '*Clip*' | head -1)
+          fi
           echo "App $APP"
+          test -n "$APP"
           BID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
           echo "Bundle $BID"
           xcrun simctl install "$DEVICE" "$APP"
