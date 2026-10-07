@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- 2026-10-07: `launch.yml` derived the Xcode scheme from the first `*.xcworkspace`. live-activities-demo and kitchen hit `*.xcodeproj/project.xcworkspace`, so the job passed scheme `project` and xcodebuild exited 65 before install (`workspace "baconsappliveactivity" does not contain a scheme named "project"`, same on kitchen). The job now uses the `ios/*.xcodeproj` basename as the scheme and a top-level `ios/*.xcworkspace` only when CocoaPods created one. Actions run [37650940555](https://github.com/EvanBacon/expo-apple-targets/actions/runs/37650940555). Not merged. Did not re-email about `NPM_TOKEN`.
 - Documented a CI gap: `device-activity-report` is not a template in this repo yet (open PR #208). The e2e matrix compiles `device-activity-monitor`, `shield-action`, and `shield-config`, but not a report extension. Do not treat Screen Time coverage as complete until #208 lands and gets a shard entry.
 
 ## [6.0.0] - 2026-09-26

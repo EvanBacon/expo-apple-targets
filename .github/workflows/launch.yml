@@ -69,17 +69,36 @@ jobs:
           echo "Simulator $DEVICE"
           xcrun simctl boot "$DEVICE" || true
           xcrun simctl bootstatus "$DEVICE" -b
-          WS=$(find ios -maxdepth 2 -name '*.xcworkspace' | head -1)
-          SCHEME=$(basename "$WS" .xcworkspace)
-          echo "Workspace $WS scheme $SCHEME"
-          xcodebuild \
-            -workspace "$WS" \
-            -scheme "$SCHEME" \
-            -configuration Debug \
-            -destination "id=$DEVICE" \
-            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+          # CocoaPods writes ios/<Name>.xcworkspace. The xcodeproj also contains
+          # project.xcworkspace, whose basename is "project" and is not a scheme.
+          # 2026-10-07 live-activities and kitchen failed with:
+          #   workspace "baconsappliveactivity" does not contain a scheme named "project"
+          PROJ=$(find ios -maxdepth 1 -name '*.xcodeproj' | head -1)
+          test -n "$PROJ"
+          SCHEME=$(basename "$PROJ" .xcodeproj)
+          WS=$(find ios -maxdepth 1 -name '*.xcworkspace' | head -1)
+          echo "Project $PROJ scheme $SCHEME workspace ${WS:-none}"
+          if [ -n "$WS" ]; then
+            xcodebuild -workspace "$WS" -list
+            xcodebuild \
+              -workspace "$WS" \
+              -scheme "$SCHEME" \
+              -configuration Debug \
+              -destination "id=$DEVICE" \
+              -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          else
+            xcodebuild -project "$PROJ" -list
+            xcodebuild \
+              -project "$PROJ" \
+              -scheme "$SCHEME" \
+              -configuration Debug \
+              -destination "id=$DEVICE" \
+              -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          fi
           APP=$(find "$RUNNER_TEMP/DerivedData/Build/Products" -maxdepth 3 -name "${SCHEME}.app" -path '*Debug-iphonesimulator*' | head -1)
           if [ -z "$APP" ]; then
             APP=$(find "$RUNNER_TEMP/DerivedData" -name '*.app' -path '*Debug-iphonesimulator*' ! -path '*Widget*' ! -path '*Extension*' ! -path '*Clip*' | head -1)
