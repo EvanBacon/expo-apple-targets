@@ -1,0 +1,118 @@
+name: Simulator launch
+
+# Merge gate for the SDK 57 draft: Xcode 27 / iOS 27 rejects a host with no
+# UIApplicationSceneManifest. e2e.yml only xcodebuilds with signing off.
+# This job prebuilds each demo (enableSceneSupport: true), asserts the host
+# plist, installs the simulator build, and checks the process is still up.
+# It does not exercise signed entitlements or a physical device.
+
+on:
+  pull_request:
+    paths:
+      - "apps/**"
+      - "packages/apple-targets/**"
+      - "packages/create-target/templates/**"
+      - ".github/workflows/launch.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  launch-demo:
+    name: launch (${{ matrix.demo }})
+    runs-on: macos-26
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        demo:
+          - widget-demo
+          - live-activities-demo
+          - app-clip-demo
+          - kitchen
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build apple-targets
+        working-directory: packages/apple-targets
+        run: bun run build
+
+      - name: Prebuild ${{ matrix.demo }}
+        working-directory: apps/${{ matrix.demo }}
+        env:
+          EXPO_NO_TELEMETRY: "1"
+        run: bunx expo prebuild -p ios --clean --non-interactive
+
+      - name: Assert host UIApplicationSceneManifest
+        working-directory: apps/${{ matrix.demo }}
+        run: |
+          set -euo pipefail
+          PLIST=$(find ios -name Info.plist -not -path '*/Pods/*' -not -path '*/.targets/*' -not -path '*Extension*' -not -path '*Widget*' -not -path '*Clip*' | head -1)
+          echo "Host plist: $PLIST"
+          test -n "$PLIST"
+          plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST"
+          plutil -extract UIApplicationSceneManifest xml1 -o - "$PLIST" | grep -q EXExpoAppSceneDelegate
+
+      - name: Boot simulator, install, and launch
+        working-directory: apps/${{ matrix.demo }}
+        run: |
+          set -euo pipefail
+          DEVICE=$(xcrun simctl list devices available | grep -E 'iPhone' | head -1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          echo "Simulator $DEVICE"
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b
+          # CocoaPods writes ios/<Name>.xcworkspace. The xcodeproj also contains
+          # project.xcworkspace, whose basename is "project" and is not a scheme.
+          # 2026-10-07 live-activities and kitchen failed with:
+          #   workspace "baconsappliveactivity" does not contain a scheme named "project"
+          PROJ=$(find ios -maxdepth 1 -name '*.xcodeproj' | head -1)
+          test -n "$PROJ"
+          SCHEME=$(basename "$PROJ" .xcodeproj)
+          WS=$(find ios -maxdepth 1 -name '*.xcworkspace' | head -1)
+          echo "Project $PROJ scheme $SCHEME workspace ${WS:-none}"
+          if [ -n "$WS" ]; then
+            xcodebuild -workspace "$WS" -list
+            xcodebuild \
+              -workspace "$WS" \
+              -scheme "$SCHEME" \
+              -configuration Debug \
+              -destination "id=$DEVICE" \
+              -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          else
+            xcodebuild -project "$PROJ" -list
+            xcodebuild \
+              -project "$PROJ" \
+              -scheme "$SCHEME" \
+              -configuration Debug \
+              -destination "id=$DEVICE" \
+              -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          fi
+          APP=$(find "$RUNNER_TEMP/DerivedData/Build/Products" -maxdepth 3 -name "${SCHEME}.app" -path '*Debug-iphonesimulator*' | head -1)
+          if [ -z "$APP" ]; then
+            APP=$(find "$RUNNER_TEMP/DerivedData" -name '*.app' -path '*Debug-iphonesimulator*' ! -path '*Widget*' ! -path '*Extension*' ! -path '*Clip*' | head -1)
+          fi
+          echo "App $APP"
+          test -n "$APP"
+          BID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          echo "Bundle $BID"
+          xcrun simctl install "$DEVICE" "$APP"
+          xcrun simctl launch --terminate-running-process "$DEVICE" "$BID"
+          sleep 12
+          if ! xcrun simctl spawn "$DEVICE" launchctl list | grep -q "$BID"; then
+            echo "Host process $BID is not running after launch"
+            xcrun simctl spawn "$DEVICE" log show --last 2m --style compact | tail -n 80 || true
+            exit 1
+          fi
+          echo "Host $BID still running"
