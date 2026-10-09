@@ -214,12 +214,12 @@ use_react_native!(
 This block executes at the end of the Podfile in a block like:
 
 ```rb
-target "target_dir_name" do
-   target_file
+target "MyWidget" do
+   # contents of targets/widget/pods.rb
 end
 ```
 
-The CocoaPods target name is the directory name with non-alphanumeric characters removed, matching the Xcode target (`targets/clip` → `clip`, `targets/app-clip` → `appclip`).
+The CocoaPods target name is the Xcode product name: `sanitizeNameForNonDisplayUse(name || folder)`. A custom `name` wins over the directory (`targets/widget` with `name: "MyWidget"` → `target 'MyWidget'`, `targets/app-clip` with no name → `appclip`). Prebuild rewrites an older folder-name loader in place.
 
 ## `_shared`
 
