@@ -1,0 +1,108 @@
+name: Publish stable to npm
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  publish-stable:
+    if: github.repository == 'EvanBacon/expo-apple-targets' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Require main branch
+        run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "::error::Stable publishes must run from main."
+            exit 1
+          fi
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Build packages
+        run: bun run prepare
+
+      - name: Publish @bacons/apple-targets stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/apple-targets
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
+          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
+          NEW=$(node -e "
+            const a='$LOCAL'.split('.').map(Number);
+            const b='$PUBLISHED'.split('.').map(Number);
+            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
+            max[2]++;
+            console.log(max.join('.'));
+          ")
+          echo "Bumped @bacons/apple-targets stable: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            p.version = '$NEW';
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          npm publish --access public --tag latest --provenance
+
+      - name: Publish create-target stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/create-target
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
+          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
+          NEW=$(node -e "
+            const a='$LOCAL'.split('.').map(Number);
+            const b='$PUBLISHED'.split('.').map(Number);
+            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
+            max[2]++;
+            console.log(max.join('.'));
+          ")
+          echo "Bumped create-target stable: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            p.version = '$NEW';
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          npm publish --access public --tag latest --provenance
+
+      - name: Configure git and commit stable version bumps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages/*/package.json
+          if git diff --cached --quiet; then
+            echo "No version bump to commit"
+          else
+            git commit -m "chore: bump package versions [skip ci]"
+            for i in 1 2 3; do
+              if git push; then exit 0; fi
+              echo "Push rejected (attempt $i/3), rebasing on origin/main..."
+              git pull --rebase --autostash origin main || break
+            done
+            echo "::warning::Could not push version bumps to protected main; npm already advanced. Leaving package.json behind."
+          fi
