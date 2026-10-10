@@ -1,0 +1,110 @@
+name: Publish beta to npm
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/**"
+      - ".github/workflows/publish.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  publish-beta:
+    if: github.repository == 'EvanBacon/expo-apple-targets' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Detect package changes
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "packages=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          if echo "$CHANGED" | grep -Eq "^packages/"; then
+            echo "packages=true" >> $GITHUB_OUTPUT
+          else
+            echo "packages=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup bun
+        if: steps.changes.outputs.packages == 'true'
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js
+        if: steps.changes.outputs.packages == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        if: steps.changes.outputs.packages == 'true'
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Build packages
+        if: steps.changes.outputs.packages == 'true'
+        run: bun run prepare
+
+      - name: Publish @bacons/apple-targets beta
+        if: steps.changes.outputs.packages == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/apple-targets
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
+          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
+          NEW=$(node -e "
+            const a='$LOCAL'.split('.').map(Number);
+            const b='$PUBLISHED'.split('.').map(Number);
+            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
+            max[2]++;
+            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
+          ")
+          echo "Bumped @bacons/apple-targets: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            p.version = '$NEW';
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          npm publish --access public --tag beta --provenance
+
+      - name: Publish create-target beta
+        if: steps.changes.outputs.packages == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/create-target
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
+          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
+          NEW=$(node -e "
+            const a='$LOCAL'.split('.').map(Number);
+            const b='$PUBLISHED'.split('.').map(Number);
+            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
+            max[2]++;
+            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
+          ")
+          echo "Bumped create-target: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            p.version = '$NEW';
+            fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+          "
+          npm publish --access public --tag beta --provenance
