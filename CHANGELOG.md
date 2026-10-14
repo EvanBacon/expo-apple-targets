@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-10-14: draft #210 remains open and not merged. Head `96808f9` CI (Actions runs around 38429720xxx) is red on all jobs (Ubuntu test, four xcodebuild shards, four simulator launch jobs). Failures are fast (~10-30s), so likely setup/install rather than full Xcode compile. Previous green heads exist (e.g. `f495ccb` on 2026-10-08). No native code changes this run. Did not re-email about `NPM_TOKEN` (notes 2026-09-29 and 2026-10-01 unanswered; do not retry). Merge stays blocked until CI is green and a real Mac launch re-verify succeeds.
+
 - 2026-10-13: draft #210 remains open and not merged. Head `b8cadd9` CI (Actions runs 38277225608 / 38277225907 / 38277225625) is red on all jobs (Ubuntu test, four xcodebuild shards, four simulator launch jobs). Failures are fast (~10-30s), so likely setup/install rather than full Xcode compile. Previous green head was `f495ccb` (2026-10-08). No native code changes. Did not re-email about `NPM_TOKEN` (notes 2026-09-29 and 2026-10-01 unanswered). Merge stays blocked until CI is green and a real Mac launch re-verify succeeds.
 
 - 2026-10-12: draft #210 remains open and not merged. Head `9b35b1c` CI (Actions runs 37958317818 / 37958317826 / 37958317807) is red on all jobs (Ubuntu test, four xcodebuild shards, four simulator launch jobs). Failures are fast (~10-30s), so likely setup/install rather than full Xcode compile. Previous head `f495ccb` (2026-10-08) was green. No native code changes this run. Did not re-email about `NPM_TOKEN` (notes 2026-09-29 and 2026-10-01 unanswered). Merge stays blocked until CI is green and a real Mac launch re-verify succeeds.
