@@ -80,9 +80,10 @@ describe(withExportJsBuildSettings, () => {
 describe("pods.rb target name", () => {
   it("sanitizes the CocoaPods target the same way as the Xcode product name", () => {
     const source = fs.readFileSync(
-      path.join(__dirname, "../with-pod-target-extension.ts"),
+      path.join(__dirname, "../util.ts"),
       "utf8",
     );
-    expect(source).toContain('.gsub(/[\\W_]+/, "")');
+    // sanitizeNameForNonDisplayUse strips non-word/underscore characters (JS equivalent of the old Ruby gsub)
+    expect(source).toContain('.replace(/[\\W_]+/g, "")');
   });
 });
