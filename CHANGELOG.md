@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `launch.yml`: macOS matrix that prebuilds widget-demo, live-activities-demo, app-clip-demo, and kitchen, asserts the host `UIApplicationSceneManifest` points at `EXExpoAppSceneDelegate`, installs the unsigned simulator build, and fails if the process is gone after 12 seconds. This is the SDK 57 launch gate. It still does not sign entitlements or cover a physical device.
 
 ### Changed
+- 2026-10-17: Fixed TypeScript error in `withPodTargetExtension` (void | PodTargetEntry[] not assignable) that was failing the `expo-module build` step in CI on #210. Used `entries ?? []`. Draft PR remains open; merge still blocked on green CI + Mac launch re-verify. No re-email about NPM_TOKEN.
+
 - 2026-10-16: draft #210 remains open and not merged. Local unit tests pass after fixing the outdated sanitization assertion (now checks `util.ts`). Head CI status still pending re-check; previous recent heads were red on fast setup failures. No native code changes. Did not re-email about `NPM_TOKEN` (notes 2026-09-29 and 2026-10-01 unanswered; do not retry). Merge stays blocked until CI is fully green and a real Mac launch re-verify succeeds.
 
 - 2026-10-14: draft #210 remains open and not merged. Head `96808f9` CI (Actions runs around 38429720xxx) is red on all jobs (Ubuntu test, four xcodebuild shards, four simulator launch jobs). Failures are fast (~10-30s), so likely setup/install rather than full Xcode compile. Previous green heads exist (e.g. `f495ccb` on 2026-10-08). No native code changes this run. Did not re-email about `NPM_TOKEN` (notes 2026-09-29 and 2026-10-01 unanswered; do not retry). Merge stays blocked until CI is green and a real Mac launch re-verify succeeds.
