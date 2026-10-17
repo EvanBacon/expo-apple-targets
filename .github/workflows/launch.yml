@@ -110,7 +110,11 @@ jobs:
           xcrun simctl install "$DEVICE" "$APP"
           xcrun simctl launch --terminate-running-process "$DEVICE" "$BID"
           sleep 12
-          if ! xcrun simctl spawn "$DEVICE" launchctl list | grep -q "$BID"; then
+          # Capture the list first. With pipefail, `launchctl list | grep -q`
+          # can fail even on a match: grep exits early and launchctl dies of
+          # SIGPIPE (2026-10-17 widget-demo, "signal 13: Broken pipe").
+          RUNNING=$(xcrun simctl spawn "$DEVICE" launchctl list)
+          if ! grep -qF "$BID" <<<"$RUNNING"; then
             echo "Host process $BID is not running after launch"
             xcrun simctl spawn "$DEVICE" log show --last 2m --style compact | tail -n 80 || true
             exit 1

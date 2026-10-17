@@ -7,6 +7,10 @@ import {
   RN_BUNDLE_PODS_ROOT,
   withExportJsBuildSettings,
 } from "../export-js";
+import {
+  buildPodTargetExtension,
+  productNameForTarget,
+} from "../pod-target-loader";
 
 const repoRoot = path.resolve(__dirname, "../../../..");
 
@@ -79,11 +83,18 @@ describe(withExportJsBuildSettings, () => {
 
 describe("pods.rb target name", () => {
   it("sanitizes the CocoaPods target the same way as the Xcode product name", () => {
-    const source = fs.readFileSync(
-      path.join(__dirname, "../util.ts"),
-      "utf8",
+    expect(productNameForTarget(undefined, "app-clip", "clip")).toBe("appclip");
+    expect(productNameForTarget("My_Widget-2", "widget", "widget")).toBe(
+      "MyWidget2",
     );
-    // sanitizeNameForNonDisplayUse strips non-word/underscore characters (JS equivalent of the old Ruby gsub)
-    expect(source).toContain('.replace(/[\\W_]+/g, "")');
+
+    const loader = buildPodTargetExtension([
+      {
+        podsRbRelativeToIos: "../targets/app-clip/pods.rb",
+        productName: productNameForTarget(undefined, "app-clip", "clip"),
+      },
+    ]);
+    expect(loader).toContain("'../targets/app-clip/pods.rb' => 'appclip',");
+    expect(loader).not.toContain("'app-clip'");
   });
 });
