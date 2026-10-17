@@ -18,9 +18,10 @@ export const withPodTargetExtension: ConfigPlugin<PodTargetEntry[] | void> = (
   entries = [],
 ) =>
   withPodfile(config, (config) => {
+    const safeEntries = entries ?? [];
     config.modResults.contents = upsertPodTargetExtension(
       config.modResults.contents,
-      entries,
+      safeEntries,
     );
     return config;
   });
