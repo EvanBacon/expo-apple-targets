@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-10-19: Mac Mini re-verify on head `3d4ce0a` (Xcode 27.0 / 27A266a, iPhone 18 Pro simulator iOS 27.2). widget-demo, live-activities-demo, app-clip-demo, and kitchen each ran a clean `expo prebuild --clean`, `pod install`, an unsigned Debug simulator `xcodebuild` (`** BUILD SUCCEEDED **`), `simctl install`, and `simctl launch`. All four hosts were still in `launchctl list` 12 seconds later, with no UIScene error. Host Info.plist has `UIApplicationSceneManifest`. **PASS** on all four. This clears the 2026-10-05 launch failure. Screenshots show the React Native "No script URL provided" dev screen because Metro was not running. That means the native shell launched, but JS was not exercised. Signed entitlements and physical devices remain unverified. Draft #210 stays open and is not merged. Did not re-email about `NPM_TOKEN`.
+
 - 2026-10-17: restored the CHANGELOG history that `1b9aa26` (2026-10-16) replaced with a one-line placeholder. That commit dropped the whole `[6.0.0]` section, the `[5.0.0]` and `create-target` sections, and the dated notes from 2026-10-02 to 2026-10-13. Head `1b9aa26` was red on all 9 checks (Actions runs [38931388612](https://github.com/EvanBacon/expo-apple-targets/actions/runs/38931388612), [38931388452](https://github.com/EvanBacon/expo-apple-targets/actions/runs/38931388452), [38931388249](https://github.com/EvanBacon/expo-apple-targets/actions/runs/38931388249)). Every job failed in `bun run build` with the TS2345 error listed under Fixed. These were compile failures, not setup failures. After the `a54bfd1` fix, head `63fc9d4` passed Ubuntu `test` ([39048977331](https://github.com/EvanBacon/expo-apple-targets/actions/runs/39048977331)), all four `xcodebuild` shards ([39048977328](https://github.com/EvanBacon/expo-apple-targets/actions/runs/39048977328)), and the kitchen, app-clip-demo, and live-activities-demo launch jobs. widget-demo launch failed on the false negative listed under Fixed ([39048977334](https://github.com/EvanBacon/expo-apple-targets/actions/runs/39048977334)). Draft #210 stays open and is not merged. Did not re-email about `NPM_TOKEN`.
 
 - 2026-10-17: Fixed TypeScript error in `withPodTargetExtension` (void | PodTargetEntry[] not assignable) that was failing the `expo-module build` step in CI on #210. Used `entries ?? []`. Draft PR remains open; merge still blocked on green CI + Mac launch re-verify. No re-email about NPM_TOKEN.
@@ -87,9 +89,20 @@ Mac verification of the demo apps passed on `166512a`, including kitchen prebuil
 
 Published line that shipped with Expo SDK 55.
 
+### Added
+
+- Added target types for content blockers, network extensions, file providers, broadcast extensions, call directories, message filters, Quick Look previews, Spotlight delegates, Screen Time shields, smart cards, print services, and authentication services ([#162](https://github.com/EvanBacon/expo-apple-targets/pull/162), [#163](https://github.com/EvanBacon/expo-apple-targets/pull/163), [#164](https://github.com/EvanBacon/expo-apple-targets/pull/164), [#165](https://github.com/EvanBacon/expo-apple-targets/pull/165), [#166](https://github.com/EvanBacon/expo-apple-targets/pull/166)).
+- Added watch widget extensions, Swift package dependencies, and shared target directories ([#121](https://github.com/EvanBacon/expo-apple-targets/pull/121), [#122](https://github.com/EvanBacon/expo-apple-targets/pull/122), [#126](https://github.com/EvanBacon/expo-apple-targets/pull/126), [#168](https://github.com/EvanBacon/expo-apple-targets/pull/168)).
+- Added automatic detection of SF Symbol SVGs in image configuration ([#184](https://github.com/EvanBacon/expo-apple-targets/pull/184)).
+
 ### Changed
 
-- SDK 55 alignment (`expo@^55`, React Native 0.83.x).
+- Upgraded the plugin and demo apps to Expo SDK 55 (`expo@^55`, React Native 0.83.x) ([#185](https://github.com/EvanBacon/expo-apple-targets/pull/185)).
+
+### Fixed
+
+- Corrected watchOS target detection and embedding so watch apps and extensions are embedded in the appropriate targets and locations ([#169](https://github.com/EvanBacon/expo-apple-targets/pull/169), [#172](https://github.com/EvanBacon/expo-apple-targets/pull/172), [#176](https://github.com/EvanBacon/expo-apple-targets/pull/176), [#178](https://github.com/EvanBacon/expo-apple-targets/pull/178), [#179](https://github.com/EvanBacon/expo-apple-targets/pull/179)).
+- Set the app icon build setting for Safari and widget targets and warn about the unsafe `TRUEPREDICATE` share-extension activation rule ([#154](https://github.com/EvanBacon/expo-apple-targets/pull/154), [#158](https://github.com/EvanBacon/expo-apple-targets/pull/158)).
 
 ## [3.0.5] - create-target
 
