@@ -7,7 +7,7 @@ This is iOS only, no Android or web testing is needed. You'll need to change the
 ```json
 {
   "appleTeamId": "QQ57RJ5UTD",
-  "bundleIdentifier": "com.bacon.clipdemo",
+  "bundleIdentifier": "com.bacon.widgetdemo",
   "entitlements": {
     "com.apple.security.application-groups": ["group.bacon.data"]
   }

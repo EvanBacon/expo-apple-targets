@@ -1,0 +1,111 @@
+name: Publish stable to npm
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  publish-stable:
+    if: github.repository == 'EvanBacon/expo-apple-targets' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Require main branch
+        run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "::error::Stable publishes must run from main."
+            exit 1
+          fi
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build and publish @bacons/apple-targets stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::error::NPM_TOKEN secret is missing. Add it under repo Settings → Secrets."
+            exit 1
+          fi
+          cd packages/apple-targets
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
+          echo "Publish @bacons/apple-targets stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const version = process.argv[1];
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            if (p.version !== version) {
+              p.version = version;
+              fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+            }
+          " "$NEW"
+          bun run build
+          npm publish --access public --tag latest --provenance
+
+      - name: Build and publish create-target stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::error::NPM_TOKEN secret is missing. Add it under repo Settings → Secrets."
+            exit 1
+          fi
+          cd packages/create-target
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
+          echo "Publish create-target stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
+          node -e "
+            const fs = require('fs');
+            const version = process.argv[1];
+            const p = JSON.parse(fs.readFileSync('package.json'));
+            if (p.version !== version) {
+              p.version = version;
+              fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');
+            }
+          " "$NEW"
+          bun run build:prod
+          npm publish --access public --tag latest --provenance
+
+      - name: Configure git and commit stable version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add packages/apple-targets/package.json packages/create-target/package.json CHANGELOG.md || true
+          if git diff --cached --quiet; then
+            echo "No version bump to commit"
+          else
+            git commit -m "chore: bump published package versions [skip ci]"
+            for i in 1 2 3; do
+              if git push; then exit 0; fi
+              echo "Push rejected (attempt $i/3), rebasing on origin/main..."
+              git pull --rebase --autostash origin main || break
+            done
+            echo "::warning::Could not push version bump to protected main; npm already advanced and the next run recomputes from npm."
+          fi

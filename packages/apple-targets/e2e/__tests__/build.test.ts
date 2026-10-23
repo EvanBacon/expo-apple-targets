@@ -2,6 +2,11 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { TARGET_REGISTRY as TYPE_REGISTRY } from "../../src/target";
+import {
+  TARGET_GROUPS,
+  TARGET_GROUP_NAMES,
+  type TargetGroup,
+} from "../target-groups";
 
 /**
  * Target registry: single source of truth for all e2e build targets.
@@ -166,6 +171,31 @@ const ALL_EXTENSION_TYPES = Object.entries(TYPE_REGISTRY)
 const PROJECT_DIR_FILE = path.join(__dirname, "..", ".e2e-project-dir");
 const BUILD_TIMEOUT = 120_000; // 2 minutes per target
 
+/**
+ * `E2E_TARGET_GROUP` selects one matrix shard (see e2e/target-groups.ts).
+ * Unset runs every templated target, which is the local `bun run test:e2e` path.
+ */
+function selectedGroup(): TargetGroup | undefined {
+  const group = process.env.E2E_TARGET_GROUP;
+  if (!group) return undefined;
+  if (!(TARGET_GROUP_NAMES as string[]).includes(group)) {
+    throw new Error(
+      `Unknown E2E_TARGET_GROUP "${group}". Expected one of: ${TARGET_GROUP_NAMES.join(", ")}`
+    );
+  }
+  return group as TargetGroup;
+}
+
+const activeGroup = selectedGroup();
+
+function targetsForThisRun(): TargetEntry[] {
+  if (!activeGroup) return TARGET_REGISTRY;
+  const wanted = new Set<string>(TARGET_GROUPS[activeGroup]);
+  return TARGET_REGISTRY.filter((entry) => wanted.has(entry.type));
+}
+
+const targetsToBuild = targetsForThisRun();
+
 let projectDir: string;
 let xcodeproj: string;
 
@@ -206,8 +236,14 @@ beforeAll(() => {
 });
 
 describe("xcodebuild targets", () => {
+  // Structure checks once per full run, and on the first CI shard.
+  const runStructureChecks =
+    !activeGroup || activeGroup === "widgets-clips-watch";
+
   // Meta-test: ensure the registry covers all extension types (minus imessage)
-  it("registry covers all ExtensionType values (except imessage)", () => {
+  (runStructureChecks ? it : it.skip)(
+    "registry covers all ExtensionType values (except imessage)",
+    () => {
     const registeredTypes = new Set(TARGET_REGISTRY.map((t) => t.type));
     const missingTypes = ALL_EXTENSION_TYPES.filter(
       (t) => !registeredTypes.has(t)
@@ -219,7 +255,9 @@ describe("xcodebuild targets", () => {
   // Apple requires watch apps to be in a "Watch" subdirectory.
   // App Store validation fails with:
   // "Invalid directory. The bundle ... is not contained in a correctly named directory. It should be under Watch."
-  it("watch app embedded in Watch/ subdirectory (App Store requirement)", () => {
+  (runStructureChecks ? it : it.skip)(
+    "watch app embedded in Watch/ subdirectory (App Store requirement)",
+    () => {
     const pbxprojPath = path.join(xcodeproj, "project.pbxproj");
     const pbxprojContent = fs.readFileSync(pbxprojPath, "utf-8");
 
@@ -254,7 +292,7 @@ describe("xcodebuild targets", () => {
   });
 
   // Meta-test: verify xcodebuild can list the project targets
-  it("xcodebuild can list project targets", () => {
+  (runStructureChecks ? it : it.skip)("xcodebuild can list project targets", () => {
     const output = execSync(
       `xcodebuild -project "${xcodeproj}" -list 2>&1`,
       { encoding: "utf-8", timeout: 30_000 }
@@ -266,7 +304,7 @@ describe("xcodebuild targets", () => {
     }
   });
 
-  for (const target of TARGET_REGISTRY) {
+  for (const target of targetsToBuild) {
     const testFn = target.skip ? it.skip : it;
 
     testFn(

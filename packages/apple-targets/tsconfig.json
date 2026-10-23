@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "es2019",
     "outDir": "./build",
+    "rootDir": "./src",
     "resolveJsonModule": true
   },
   "include": ["./src"],

@@ -4,10 +4,15 @@ import path from "path";
 import chalk from "chalk";
 
 import type { Config, ConfigFunction } from "./config";
-import { withPodTargetExtension } from "./with-pod-target-extension";
+import {
+  productNameForTarget,
+  withPodTargetExtension,
+  type PodTargetEntry,
+} from "./with-pod-target-extension";
 import withWidget from "./with-widget";
 import { withXcodeProjectBetaBaseMod } from "./with-bacons-xcode";
 import { warnOnce } from "./util";
+import fs from "fs";
 
 export const withTargetsDir: ConfigPlugin<
   {
@@ -41,6 +46,8 @@ export const withTargetsDir: ConfigPlugin<
     absolute: true,
   });
 
+  const podTargets: PodTargetEntry[] = [];
+
   targets.forEach((configPath) => {
     const targetConfig = require(configPath);
     let evaluatedTargetConfigObject = targetConfig;
@@ -65,15 +72,31 @@ export const withTargetsDir: ConfigPlugin<
       );
     }
 
+    const directory = path.relative(projectRoot, path.dirname(configPath));
+    const podsRb = path.join(path.dirname(configPath), "pods.rb");
+    if (fs.existsSync(podsRb)) {
+      const productName = productNameForTarget(
+        evaluatedTargetConfigObject.name,
+        path.basename(directory),
+        evaluatedTargetConfigObject.type,
+      );
+      if (productName) {
+        podTargets.push({
+          podsRbRelativeToIos: path.posix.join("..", directory.split(path.sep).join("/"), "pods.rb"),
+          productName,
+        });
+      }
+    }
+
     config = withWidget(config, {
       appleTeamId,
       ...evaluatedTargetConfigObject,
-      directory: path.relative(projectRoot, path.dirname(configPath)),
+      directory,
       configPath,
     });
   });
 
-  withPodTargetExtension(config);
+  withPodTargetExtension(config, podTargets);
 
   withXcodeProjectBetaBaseMod(config);
 
