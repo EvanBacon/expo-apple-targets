@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Detect package changes
@@ -36,7 +36,22 @@ jobs:
             exit 0
           fi
 
-          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          # Diff the whole push (github.event.before..HEAD), not just HEAD~1, so
+          # multi-commit pushes still detect package changes. Fall back to
+          # HEAD~1 when before is empty, all-zero (new branch), or unreachable.
+          BEFORE="${{ github.event.before }}"
+          if [ -n "$BEFORE" ] && ! echo "$BEFORE" | grep -Eq '^0+$' && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BASE="$BEFORE"
+          elif git rev-parse --verify -q HEAD~1 >/dev/null; then
+            BASE="HEAD~1"
+          else
+            echo "No diff base available; publishing both packages."
+            echo "apple=true" >> $GITHUB_OUTPUT
+            echo "create=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "Diff base: $BASE"
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
           APPLE=false
           CREATE=false
           if echo "$CHANGED" | grep -Eq "^packages/apple-targets/"; then
