@@ -52,6 +52,13 @@ jobs:
           fi
           cd packages/apple-targets
           LOCAL=$(node -p "require('./package.json').version")
+          # Idempotent: if this exact version is already on npm (e.g. a re-run
+          # after a partial failure, or an unchanged package), skip instead of
+          # patch-bumping and republishing. Bump package.json to release anew.
+          if [ -n "$(npm view "@bacons/apple-targets@$LOCAL" version 2>/dev/null || true)" ]; then
+            echo "::notice::@bacons/apple-targets@$LOCAL is already on npm; skipping publish."
+            exit 0
+          fi
           PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
           NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
           echo "Publish @bacons/apple-targets stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
@@ -78,6 +85,13 @@ jobs:
           fi
           cd packages/create-target
           LOCAL=$(node -p "require('./package.json').version")
+          # Idempotent: if this exact version is already on npm (e.g. a re-run
+          # after a partial failure, or an unchanged package), skip instead of
+          # patch-bumping and republishing. Bump package.json to release anew.
+          if [ -n "$(npm view "create-target@$LOCAL" version 2>/dev/null || true)" ]; then
+            echo "::notice::create-target@$LOCAL is already on npm; skipping publish."
+            exit 0
+          fi
           PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
           NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED")
           echo "Publish create-target stable: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
