@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-10-28: Maintainer status check. Draft PR #210 (head `0fdd50c`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 40541189xxx). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Triaged #211 (fixed in this branch; commented). One focused item: status + issue triage, no native code changes.
+
 - 2026-10-27: Maintainer status check. Draft PR #210 (head `1d2d6ba`) remains open. CI green on all checks (test, 4 macOS e2e shards, simulator launch). Publish workflows present and fail-closed on missing NPM_TOKEN (still unconfirmed; no further email). Changelog and #212 notes already folded. Not merged; waiting on final Mac re-verify of latest head if desired and NPM_TOKEN. One focused item this run: status only, no code changes.
 
 - 2026-10-25: `publish-stable.yml` now runs `npm view <pkg>@<local version>` before each package publish and skips that package if the version already exists on npm, instead of patch-bumping and republishing. A re-run after a partial publish no longer fails or ships an extra version, and an unchanged `create-target` is no longer republished on every stable run. To cut a new stable release, bump the version in `package.json` first. Draft #210 stays open and is not merged. Did not re-email about `NPM_TOKEN`.
