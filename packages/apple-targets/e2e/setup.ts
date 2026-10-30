@@ -44,15 +44,13 @@ export default async function globalSetup() {
   console.log("[e2e] Copied Swift templates from create-target");
 
   // Rewrite package.json so the file: link uses an absolute path
-  // (the fixture uses file:../../ which breaks when copied to a temp dir)
-  const pkgJsonPath = path.join(tmpDir, "package.json");
-  const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+  // (the fixture uses file:../../ which breaks when copied to a temp dir).
+  // bun.lock pins the same specifier, so retarget that too before a frozen install.
   const packageRoot = path.resolve(__dirname, "..");
-  pkgJson.dependencies["@bacons/apple-targets"] = `file:${packageRoot}`;
-  fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + "\n");
+  retargetAppleTargetsLink(tmpDir, packageRoot);
 
   console.log("[e2e] Installing dependencies...");
-  execSync("bun install", {
+  execSync("bun install --frozen-lockfile", {
     cwd: tmpDir,
     stdio: "inherit",
     env: { ...process.env, CI: "1" },
@@ -73,6 +71,37 @@ export default async function globalSetup() {
   // Write the temp dir path for tests to read
   fs.writeFileSync(PROJECT_DIR_FILE, tmpDir, "utf-8");
   console.log(`[e2e] Project prebuilt at ${tmpDir}`);
+}
+
+/**
+ * Point the copied fixture at this checkout and keep bun.lock frozen.
+ * Bun records the file: dependency twice: the workspace specifier as written
+ * (`file:../../`) and the package key with one trailing slash removed
+ * (`file:../..`).
+ */
+function retargetAppleTargetsLink(tmpDir: string, packageRoot: string) {
+  const pkgJsonPath = path.join(tmpDir, "package.json");
+  const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+  const fromSpec = pkgJson.dependencies["@bacons/apple-targets"];
+  const toSpec = `file:${packageRoot}`;
+  pkgJson.dependencies["@bacons/apple-targets"] = toSpec;
+  fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + "\n");
+
+  const lockPath = path.join(tmpDir, "bun.lock");
+  const fromKeySpec = fromSpec.endsWith("/") ? fromSpec.slice(0, -1) : fromSpec;
+  let lock = fs.readFileSync(lockPath, "utf-8");
+  const workspaceFrom = `"@bacons/apple-targets": "${fromSpec}"`;
+  const workspaceTo = `"@bacons/apple-targets": "${toSpec}"`;
+  const keyFrom = `@bacons/apple-targets@${fromKeySpec}`;
+  const keyTo = `@bacons/apple-targets@${toSpec}`;
+  if (!lock.includes(workspaceFrom) || !lock.includes(keyFrom)) {
+    throw new Error(
+      `e2e fixture bun.lock is missing the ${fromSpec} link; regenerate it with Bun 1.4.2`
+    );
+  }
+  lock = lock.split(workspaceFrom).join(workspaceTo);
+  lock = lock.split(keyFrom).join(keyTo);
+  fs.writeFileSync(lockPath, lock);
 }
 
 /** Recursively copy files from src to dest, skipping expo-target.config.* and existing files. */
