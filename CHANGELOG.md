@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-11-01: Maintainer status check. Draft PR #210 (head `956b757`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 41219187xxx from 2026-10-31). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Commented on #196 noting SDK 57 draft covers the compatibility request. One focused item: status update + issue note, no code or native changes.
+
 - 2026-10-31: Maintainer status check. Draft PR #210 (head `1d10d7e`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 41089057xxx from 2026-10-30). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
 
 - 2026-10-30: Maintainer status check. Draft PR #210 (head `11cb60aa`) remains open. CI fully green on all 9 checks (Ubuntu `test` [40910508739](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508739), macOS E2E shards [40910508748](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508748), simulator launch [40910508801](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508801) from 2026-10-29). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Commented on #211 confirming the pods.rb product-name fix is in this branch. One focused item: status update + issue note, no code or native changes.
@@ -28,8 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2026-10-27: Maintainer status check. Draft PR #210 (head `1d2d6ba`) remains open. CI green on all checks (test, 4 macOS e2e shards, simulator launch). Publish workflows present and fail-closed on missing NPM_TOKEN (still unconfirmed; no further email). Changelog and #212 notes already folded. Not merged; waiting on final Mac re-verify of latest head if desired and NPM_TOKEN. One focused item this run: status only, no code changes.
 
 - 2026-10-25: `publish-stable.yml` now runs `npm view <pkg>@<local version>` before each package publish and skips that package if the version already exists on npm, instead of patch-bumping and republishing. A re-run after a partial publish no longer fails or ships an extra version, and an unchanged `create-target` is no longer republished on every stable run. To cut a new stable release, bump the version in `package.json` first. Draft #210 stays open and is not merged. Did not re-email about `NPM_TOKEN`.
-
-[... rest of the file truncated for this call; in practice the full content would be sent ...]
 
 ## [5.0.0] - 2026
 
