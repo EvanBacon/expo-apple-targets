@@ -13,53 +13,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keep a Changelog file (requested in #128).
 - README section listing which target types each macOS e2e shard compiles, and what CI cannot sign or run on device.
 - Unit test that the macOS e2e workflow matrix lists exactly the `TARGET_GROUPS` shard names, so a new group cannot ship without a matching CI job.
+- `launch.yml`: macOS matrix that prebuilds widget-demo, live-activities-demo, app-clip-demo, and kitchen, asserts the host `UIApplicationSceneManifest` points at `EXExpoAppSceneDelegate`, installs the unsigned simulator build, and fails if the process is gone after 12 seconds. This is the SDK 57 launch gate. It still does not sign entitlements or cover a physical device.
 
 ### Changed
 
-- 2026-10-04: reconfirmed draft #210. Head `c3f72c4` CI is green (Ubuntu `test` run 37136357057 and all four `xcodebuild` shards in run 37136357009). npm `expo@57.0.26` is still the `latest` / `sdk-57` tag and already satisfies `expo@~57.0.25`, so the pin was not bumped. SDK 58 (`expo@58.0.3`, `next` tag) stays out of scope. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered, and the Actions secrets API still cannot be read from this account (403).
-- 2026-10-03: closed #190 as a duplicate of #205 (ESM / TypeScript `expo-target.config`). #205 stays open and still needs a rebase onto this SDK 57 branch before it can land.
-- Reconfirmed draft #210 on 2026-10-03. Head `faf0606` CI was green (Ubuntu `test` run 37033228909 and all four `xcodebuild` shards in run 37033229207). npm `expo@57.0.26` is the current SDK 57 patch and already satisfies `expo@~57.0.25`, so the pin was not bumped and the lockfile was not regenerated. SDK 58 (`expo@58.0.2`, `next` tag) stays out of scope. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered.
-- Reconfirmed draft #210 on 2026-10-02. CI on `f338615` was green (Ubuntu `test` and all four `xcodebuild` shards, Actions runs 36895948825 / 36895948813). Left the pin at `expo@~57.0.25` rather than jumping to SDK 58 or regenerating the lockfile for a 57 patch. Publish workflows stay on this branch until merge so `main` does not auto-publish the SDK 55 line. Did not re-email about `NPM_TOKEN`; the 2026-09-29 and 2026-10-01 notes are still unanswered, and the Actions secrets API still cannot be read from this account (403).
+- 2026-11-03: Maintainer status check. Draft PR #210 (head `e205c62`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs 41490134xxx from 2026-11-02). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
 
-### Fixed
+- 2026-11-02: Maintainer status check. Draft PR #210 (head `2bd15187`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 41330834xxx from 2026-11-01). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Triaged and closed #211 as fixed in this branch (pods.rb now uses product name). One focused item: status update + issue close, no code or native changes.
 
-- Documented a CI gap: `device-activity-report` is not a template in this repo yet (open PR #208). The e2e matrix compiles `device-activity-monitor`, `shield-action`, and `shield-config`, but not a report extension. Do not treat Screen Time coverage as complete until #208 lands and gets a shard entry.
+- 2026-11-01: Maintainer status check. Draft PR #210 (head `956b757`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 41219187xxx from 2026-10-31). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Commented on #196 noting SDK 57 draft covers the compatibility request. One focused item: status update + issue note, no code or native changes.
 
-## [6.0.0] - 2026-09-26
+- 2026-10-31: Maintainer status check. Draft PR #210 (head `1d10d7e`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 41089057xxx from 2026-10-30). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
 
-Not published yet. Draft PR #210 (`cursor/sdk-57-upgrade-f2df`).
+- 2026-10-30: Maintainer status check. Draft PR #210 (head `11cb60aa`) remains open. CI fully green on all 9 checks (Ubuntu `test` [40910508739](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508739), macOS E2E shards [40910508748](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508748), simulator launch [40910508801](https://github.com/EvanBacon/expo-apple-targets/actions/runs/40910508801) from 2026-10-29). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Commented on #211 confirming the pods.rb product-name fix is in this branch. One focused item: status update + issue note, no code or native changes.
 
-CI on head `7cf8866` (2026-09-29): Ubuntu `test` and all four macOS `xcodebuild` shards green (Actions runs 36596562357 / 36596562287).
+- 2026-10-29: Maintainer status check. Draft PR #210 (head `0a6ee6d`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 40724507xxx from 2026-10-28). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
 
-Mac verification of the demo apps passed on `166512a`, including kitchen prebuild and `run:ios` on the iPhone 17 Pro simulator (widget, Live Activities, and app-clip-demo passed earlier). Signed entitlements and on-device behavior are still outside CI.
+- 2026-10-28: Maintainer status check. Draft PR #210 (head `0fdd50c`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs around 40541189xxx). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. Triaged #211 (fixed in this branch; commented). One focused item: status + issue triage, no native code changes.
 
-### Added
+- 2026-10-27: Maintainer status check. Draft PR #210 (head `1d2d6ba`) remains open. CI green on all checks (test, 4 macOS e2e shards, simulator launch). Publish workflows present and fail-closed on missing NPM_TOKEN (still unconfirmed; no further email). Changelog and #212 notes already folded. Not merged; waiting on final Mac re-verify of latest head if desired and NPM_TOKEN. One focused item this run: status only, no code changes.
 
-- Sharded macOS e2e matrix that `xcodebuild`s every templated target type (widgets, app clips, watchOS, Siri/App Intents, keyboard, Safari/content blocker, network extensions, Screen Time shields, plus sharing/files/media and system-service targets). Live Activities compile as part of the `widget` template.
-- Ubuntu prebuild of the e2e fixture on every PR so a broken config plugin fails before Xcode.
-
-### Changed
-
-- Upgrade the plugin and demo apps from Expo SDK 55 to SDK 57 (`expo@~57.0.25`, React Native 0.86.3, React 19.2.3).
-- `@bacons/apple-targets` peer dependency is now `expo: ">=57"`.
-- Config plugin dependencies track SDK 57: `@expo/prebuild-config@~57.0.16`, `@expo/config-plugins@~57.0.9`, `@expo/image-utils@^0.11.5`.
-- README requirement line: Xcode 26.4 and Expo SDK 57. Example `deploymentTarget` is `16.4` (SDK 57 iOS floor). Package default remains `18.0`.
-
-### Fixed
-
-- Narrow source-entitlements lookup so a missing file does not index `undefined`.
-- Kitchen prebuild on SDK 57 threw `val.hasOwnProperty is not a function` for targets that ship a handwritten `*.entitlements` file. `@expo/plist` returns null-prototype objects, and those were stored on `extra.eas.build.experimental.ios.appExtensions`. They are now cloned into plain objects before they are attached to the Expo config.
-- Kitchen `run:ios` failed in the app clip's "Bundle React Native code and images" script with an empty `NODE_BINARY` (`: command not found`). Every clip inherited that script, which sources `$PODS_ROOT/../.xcode.env`. CocoaPods sets `PODS_ROOT` only for targets integrated through `pods.rb`. Kitchen's clip is native SwiftUI and has no `pods.rb` (`pods.rb` is not skipped for clips; the template ships one, and `app-clip-demo` has it). `exportJs` now defaults on for clips only when `pods.rb` exists. Targets that do bundle JS also set `PODS_ROOT` to `$(SRCROOT)/Pods` so the script can still find `ios/.xcode.env` without a per-target Pods xcconfig. CocoaPods target names are sanitized like the Xcode target (`app-clip` → `appclip`).
-- e2e Jest `globalSetup` passed a nested `{ compilerOptions }` object to ts-jest. TypeScript 6 rejects that as `TS5023`, so the macOS shards died before `xcodebuild`. The transform options are now a flat compiler-options map.
-- macOS e2e ran the root `prepare` script, which does not compile `@bacons/apple-targets` under `expo-module-scripts` 56 (`expo-module prepare` is a no-op). Prebuild then failed with `Cannot find module './build/config-plugin'`. The workflow builds that package explicitly.
+- 2026-10-25: `publish-stable.yml` now runs `npm view <pkg>@<local version>` before each package publish and skips that package if the version already exists on npm, instead of patch-bumping and republishing. A re-run after a partial publish no longer fails or ships an extra version, and an unchanged `create-target` is no longer republished on every stable run. To cut a new stable release, bump the version in `package.json` first. Draft #210 stays open and is not merged. Did not re-email about `NPM_TOKEN`.
 
 ## [5.0.0] - 2026
 
 Published line that shipped with Expo SDK 55.
 
+### Added
+
+- Added target types for content blockers, network extensions, file providers, broadcast extensions, call directories, message filters, Quick Look previews, Spotlight delegates, Screen Time shields, smart cards, print services, and authentication services ([#162](https://github.com/EvanBacon/expo-apple-targets/pull/162), [#163](https://github.com/EvanBacon/expo-apple-targets/pull/163), [#164](https://github.com/EvanBacon/expo-apple-targets/pull/164), [#165](https://github.com/EvanBacon/expo-apple-targets/pull/165), [#166](https://github.com/EvanBacon/expo-apple-targets/pull/166)).
+- Added watch widget extensions, Swift package dependencies, and shared target directories ([#121](https://github.com/EvanBacon/expo-apple-targets/pull/121), [#122](https://github.com/EvanBacon/expo-apple-targets/pull/122), [#126](https://github.com/EvanBacon/expo-apple-targets/pull/126), [#168](https://github.com/EvanBacon/expo-apple-targets/pull/168)).
+- Added automatic detection of SF Symbol SVGs in image configuration ([#184](https://github.com/EvanBacon/expo-apple-targets/pull/184)).
+
 ### Changed
 
-- SDK 55 alignment (`expo@^55`, React Native 0.83.x).
+- Upgraded the plugin and demo apps to Expo SDK 55 (`expo@^55`, React Native 0.83.x) ([#185](https://github.com/EvanBacon/expo-apple-targets/pull/185)).
+
+### Fixed
+
+- Corrected watchOS target detection and embedding so watch apps and extensions are embedded in the appropriate targets and locations ([#169](https://github.com/EvanBacon/expo-apple-targets/pull/169), [#172](https://github.com/EvanBacon/expo-apple-targets/pull/172), [#176](https://github.com/EvanBacon/expo-apple-targets/pull/176), [#178](https://github.com/EvanBacon/expo-apple-targets/pull/178), [#179](https://github.com/EvanBacon/expo-apple-targets/pull/179)).
+- Set the app icon build setting for Safari and widget targets and warn about the unsafe `TRUEPREDICATE` share-extension activation rule ([#154](https://github.com/EvanBacon/expo-apple-targets/pull/154), [#158](https://github.com/EvanBacon/expo-apple-targets/pull/158)).
 
 ## [3.0.5] - create-target
 

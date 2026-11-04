@@ -7,6 +7,7 @@ on:
       - "packages/apple-targets/**"
       - "packages/create-target/**"
       - ".github/workflows/publish.yml"
+      - ".github/scripts/next-publish-version.mjs"
   workflow_dispatch: {}
 
 permissions:
@@ -23,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Detect package changes
@@ -35,7 +36,22 @@ jobs:
             exit 0
           fi
 
-          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          # Diff the whole push (github.event.before..HEAD), not just HEAD~1, so
+          # multi-commit pushes still detect package changes. Fall back to
+          # HEAD~1 when before is empty, all-zero (new branch), or unreachable.
+          BEFORE="${{ github.event.before }}"
+          if [ -n "$BEFORE" ] && ! echo "$BEFORE" | grep -Eq '^0+$' && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            BASE="$BEFORE"
+          elif git rev-parse --verify -q HEAD~1 >/dev/null; then
+            BASE="HEAD~1"
+          else
+            echo "No diff base available; publishing both packages."
+            echo "apple=true" >> $GITHUB_OUTPUT
+            echo "create=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "Diff base: $BASE"
+          CHANGED=$(git diff --name-only "$BASE" HEAD)
           APPLE=false
           CREATE=false
           if echo "$CHANGED" | grep -Eq "^packages/apple-targets/"; then
@@ -50,6 +66,8 @@ jobs:
       - name: Setup bun
         if: steps.changes.outputs.apple == 'true' || steps.changes.outputs.create == 'true'
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
 
       - name: Setup Node.js
         if: steps.changes.outputs.apple == 'true' || steps.changes.outputs.create == 'true'
@@ -75,15 +93,8 @@ jobs:
           cd packages/apple-targets
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view @bacons/apple-targets dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
-          ")
-          echo "Bumped @bacons/apple-targets: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED" "beta.${{ github.run_number }}.${{ github.run_attempt }}")
+          echo "Publish @bacons/apple-targets beta: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
             const p = JSON.parse(fs.readFileSync('package.json'));
@@ -106,15 +117,8 @@ jobs:
           cd packages/create-target
           LOCAL=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view create-target dist-tags.latest 2>/dev/null || echo "")
-          [ -z "$PUBLISHED" ] && PUBLISHED="$LOCAL"
-          NEW=$(node -e "
-            const a='$LOCAL'.split('.').map(Number);
-            const b='$PUBLISHED'.split('.').map(Number);
-            const max=(a[0]>b[0]||(a[0]===b[0]&&a[1]>b[1])||(a[0]===b[0]&&a[1]===b[1]&&a[2]>b[2]))?a:b;
-            max[2]++;
-            console.log(max.join('.') + '-beta.${{ github.run_number }}.${{ github.run_attempt }}');
-          ")
-          echo "Bumped create-target: local=$LOCAL npm=$PUBLISHED -> $NEW"
+          NEW=$(node ../../.github/scripts/next-publish-version.mjs "$LOCAL" "$PUBLISHED" "beta.${{ github.run_number }}.${{ github.run_attempt }}")
+          echo "Publish create-target beta: local=$LOCAL npm=${PUBLISHED:-<none>} -> $NEW"
           node -e "
             const fs = require('fs');
             const p = JSON.parse(fs.readFileSync('package.json'));

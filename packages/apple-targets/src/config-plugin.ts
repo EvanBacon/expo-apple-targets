@@ -5,10 +5,15 @@ import path from "path";
 import chalk from "chalk";
 
 import type { Config, ConfigFunction } from "./config";
-import { withPodTargetExtension } from "./with-pod-target-extension";
+import {
+  productNameForTarget,
+  withPodTargetExtension,
+  type PodTargetEntry,
+} from "./with-pod-target-extension";
 import withWidget from "./with-widget";
 import { withXcodeProjectBetaBaseMod } from "./with-bacons-xcode";
 import { warnOnce } from "./util";
+import fs from "fs";
 
 // Highest-to-lowest priority. Used both for globbing and for the deterministic
 // pick when multiple config files exist in the same target directory.
@@ -97,6 +102,8 @@ export const withTargetsDir: ConfigPlugin<
     },
   );
 
+  const podTargets: PodTargetEntry[] = [];
+
   // Multiple config files in the same target directory would silently register
   // the target twice — pick the highest-priority extension and warn.
   const configsByDirectory = new Map<string, string[]>();
@@ -159,15 +166,31 @@ export const withTargetsDir: ConfigPlugin<
       );
     }
 
+    const directory = path.relative(projectRoot, path.dirname(configPath));
+    const podsRb = path.join(path.dirname(configPath), "pods.rb");
+    if (fs.existsSync(podsRb)) {
+      const productName = productNameForTarget(
+        resolvedConfig.name,
+        path.basename(directory),
+        resolvedConfig.type,
+      );
+      if (productName) {
+        podTargets.push({
+          podsRbRelativeToIos: path.posix.join("..", directory.split(path.sep).join("/"), "pods.rb"),
+          productName,
+        });
+      }
+    }
+
     config = withWidget(config, {
       appleTeamId,
       ...resolvedConfig,
-      directory: path.relative(projectRoot, path.dirname(configPath)),
+      directory,
       configPath,
     });
   });
 
-  withPodTargetExtension(config);
+  withPodTargetExtension(config, podTargets);
 
   withXcodeProjectBetaBaseMod(config);
 

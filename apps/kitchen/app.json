@@ -16,7 +16,17 @@
     "bundleIdentifier": "com.bacon.2095"
   },
   "platforms": ["ios"],
-  "plugins": ["@bacons/apple-targets"],
+  "plugins": [
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "enableSceneSupport": true
+        }
+      }
+    ],
+    "@bacons/apple-targets"
+  ],
   "extra": {
     "eas": {
       "projectId": "493cc60b-ce18-46b5-8e04-f1c12293fc49"
