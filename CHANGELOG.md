@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `expo-target.config` can now be `.ts`, `.mts`, `.cts`, `.mjs`, or `.cjs`, in addition to `.js` and `.json`. These load through `@expo/require-utils`, the same loader Expo uses for `app.config.ts`. If one target directory has several config files, the highest-priority one is used (`ts` → `mts` → `cts` → `mjs` → `js` → `cjs` → `json`) and the others are ignored with a warning. Previously, a `.js` and `.json` config in the same directory registered the target twice.
 - GitHub Actions workflows to publish `@bacons/apple-targets` and `create-target` to npm (`publish.yml` beta on main / manual dispatch; `publish-stable.yml` manual dispatch on main only). Both require the `NPM_TOKEN` repository secret before the first publish.
 - Keep a Changelog file (requested in #128).
 - README section listing which target types each macOS e2e shard compiles, and what CI cannot sign or run on device.
