@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- 2026-11-05: Maintainer status check. Draft PR #210 (head `4d00c3cd7f04f385574b1ae742dee1886e6306b2`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs; Actions runs 418768371xx from 2026-11-04). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
+
 - 2026-11-04: Maintainer status check. Draft PR #210 (head `5d261db`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs; recent runs on branch cursor/sdk-57-upgrade-f2df completed without failure indicators). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
 
 - 2026-11-03: Maintainer status check. Draft PR #210 (head `e205c62`) remains open. CI fully green on all 9 checks (Ubuntu test + 4 xcodebuild shards + 4 simulator launch jobs, Actions runs 41490134xxx from 2026-11-02). Publish workflows in place (beta auto/manual, stable manual-only); NPM_TOKEN still unconfirmed (no further email per prior notes). Changelog maintained. Not merged — safety rules require own Mac/Xcode verification of latest head before merge. One focused item: status update only, no code or native changes.
