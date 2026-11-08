@@ -4,6 +4,7 @@ import {
   XcodeProject,
 } from "@bacons/xcode";
 import { BuildSettings } from "@bacons/xcode/json";
+import { withExportJsBuildSettings } from "./export-js";
 import { ExtensionType, getMainAppTarget } from "./target";
 
 export type XcodeSettings = {
@@ -899,9 +900,11 @@ export function createConfigurationListForType(
   project: XcodeProject,
   props: XcodeSettings,
 ) {
-  const { debug, release } = getConfigurationListBuildSettingsForType(
-    project,
-    props,
+  // exportJs targets run Expo's bundle script, which sources
+  // `$PODS_ROOT/../.xcode.env`. Set PODS_ROOT when CocoaPods did not.
+  const { debug, release } = withExportJsBuildSettings(
+    getConfigurationListBuildSettingsForType(project, props),
+    props.exportJs,
   );
   return XCConfigurationList.create(project, {
     buildConfigurations: [

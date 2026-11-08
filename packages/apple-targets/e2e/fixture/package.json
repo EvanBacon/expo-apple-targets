@@ -3,9 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "expo": "~55.0.0",
-    "react": "19.2.0",
-    "react-native": "0.83.4",
+    "expo": "~57.0.25",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
     "@bacons/apple-targets": "file:../../"
+  },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "8.70.1",
+    "@typescript-eslint/parser": "8.70.1",
+    "@typescript-eslint/project-service": "8.70.1",
+    "@typescript-eslint/scope-manager": "8.70.1",
+    "@typescript-eslint/tsconfig-utils": "8.70.1",
+    "@typescript-eslint/type-utils": "8.70.1",
+    "@typescript-eslint/types": "8.70.1",
+    "@typescript-eslint/typescript-estree": "8.70.1",
+    "@typescript-eslint/utils": "8.70.1",
+    "@typescript-eslint/visitor-keys": "8.70.1"
   }
 }

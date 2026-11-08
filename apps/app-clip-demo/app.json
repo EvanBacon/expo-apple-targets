@@ -4,6 +4,16 @@
     "appleTeamId": "QQ57RJ5UTD",
     "bundleIdentifier": "com.bacon.clipdemo"
   },
-  "plugins": ["@bacons/apple-targets"],
+  "plugins": [
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "enableSceneSupport": true
+        }
+      }
+    ],
+    "@bacons/apple-targets"
+  ],
   "platforms": ["ios"]
 }

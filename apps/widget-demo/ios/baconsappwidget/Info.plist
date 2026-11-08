@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.bacon.clipdemo</string>
+          <string>com.bacon.widgetdemo</string>
         </array>
       </dict>
     </array>

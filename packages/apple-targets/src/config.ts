@@ -139,10 +139,13 @@ export type Config = {
     string | { "1x"?: string; "2x"?: string; "3x"?: string }
   >;
 
-  /** Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native. */
+  /**
+   * Should the release build export the JS bundle and embed. Intended for App Clips and Share Extensions where you may want to use React Native.
+   * App Clips default this to true only when `pods.rb` is present, because the bundle script needs `PODS_ROOT` to resolve `NODE_BINARY`.
+   */
   exportJs?: boolean;
 };
 
 export type ConfigFunction = (
-  config: import("expo/config").ExpoConfig
+  config: import("expo/config").ExpoConfig,
 ) => Config;
